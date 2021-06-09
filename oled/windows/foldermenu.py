@@ -28,6 +28,7 @@ class Foldermenu(MenuBase):
             d = os.path.join(path, file)
             if os.path.isdir(d):
                 self.folders.append(file)
+        self.folders.sort()
 
     def __init__(self, windowmanager):
         super().__init__(windowmanager, "Auswahl")
