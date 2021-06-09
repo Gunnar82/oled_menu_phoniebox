@@ -1,0 +1,7 @@
+#Hardware and MPD Connection
+luma.oled==3.8.1
+python-musicpd==0.5.1
+RPi.GPIO==0.7.0
+
+#Shairport-Sync Integration
+Kivy==2.0.0

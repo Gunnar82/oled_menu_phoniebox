@@ -1,0 +1,13 @@
+#!/bin/bash
+case "$1" in
+  poweroff)
+        i2cset -y -f 1 0x77 0x0a 20
+        i2cset -y -f 1 0x77 0x05 0
+        #i2cset -y -f 1 0x77 0x0e 1
+        i2cset -y -f 1 0x77 0x02 0
+        i2cset -y -f 1 0x77 0x03 100
+        i2cset -y -f 1 0x77 0x04 0
+        i2cset -y -f 1 0x77 0x01 2
+        i2cset -y -f 1 0x77 0x09 30
+        ;;
+esac
