@@ -4,6 +4,9 @@ Software settings
 
 MENU_TIMEOUT = 10
 
+PLAYOUT_CONTROLS = "/home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh"
+
+
 STATIONSPLAYLIST = "/home/pi/RPi-Jukebox-RFID/playlists/GBRadio.m3u"
 EMULATED = False
 

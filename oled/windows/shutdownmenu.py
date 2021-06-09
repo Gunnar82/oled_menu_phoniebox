@@ -3,10 +3,12 @@ from ui.windowbase import WindowBase
 from luma.core.render import canvas
 from PIL import ImageFont
 import settings
+import os
+
 
 class Shutdownmenu(WindowBase):
     font = ImageFont.truetype(settings.FONT_TEXT, size=12)
-    faicons = ImageFont.truetype(settings.FONT_ICONS, size=18)
+    faicons = ImageFont.truetype(settings.FONT_ICONS, size=14)
 
     def __init__(self, windowmanager, mopidyconnection):
         super().__init__(windowmanager)
@@ -35,8 +37,8 @@ class Shutdownmenu(WindowBase):
             draw.text((56, 25), text="Ja", font=Shutdownmenu.font, fill="white")
             draw.text((55, 40), text="\uf011", font=Shutdownmenu.faicons, fill="white")
 
-            draw.text((92, 25), text="RST", font=Shutdownmenu.font, fill="white")
-            draw.text((94, 40), text="\uf01e", font=Shutdownmenu.faicons, fill="white")
+            draw.text((92, 25), text="S60", font=Shutdownmenu.font, fill="white")
+            draw.text((94, 40), text="\uf0a2", font=Shutdownmenu.faicons, fill="white")
 
     def push_callback(self):
         if self.counter == 0:
@@ -47,10 +49,11 @@ class Shutdownmenu(WindowBase):
             print("Stopping event loop")
             self.loop.stop()
         elif self.counter == 2:
-            self.mopidyconnection.stop()
-            self.execreboot = True
-            print("Stopping event loop")
-            self.loop.stop()
+            os.system("%s -c=shutdownafter -v=60" % settings.PLAYOUT_CONTROLS)
+            #self.mopidyconnection.stop()
+            #self.execreboot = True
+            #print("Stopping event loop")
+            #self.loop.stop()
 
     def turn_callback(self, direction):
         if self.counter + direction <= 2 and self.counter + direction >= 0:
