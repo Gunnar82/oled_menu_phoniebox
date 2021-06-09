@@ -130,7 +130,6 @@ class PowerController():
     
                     if rotary_change != 0:
                     #self.volchange(rotary_change*self.stepsize)
-                        print (rotary_change)
                         self.turn_callback(rotary_change)
 
     
