@@ -50,6 +50,7 @@ class Shutdownmenu(WindowBase):
             self.loop.stop()
         elif self.counter == 2:
             os.system("%s -c=shutdownafter -v=60" % settings.PLAYOUT_CONTROLS)
+            self.windowmanager.set_window("idle")
             #self.mopidyconnection.stop()
             #self.execreboot = True
             #print("Stopping event loop")
