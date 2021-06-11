@@ -37,7 +37,7 @@ class Headphonemenu(WindowBase):
         elif self.counter == 1:
             integrations.bluetooth.enable_dev_bt()
         elif self.counter == 2:
-            integrations.bluetooth.enable_dev_alsa()
+            integrations.bluetooth.enable_dev_local()
     def turn_callback(self, direction):
         if self.counter + direction <= 2 and self.counter + direction >= 0:
             self.counter += direction
