@@ -54,6 +54,7 @@ Radiosender --> GBRadio.m3u TODO
 
 hifiberry dac2 amp2
 audio_output {
+    enabled "True"
     device "hw:0"
     type "alsa"
     name "pcm512x-hifi"

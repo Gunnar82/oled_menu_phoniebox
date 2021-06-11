@@ -3,7 +3,7 @@ import os
 
 
 enable_local_cmd = "mpc enable \"%s\" && mpc disable \"%s\"" % (settings.ALSA_DEV_LOCAL, settings.ALSA_DEV_BT)
-enable_bt_cmd = "sudo bluetoothctl connect %s && sudo l2ping %s -c 1 && mpc enable \"%s\" && mpc disable \"%s\"" % (settings.BT_HF_MAC, settings.BT_HF_MAC,                                                                                                              settings.ALSA_DEV_BT, settings.ALSA_DEV_LOCAL)
+enable_bt_cmd = "sudo bluetoothctl connect %s && sudo l2ping %s -c 1 && mpc enable \"%s\" && mpc disable \"%s\"" % (settings.BT_HF_MAC, settings.BT_HF_MAC, settings.ALSA_DEV_BT, settings.ALSA_DEV_LOCAL)
 cmd_check_bt_dev = "sudo bluetoothctl connect %s && sudo l2ping %s -c 1" % (settings.BT_HF_MAC, settings.BT_HF_MAC)
 
 
