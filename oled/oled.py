@@ -3,6 +3,7 @@ import asyncio
 import signal
 import sys
 from subprocess import call
+import integrations.bluetooth
 from integrations.display import get_display
 from integrations.rotaryencoder import RotaryEncoder
 from integrations.powercontroller import PowerController
@@ -89,6 +90,11 @@ def main():
         print("Exiting")
     finally:
         loop.close()
+
+    try:
+        integrations.bluetooth.enable_dev_local()
+    except:
+        pass
 
     if shutdownscreen.execshutdown:
         if haspowercontroller:

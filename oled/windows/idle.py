@@ -154,6 +154,7 @@ class Idle(WindowBase):
 
 
     async def _find_dev_bt(self):
+        await asyncio.sleep(30)
 
         while self.loop.is_running() and self._active or not self.BluetoothFound:
             if integrations.bluetooth.check_dev_bt():
