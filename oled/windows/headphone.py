@@ -25,7 +25,7 @@ class Headphonemenu(WindowBase):
             draw.text((5, 15), text="\uf0a8", font=Headphonemenu.faicons, fill="white")
 
 #            draw.text((30, 25), text="Kopfhörer", font=Headphonemenu.font, fill="white")
-            draw.text((45, 15), text="\uf025", font=Headphonemenu.faicons, fill="white")
+            draw.text((45, 15), text="\uf293", font=Headphonemenu.faicons, fill="white")
 
 #            draw.text((56, 25), text="Ja", font=Headphonemenu.font, fill="white")
             draw.text((75, 15), text="\uf026", font=Headphonemenu.faicons, fill="white")
