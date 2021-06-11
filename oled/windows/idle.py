@@ -7,6 +7,7 @@ from PIL import ImageFont
 import settings
 import os
 import subprocess, re
+import integrations.bluetooth
 
 class Idle(WindowBase):
     bigfont = ImageFont.truetype(settings.FONT_CLOCK, size=22)
@@ -33,6 +34,8 @@ class Idle(WindowBase):
         self.job_i = -1
         self.job_s = -1
         self.Type="Default"
+        self.BluetoothFound = False
+        self.LocalOutputEnabled = False
 
 
 
@@ -63,7 +66,7 @@ class Idle(WindowBase):
         self._active = True
         self.loop.create_task(self._generatenowplaying())
         self.loop.create_task(self._linuxjob())
-        
+        self.loop.create_task(self._find_dev_bt())
 
     def deactivate(self):
         self._active = False
@@ -148,6 +151,20 @@ class Idle(WindowBase):
             self.job_i = self.linux_job_remaining("i")
 
             await asyncio.sleep(20)
+
+
+    async def _find_dev_bt(self):
+
+        while self.loop.is_running() and self._active or not self.BluetoothFound:
+            if integrations.bluetooth.check_dev_bt():
+                self.BluetoothFound = True
+                integrations.bluetooth.enable_dev_bt()
+            else:
+                if not self.LocalOutputEnabled:
+                    integrations.bluetooth.enable_dev_local()
+                    self.LocalOutputEnabled = True
+
+            await asyncio.sleep(120)
 
 
     async def _generatenowplaying(self):

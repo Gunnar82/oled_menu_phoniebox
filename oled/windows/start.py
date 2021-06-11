@@ -16,7 +16,6 @@ class Start(WindowBase):
     def render(self):
         with canvas(self.device) as draw:
             if self.mopidyconnection.connected or settings.EMULATED:
-                integrations.bluetooth.init_output()
                 #print ("init")
                 self.windowmanager.set_window("idle")
             draw.text((25, 3), text="Wird gestartet...", font=Start.font, fill="white")
