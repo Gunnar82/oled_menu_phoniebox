@@ -82,11 +82,10 @@ class Playbackmenu(WindowBase):
             if self.musicmanager.source == "mpd":
                 try:
                     if self._state == "play":
-                        draw.text((115, 54), "\uf04b", font=Playbackmenu.faicons, fill="white") #play
-                    elif self._state == "pause":
-                        draw.text((115, 54), "\uf04c", font=Playbackmenu.faicons, fill="white") #pause
+                        #elapsed
+                        draw.text((25, 51 ), self.to_min_sec(self._elapsed), font=Playbackmenu.fontsmall, fill="white")#play
                     else:
-                        draw.text((115, 54), "\uf04d", font=Playbackmenu.faicons, fill="white") #pause
+                        draw.text((25, 51 ), self._state, font=Playbackmenu.fontsmall, fill="white")
 
                 except KeyError:
                     print ("err")
@@ -111,8 +110,6 @@ class Playbackmenu(WindowBase):
             #Currently playing song
             #Line 1 2 3
 
-            #elapsed
-            draw.text((25, 51 ), self.to_min_sec(self._elapsed), font=Playbackmenu.fontsmall, fill="white")
 
             #paylistpos
             draw.text((60, 51 ), "%2.2d/%2.2d" % (int(self._song), int(self._playlistlength)), font=Playbackmenu.fontsmall, fill="white")

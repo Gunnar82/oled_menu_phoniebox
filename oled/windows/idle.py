@@ -90,11 +90,10 @@ class Idle(WindowBase):
             if self.musicmanager.source == "mpd":
                 try:
                     if self._state == "play":
-                        draw.text((115, 54), "\uf04b", font=Idle.faicons, fill="white") #play
-                    elif self._state == "pause":
-                        draw.text((115, 54), "\uf04c", font=Idle.faicons, fill="white") #pause
+                        #elapsed
+                        draw.text((25, 51 ), self.to_min_sec(self._elapsed), font=Idle.fontsmall, fill="white")
                     else:
-                        draw.text((115, 54), "\uf04d", font=Idle.faicons, fill="white") #pause
+                        draw.text((25, 51), self._state, font=Idle.fontsmall, fill="white") #other than play
 
                 except KeyError:
                     pass
@@ -117,8 +116,6 @@ class Idle(WindowBase):
             draw.rectangle((0,0,timelinepos,1),outline="white",fill="white")
 
 
-            #elapsed
-            draw.text((25, 51 ), self.to_min_sec(self._elapsed), font=Idle.fontsmall, fill="white")
 
             #paylistpos
             draw.text((60, 51 ), "%2.2d/%2.2d" % (int(self._song), int(self._playlistlength)), font=Idle.fontsmall, fill="white")

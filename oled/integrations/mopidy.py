@@ -52,7 +52,7 @@ class MopidyControl():
                 print("Error updating mopidy status, no connection!")
                 self._connectionlost()
 
-            await asyncio.sleep(10)
+            await asyncio.sleep(3)
 
 
 
