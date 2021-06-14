@@ -110,7 +110,7 @@ class MopidyControl():
         else:
             self.playlists = []
             for playlist in playlists:
-                if playlist["playlist"] != "GBRadio":
+                if playlist["playlist"] != settings.RADIO_PLAYLIST:
                     self.playlists.append(playlist["playlist"])
 
 
@@ -150,7 +150,7 @@ class MopidyControl():
         try:
             #self.client.clear()
             #os.system("/home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=playerstop")
-            os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/rfid_trigger_play.sh -d=\"GBRadio\"")
+            os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/rfid_trigger_play.sh -d=\"%s\"" % settings.RADIO_PLAYLIST)
             #self.client.load("GBRadio")
             #self.loadedplaylist = "GBRadio"
         except musicpd.ConnectionError:

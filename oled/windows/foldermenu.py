@@ -26,7 +26,7 @@ class Foldermenu(MenuBase):
         self.folders = []
         for file in os.listdir(path):
             d = os.path.join(path, file)
-            if os.path.isdir(d):
+            if os.path.isdir(d) and (str(file) != settings.RADIO_PLAYLIST):
                 self.folders.append(file)
         self.folders.sort()
 
@@ -40,6 +40,8 @@ class Foldermenu(MenuBase):
         self.menu = self.folders
 
     def activate(self):
+        self.counter = 0
+        self.page = 0
         self.currentfolder = self.basepath
         self.folders = []
         self.generate_folders()
@@ -59,6 +61,8 @@ class Foldermenu(MenuBase):
                 self.counter = 1
             else:
                 self.playfolder(fullpath)
+            self.counter = 0
+            self.page = 0
 
             #self.mopidyconnection.loadplaylist(self.mopidyconnection.playlists[self.counter-1])
             #self.windowmanager.set_window("idle")

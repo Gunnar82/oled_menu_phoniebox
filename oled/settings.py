@@ -2,6 +2,8 @@
 Software settings
 """
 
+RADIO_PLAYLIST = "GBRadio"
+
 MENU_TIMEOUT = 10
 
 PLAYOUT_CONTROLS = "/home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh"
