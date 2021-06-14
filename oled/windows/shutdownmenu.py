@@ -64,6 +64,7 @@ class Shutdownmenu(WindowBase):
             print("Stopping event loop")
             self.loop.stop()
         elif self.counter == 2:
+            self.windowmanager.set_window("start")
             self.mopidyconnection.stop()
             self.execreboot = True
             print("Stopping event loop")

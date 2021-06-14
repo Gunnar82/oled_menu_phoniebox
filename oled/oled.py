@@ -65,9 +65,9 @@ def main():
         windowmanager.add_window(window.__class__.__name__.lower(), window)
 
     #Load start window
-    windowmanager.set_window("shutdownmenu")
+#    windowmanager.set_window("shutdownmenu")
 
-#    windowmanager.set_window("start")
+    windowmanager.set_window("start")
 
 
     #Rotary encoder setup
