@@ -128,7 +128,7 @@ class Playbackmenu(WindowBase):
             #selection line
             draw.line((10+(self.counter)*20, 42, 30+(self.counter)*20, 42), width=2, fill="white")
 
-            draw.text((10, 20), "\uf04a", font=Playbackmenu.faiconsbig, fill="white") #prev
+            draw.text((10, 20), "\uf048", font=Playbackmenu.faiconsbig, fill="white") #prev
             if self._state == "play":
                 draw.text((30, 20), "\uf04c", font=Playbackmenu.faiconsbig, fill="white") #pause
             elif self._state == "pause":
@@ -137,7 +137,7 @@ class Playbackmenu(WindowBase):
                 draw.text((30, 20), "\uf04d", font=Playbackmenu.faiconsbig, fill="white") #play
             draw.text((50, 20), "\uf062", font=Playbackmenu.faiconsbig, fill="white") #menu
             draw.text((70, 20), "\uf0a8", font=Playbackmenu.faiconsbig, fill="white") #menu
-            draw.text((90, 20), "\uf04e", font=Playbackmenu.faiconsbig, fill="white") #next
+            draw.text((90, 20), "\uf051", font=Playbackmenu.faiconsbig, fill="white") #next
 
 
     async def _linuxjob(self):
