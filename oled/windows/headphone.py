@@ -28,7 +28,7 @@ class Headphonemenu(WindowBase):
             draw.text((45, 15), text="\uf293", font=Headphonemenu.faicons, fill="white")
 
 #            draw.text((56, 25), text="Ja", font=Headphonemenu.font, fill="white")
-            draw.text((75, 15), text="\uf02b", font=Headphonemenu.faicons, fill="white")
+            draw.text((75, 15), text="\uf028", font=Headphonemenu.faicons, fill="white")
 
 
     def push_callback(self):
