@@ -21,6 +21,7 @@ import windows.radiomenu
 import windows.foldermenu
 import windows.shutdownmenu
 import windows.start
+import settings
 
 #Systemd exit
 def gracefulexit(signum, frame):
@@ -64,9 +65,9 @@ def main():
         windowmanager.add_window(window.__class__.__name__.lower(), window)
 
     #Load start window
-#    windowmanager.set_window("playbackmenu")
+    windowmanager.set_window("shutdownmenu")
 
-    windowmanager.set_window("start")
+#    windowmanager.set_window("start")
 
 
     #Rotary encoder setup
@@ -102,11 +103,11 @@ def main():
                 pc.shutdown()
 
         print("Shutting down system")
-        call("sudo systemctl poweroff", shell=True)
+        call("%s -c=shutdown" % (settings.PLAYOUT_CONTROLS), shell=True)
 
     if shutdownscreen.execreboot:
-        print("Shutting down system")
-        call("/home/pi/oledctrl/reboot.sh", shell=True)
+        print("Reboot down system")
+        call("%s -c=reboot" % 	(settings.PLAYOUT_CONTROLS), shell=True)
 
 
 if __name__ == '__main__':
