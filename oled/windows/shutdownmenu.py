@@ -43,16 +43,16 @@ class Shutdownmenu(WindowBase):
 
 #####
             draw.text((15, 40), text="15", font=Shutdownmenu.font, fill="white")
-            draw.text((15, 51), text="\uf02a", font=Shutdownmenu.faicons, fill="white")
+            draw.text((15, 51), text="\uf0f3", font=Shutdownmenu.faicons, fill="white")
 
             draw.text((40, 40), text="30", font=Shutdownmenu.font, fill="white")
-            draw.text((40, 51), text="\uf02a", font=Shutdownmenu.faicons, fill="white")
+            draw.text((40, 51), text="\uf0f3", font=Shutdownmenu.faicons, fill="white")
 
             draw.text((65, 40), text="60", font=Shutdownmenu.font, fill="white")
-            draw.text((65, 51), text="\uf0a2", font=Shutdownmenu.faicons, fill="white")
+            draw.text((65, 51), text="\uf0f3", font=Shutdownmenu.faicons, fill="white")
 
             draw.text((90, 40), text="90", font=Shutdownmenu.font, fill="white")
-            draw.text((90, 51), text="\uf0a2", font=Shutdownmenu.faicons, fill="white")
+            draw.text((90, 51), text="\uf0f3", font=Shutdownmenu.faicons, fill="white")
 
 
     def push_callback(self):
@@ -73,7 +73,7 @@ class Shutdownmenu(WindowBase):
         elif self.counter == 3:
             os.system("%s -c=shutdownafter -v=00" % settings.PLAYOUT_CONTROLS)
         elif self.counter == 4:
-            os.system("%s -c=5hutdownafter -v=15" % settings.PLAYOUT_CONTROLS)
+            os.system("%s -c=shutdownafter -v=15" % settings.PLAYOUT_CONTROLS)
         elif self.counter == 5:
             os.system("%s -c=shutdownafter -v=30" % settings.PLAYOUT_CONTROLS)
         elif self.counter == 6:
