@@ -27,7 +27,7 @@ class Mainmenu(WindowBase):
             draw.text((44, 6), text="\uf001", font=Mainmenu.faicons, fill="white") #radio
             draw.text((83, 6), text="\uf1c7", font=Mainmenu.faicons, fill="white") #playlists
             draw.text((11, 39), text="\uf02d", font=Mainmenu.faicons, fill="white") #infos
-            draw.text((44, 39), text="\uf293", font=Mainmenu.faicons, fill="white") #infos
+            draw.text((44, 39), text="\uf192", font=Mainmenu.faicons, fill="white") #infos
             draw.text((83, 39), text="\uf011", font=Mainmenu.faicons, fill="white") #shutdown
 
     def push_callback(self):
