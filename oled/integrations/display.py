@@ -19,6 +19,6 @@ def get_display():
         from luma.core.interface.serial import i2c
 
         device = sh1106(i2c(port=1, address=0x3C))
-        device.contrast(245)
+        device.contrast(settings.CONTRAST_FULL)
         print("Using real display hardware")
         return device

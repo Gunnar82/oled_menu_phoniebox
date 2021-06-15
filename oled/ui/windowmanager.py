@@ -46,6 +46,11 @@ class WindowManager():
         while self.loop.is_running():
             if ((datetime.now() - self.lastinput).total_seconds() >= settings.MENU_TIMEOUT) and self.activewindow.Type != "Default":
                 self.set_window("idle")
+
+            if ((datetime.now() - self.lastinput).total_seconds() >= settings.CONTRAST_TIMEOUT):
+                self.device.contrast(settings.CONTRAST_DARK)
+            else:
+                self.device.contrast(settings.CONTRAST_FULL)
             
             if self.activewindow != [] and self.screenpower:
                 try:
