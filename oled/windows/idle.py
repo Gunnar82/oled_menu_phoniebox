@@ -34,8 +34,8 @@ class Idle(WindowBase):
         self.job_i = -1
         self.job_s = -1
         self.Type="Default"
-        self.BluetoothFound = False
         self.LocalOutputEnabled = False
+        self.BluetoothFound = False
 
 
 
@@ -75,13 +75,20 @@ class Idle(WindowBase):
         with canvas(self.device) as draw:
             now = datetime.datetime.now()
 
+            if self.BluetoothFound == True:
+                draw.text((110,50), "\uf293", font=Idle.faiconsbig, fill="white")
+            else:
+                draw.text((110,50), "\uf294", font=Idle.faiconsbig, fill="white")
+
+
+
 
             #Trennleiste waagerecht
             draw.rectangle((0,49,128,49),outline="white",fill="white")
             #Trennleisten senkrecht
             draw.rectangle((19,49,19,64),outline="white",fill="white")
             draw.rectangle((55,49,55,64),outline="white",fill="white")
-            draw.rectangle((90,49,90,64),outline="white",fill="white")
+            draw.rectangle((100,49,100,64),outline="white",fill="white")
 
             #volume
             draw.text((1, 51 ), str(self._volume), font=Idle.fontsmall, fill="white")
@@ -114,7 +121,6 @@ class Idle(WindowBase):
                 timelinepos = 128 # device.width
             #Fortschritssleiste Wiedergabe
             draw.rectangle((0,0,timelinepos,1),outline="white",fill="white")
-
 
 
             #paylistpos
@@ -156,7 +162,7 @@ class Idle(WindowBase):
         while (self.loop.is_running() and self._active) and not self.BluetoothFound:
             if integrations.bluetooth.check_dev_bt():
                 self.BluetoothFound = True
-                integrations.bluetooth.enable_dev_bt()
+                #integrations.bluetooth.enable_dev_bt()
             else:
                 if not self.LocalOutputEnabled:
                     integrations.bluetooth.enable_dev_local()
