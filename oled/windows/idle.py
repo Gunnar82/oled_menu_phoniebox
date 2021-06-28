@@ -14,7 +14,7 @@ class Idle(WindowBase):
     font = ImageFont.truetype(settings.FONT_TEXT, size=12)
     fontsmall = ImageFont.truetype(settings.FONT_TEXT, size=10)
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=8)
-    faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=16)
+    faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=12)
 
     def __init__(self, windowmanager, musicmanager):
         super().__init__(windowmanager)
@@ -199,7 +199,7 @@ class Idle(WindowBase):
             except:
                 name = "n/a"
 
-            if name == oldname and Idle.font.getsize(name[namex:])[0] > 115:
+            if name == oldname and Idle.font.getsize(name[namex:])[0] > 127:
                 namex += 1
             else:
                 namex = 0
@@ -211,7 +211,8 @@ class Idle(WindowBase):
                 if "album" in playing:
                     album = playing['album']
                 elif not playing['file'].startswith('http'):
-                    album = filename.split("/")[0]
+                    album = filename[:filename.rfind('/')] #.split("/")[0]
+                    album = album.replace('/',' - ')
                 elif playing['file'].startswith('http'):
                     album = "WebRadio"
                 else:
@@ -225,7 +226,7 @@ class Idle(WindowBase):
                 albumx = 0
                 oldalbum = album
 
-            self._playingalbum = album[albumx:]
+            self._playingalbum = album[albumx:albumx+19]
 
 
             try:
