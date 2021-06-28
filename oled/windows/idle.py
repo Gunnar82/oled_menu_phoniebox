@@ -76,9 +76,9 @@ class Idle(WindowBase):
             now = datetime.datetime.now()
 
             if self.BluetoothFound == True:
-                draw.text((110,50), "\uf293", font=Idle.faiconsbig, fill="white")
+                draw.text((115,5), "\uf293", font=Idle.faiconsbig, fill="white")
             else:
-                draw.text((110,50), "\uf294", font=Idle.faiconsbig, fill="white")
+                draw.text((115,5), "\uf294", font=Idle.faiconsbig, fill="white")
 
 
 
@@ -88,7 +88,7 @@ class Idle(WindowBase):
             #Trennleisten senkrecht
             draw.rectangle((19,49,19,64),outline="white",fill="white")
             draw.rectangle((55,49,55,64),outline="white",fill="white")
-            draw.rectangle((100,49,100,64),outline="white",fill="white")
+            draw.rectangle((95,49,95,64),outline="white",fill="white")
 
             #volume
             draw.text((1, 51 ), str(self._volume), font=Idle.fontsmall, fill="white")
@@ -128,7 +128,7 @@ class Idle(WindowBase):
 
             #shutdowntimer ? aktiv dann Zeit anzeigen
             if self.job_t >= 0:
-                draw.text((95, 51 ), "%2.2d" % (int(self.job_t)), font=Idle.fontsmall, fill="white")
+                draw.text((100, 51 ), "%2.2d" % (int(self.job_t)), font=Idle.fontsmall, fill="white")
 
 
             if ((self._state == "stop") or (self.job_t >=0 and self.job_t <= 5) or (self.job_i >= 0 and self.job_i <=5)):
@@ -199,7 +199,7 @@ class Idle(WindowBase):
             except:
                 name = "n/a"
 
-            if name == oldname and Idle.font.getsize(name[namex:])[0] > 127:
+            if name == oldname and Idle.font.getsize(name[namex:])[0] > 115:
                 namex += 1
             else:
                 namex = 0
@@ -219,7 +219,7 @@ class Idle(WindowBase):
             except:
                 album = ""
 
-            if album == oldalbum and Idle.font.getsize(album[albumx:])[0] > 127:
+            if album == oldalbum and Idle.font.getsize(album[albumx:])[0] > 115:
                 albumx += 1
             else:
                 albumx = 0
