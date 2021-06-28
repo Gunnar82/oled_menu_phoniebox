@@ -4,6 +4,7 @@ import asyncio
 import threading
 import settings # pylint: disable=import-error
 import _thread
+import keyboard
 #import pigpio
 
 try:
@@ -56,6 +57,7 @@ class PowerController():
         self.bus=SMBus(1)
         self.intpin=0
         self.intpinpi=0
+
         try:
             self.intpin = int(settings.INTPIN)
             if self.intpin==0:
@@ -78,7 +80,10 @@ class PowerController():
 
         self.init_controller()
         self._setup_gpio(self.intpinpi)
-
+        #self.loop.create_task(self._poll_pygame_keys())
+        keyboard.add_hotkey('Esc', lambda: self.push_callback())
+        keyboard.add_hotkey('Right', lambda: self.turn_up())
+        keyboard.add_hotkey('Left', lambda: self.turn_down())
         pc_thread = _thread.start_new_thread(self.pc_run,())
 
 
@@ -165,6 +170,12 @@ class PowerController():
                 else:
                     self.turn_callback(-1)
                 self.lockrotary.release()
+    def turn_up(self):
+        self.turn_callback(1)
+
+
+    def turn_down(self):
+        self.turn_callback(-1)
 
     def _setup_gpio(self, pin):
         GPIO.setmode(GPIO.BCM)
@@ -172,6 +183,17 @@ class PowerController():
 
         #Interupt_pin
         #GPIO.add_event_detect(pin, GPIO.FALLING, callback=self._rotary_push, bouncetime=300)
+
+    async def _poll_pygame_keys(self):
+        while self.loop.is_running():
+            if keyboard.is_pressed('Up'):
+                self.turn_callback(1)
+            elif keyboard.is_pressed('Down'):
+                self.turn_callback(-1)
+            elif keyboard.is_pressed('Esc'):
+                self.push_callback()
+
+            await asyncio.sleep(0.05)
 
     @staticmethod
     def cleanup():
