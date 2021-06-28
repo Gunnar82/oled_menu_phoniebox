@@ -6,7 +6,7 @@ Environment=PYTHONUNBUFFERED=1
 User=pi
 Group=pi
 WorkingDirectory=/home/pi/oledctrl/oled
-ExecStart=python3 /home/pi/oledctrl/oled/oled.py
+ExecStart=sudo python3 /home/pi/oledctrl/oled/oled.py
 RestartSec=10
 Restart=always
 
