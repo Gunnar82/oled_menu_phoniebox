@@ -120,6 +120,7 @@ class PowerController():
         self.bus.write_byte_data(ADDRESS, REG_BUTTONPOWEROFFTIME, 20) # We deal with this directly
         self.bus.write_byte_data(ADDRESS, REG_BUTTONMODE, BUTTONMODE_SHORT_LONG_PRESS)
         self.bus.write_byte_data(ADDRESS, REG_INTERRUPTPIN, self.intpin) # Set interrupt pin 
+        self.bus.write_byte_data(ADDRESS, REG_BUTTONSTATE, 0)
 #        self.update_playback_state(STATE_UNDEF)
         self.ready=True
 
