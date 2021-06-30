@@ -16,8 +16,8 @@ class WindowBase():
     def render(self):
         raise NotImplementedError()
 
-    def push_callback(self):
+    def push_callback(self,lp=False):
         raise NotImplementedError()
 
-    def turn_callback(self, direction):
+    def turn_callback(self, direction, ud=False):
         raise NotImplementedError()

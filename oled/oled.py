@@ -71,14 +71,13 @@ def main():
 
 
     #Rotary encoder setup
-    def turn_callback(direction):
-        windowmanager.turn_callback(direction)
+    def turn_callback(direction,_ud=False):
+        windowmanager.turn_callback(direction, ud=_ud)
 
-    def push_callback():
-        windowmanager.push_callback()
+    def push_callback(_lp=False):
+        windowmanager.push_callback(lp=_lp)
 
-    #RotaryEncoder(loop, turn_callback, push_callback)
-
+    #RotaryEncoder(loop, turn_callback, push_callback
     haspowercontroller = True
     try:
         pc = PowerController(loop, turn_callback, push_callback)

@@ -21,8 +21,8 @@ class Start(WindowBase):
             draw.text((25, 3), text="Wird gestartet...", font=Start.font, fill="white")
             draw.text((50, 25), text="\uf251", font=Start.fontawesome, fill="white")
 
-    def push_callback(self):
+    def push_callback(self,lp=False):
         pass
 
-    def turn_callback(self, direction):
+    def turn_callback(self, direction, ud=False):
         pass

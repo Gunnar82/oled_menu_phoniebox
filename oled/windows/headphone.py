@@ -31,7 +31,7 @@ class Headphonemenu(WindowBase):
             draw.text((75, 15), text="\uf028", font=Headphonemenu.faicons, fill="white")
 
 
-    def push_callback(self):
+    def push_callback(self,lp=False):
         if self.counter == 0:
             self.windowmanager.set_window("mainmenu")
         elif self.counter == 1:
@@ -40,6 +40,6 @@ class Headphonemenu(WindowBase):
             integrations.bluetooth.enable_dev_local()
         self.windowmanager.set_window("mainmenu")
 
-    def turn_callback(self, direction):
+    def turn_callback(self, direction, ud=False):
         if self.counter + direction <= 2 and self.counter + direction >= 0:
             self.counter += direction

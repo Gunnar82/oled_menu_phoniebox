@@ -30,7 +30,7 @@ class Mainmenu(WindowBase):
             draw.text((44, 39), text="\uf085", font=Mainmenu.faicons, fill="white") #infos
             draw.text((83, 39), text="\uf011", font=Mainmenu.faicons, fill="white") #shutdown
 
-    def push_callback(self):
+    def push_callback(self,lp=False):
         if self.counter == 0:
             self.windowmanager.set_window("idle")
         elif self.counter == 1:
@@ -44,6 +44,9 @@ class Mainmenu(WindowBase):
         elif self.counter == 5:
             self.windowmanager.set_window("shutdownmenu")
 
-    def turn_callback(self, direction):
+    def turn_callback(self, direction, ud=False):
+        if ud:
+            direction = direction * 3
+
         if self.counter + direction <= 5 and self.counter + direction >= 0:
             self.counter += direction

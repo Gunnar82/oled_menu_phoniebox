@@ -255,8 +255,11 @@ class Idle(WindowBase):
 
             await asyncio.sleep(1)
 
-    def push_callback(self):
-        self.windowmanager.set_window("playbackmenu")
+    def push_callback(self,lp=False):
+        if lp:
+            self.windowmanager.set_window("shutdownmenu")
+        else:
+            self.windowmanager.set_window("playbackmenu")
 
 
                 #self._showcontrols = False
@@ -268,7 +271,7 @@ class Idle(WindowBase):
         #elif self.counter == 3:
         #    self.musicmanager.next()
 
-    def turn_callback(self, direction):
+    def turn_callback(self, direction, ud=False):
         if (direction > 0):
             os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumeup")
         else:

@@ -46,7 +46,7 @@ class Foldermenu(MenuBase):
         self.folders = []
         self.generate_folders()
 
-    def push_callback(self):
+    def push_callback(self,lp=False):
         if self.counter == 0:
             self.windowmanager.set_window("mainmenu")
         else:

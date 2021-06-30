@@ -56,10 +56,10 @@ class Infomenu(WindowBase):
             draw.text((1, 46), text=self.temp, font=Infomenu.font, fill="white")
 
 
-    def push_callback(self):
+    def push_callback(self,lp=False):
         if self.counter == 0:
             self.windowmanager.set_window("mainmenu")
 
-    def turn_callback(self, direction):
+    def turn_callback(self, direction, ud=False):
         if self.counter + direction <= 0 and self.counter + direction >= 0:
             self.counter += direction

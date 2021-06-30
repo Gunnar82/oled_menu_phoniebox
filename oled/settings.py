@@ -8,7 +8,7 @@ MENU_TIMEOUT = 10
 
 CONTRAST_TIMEOUT = 30
 CONTRAST_FULL = 245
-CONTRAST_DARK = 64
+CONTRAST_DARK = 32
 
 PLAYOUT_CONTROLS = "/home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh"
 

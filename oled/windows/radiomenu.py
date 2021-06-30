@@ -9,7 +9,7 @@ class Radiomenu(MenuBase):
     def activate(self):
         self.menu = self.mopidyconnection.radiostations
 
-    def push_callback(self):
+    def push_callback(self,lp=False):
         if self.counter == 0:
             self.windowmanager.set_window("mainmenu")
         else:

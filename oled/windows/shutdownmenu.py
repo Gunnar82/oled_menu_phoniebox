@@ -55,7 +55,7 @@ class Shutdownmenu(WindowBase):
             draw.text((90, 51), text="\uf0f3", font=Shutdownmenu.faicons, fill="white")
 
 
-    def push_callback(self):
+    def push_callback(self,lp=False):
         if self.counter == 0:
             self.windowmanager.set_window("mainmenu")
         elif self.counter == 1:
@@ -87,6 +87,8 @@ class Shutdownmenu(WindowBase):
             #print("Stopping event loop")
             #self.loop.stop()
 
-    def turn_callback(self, direction):
+    def turn_callback(self, direction, ud=False):
+        if ud:
+            direction = direction * 4
         if self.counter + direction <= 5 and self.counter + direction >= 0:
             self.counter += direction

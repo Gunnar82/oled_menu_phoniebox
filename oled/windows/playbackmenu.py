@@ -175,7 +175,7 @@ class Playbackmenu(WindowBase):
             
             await asyncio.sleep(0.25)
 
-    def push_callback(self):
+    def push_callback(self,lp=False):
         if self.counter == 1:
             os.system("/home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=playerpause")
         elif self.counter == 2:
@@ -193,7 +193,7 @@ class Playbackmenu(WindowBase):
         #elif self.counter == 3:
         #    self.musicmanager.next()
 
-    def turn_callback(self, direction):
+    def turn_callback(self, direction, ud=False):
         if (self.counter + direction <= 4 and self.counter + direction >= 0):
             self.counter += direction
             

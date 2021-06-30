@@ -59,11 +59,11 @@ class WindowManager():
                     pass
             await asyncio.sleep(0.25)
 
-    def push_callback(self):
+    def push_callback(self,lp=False):
         if self.screenpower:
             try:
                 self.lastinput = datetime.now()
-                self.activewindow.push_callback()
+                self.activewindow.push_callback(lp=lp)
             except (NotImplementedError, AttributeError):
                 pass
         else:
@@ -71,9 +71,9 @@ class WindowManager():
             self.device.show()
             self.set_window("idle")
 
-    def turn_callback(self, direction):
+    def turn_callback(self, direction, ud=False):
         try:
             self.lastinput = datetime.now()
-            self.activewindow.turn_callback(direction)
+            self.activewindow.turn_callback(direction,ud=ud)
         except (NotImplementedError, AttributeError):
             pass
