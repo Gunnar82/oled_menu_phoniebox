@@ -28,11 +28,11 @@ class Shutdownmenu(WindowBase):
                 y_coord = 37
             draw.rectangle((x_coord, y_coord, x_coord+18, y_coord+25), outline=255, fill=0)
 
-            draw.text((15, 14), text="No", font=Shutdownmenu.font, fill="white")
-            draw.text((15, 25), text="\uf0a8", font=Shutdownmenu.faicons, fill="white")
+            draw.text((15, 14), text="Ja", font=Shutdownmenu.font, fill="white")
+            draw.text((15, 25), text="\uf011", font=Shutdownmenu.faicons, fill="white")
 
-            draw.text((40, 14), text="Ja", font=Shutdownmenu.font, fill="white")
-            draw.text((40, 25), text="\uf011", font=Shutdownmenu.faicons, fill="white")
+            draw.text((40, 14), text="No", font=Shutdownmenu.font, fill="white")
+            draw.text((40, 25), text="\uf0a8", font=Shutdownmenu.faicons, fill="white")
 
             draw.text((65, 14), text="RT", font=Shutdownmenu.font, fill="white")
             draw.text((65, 25), text="\uf0e2", font=Shutdownmenu.faicons, fill="white")
@@ -57,12 +57,12 @@ class Shutdownmenu(WindowBase):
 
     def push_callback(self,lp=False):
         if self.counter == 0:
-            self.windowmanager.set_window("mainmenu")
-        elif self.counter == 1:
             self.mopidyconnection.stop()
             self.execshutdown = True
             print("Stopping event loop")
             self.loop.stop()
+        elif self.counter == 1:
+            self.windowmanager.set_window("mainmenu")
         elif self.counter == 2:
             self.windowmanager.set_window("start")
             self.mopidyconnection.stop()
