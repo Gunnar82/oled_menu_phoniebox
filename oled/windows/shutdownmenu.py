@@ -17,6 +17,9 @@ class Shutdownmenu(WindowBase):
         self.execshutdown = False
         self.execreboot = False
 
+    def activate(self):
+        self.counter = 0
+
     def render(self):
         with canvas(self.device) as draw:
             draw.text((5, 2), text="Wirklich ausschalten?", font=Shutdownmenu.font, fill="white")
