@@ -31,10 +31,14 @@ FONT_TEXT = "fonts/arial.ttf"
 FONT_CLOCK = "fonts/calibri.ttf"
 
 
-#BluetoothKopfhoerer
-BT_HF_MAC = "4A:F5:FF:38:28:D5"
-
 ALSA_DEV_LOCAL="hifiberrydac"
-ALSA_DEV_BT="btheadphones"
+
+#BluetoothKopfhoerer
+
+ALSA_DEV_BT_1 = "bt_dev_1"
+MAC_DEV_BT_1 = "4A:F5:FF:38:28:D5"
+
+ALSA_DEV_BT_2 = "bt_dev_2"
+MAC_DEV_BT_2 = "FC:58:FA:FE:09:4C"
 
 INTPIN=2

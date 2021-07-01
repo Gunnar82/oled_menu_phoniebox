@@ -5,6 +5,7 @@ from ui.windowbase import WindowBase
 from luma.core.render import canvas
 from PIL import ImageFont
 import settings
+import integrations.playout
 import os
 import subprocess, re
 
@@ -199,11 +200,11 @@ class Playbackmenu(WindowBase):
             
         if self.counter == 0 and direction < 0:
             self.counter = 1
-            os.system("/home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=playerprev")
+            integrations.playout.pc_prev()
 
         if self.counter == 4 and direction > 0:
             self.counter = 3
-            os.system("/home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=playernext")
+            integrations.playout.pc_next()
         #os.system("mpc volume {}{} > /dev/null".format(plus,direction))
         #if self.counter + direction <= 0 and self.counter + direction >= 0:
             #self.counter += direction

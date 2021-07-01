@@ -8,7 +8,7 @@ import settings
 import os
 import subprocess, re
 import integrations.bluetooth
-
+import integrations.playout
 class Idle(WindowBase):
     bigfont = ImageFont.truetype(settings.FONT_CLOCK, size=22)
     font = ImageFont.truetype(settings.FONT_TEXT, size=12)
@@ -36,7 +36,7 @@ class Idle(WindowBase):
         self.Type="Default"
         self.LocalOutputEnabled = False
         self.BluetoothFound = False
-
+        self.loop.create_task(self._find_dev_bt())
 
 
     def linux_job_remaining(self, job_name):
@@ -66,7 +66,6 @@ class Idle(WindowBase):
         self._active = True
         self.loop.create_task(self._generatenowplaying())
         self.loop.create_task(self._linuxjob())
-        self.loop.create_task(self._find_dev_bt())
 
     def deactivate(self):
         self._active = False
@@ -159,16 +158,15 @@ class Idle(WindowBase):
     async def _find_dev_bt(self):
         await asyncio.sleep(30)
 
-        while (self.loop.is_running() and self._active) and not self.BluetoothFound:
-            if integrations.bluetooth.check_dev_bt():
-                self.BluetoothFound = True
-                #integrations.bluetooth.enable_dev_bt()
-            else:
-                if not self.LocalOutputEnabled:
-                    integrations.bluetooth.enable_dev_local()
-                    self.LocalOutputEnabled = True
-
-            await asyncio.sleep(120)
+        if integrations.bluetooth.check_dev_bt():
+            self.BluetoothFound = True
+            #integrations.bluetooth.enable_dev_bt()
+        else:
+            if not self.LocalOutputEnabled:
+    
+                integrations.bluetooth.enable_dev_local()
+    
+                self.LocalOutputEnabled = True
 
 
     async def _generatenowplaying(self):
@@ -272,7 +270,13 @@ class Idle(WindowBase):
         #    self.musicmanager.next()
 
     def turn_callback(self, direction, ud=False):
-        if (direction > 0):
-            os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumeup")
+        if ud:
+            if (direction > 0):
+                integrations.playout.pc_prev()
+            else:
+                integrations.playout.pc_next()
         else:
-            os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumedown")
+            if (direction > 0):
+                os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumeup")
+            else:
+                os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumedown")
