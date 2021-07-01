@@ -81,6 +81,7 @@ class PowerController():
         self.init_controller()
         self._setup_gpio(self.intpinpi)
         #self.loop.create_task(self._poll_pygame_keys())
+#        keyboard.add_hotkey('sleep', lambda: self.pushlong_callback())
         keyboard.add_hotkey('Esc', lambda: self.push_callback())
 
         keyboard.add_hotkey('Right', lambda: self.turn_right())
@@ -190,6 +191,11 @@ class PowerController():
 
     def turn_down(self):
         self.turn_callback(1, _ud=True)
+
+    def pushlong_callback(self):
+        print ("long2")
+
+        self.push_callback(_lp=True)
 
     def _setup_gpio(self, pin):
         GPIO.setmode(GPIO.BCM)

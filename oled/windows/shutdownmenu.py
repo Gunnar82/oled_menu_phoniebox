@@ -93,5 +93,5 @@ class Shutdownmenu(WindowBase):
     def turn_callback(self, direction, ud=False):
         if ud:
             direction = direction * 4
-        if self.counter + direction <= 5 and self.counter + direction >= 0:
+        if self.counter + direction <= 7 and self.counter + direction >= 0:
             self.counter += direction
