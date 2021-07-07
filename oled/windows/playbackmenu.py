@@ -194,7 +194,17 @@ class Playbackmenu(WindowBase):
         #elif self.counter == 3:
         #    self.musicmanager.next()
 
-    def turn_callback(self, direction, ud=False):
+    def turn_callback(self, direction, key=None):
+        if key is not None:
+            if key == 'right':
+                direction = 1
+            elif key == 'left':
+                direction = -1
+            elif key == 'down':
+                direction = 0
+            else:
+                direction = 0
+
         if (self.counter + direction <= 4 and self.counter + direction >= 0):
             self.counter += direction
             

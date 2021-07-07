@@ -44,9 +44,16 @@ class Mainmenu(WindowBase):
         elif self.counter == 5:
             self.windowmanager.set_window("shutdownmenu")
 
-    def turn_callback(self, direction, ud=False):
-        if ud:
-            direction = direction * 3
+    def turn_callback(self, direction, key=None):
+        if key is not None:
+            if key == 'up':
+                direction = -3
+            elif key == 'down':
+                direction = 3
+            elif key == 'left':
+                direction = -1
+            else:
+                direction = 1
 
         if self.counter + direction <= 5 and self.counter + direction >= 0:
             self.counter += direction

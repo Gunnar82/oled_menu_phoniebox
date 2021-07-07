@@ -90,8 +90,16 @@ class Shutdownmenu(WindowBase):
             #print("Stopping event loop")
             #self.loop.stop()
 
-    def turn_callback(self, direction, ud=False):
-        if ud:
-            direction = direction * 4
+    def turn_callback(self, direction, key=None):
+        if key is not None:
+            if key == 'up':
+                direction = -4
+            elif key == 'down':
+                direction = 4
+            elif key == 'left':
+                direction = -1
+            else:
+                direction = 1
+
         if self.counter + direction <= 7 and self.counter + direction >= 0:
             self.counter += direction

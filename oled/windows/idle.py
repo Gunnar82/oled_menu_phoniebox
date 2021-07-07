@@ -269,9 +269,13 @@ class Idle(WindowBase):
         #elif self.counter == 3:
         #    self.musicmanager.next()
 
-    def turn_callback(self, direction, ud=False):
-        if ud:
-            if (direction > 0):
+    def turn_callback(self, direction, key=None):
+        if key is not None:
+            if key == 'up':
+                os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumeup")
+            elif key == 'down':
+                os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumedown")
+            elif key == 'left':
                 integrations.playout.pc_prev()
             else:
                 integrations.playout.pc_next()

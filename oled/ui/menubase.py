@@ -37,7 +37,7 @@ class MenuBase(WindowBase):
     def push_callback(self,lp=False):
         raise NotImplementedError()
 
-    def turn_callback(self, direction, ud=False):
+    def turn_callback(self, direction, key=None):
         if self.counter + direction >= 0:
             #first 4 items in long menu
             if len(self.menu) > 4 and self.counter + direction <= 4 and self.page == 0:

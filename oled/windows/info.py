@@ -60,6 +60,6 @@ class Infomenu(WindowBase):
         if self.counter == 0:
             self.windowmanager.set_window("mainmenu")
 
-    def turn_callback(self, direction, ud=False):
+    def turn_callback(self, direction, key=None):
         if self.counter + direction <= 0 and self.counter + direction >= 0:
             self.counter += direction

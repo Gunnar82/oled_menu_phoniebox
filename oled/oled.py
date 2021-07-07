@@ -71,8 +71,8 @@ def main():
 
 
     #Rotary encoder setup
-    def turn_callback(direction,_ud=False):
-        windowmanager.turn_callback(direction, ud=_ud)
+    def turn_callback(direction,_key=False):
+        windowmanager.turn_callback(direction, key=_key)
 
     def push_callback(_lp=False):
         windowmanager.push_callback(lp=_lp)

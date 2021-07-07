@@ -71,9 +71,9 @@ class WindowManager():
             self.device.show()
             self.set_window("idle")
 
-    def turn_callback(self, direction, ud=False):
+    def turn_callback(self, direction, key=None):
         try:
             self.lastinput = datetime.now()
-            self.activewindow.turn_callback(direction,ud=ud)
+            self.activewindow.turn_callback(direction,key=key)
         except (NotImplementedError, AttributeError):
             pass
