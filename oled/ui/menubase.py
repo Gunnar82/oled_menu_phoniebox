@@ -11,8 +11,20 @@ class MenuBase(WindowBase):
         self.page = 0
         self.menu = []
         self.title = title
+        self.left_pressed = False
+        self.right_pressed = False
 
     def render(self):
+        if self.left_pressed:
+            self.left_pressed = False
+            self.on_key_left()
+            return
+
+        if self.right_pressed:
+            self.right_pressed = False
+            self.on_key_right()
+            return
+
         font = ImageFont.truetype(settings.FONT_TEXT, size=12)
         faicons = ImageFont.truetype(settings.FONT_ICONS, size=11)
         with canvas(self.device) as draw:
@@ -32,12 +44,23 @@ class MenuBase(WindowBase):
             for i in range(4 if len(self.menu) >= 4 else len(self.menu)):
                 draw.text((8, 17+i*12), text=self.menu[i+self.page], font=font, fill="white")
 
+    def on_key_left(self):
+        raise NotImplementedError()
 
+    def on_key_right(self):
+        raise NotImplementedError()
 
     def push_callback(self,lp=False):
         raise NotImplementedError()
 
     def turn_callback(self, direction, key=None):
+        if key is not None:
+            if key == 'left':
+                self.left_pressed = True
+            if key == 'right':
+                self.right_pressed = True
+                return
+
         if self.counter + direction >= 0:
             #first 4 items in long menu
             if len(self.menu) > 4 and self.counter + direction <= 4 and self.page == 0:

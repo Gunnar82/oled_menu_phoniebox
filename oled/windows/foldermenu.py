@@ -14,12 +14,25 @@ class Foldermenu(MenuBase):
         os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/rfid_trigger_play.sh -d=\"%s\"" % (foldername))
         self.windowmanager.set_window("idle")
 
+    def get_parent_folder(self,folder):
+        return os.path.dirname(folder)
+
     def has_subfolders(self, path):
         for file in os.listdir(path):
             d = os.path.join(path, file)
             if os.path.isdir(d):
                 return True
         return False
+
+    def on_key_left(self):
+        self.currentfolder = self.get_parent_folder(self.currentfolder)
+        if len(self.currentfolder) < len(self.basepath):
+            self.currentfolder = self.basepath
+        self.generate_folders()
+
+
+    def on_key_right(self):
+        self.push_callback()
 
 
     def generate_folders_array(self,path):
@@ -35,7 +48,6 @@ class Foldermenu(MenuBase):
 
     def generate_folders(self):
         self.generate_folders_array(self.currentfolder)
-        print (self.folders)
         self.menu = []
         self.menu = self.folders
 
