@@ -179,18 +179,18 @@ class PowerController():
                 self.lockrotary.release()
 
     def turn_left(self):
-        self.turn_callback(1, _key='left')
+        self.turn_callback(-1, _key='left')
 
 
     def turn_right(self):
-        self.turn_callback(-1, _key='right')
+        self.turn_callback(1, _key='right')
 
     def turn_up(self):
-        self.turn_callback(1, _key='up')
+        self.turn_callback(-1, _key='up')
 
 
     def turn_down(self):
-        self.turn_callback(-1, _key='down')
+        self.turn_callback(1, _key='down')
 
     def pushlong_callback(self):
         print ("long2")

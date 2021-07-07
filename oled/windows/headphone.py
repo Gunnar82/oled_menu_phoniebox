@@ -45,6 +45,16 @@ class Headphonemenu(WindowBase):
             integrations.bluetooth.enable_dev_local()
         self.windowmanager.set_window("mainmenu")
 
-    def turn_callback(self, direction, ud=False):
+    def turn_callback(self, direction, key=None):
+        if key is not None:
+            if key == 'right':
+                direction = 1
+            elif key == 'left':
+                direction = -1
+            elif key == 'down':
+                direction = 0
+            else:
+                direction = 0
+
         if self.counter + direction <= 3 and self.counter + direction >= 0:
             self.counter += direction
