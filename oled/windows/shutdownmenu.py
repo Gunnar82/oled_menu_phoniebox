@@ -91,7 +91,7 @@ class Shutdownmenu(WindowBase):
             #self.loop.stop()
 
     def turn_callback(self, direction, key=None):
-        if key is not None:
+        if key:
             if key == 'up':
                 direction = -4
             elif key == 'down':

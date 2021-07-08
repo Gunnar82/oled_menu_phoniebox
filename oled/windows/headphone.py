@@ -46,7 +46,7 @@ class Headphonemenu(WindowBase):
         self.windowmanager.set_window("mainmenu")
 
     def turn_callback(self, direction, key=None):
-        if key is not None:
+        if key:
             if key == 'right':
                 direction = 1
             elif key == 'left':
