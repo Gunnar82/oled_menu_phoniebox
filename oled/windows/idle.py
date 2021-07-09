@@ -9,6 +9,10 @@ import os
 import subprocess, re
 import integrations.bluetooth
 import integrations.playout
+import RPi.GPIO as GPIO
+
+
+
 class Idle(WindowBase):
     bigfont = ImageFont.truetype(settings.FONT_CLOCK, size=22)
     font = ImageFont.truetype(settings.FONT_TEXT, size=12)
@@ -37,6 +41,11 @@ class Idle(WindowBase):
         self.LocalOutputEnabled = False
         self.BluetoothFound = False
         self.loop.create_task(self._find_dev_bt())
+        if settings.STATUS_LED_ENABLED:
+            GPIO.setmode(GPIO.BCM)            # choose BCM or BOARD  
+            GPIO.setup(settings.STATUS_LED_PIN, GPIO.OUT)
+            if settings.STATUS_LED_ALWAYS_ON:
+                GPIO.output(settings.STATUS_LED_PIN, 1) 
 
 
     def linux_job_remaining(self, job_name):
@@ -98,8 +107,12 @@ class Idle(WindowBase):
                     if self._state == "play":
                         #elapsed
                         draw.text((25, 51 ), self.to_min_sec(self._elapsed), font=Idle.fontsmall, fill="white")
+                        if settings.STATUS_LED_ENABLED and not settings.STATUS_LED_ALWAYS_ON:
+                            GPIO.output(settings.STATUS_LED_PIN, 0) 
                     else:
                         draw.text((25, 51), self._state, font=Idle.fontsmall, fill="white") #other than play
+                        if settings.STATUS_LED_ENABLED:
+                            GPIO.output(settings.STATUS_LED_PIN, 1) 
 
                 except KeyError:
                     pass
