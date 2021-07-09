@@ -112,7 +112,7 @@ class PowerController():
         self.bus.write_byte_data(ADDRESS, REG_LEDR, 0)
         self.bus.write_byte_data(ADDRESS, REG_LEDG, 100)
         self.bus.write_byte_data(ADDRESS, REG_LEDB, 0)
-        self.bus.write_byte_data(ADDRESS, REG_LEDMODE, LEDMODE_STATIC)
+        self.bus.write_byte_data(ADDRESS, REG_LEDMODE, LEDMODE_BLINK)
         #self.bus.write_byte_data(ADDRESS, REG_POWEROFFTIMER, 30) # poweroff in 30 seconds
 
     def twos_comp(self, val, bits):
@@ -122,10 +122,10 @@ class PowerController():
         return val
 
     def init_controller(self):
-        self.bus.write_byte_data(ADDRESS, REG_LEDR, 100)
-        self.bus.write_byte_data(ADDRESS, REG_LEDG, 0)
+        self.bus.write_byte_data(ADDRESS, REG_LEDR, 0)
+        self.bus.write_byte_data(ADDRESS, REG_LEDG, 100)
         self.bus.write_byte_data(ADDRESS, REG_LEDB, 0)
-        self.bus.write_byte_data(ADDRESS, REG_LEDMODE, LEDMODE_BLINK)
+        self.bus.write_byte_data(ADDRESS, REG_LEDMODE, LEDMODE_STATIC)
 
         self.bus.write_byte_data(ADDRESS, REG_BUTTONPOWEROFFTIME, 20) # We deal with this directly
         self.bus.write_byte_data(ADDRESS, REG_BUTTONMODE, BUTTONMODE_SHORT_LONG_PRESS)
