@@ -34,6 +34,7 @@ class Idle(WindowBase):
         self._song = -1
         self._duration = -1
         self._state = "starting"
+        self._statex = "unknown"
         self.job_t = -1
         self.job_i = -1
         self.job_s = -1
@@ -107,12 +108,16 @@ class Idle(WindowBase):
                     if self._state == "play":
                         #elapsed
                         draw.text((25, 51 ), self.to_min_sec(self._elapsed), font=Idle.fontsmall, fill="white")
-                        if settings.STATUS_LED_ENABLED and not settings.STATUS_LED_ALWAYS_ON:
-                            GPIO.output(settings.STATUS_LED_PIN, 0) 
+                        if self._statex != self._state:
+                            self._statex = self._state
+                            if settings.STATUS_LED_ENABLED and not settings.STATUS_LED_ALWAYS_ON:
+                                GPIO.output(settings.STATUS_LED_PIN, 0) 
                     else:
                         draw.text((25, 51), self._state, font=Idle.fontsmall, fill="white") #other than play
-                        if settings.STATUS_LED_ENABLED:
-                            GPIO.output(settings.STATUS_LED_PIN, 1) 
+                        if self._statex != self._state:
+                            self._statex = self._state
+                            if settings.STATUS_LED_ENABLED:
+                                GPIO.output(settings.STATUS_LED_PIN, 1) 
 
                 except KeyError:
                     pass
