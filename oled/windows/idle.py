@@ -41,7 +41,7 @@ class Idle(WindowBase):
         self.Type="Default"
         self.LocalOutputEnabled = False
         self.BluetoothFound = False
-        self.loop.create_task(self._find_dev_bt())
+        #self.loop.create_task(self._find_dev_bt())
         if settings.STATUS_LED_ENABLED:
             GPIO.setmode(GPIO.BCM)            # choose BCM or BOARD  
             GPIO.setup(settings.STATUS_LED_PIN, GPIO.OUT)
