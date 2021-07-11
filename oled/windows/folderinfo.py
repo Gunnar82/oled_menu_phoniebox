@@ -8,6 +8,7 @@ import subprocess
 import os
 import integrations.functions as functions
 import re
+from datetime import datetime
 
 class FolderInfo(WindowBase):
     font = ImageFont.truetype(settings.FONT_TEXT, size=12)
@@ -26,12 +27,13 @@ class FolderInfo(WindowBase):
         self.settings["SINGLE"]="n/a"
         self.line1 = "n/a"
         self.line2 = "n/a"
+        self.line3 = "n/a"
         self.line4 = "n/a"
+        self.fn = ""
 
-    def read_folderconf(self):
+    def read_folderconf(self,_fn):
         try:
-            fn = os.path.join(settings.currentfolder,"folder.conf")
-            folder_conf = open(fn,"r")
+            folder_conf = open(_fn,"r")
             self.lines = folder_conf.readlines()
             folder_conf.close()
             return True
@@ -39,7 +41,8 @@ class FolderInfo(WindowBase):
             return False
 
     def activate(self):
-        if self.read_folderconf():
+        self.fn = os.path.join(settings.currentfolder,"folder.conf")
+        if self.read_folderconf(self.fn):
             for line in self.lines:
                 _key, _val = line.split('=',2)
                 self.settings[_key] = _val.replace("\"","")
@@ -58,15 +61,17 @@ class FolderInfo(WindowBase):
                 pass
 
             try:
-                self.line3 = "RESUME: %s" % (self.settings["RESUME"])
+                ctime = os.path.getmtime(self.fn)
+                cstime = datetime.fromtimestamp(ctime)
+                self.line3 = cstime.strftime('%Y-%m-%d %H:%M:%S')
             except:
                 pass
 
-            #try:
-            list_of_files = os.listdir(settings.currentfolder)
-            self.line4 = "Anzahl MP3: %d" % (len([x for x in list_of_files if x.endswith(".mp3")]))
-    #        except:
-    #            pass
+            try:
+                list_of_files = os.listdir(settings.currentfolder)
+                self.line4 = "Anzahl MP3: %d" % (len([x for x in list_of_files if x.endswith(".mp3")]))
+            except:
+                pass
 
             draw.text((1, 1), text=self.line1, font=FolderInfo.font, fill="white")
             draw.text((1, 16), text=self.line2, font=FolderInfo.font, fill="white")
