@@ -78,9 +78,8 @@ class FolderInfo(WindowBase):
 
 
     def push_callback(self,lp=False):
-        print (settings.currentfolder)
-        foldername = settings.currentfolder[len(settings.AUDIO_BASEPATH):]
-        os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/rfid_trigger_play.sh -d=\"%s\"" % (foldername))
+        settings.currentfolder = functions.get_parent_folder(settings.currentfolder)
+        self.windowmanager.set_window("foldermenu")
 
 
     def turn_callback(self, direction, key=None):

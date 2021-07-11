@@ -44,7 +44,10 @@ class Foldermenu(MenuBase):
     def activate(self):
         self.counter = 0
         self.page = 0
-        self.currentfolder = settings.AUDIO_BASEPATH
+        if settings.currentfolder != "":
+            self.currentfolder = settings.currentfolder
+        else:
+            self.currentfolder = settings.AUDIO_BASEPATH
         self.folders = []
         self.generate_folders()
 
