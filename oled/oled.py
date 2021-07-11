@@ -20,6 +20,7 @@ import windows.playlistmenu
 import windows.radiomenu
 import windows.foldermenu
 import windows.shutdownmenu
+import windows.folderinfo
 import windows.start
 import settings
 
@@ -57,6 +58,7 @@ def main():
     loadedwins.append(windows.playlistmenu.Playlistmenu(windowmanager, mopidy))
     loadedwins.append(windows.radiomenu.Radiomenu(windowmanager, mopidy))
     loadedwins.append(windows.foldermenu.Foldermenu(windowmanager))
+    loadedwins.append(windows.folderinfo.FolderInfo(windowmanager))
     loadedwins.append(shutdownscreen)
 
     loadedwins.append(windows.start.Start(windowmanager, mopidy))

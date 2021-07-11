@@ -72,7 +72,9 @@ class Foldermenu(MenuBase):
                 self.page = 0
                 self.counter = 1
             else:
-                self.playfolder(fullpath)
+                settings.currentfolder=fullpath
+                self.windowmanager.set_window("folderinfo")
+                #self.playfolder(fullpath)
             self.counter = 0
             self.page = 0
 

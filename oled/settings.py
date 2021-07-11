@@ -43,6 +43,10 @@ MAC_DEV_BT_2 = "FC:58:FA:FE:09:4C"
 
 INTPIN=2
 
-STATUS_LED_ENABLED=False
+STATUS_LED_ENABLED=True
 STATUS_LED_PIN=6
 STATUS_LED_ALWAYS_ON=False
+
+
+currentfolder=""
+AUDIO_BASEPATH = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders"
