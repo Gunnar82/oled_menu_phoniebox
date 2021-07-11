@@ -70,7 +70,7 @@ class Foldermenu(MenuBase):
                     self.page = 0
                     self.counter = 1
                 else:
-                    settings.currentfolder=fullpath
+                    settings.currentfolder = ""
                     self.playfolder(fullpath)
                 self.counter = 0
                 self.page = 0
