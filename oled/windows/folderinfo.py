@@ -44,9 +44,9 @@ class FolderInfo(WindowBase):
     def render(self):
         with canvas(self.device) as draw:
 
-            draw.text((1, 1), text=self.settings["CURRENTFILENAME"][self.settings["CURRENTFILENAME"].rfind("/"):], font=FolderInfo.font, fill="white")
-            draw.text((1, 16), text=self.settings["ELAPSED"], font=FolderInfo.font, fill="white")
-            draw.text((1, 31), text=self.settings["RESUME"], font=FolderInfo.font, fill="white")
+            draw.text((1, 1), text=self.settings["CURRENTFILENAME"][self.settings["CURRENTFILENAME"].rfind("/")+1:], font=FolderInfo.font, fill="white")
+            draw.text((1, 16), text="Zeit: %s" % (self.settings["ELAPSED"]), font=FolderInfo.font, fill="white")
+            draw.text((1, 31), text="RESUME: %s" % (self.settings["RESUME"]), font=FolderInfo.font, fill="white")
             #draw.text((1, 46), text=self.settings["CURRENTFILENAME"], font=FolderInfo.font, fill="white")
             #draw.text((1, 16), text="WiFi: " + self.wifi_ssid, font=FolderInfo.font, fill="white")
             #draw.text((1, 31), text="hostapdi: " + str(self.hostapd), font=FolderInfo.font, fill="white")
