@@ -5,7 +5,7 @@ Software settings
 RADIO_PLAYLIST = "GBRadio"
 
 MENU_TIMEOUT = 10
-START_TIMEOUT = 30
+START_TIMEOUT = 2
 
 CONTRAST_TIMEOUT = 30
 CONTRAST_FULL = 245
@@ -49,5 +49,6 @@ STATUS_LED_PIN=6
 STATUS_LED_ALWAYS_ON=False
 
 
-currentfolder=""
 AUDIO_BASEPATH = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders"
+currentfolder = AUDIO_BASEPATH 
+current_selectedfolder = currentfolder
