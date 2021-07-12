@@ -106,17 +106,11 @@ resume)
     # Read the current config file (include will execute == read)
     # read vars from folder.conf
     . "$AUDIOFOLDERSPATH/$FOLDER/folder.conf"
+    echo "$AUDIOFOLDERSPATH/$FOLDER/folder.conf"
     if [ "${DEBUG_resume_play_sh}" == "TRUE" ]; then echo "  savepos FOLDER: $FOLDER" >> $PATHDATA/../logs/debug.log; fi
     if [ "${DEBUG_resume_play_sh}" == "TRUE" ]; then echo "  entering: resume with value $RESUME" >> $PATHDATA/../logs/debug.log; fi
     if [ "${DEBUG_resume_play_sh}" == "TRUE" ]; then echo "  entering: single with value $SINGLE" >> $PATHDATA/../logs/debug.log; fi
     # Check if RESUME is switched on
-
-    echo $FOLDER > /tmp/test
-    echo $SONG >> /tmp/test
-    echo $PLAYLISTLENGTH >> /tmp/test
-    echo $CURRENTFILENAME >> /tmp/test
-    echo $AUDIOFOLDERPATH >> /tmp/test
-    echo "ENDE" >> /tmp/test
 
     if [ $RESUME == "ON" ] || [ $SINGLE == "ON" ];
     then

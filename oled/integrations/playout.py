@@ -9,4 +9,4 @@ def pc_stop():
     os.system("%s -c=playerstop" % (settings.PLAYOUT_CONTROLS))
 
 def savepos():
-    os.system("%s -c=savepos" % (settings.RESUME_PLAY))
+    os.system("%s -c=savepos" % (settings.PLAYOUT_CONTROLS))

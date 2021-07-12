@@ -1004,6 +1004,9 @@ case $COMMAND in
         sudo rm WifiIp.mp3
         /usr/bin/php /home/pi/RPi-Jukebox-RFID/scripts/helperscripts/cli_ReadWifiIp.php
         ;;
+    savepos)
+        ${PATHDATA}/resume_play.sh -c=savepos
+        ;;
     *)
         echo Unknown COMMAND $COMMAND VALUE $VALUE
         if [ "${DEBUG_playout_controls_sh}" == "TRUE" ]; then echo "Unknown COMMAND ${COMMAND} VALUE ${VALUE}" >> ${PATHDATA}/../logs/debug.log; fi
