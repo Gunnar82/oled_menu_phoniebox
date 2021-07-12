@@ -146,14 +146,14 @@ then
     if [ "$NEWPLAYLISTLENGTH" ]; then PLAYLISTLENGTH="$NEWPLAYLISTLENGTH"; fi
     
     if [ "$NEWSINGLE" ]; then SINGLE="$NEWSINGLE"; fi
-    SONG=`expr $SONG + 1`
     #########################################################
     # WRITE THE VALUES INTO THE NEWLY CREATED RAW CONFIG
     # for $CURRENTFILENAME using | as alternate regex delimiter because of the folder path slash 
     if [ "${DEBUG_inc_writeFolderConfig_sh}" == "TRUE" ]; then echo "  WRITE THE VALUES INTO THE NEWLY CREATED RAW CONFIG" >> $PATHDATA/../logs/debug.log; fi
     sudo sed -i 's|%CURRENTFILENAME%|'"$CURRENTFILENAME"'|' "${AUDIOFOLDERSPATH}/${FOLDER}/folder.conf"
     sudo sed -i 's/%ELAPSED%/'"$ELAPSED"'/' "${AUDIOFOLDERSPATH}/${FOLDER}/folder.conf"
-    sudo sed -i 's/%PLAYSTATUS%/'"$PLAYSTATUS"'/' "${AUDIOFOLDERSPATH}/${FOLDER}/folder.conf"
+    #sudo sed -i 's/%PLAYSTATUS%/'"$PLAYSTATUS"'/' "${AUDIOFOLDERSPATH}/${FOLDER}/folder.conf"
+    sudo sed -i 's/%PLAYSTATUS%/'"Stopped"'/' "${AUDIOFOLDERSPATH}/${FOLDER}/folder.conf"
     sudo sed -i 's/%RESUME%/'"$RESUME"'/' "${AUDIOFOLDERSPATH}/${FOLDER}/folder.conf"
     sudo sed -i 's/%SHUFFLE%/'"$SHUFFLE"'/' "${AUDIOFOLDERSPATH}/${FOLDER}/folder.conf"
     sudo sed -i 's/%LOOP%/'"$LOOP"'/' "${AUDIOFOLDERSPATH}/${FOLDER}/folder.conf" 

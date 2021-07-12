@@ -58,7 +58,7 @@ class FolderInfo(WindowBase):
                 pass
 
             try:
-                self.line2 = "Pos: %s / %s %s" % (self.settings["SONG"],self.settings["PLAYLISTLENGTH"],datetime.strptime(self.settings["ELAPSED"],"%S.%f").strftime("%H:%M:%S"))
+                self.line2 = "Pos: %d / %s %s" % (int(self.settings["SONG"])+1,self.settings["PLAYLISTLENGTH"],datetime.strptime(self.settings["ELAPSED"],"%S.%f").strftime("%H:%M:%S"))
             except:
                 pass
 

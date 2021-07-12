@@ -106,12 +106,11 @@ resume)
     # Read the current config file (include will execute == read)
     # read vars from folder.conf
     . "$AUDIOFOLDERSPATH/$FOLDER/folder.conf"
-    echo "$AUDIOFOLDERSPATH/$FOLDER/folder.conf"
     if [ "${DEBUG_resume_play_sh}" == "TRUE" ]; then echo "  savepos FOLDER: $FOLDER" >> $PATHDATA/../logs/debug.log; fi
     if [ "${DEBUG_resume_play_sh}" == "TRUE" ]; then echo "  entering: resume with value $RESUME" >> $PATHDATA/../logs/debug.log; fi
     if [ "${DEBUG_resume_play_sh}" == "TRUE" ]; then echo "  entering: single with value $SINGLE" >> $PATHDATA/../logs/debug.log; fi
     # Check if RESUME is switched on
-
+    
     if [ $RESUME == "ON" ] || [ $SINGLE == "ON" ];
     then
         # will generate variables:
@@ -121,11 +120,11 @@ resume)
         
         # Check if we got a "savepos" command after the last "resume". Otherwise we assume that the playlist was played until the end.
         # In this case, start the playlist from beginning 
-        if [ $PLAYSTATUS == "Stopped" ] 
+        if [ $PLAYSTATUS == "Stopped" ]
         then
             # Get the playlist position of the file from mpd
             # Alternative approach: "mpc searchplay xx && mpc seek yy" 
-            if [ -z $SONG ] ; then
+            if [ ! -z $SONG ] ; then
                 PLAYLISTPOS=$SONG
             else
                 PLAYLISTPOS=$(echo -e playlistfind filename \"$CURRENTFILENAME\"\\nclose | nc -w 1 localhost 6600 | grep -o -P '(?<=Pos: ).*')

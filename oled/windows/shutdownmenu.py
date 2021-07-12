@@ -60,11 +60,11 @@ class Shutdownmenu(WindowBase):
 
     def push_callback(self,lp=False):
         if self.counter == 0:
-            #self.mopidyconnection.stop()
             playout.savepos()
-            #self.execshutdown = True
+            self.mopidyconnection.stop()
+            self.execshutdown = True
             print("Stopping event loop")
-            #self.loop.stop()
+            self.loop.stop()
         elif self.counter == 1:
             self.windowmanager.set_window("mainmenu")
         elif self.counter == 2:
