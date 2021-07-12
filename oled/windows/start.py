@@ -4,6 +4,7 @@ from luma.core.render import canvas
 from PIL import ImageFont
 import settings
 import integrations.bluetooth
+from datetime import datetime
 
 class Start(WindowBase):
     font = ImageFont.truetype(settings.FONT_TEXT, size=12)
@@ -13,10 +14,11 @@ class Start(WindowBase):
         super().__init__(windowmanager)
         self.mopidyconnection = mopidyconnection
         self.timeout = False
+        self.startup = datetime.now()
 
     def render(self):
         with canvas(self.device) as draw:
-            if self.mopidyconnection.connected or settings.EMULATED:
+            if self.mopidyconnection.connected and ((datetime.now() - self.startup).total_seconds() >= settings.START_TIMEOUT):
                 #print ("init")
                 self.windowmanager.set_window("idle")
             draw.text((25, 3), text="Wird gestartet...", font=Start.font, fill="white")

@@ -61,7 +61,7 @@ class Shutdownmenu(WindowBase):
     def push_callback(self,lp=False):
         if self.counter == 0:
             self.mopidyconnection.stop()
-            playout.pc_stop()
+            playout.savepos()
             self.execshutdown = True
             print("Stopping event loop")
             self.loop.stop()
