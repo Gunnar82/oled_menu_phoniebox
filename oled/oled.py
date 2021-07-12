@@ -91,7 +91,6 @@ def main():
     try:
         loop.run_forever()
     except (KeyboardInterrupt, SystemExit):
-        os.system("%s -c=playerstop" % (settings.PLAYOUT_CONTROLS))
         print("Exiting")
     finally:
         loop.close()
