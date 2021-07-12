@@ -32,6 +32,7 @@ class FolderInfo(WindowBase):
         self.line3 = "n/a"
         self.line4 = "n/a"
         self.fn = ""
+        self.timeout = False
 
     def read_folderconf(self,_fn):
         try:
@@ -43,7 +44,7 @@ class FolderInfo(WindowBase):
             return False
 
     def activate(self):
-        self.fn = os.path.join(settings.currentfolder,"folder.conf")
+        self.fn = os.path.join(settings.current_selectedfolder,"folder.conf")
         if self.read_folderconf(self.fn):
             for line in self.lines:
                 _key, _val = line.split('=',2)
@@ -53,7 +54,10 @@ class FolderInfo(WindowBase):
     def render(self):
         with canvas(self.device) as draw:
             try:
-                self.line1 = self.settings["CURRENTFILENAME"][self.settings["CURRENTFILENAME"].rfind("/")+1:]
+                if functions.has_subfolders(settings.current_selectedfolder):
+                    self.line1 = "Subdir" 
+                else:
+                    self.line1 = self.settings["CURRENTFILENAME"][self.settings["CURRENTFILENAME"].rfind("/")+1:]
             except:
                 pass
 
@@ -70,7 +74,7 @@ class FolderInfo(WindowBase):
                 pass
 
             try:
-                list_of_files = os.listdir(settings.currentfolder)
+                list_of_files = os.listdir(settings.current_selectedfolder)
                 self.line4 = "Anzahl MP3: %d" % (len([x for x in list_of_files if x.endswith(".mp3")]))
             except:
                 pass
@@ -85,7 +89,6 @@ class FolderInfo(WindowBase):
 
 
     def push_callback(self,lp=False):
-        settings.currentfolder = functions.get_parent_folder(settings.currentfolder)
         self.windowmanager.set_window("foldermenu")
 
 

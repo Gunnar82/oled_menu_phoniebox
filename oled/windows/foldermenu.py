@@ -7,7 +7,8 @@ import integrations.functions as functions
 class Foldermenu(MenuBase):
     position = 0
     folders = []
-    currentfolder = ""
+    
+
     
     def playfolder(self,folder):
         foldername = folder[len(settings.AUDIO_BASEPATH):]
@@ -15,10 +16,12 @@ class Foldermenu(MenuBase):
         self.windowmanager.set_window("idle")
 
     def on_key_left(self):
-        self.currentfolder = functions.get_parent_folder(self.currentfolder)
-        if len(self.currentfolder) < len(settings.AUDIO_BASEPATH):
-            self.currentfolder = settings.AUDIO_BASEPATH
-        self.generate_folders()
+        self.counter = 2
+        settings.current_selectedfolder = settings.currentfolder
+        settings.currentfolder = functions.get_parent_folder(settings.currentfolder)
+        if len(settings.currentfolder) < len(settings.AUDIO_BASEPATH):
+            settings.currentfolder = settings.AUDIO_BASEPATH
+        self.generate_folders(settings.currentfolder)
 
 
     def on_key_right(self):
@@ -35,46 +38,63 @@ class Foldermenu(MenuBase):
 
     def __init__(self, windowmanager):
         super().__init__(windowmanager, "Auswahl")
-
-    def generate_folders(self):
-        self.generate_folders_array(self.currentfolder)
+        self.timeoutwindow="folderinfo"
+        
+    def generate_folders(self,folder):
+        self.generate_folders_array(folder)
         self.menu = []
         self.menu = self.folders
+        if settings.current_selectedfolder.rfind(settings.currentfolder) == 0:
+            search = settings.current_selectedfolder[len(settings.currentfolder)+1:]
+            try:
+                _pos = self.folders.index(search)
+                if _pos > 3:
+                    self.counter = 5
+                    self.page = _pos -3
+                else:
+                    self.counter = _pos + 2
+                    self.page = 0
+            except:
+                self.counter = 1
+                self.page = 0
 
     def activate(self):
-        self.counter = 0
-        self.page = 0
-        if settings.currentfolder != "":
-            self.currentfolder = settings.currentfolder
-        else:
-            self.currentfolder = settings.AUDIO_BASEPATH
         self.folders = []
-        self.generate_folders()
+        self.generate_folders(settings.currentfolder)
+
+    def turn_callback(self,direction,key=False):
+        super().turn_callback(direction,key=key)
+        self.position = self.counter + self.page
+        try:
+            folder = self.folders[self.position-2]
+            fullpath = os.path.join(settings.currentfolder,folder)
+            settings.current_selectedfolder = fullpath
+        except:
+            settings.current_selectedfolder = settings.currentfolder
 
     def push_callback(self,lp=False):
         if self.counter == 0:
-            settings.currentfolder = ""
+            settings.currentfolder = settings.AUDIO_BASEPATH
             self.windowmanager.set_window("mainmenu")
+        elif self.counter == 1:
+            self.on_key_left()
         else:
-            self.position = self.counter + self.page
-
-            folder = self.folders[self.position-1]
-            fullpath = os.path.join(self.currentfolder,folder)
-            self.currentfolder = fullpath
+            #folder = self.folders[self.position-1]
+            #fullpath = os.path.join(settings.currentfolder,folder)
+            #settings.currentfolder = fullpath
             
             if lp:
-                settings.currentfolder = self.currentfolder
                 self.windowmanager.set_window("folderinfo")
             else:
-                if (functions.has_subfolders(fullpath)):
-                    self.generate_folders()
+                if (functions.has_subfolders(settings.current_selectedfolder)):
+                    self.generate_folders(settings.current_selectedfolder)
+                    settings.currentfolder = settings.current_selectedfolder
                     self.page = 0
-                    self.counter = 1
+                    self.counter = 2
                 else:
-                    settings.currentfolder = ""
-                    self.playfolder(fullpath)
-                self.counter = 0
-                self.page = 0
+                    print ("play %s " % (settings.current_selectedfolder))
+                    self.playfolder(settings.current_selectedfolder)
+                    
 
             #self.mopidyconnection.loadplaylist(self.mopidyconnection.playlists[self.counter-1])
             #self.windowmanager.set_window("idle")

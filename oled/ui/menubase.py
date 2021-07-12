@@ -31,11 +31,16 @@ class MenuBase(WindowBase):
             #Back button and selection arrow
             if self.counter == 0:
                 draw.text((1, 1), text="\uf137", font=faicons, fill="white")
+                draw.text((110, 1), text="\uf106", font=faicons, fill="white")
+            elif self.counter == 1:
+                draw.text((1, 1), text="\uf104", font=faicons, fill="white")
+                draw.text((110, 1), text="\uf139", font=faicons, fill="white")
+
             else:
                 draw.text((1, 1), text="\uf104", font=faicons, fill="white")
                 #Selection arrow
-                draw.polygon(((1, 7+self.counter*12), (1, 11+self.counter*12),
-                                        (5, 9+self.counter*12)), fill="white")
+                draw.polygon(((1, 7+(self.counter-1)*12), (1, 11+(self.counter-1)*12),
+                                        (5, 9+(self.counter-1)*12)), fill="white")
 
             #Calculate title coordinate from text lenght
             draw.text(((128-len(self.title)*5)/2, 1), text=self.title, font=font, fill="white")
@@ -63,11 +68,11 @@ class MenuBase(WindowBase):
 
         if self.counter + direction >= 0:
             #first 4 items in long menu
-            if len(self.menu) > 4 and self.counter + direction <= 4 and self.page == 0:
+            if len(self.menu) > 4 and (self.counter-1) + direction <= 4 and self.page == 0:
                 self.counter += direction
             #other items in long menu
             elif len(self.menu) > 4 and self.page + direction + 4 <= len(self.menu):
                 self.page += direction
             #short menu < 4 items
-            elif len(self.menu) <= 4 and self.counter + direction <= len(self.menu):
+            elif len(self.menu) <= 4 and (self.counter-1) + direction <= len(self.menu):
                 self.counter += direction

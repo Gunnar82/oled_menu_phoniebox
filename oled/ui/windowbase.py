@@ -3,9 +3,12 @@
 class WindowBase():
     def __init__(self, windowmanager):
         self.windowmanager = windowmanager
+        self.counter = 0
+        self.page = 0
         self.device = self.windowmanager.device
         self.loop = self.windowmanager.loop
         self.timeout = True
+        self.timeoutwindow="idle"
 
     def activate(self):
         raise NotImplementedError()
