@@ -5,7 +5,7 @@ class WindowBase():
         self.windowmanager = windowmanager
         self.device = self.windowmanager.device
         self.loop = self.windowmanager.loop
-        self.Type = "NoDefault"
+        self.timeout = True
 
     def activate(self):
         raise NotImplementedError()

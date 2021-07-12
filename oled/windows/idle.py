@@ -38,7 +38,7 @@ class Idle(WindowBase):
         self.job_t = -1
         self.job_i = -1
         self.job_s = -1
-        self.Type="Default"
+        self.timeout=False
         self.LocalOutputEnabled = False
         self.BluetoothFound = False
         #self.loop.create_task(self._find_dev_bt())

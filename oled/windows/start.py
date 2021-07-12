@@ -12,6 +12,7 @@ class Start(WindowBase):
     def __init__(self, windowmanager, mopidyconnection):
         super().__init__(windowmanager)
         self.mopidyconnection = mopidyconnection
+        self.timeout = False
 
     def render(self):
         with canvas(self.device) as draw:

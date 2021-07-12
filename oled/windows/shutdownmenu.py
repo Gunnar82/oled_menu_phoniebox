@@ -4,7 +4,7 @@ from luma.core.render import canvas
 from PIL import ImageFont
 import settings
 import os
-
+import integrations.playout as playout
 
 class Shutdownmenu(WindowBase):
     font = ImageFont.truetype(settings.FONT_TEXT, size=10)
@@ -61,6 +61,7 @@ class Shutdownmenu(WindowBase):
     def push_callback(self,lp=False):
         if self.counter == 0:
             self.mopidyconnection.stop()
+            playout.pc_stop()
             self.execshutdown = True
             print("Stopping event loop")
             self.loop.stop()
