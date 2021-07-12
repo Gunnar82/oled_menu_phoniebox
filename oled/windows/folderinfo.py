@@ -25,6 +25,8 @@ class FolderInfo(WindowBase):
         self.settings["SHUFFLE"]="n/a"
         self.settings["LOOP"]="n/a"
         self.settings["SINGLE"]="n/a"
+        self.settings["SONG"]="0"
+        self.settings["PLAYLISTLENGTH"]="0"
         self.line1 = "n/a"
         self.line2 = "n/a"
         self.line3 = "n/a"
@@ -45,7 +47,7 @@ class FolderInfo(WindowBase):
         if self.read_folderconf(self.fn):
             for line in self.lines:
                 _key, _val = line.split('=',2)
-                self.settings[_key] = _val.replace("\"","")
+                self.settings[_key] = _val.replace("\"","").strip()
 
 
     def render(self):
@@ -56,7 +58,7 @@ class FolderInfo(WindowBase):
                 pass
 
             try:
-                self.line2 = "Zeit: %s" % (self.settings["ELAPSED"])
+                self.line2 = "Pos: %s / %s %s" % (self.settings["SONG"],self.settings["PLAYLISTLENGTH"],datetime.strptime(self.settings["ELAPSED"],"%S.%f").strftime("%H:%M:%S"))
             except:
                 pass
 

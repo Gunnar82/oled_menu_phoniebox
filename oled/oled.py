@@ -93,11 +93,6 @@ def main():
     finally:
         loop.close()
 
-    try:
-        integrations.bluetooth.enable_dev_local()
-    except:
-        pass
-
     if shutdownscreen.execshutdown:
         if haspowercontroller:
             if pc.ready:
