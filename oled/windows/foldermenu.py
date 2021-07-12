@@ -39,6 +39,7 @@ class Foldermenu(MenuBase):
     def __init__(self, windowmanager):
         super().__init__(windowmanager, "Auswahl")
         self.timeoutwindow="folderinfo"
+        #self.timeout = False
         
     def generate_folders(self,folder):
         self.generate_folders_array(folder)
@@ -64,6 +65,11 @@ class Foldermenu(MenuBase):
 
     def turn_callback(self,direction,key=False):
         super().turn_callback(direction,key=key)
+        if (self.counter > 1):
+            self.timeout = True
+        else:
+            self.timeout = False
+ 
         self.position = self.counter + self.page
         try:
             folder = self.folders[self.position-2]
