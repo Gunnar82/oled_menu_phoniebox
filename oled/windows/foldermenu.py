@@ -53,6 +53,7 @@ class Foldermenu(MenuBase):
 
     def push_callback(self,lp=False):
         if self.counter == 0:
+            settings.currentfolder = ""
             self.windowmanager.set_window("mainmenu")
         else:
             self.position = self.counter + self.page
