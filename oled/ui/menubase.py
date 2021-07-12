@@ -38,6 +38,7 @@ class MenuBase(WindowBase):
 
             else:
                 draw.text((1, 1), text="\uf104", font=faicons, fill="white")
+                draw.text((110, 1), text="\uf106", font=faicons, fill="white")
                 #Selection arrow
                 draw.polygon(((1, 7+(self.counter-1)*12), (1, 11+(self.counter-1)*12),
                                         (5, 9+(self.counter-1)*12)), fill="white")
