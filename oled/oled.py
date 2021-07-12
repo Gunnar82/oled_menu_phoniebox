@@ -2,6 +2,8 @@
 import asyncio
 import signal
 import sys
+import os
+
 from subprocess import call
 import integrations.bluetooth
 from integrations.display import get_display
@@ -93,17 +95,20 @@ def main():
     finally:
         loop.close()
 
+    os.system("%s -c=playerstop" % (settings.PLAYOUT_CONTROLS))
+
+
     if shutdownscreen.execshutdown:
         if haspowercontroller:
             if pc.ready:
                 pc.shutdown()
 
         print("Shutting down system")
-        call("%s -c=shutdown" % (settings.PLAYOUT_CONTROLS), shell=True)
+        os.system("%s -c=shutdown" % (settings.PLAYOUT_CONTROLS))
 
     if shutdownscreen.execreboot:
         print("Reboot down system")
-        call("%s -c=reboot" % 	(settings.PLAYOUT_CONTROLS), shell=True)
+        os.system("%s -c=reboot" % 	(settings.PLAYOUT_CONTROLS))
 
 
 if __name__ == '__main__':

@@ -146,7 +146,7 @@ then
     if [ "$NEWPLAYLISTLENGTH" ]; then PLAYLISTLENGTH="$NEWPLAYLISTLENGTH"; fi
     
     if [ "$NEWSINGLE" ]; then SINGLE="$NEWSINGLE"; fi
-    SONG=`expr $SONG + 1`
+
     #########################################################
     # WRITE THE VALUES INTO THE NEWLY CREATED RAW CONFIG
     # for $CURRENTFILENAME using | as alternate regex delimiter because of the folder path slash 
