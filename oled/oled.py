@@ -99,9 +99,11 @@ def main():
         loop.close()
 
     if shutdownscreen.execshutdown:
-        settings.shutdown_reason="heruntergefahren"
+        settings.shutdown_reason=settings.SR2
     elif shutdownscreen.execreboot:
-        settings.shutdown_reason="neugestartet"
+        settings.shutdown_reason=settings.SR3
+    else:
+        settings.shutdown_reason=settings.SR1
 
     windowmanager.set_window("ende")
 
