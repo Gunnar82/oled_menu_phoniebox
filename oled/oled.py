@@ -96,13 +96,16 @@ def main():
     except (KeyboardInterrupt, SystemExit):
         print("Exiting")
     finally:
-        windowmanager.set_window("ende")
         loop.close()
-    from luma.core.render import canvas
-
 
     if shutdownscreen.execshutdown:
         settings.shutdown_reason="heruntergefahren"
+    elif shutdownscreen.execreboot:
+        settings.shutdown_reason="neugestartet"
+
+    windowmanager.set_window("ende")
+
+    if shutdownscreen.execshutdown:
         if haspowercontroller:
             if pc.ready:
                 pc.shutdown()
@@ -111,7 +114,6 @@ def main():
         os.system("%s -c=shutdown" % (settings.PLAYOUT_CONTROLS))
 
     if shutdownscreen.execreboot:
-        settings.shutdown_reason="neugestartet"
         print("Reboot down system")
         os.system("%s -c=reboot" % 	(settings.PLAYOUT_CONTROLS))
 
