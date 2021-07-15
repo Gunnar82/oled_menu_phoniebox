@@ -24,6 +24,8 @@ import windows.foldermenu
 import windows.shutdownmenu
 import windows.folderinfo
 import windows.start
+import windows.ende
+
 import settings
 
 #Systemd exit
@@ -61,6 +63,7 @@ def main():
     loadedwins.append(windows.radiomenu.Radiomenu(windowmanager, mopidy))
     loadedwins.append(windows.foldermenu.Foldermenu(windowmanager))
     loadedwins.append(windows.folderinfo.FolderInfo(windowmanager))
+    loadedwins.append(windows.ende.Ende(windowmanager))
     loadedwins.append(shutdownscreen)
 
     loadedwins.append(windows.start.Start(windowmanager, mopidy))
@@ -93,9 +96,13 @@ def main():
     except (KeyboardInterrupt, SystemExit):
         print("Exiting")
     finally:
+        windowmanager.set_window("ende")
         loop.close()
+    from luma.core.render import canvas
+
 
     if shutdownscreen.execshutdown:
+        settings.shutdown_reason="heruntergefahren"
         if haspowercontroller:
             if pc.ready:
                 pc.shutdown()
@@ -104,8 +111,10 @@ def main():
         os.system("%s -c=shutdown" % (settings.PLAYOUT_CONTROLS))
 
     if shutdownscreen.execreboot:
+        settings.shutdown_reason="neugestartet"
         print("Reboot down system")
         os.system("%s -c=reboot" % 	(settings.PLAYOUT_CONTROLS))
+
 
 
 if __name__ == '__main__':

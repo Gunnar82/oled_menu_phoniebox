@@ -20,5 +20,11 @@ def get_display():
 
         device = sh1106(i2c(port=1, address=0x3C))
         device.contrast(settings.CONTRAST_FULL)
+        device.cleanup = do_nothing
+
         print("Using real display hardware")
         return device
+
+def do_nothing(obj):
+    pass
+
