@@ -31,6 +31,7 @@ class Playbackmenu(WindowBase):
         self.job_i = -1
         self.job_s = -1
         self.counter = 1
+        self.skipselected = False
 
     def linux_job_remaining(self, job_name):
         cmd = ['sudo', 'atq', '-q', job_name]
@@ -124,18 +125,20 @@ class Playbackmenu(WindowBase):
             #draw.text((18, 2), "\uf071", font=Playbackmenu.faicons, fill="white")
 
             #selection line
-            draw.line((10+(self.counter)*20, 42, 30+(self.counter)*20, 42), width=2, fill="white")
-
-            draw.text((10, 20), "\uf048", font=Playbackmenu.faiconsbig, fill="white") #prev
+            draw.line((10+(self.counter)*30, 42, 30+(self.counter)*30, 42), width=2, fill="white")
+            fillcolor = "black" if self.skipselected else "white"
+            bgcolor   = "white" if self.skipselected else "black"
+            draw.rectangle((7,17,30,40),fill=bgcolor,outline=bgcolor)
+            draw.text((10, 20), "\uf048", font=Playbackmenu.faiconsbig, fill=fillcolor) #prev
+            draw.text((20, 20), "\uf051", font=Playbackmenu.faiconsbig, fill=fillcolor) #next
             if self._state == "play":
-                draw.text((30, 20), "\uf04c", font=Playbackmenu.faiconsbig, fill="white") #pause
+                draw.text((40, 20), "\uf04c", font=Playbackmenu.faiconsbig, fill="white") #pause
             elif self._state == "pause":
-                draw.text((30, 20), "\uf04b", font=Playbackmenu.faiconsbig, fill="white") #play
+                draw.text((40, 20), "\uf04b", font=Playbackmenu.faiconsbig, fill="white") #play
             else:
-                draw.text((30, 20), "\uf04d", font=Playbackmenu.faiconsbig, fill="white") #play
-            draw.text((50, 20), "\uf062", font=Playbackmenu.faiconsbig, fill="white") #menu
-            draw.text((70, 20), "\uf0a8", font=Playbackmenu.faiconsbig, fill="white") #menu
-            draw.text((90, 20), "\uf051", font=Playbackmenu.faiconsbig, fill="white") #next
+                draw.text((40, 20), "\uf04d", font=Playbackmenu.faiconsbig, fill="white") #play
+            draw.text((70, 20), "\uf062", font=Playbackmenu.faiconsbig, fill="white") #menu
+            draw.text((100, 20), "\uf0a8", font=Playbackmenu.faiconsbig, fill="white") #menu
 
 
     async def _linuxjob(self):
@@ -183,7 +186,11 @@ class Playbackmenu(WindowBase):
             self.windowmanager.set_window("mainmenu")
         elif self.counter == 3:
             self.windowmanager.set_window("idle")
-             
+        elif self.counter == 0:
+            if self.skipselected:
+                self.skipselected = False
+            else:
+                self.skipselected = True
 
         #self._showcontrols = False
         #self.windowmanager.set_window("mainmenu")
@@ -205,16 +212,15 @@ class Playbackmenu(WindowBase):
             else:
                 direction = 0
 
-        if (self.counter + direction <= 4 and self.counter + direction >= 0):
-            self.counter += direction
+        if self.skipselected:
+            if direction < 0:
+                integrations.playout.pc_prev()
+            else:
+                integrations.playout.pc_next()
+        else:
+            if (self.counter + direction <= 3 and self.counter + direction >= 0):
+                self.counter += direction
             
-        if self.counter == 0 and direction < 0:
-            self.counter = 1
-            integrations.playout.pc_prev()
-
-        if self.counter == 4 and direction > 0:
-            self.counter = 3
-            integrations.playout.pc_next()
         #os.system("mpc volume {}{} > /dev/null".format(plus,direction))
         #if self.counter + direction <= 0 and self.counter + direction >= 0:
             #self.counter += direction
