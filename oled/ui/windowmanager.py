@@ -47,7 +47,7 @@ class WindowManager():
             if ((datetime.now() - self.lastinput).total_seconds() >= settings.MENU_TIMEOUT) and self.activewindow.timeout:
                 self.set_window(self.activewindow.timeoutwindow)
 
-            if ((datetime.now() - self.lastinput).total_seconds() >= settings.CONTRAST_TIMEOUT):
+            if ((datetime.now() - self.lastinput).total_seconds() >= settings.CONTRAST_TIMEOUT and self.activewindow.contrast_handle):
                 self.device.contrast(settings.CONTRAST_DARK)
             else:
                 self.device.contrast(settings.CONTRAST_FULL)

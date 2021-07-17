@@ -8,6 +8,7 @@ class WindowBase():
         self.device = self.windowmanager.device
         self.loop = self.windowmanager.loop
         self.timeout = True
+        self.contrasthandle = True
         self.timeoutwindow="idle"
 
     def activate(self):

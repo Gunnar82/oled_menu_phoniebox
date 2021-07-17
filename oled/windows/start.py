@@ -15,6 +15,7 @@ class Start(WindowBase):
         self.mopidyconnection = mopidyconnection
         self.timeout = False
         self.startup = datetime.now()
+        self.conrasthandle = False
 
     def render(self):
         with canvas(self.device) as draw:
