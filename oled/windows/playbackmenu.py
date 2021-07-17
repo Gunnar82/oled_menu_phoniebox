@@ -33,6 +33,12 @@ class Playbackmenu(WindowBase):
         self.counter = 1
         self.skipselected = False
 
+        self.descr = []
+        self.descr.append("Zurück / Vor")
+        self.descr.append ("Play / Pause")
+        self.descr.append("Hauptmenü")
+        self.descr.append("Zurück")
+
     def linux_job_remaining(self, job_name):
         cmd = ['sudo', 'atq', '-q', job_name]
         dtQueue = subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode('utf-8').rstrip()
@@ -68,6 +74,8 @@ class Playbackmenu(WindowBase):
     def render(self):
         with canvas(self.device) as draw:
             now = datetime.datetime.now()
+            mwidth = Playbackmenu.font.getsize(self.descr[self.counter])
+            draw.text((64 - int(mwidth[0]/2),1), text=self.descr[self.counter], font=Playbackmenu.font, fill="white")
 
 
             #Trennleiste waagerecht

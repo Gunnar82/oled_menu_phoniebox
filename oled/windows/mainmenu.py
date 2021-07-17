@@ -17,7 +17,7 @@ class Mainmenu(WindowBase):
         self.descr.append("Lokal")
         self.descr.append("Infos")
         self.descr.append("Einstellungen")
-        self.descr.append("Ausschalten")
+        self.descr.append("Ausschaltmenü")
 
     def render(self):
         with canvas(self.device) as draw:
