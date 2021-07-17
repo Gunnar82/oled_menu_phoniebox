@@ -17,9 +17,10 @@ class Ende(WindowBase):
 
     def activate(self):
         with canvas(self.device) as draw:
+            mwidth = Ende.font.getsize(settings.shutdown_reason)
             draw.text((50, 3), text="wird", font=Ende.font, fill="white")
-            draw.text((50, 20), text="\uf1ce", font=Ende.fontawesome, fill="white")
-            draw.text((20, 50), text=settings.shutdown_reason, font=Ende.font, fill="white")
+            draw.text((50, 20), text="\uf011", font=Ende.fontawesome, fill="white")
+            draw.text((64 - int(mwidth[0]/2), 50), text=settings.shutdown_reason, font=Ende.font, fill="white")
 
     def push_callback(self,lp=False):
         pass

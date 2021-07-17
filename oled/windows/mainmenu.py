@@ -6,29 +6,40 @@ import settings
 
 class Mainmenu(WindowBase):
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=18)
-    faicons = ImageFont.truetype(settings.FONT_ICONS, size=18)
+    font = ImageFont.truetype(settings.FONT_TEXT, size=12)
+
     def __init__(self, windowmanager):
         super().__init__(windowmanager)
         self.counter = 0
+        self.descr = []
+        self.descr.append("Zurück")
+        self.descr.append ("Radio")
+        self.descr.append("Lokal")
+        self.descr.append("Infos")
+        self.descr.append("Einstellungen")
+        self.descr.append("Ausschalten")
 
     def render(self):
         with canvas(self.device) as draw:
+            mwidth = Mainmenu.font.getsize(self.descr[self.counter])
+            draw.text((64 - int(mwidth[0]/2),1), text=self.descr[self.counter], font=Mainmenu.font, fill="white")
+ 
             #rectangle as selection marker
             if self.counter < 3: #3 icons in one row
-                y_coord = 2
+                y_coord = 15
                 x_coord = 7 + self.counter * 35
             else:
-                y_coord = 35
+                y_coord = 44
                 x_coord = 6 + (self.counter - 3) * 35
             draw.rectangle((x_coord, y_coord, x_coord+25, y_coord+25), outline=255, fill=0)
 
             #icons as menu buttons
-            draw.text((11, 6), text="\uf0a8", font=Mainmenu.faicons, fill="white") #back
-            draw.text((44, 6), text="\uf001", font=Mainmenu.faicons, fill="white") #radio
-            draw.text((83, 6), text="\uf1c7", font=Mainmenu.faicons, fill="white") #playlists
-            draw.text((11, 39), text="\uf02d", font=Mainmenu.faicons, fill="white") #infos
-            draw.text((44, 39), text="\uf085", font=Mainmenu.faicons, fill="white") #infos
-            draw.text((83, 39), text="\uf011", font=Mainmenu.faicons, fill="white") #shutdown
+            draw.text((11, 20), text="\uf0a8", font=Mainmenu.faicons, fill="white") #back
+            draw.text((44, 20), text="\uf001", font=Mainmenu.faicons, fill="white") #radio
+            draw.text((83, 20), text="\uf02d", font=Mainmenu.faicons, fill="white") #playlists
+            draw.text((11, 46), text="\uf022", font=Mainmenu.faicons, fill="white") #infos
+            draw.text((44, 46), text="\uf085", font=Mainmenu.faicons, fill="white") #infos
+            draw.text((83, 46), text="\uf011", font=Mainmenu.faicons, fill="white") #shutdown
 
     def push_callback(self,lp=False):
         if self.counter == 0:
