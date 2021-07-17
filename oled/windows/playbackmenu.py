@@ -67,6 +67,7 @@ class Playbackmenu(WindowBase):
         self.loop.create_task(self._generatenowplaying())
         self.loop.create_task(self._linuxjob())
         self.counter = 1
+        self.skipselected = False
 
     def deactivate(self):
         self._activepbm = False
