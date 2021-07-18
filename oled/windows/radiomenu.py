@@ -10,7 +10,7 @@ class Radiomenu(MenuBase):
         self.menu = self.mopidyconnection.radiostations
 
     def push_callback(self,lp=False):
-        if self.counter == 0:
+        if self.counter < 2:
             self.windowmanager.set_window("mainmenu")
         else:
             self.mopidyconnection.playradiostation(self.counter + self.page-2)
