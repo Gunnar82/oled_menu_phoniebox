@@ -11,7 +11,9 @@ class WindowManager():
         self.loop = loop
         self.screenpower = True
         self.lastinput = datetime.now()
+        self._lastcontrast = settings.CONTRAST_FULL
         self.loop.create_task(self._render())
+
         print("Rendering task created")
 
     def add_window(self, windowid, window):
@@ -48,21 +50,32 @@ class WindowManager():
                 self.set_window(self.activewindow.timeoutwindow)
 
             if ((datetime.now() - self.lastinput).total_seconds() >= settings.CONTRAST_TIMEOUT and self.activewindow.contrasthandle):
-                self.device.contrast(settings.CONTRAST_DARK)
+                contrast = settings.CONTRAST_DARK
             else:
-                self.device.contrast(settings.CONTRAST_FULL)
-            
+                contrast = settings.CONTRAST_FULL
+
+            if ((datetime.now() - self.lastinput).total_seconds() >= settings.DARK_TIMEOUT and self.activewindow.contrasthandle):
+                contrast = 0
+                self.screenpower = False
+
+            if self._lastcontrast != contrast:
+                self._lastcontrast = contrast
+                self.device.contrast(contrast)
+
             if self.activewindow != [] and self.screenpower:
                 try:
                     self.activewindow.render()
                 except (NotImplementedError, AttributeError):
                     pass
+
+
+
             await asyncio.sleep(0.25)
 
     def push_callback(self,lp=False):
+        self.lastinput = datetime.now()
         if self.screenpower:
             try:
-                self.lastinput = datetime.now()
                 self.activewindow.push_callback(lp=lp)
             except (NotImplementedError, AttributeError):
                 pass

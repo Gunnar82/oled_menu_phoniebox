@@ -6,7 +6,6 @@ from luma.core.render import canvas
 from PIL import ImageFont
 import settings
 import os
-import subprocess, re
 import integrations.bluetooth
 import integrations.playout
 import integrations.functions as fn
@@ -50,23 +49,6 @@ class Idle(WindowBase):
                 GPIO.output(settings.STATUS_LED_PIN, 1) 
 
 
-    def linux_job_remaining(self, job_name):
-        cmd = ['sudo', 'atq', '-q', job_name]
-        dtQueue = subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode('utf-8').rstrip()
-        regex = re.search('(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)', dtQueue)
-        if regex:
-            dtNow = datetime.datetime.now()
-            dtQueue = datetime.datetime.strptime(dtNow.strftime("%d.%m.%Y") + " " + regex.group(5), "%d.%m.%Y %H:%M:%S")
-
-            # subtract 1 day if queued for the next day
-            if dtNow > dtQueue:
-                dtNow = dtNow - datetime.timedelta(days=1)
-
-            return int(round((dtQueue.timestamp() - dtNow.timestamp()) / 60, 0))
-        else:
-            return -1
-
-
 
     def activate(self):
         self._active = True
@@ -104,16 +86,16 @@ class Idle(WindowBase):
                     if self._state == "play":
                         #elapsed
                         _spos = fn.to_min_sec(self._elapsed)
-                        _xpos = 40 - int(Idle.fontsmall.getsize(_spos)[0]/2)
+                        _xpos = 41 - int(Idle.fontsmall.getsize(_spos)[0]/2)
 
-                        draw.text((25, 51 ),_spos, font=Idle.fontsmall, fill="white")
+                        draw.text((_xpos, 51 ),_spos, font=Idle.fontsmall, fill="white")
                         if self._statex != self._state:
                             self._statex = self._state
                             if settings.STATUS_LED_ENABLED and not settings.STATUS_LED_ALWAYS_ON:
                                 GPIO.output(settings.STATUS_LED_PIN, 0) 
                     else:
                         _spos = self._state
-                        _xpos = 40 - int(Idle.fontsmall.getsize(_spos)[0]/2)
+                        _xpos = 41 - int(Idle.fontsmall.getsize(_spos)[0]/2)
 
                         draw.text((_xpos, 51), _spos, font=Idle.fontsmall, fill="white") #other than play
                         if self._statex != self._state:
@@ -170,9 +152,9 @@ class Idle(WindowBase):
     async def _linuxjob(self):
 
         while self.loop.is_running() and self._active:
-            self.job_t = self.linux_job_remaining("t")
-            self.job_s = self.linux_job_remaining("s")
-            self.job_i = self.linux_job_remaining("i")
+            self.job_t = fn.linux_job_remaining("t")
+            self.job_s = fn.linux_job_remaining("s")
+            self.job_i = fn.linux_job_remaining("i")
 
             await asyncio.sleep(20)
 

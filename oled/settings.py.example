@@ -5,9 +5,11 @@ Software settings
 RADIO_PLAYLIST = "GBRadio"
 
 MENU_TIMEOUT = 10
-START_TIMEOUT = 10
+START_TIMEOUT = 2
 
-CONTRAST_TIMEOUT = 30
+CONTRAST_TIMEOUT = 5
+DARK_TIMEOUT = 20
+
 CONTRAST_FULL = 245
 CONTRAST_DARK = 32
 
@@ -44,15 +46,18 @@ MAC_DEV_BT_2 = "FC:58:FA:FE:09:4C"
 
 INTPIN=2
 
-STATUS_LED_ENABLED=False
+STATUS_LED_ENABLED=True
 STATUS_LED_PIN=6
 STATUS_LED_ALWAYS_ON=False
 
 
 AUDIO_BASEPATH = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders"
-currentfolder=AUDIO_BASEPATH
+currentfolder = AUDIO_BASEPATH 
+
 current_selectedfolder=currentfolder
+
 shutdown_reason = "changeme"
-SR1 = "        beendet    "
-SR2 = "   heruntergefahren"
-SR3 = "     neugestartet  "
+SR1 = "beendet"
+SR2 = "heruntergefahren"
+SR3 = "neugestartet"
+
