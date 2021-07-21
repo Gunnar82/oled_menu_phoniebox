@@ -8,6 +8,8 @@ import settings
 import integrations.playout
 import os
 import subprocess, re
+import integrations.functions as fn
+import RPi.GPIO as GPIO
 
 class Playbackmenu(WindowBase):
     bigfont = ImageFont.truetype(settings.FONT_CLOCK, size=22)
@@ -27,6 +29,7 @@ class Playbackmenu(WindowBase):
         self._song = -1
         self._duration = -1
         self._state = "starting"
+        self._statex ="unknown"
         self.job_t = -1
         self.job_i = -1
         self.job_s = -1
@@ -38,6 +41,12 @@ class Playbackmenu(WindowBase):
         self.descr.append ("Play / Pause")
         self.descr.append("Hauptmenü")
         self.descr.append("Zurück")
+         #self.loop.create_task(self._find_dev_bt())
+        if settings.STATUS_LED_ENABLED:
+            GPIO.setmode(GPIO.BCM)            # choose BCM or BOARD
+            GPIO.setup(settings.STATUS_LED_PIN, GPIO.OUT)
+            if settings.STATUS_LED_ALWAYS_ON:
+                GPIO.output(settings.STATUS_LED_PIN, 1)
 
     def linux_job_remaining(self, job_name):
         cmd = ['sudo', 'atq', '-q', job_name]
@@ -54,13 +63,6 @@ class Playbackmenu(WindowBase):
             return int(round((dtQueue.timestamp() - dtNow.timestamp()) / 60, 0))
         else:
             return -1
-
-
-    def to_min_sec(self, seconds):
-        mins = int(float(seconds) // 60)
-        secs = int(float(seconds) - (mins*60))
-        return "%2.2d:%2.2d" % (mins,secs)
-
 
     def activate(self):
         self._activepbm = True
@@ -82,24 +84,38 @@ class Playbackmenu(WindowBase):
             #Trennleiste waagerecht
             draw.rectangle((0,49,128,49),outline="white",fill="white")
             #Trennleisten senkrecht
-            draw.rectangle((19,49,19,64),outline="white",fill="white")
-            draw.rectangle((55,49,55,64),outline="white",fill="white")
-            draw.rectangle((90,49,90,64),outline="white",fill="white")
+            draw.rectangle((16,49,16,64),outline="white",fill="white")
+            draw.rectangle((65,49,65,64),outline="white",fill="white")
+            draw.rectangle((105,49,105,64),outline="white",fill="white")
 
             #volume
             draw.text((1, 51 ), str(self._volume), font=Playbackmenu.fontsmall, fill="white")
 
             #Buttons
             if self.musicmanager.source == "mpd":
-                try:
+                if True:
                     if self._state == "play":
                         #elapsed
-                        draw.text((25, 51 ), self.to_min_sec(self._elapsed), font=Playbackmenu.fontsmall, fill="white")#play
-                    else:
-                        draw.text((25, 51 ), self._state, font=Playbackmenu.fontsmall, fill="white")
+                        _spos = fn.to_min_sec(self._elapsed)
+                        _xpos = 40 - int(Playbackmenu.fontsmall.getsize(_spos)[0]/2)
 
-                except KeyError:
-                    print ("err")
+                        draw.text((25, 51 ),_spos, font=Playbackmenu.fontsmall, fill="white")
+                        if self._statex != self._state:
+                            self._statex = self._state
+                            if settings.STATUS_LED_ENABLED and not settings.STATUS_LED_ALWAYS_ON:
+                                GPIO.output(settings.STATUS_LED_PIN, 0)
+                    else:
+                        _spos = self._state
+                        _xpos = 40 - int(Playbackmenu.fontsmall.getsize(_spos)[0]/2)
+
+                        draw.text((_xpos, 51), _spos, font=Playbackmenu.fontsmall, fill="white") #other than play
+                        if self._statex != self._state:
+                            self._statex = self._state
+                            if settings.STATUS_LED_ENABLED:
+                                GPIO.output(settings.STATUS_LED_PIN, 1)
+
+                #except KeyError:
+                #    pass
 
 
             #Widgets
@@ -122,12 +138,15 @@ class Playbackmenu(WindowBase):
             #Line 1 2 3
 
 
-            #paylistpos
-            draw.text((60, 51 ), "%2.2d/%2.2d" % (int(self._song), int(self._playlistlength)), font=Playbackmenu.fontsmall, fill="white")
+           #paylistpos
+            _spos = "%2.2d/%2.2d" % (int(self._song), int(self._playlistlength))
+            _xpos = 85 - int(Playbackmenu.fontsmall.getsize(_spos)[0]/2)
+            draw.text((_xpos, 51 ),_spos , font=Playbackmenu.fontsmall, fill="white")
+
 
             #shutdowntimer ? aktiv dann Zeit anzeigen
             if self.job_t >= 0:
-                draw.text((95, 51 ), "%2.2d" % (int(self.job_t)), font=Playbackmenu.fontsmall, fill="white")
+                draw.text((108, 51 ), "%2.2d" % (int(self.job_t)), font=Playbackmenu.fontsmall, fill="white")
 
 
             #draw.text((10,10),"CONTROLS", font=Idle.bigfong, fill="white")

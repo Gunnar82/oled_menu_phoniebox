@@ -9,6 +9,7 @@ import os
 import subprocess, re
 import integrations.bluetooth
 import integrations.playout
+import integrations.functions as fn
 import RPi.GPIO as GPIO
 
 
@@ -66,11 +67,6 @@ class Idle(WindowBase):
             return -1
 
 
-    def to_min_sec(self, seconds):
-        mins = int(float(seconds) // 60)
-        secs = int(float(seconds) - (mins*60))
-        return "%2.2d:%2.2d" % (mins,secs)
-
 
     def activate(self):
         self._active = True
@@ -95,9 +91,9 @@ class Idle(WindowBase):
             #Trennleiste waagerecht
             draw.rectangle((0,49,128,49),outline="white",fill="white")
             #Trennleisten senkrecht
-            draw.rectangle((19,49,19,64),outline="white",fill="white")
-            draw.rectangle((55,49,55,64),outline="white",fill="white")
-            draw.rectangle((95,49,95,64),outline="white",fill="white")
+            draw.rectangle((16,49,16,64),outline="white",fill="white")
+            draw.rectangle((65,49,65,64),outline="white",fill="white")
+            draw.rectangle((105,49,105,64),outline="white",fill="white")
 
             #volume
             draw.text((1, 51 ), str(self._volume), font=Idle.fontsmall, fill="white")
@@ -107,13 +103,19 @@ class Idle(WindowBase):
                 try:
                     if self._state == "play":
                         #elapsed
-                        draw.text((25, 51 ), self.to_min_sec(self._elapsed), font=Idle.fontsmall, fill="white")
+                        _spos = fn.to_min_sec(self._elapsed)
+                        _xpos = 40 - int(Idle.fontsmall.getsize(_spos)[0]/2)
+
+                        draw.text((25, 51 ),_spos, font=Idle.fontsmall, fill="white")
                         if self._statex != self._state:
                             self._statex = self._state
                             if settings.STATUS_LED_ENABLED and not settings.STATUS_LED_ALWAYS_ON:
                                 GPIO.output(settings.STATUS_LED_PIN, 0) 
                     else:
-                        draw.text((25, 51), self._state, font=Idle.fontsmall, fill="white") #other than play
+                        _spos = self._state
+                        _xpos = 40 - int(Idle.fontsmall.getsize(_spos)[0]/2)
+
+                        draw.text((_xpos, 51), _spos, font=Idle.fontsmall, fill="white") #other than play
                         if self._statex != self._state:
                             self._statex = self._state
                             if settings.STATUS_LED_ENABLED:
@@ -141,11 +143,13 @@ class Idle(WindowBase):
 
 
             #paylistpos
-            draw.text((60, 51 ), "%2.2d/%2.2d" % (int(self._song), int(self._playlistlength)), font=Idle.fontsmall, fill="white")
+            _spos = "%2.2d/%2.2d" % (int(self._song), int(self._playlistlength))
+            _xpos = 85 - int(Idle.fontsmall.getsize(_spos)[0]/2)
+            draw.text((_xpos, 51 ),_spos , font=Idle.fontsmall, fill="white")
 
             #shutdowntimer ? aktiv dann Zeit anzeigen
             if self.job_t >= 0:
-                draw.text((100, 51 ), "%2.2d" % (int(self.job_t)), font=Idle.fontsmall, fill="white")
+                draw.text((108, 51 ), "%2.2d" % (int(self.job_t)), font=Idle.fontsmall, fill="white")
 
 
             if ((self._state == "stop") or (self.job_t >=0 and self.job_t <= 5) or (self.job_i >= 0 and self.job_i <=5)):
