@@ -178,9 +178,6 @@ class Idle(WindowBase):
         filename = ""
 
         while self.loop.is_running() and self._active:
-
-
-
             playing = self.musicmanager.nowplaying()
             status = self.musicmanager.status()
             filename = playing['file'] if ("file" in playing) else ""
@@ -197,10 +194,11 @@ class Idle(WindowBase):
 
 
             if title != oldtitle:
-                oldtitle = title
                 settings.screenpower = True
-                settings.lastinput = datetime.datetime.now() - datetime.timedelta(seconds=settings.CONTRAST_TIMEOUT)
+                if oldtitle != "":
+                    settings.lastinput = datetime.datetime.now() - datetime.timedelta(seconds=settings.CONTRAST_TIMEOUT)
                 titlex = 0
+                oldtitle = title
             else:
                 if Idle.font.getsize(title[titlex:])[0] > 127:
                     titlex += 1

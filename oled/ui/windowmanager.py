@@ -47,7 +47,6 @@ class WindowManager():
         while self.loop.is_running():
             if ((datetime.now() - settings.lastinput).total_seconds() >= settings.MENU_TIMEOUT) and self.activewindow.timeout:
                 self.set_window(self.activewindow.timeoutwindow)
-
             if ((datetime.now() - settings.lastinput).total_seconds() >= settings.CONTRAST_TIMEOUT and self.activewindow.contrasthandle):
                 contrast = settings.CONTRAST_DARK
             else:
