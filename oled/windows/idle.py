@@ -199,7 +199,7 @@ class Idle(WindowBase):
             if title != oldtitle:
                 oldtitle = title
                 settings.screenpower = True
-                settings.lastinput = datetime.datetime.now()
+                settings.lastinput = datetime.datetime.now() - datetime.timedelta(seconds=settings.CONTRAST_TIMEOUT)
                 titlex = 0
             else:
                 if Idle.font.getsize(title[titlex:])[0] > 127:
