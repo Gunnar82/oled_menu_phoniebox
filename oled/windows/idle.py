@@ -179,12 +179,39 @@ class Idle(WindowBase):
 
         while self.loop.is_running() and self._active:
 
+
+
             playing = self.musicmanager.nowplaying()
             status = self.musicmanager.status()
             filename = playing['file'] if ("file" in playing) else ""
             #print (playing)
             #print(status)
 
+            try:
+                if "title" in playing:
+                    title = playing['title']
+                else:
+                    title = filename[filename.rfind("/")+1:]
+            except:
+                title = "n/a"
+
+
+            if title != oldtitle:
+                oldtitle = title
+                print (oldtitle)
+                settings.screenpower = True
+                settings.lastinput = datetime.datetime.now()
+                titlex = 0
+            else:
+                if Idle.font.getsize(title[titlex:])[0] > 127:
+                    titlex += 1
+
+
+            self._playingtitle = title[titlex:]
+
+            if not settings.screenpower:
+                await asyncio.sleep(5)
+                continue
 
             try:
                 if "name" in playing:
@@ -201,6 +228,7 @@ class Idle(WindowBase):
             else:
                 namex = 0
                 oldname = name
+
 
             self._playingname = name[namex:]
 
@@ -226,13 +254,6 @@ class Idle(WindowBase):
             self._playingalbum = album[albumx:albumx+19]
 
 
-            try:
-                if "title" in playing:
-                    title = playing['title']
-                else:
-                    title = filename[filename.rfind("/")+1:]
-            except:
-                title = "n/a"
 
             self._volume = status['volume'] if ("volume" in status) else -1
             self._elapsed = status['elapsed'] if ("elapsed" in status) else -1
@@ -242,12 +263,6 @@ class Idle(WindowBase):
             self._duration = status['duration'] if ("duration" in status) else -1
             self._state = status['state'] if ("state" in status) else "unknown"
             
-            if title == oldtitle and Idle.font.getsize(title[titlex:])[0] > 127:
-                titlex += 1
-            else:
-                titlex = 0
-                oldtitle = title
-            self._playingtitle = title[titlex:]
         
 
             await asyncio.sleep(1)

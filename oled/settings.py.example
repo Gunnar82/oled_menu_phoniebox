@@ -8,7 +8,7 @@ MENU_TIMEOUT = 10
 START_TIMEOUT = 2
 
 CONTRAST_TIMEOUT = MENU_TIMEOUT
-DARK_TIMEOUT = 120
+DARK_TIMEOUT = 20
 
 CONTRAST_FULL = 245
 CONTRAST_DARK = 32
@@ -52,12 +52,18 @@ STATUS_LED_ALWAYS_ON=False
 
 
 AUDIO_BASEPATH = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders"
-currentfolder = AUDIO_BASEPATH 
-
-current_selectedfolder=currentfolder
-
-shutdown_reason = "changeme"
 SR1 = "beendet"
 SR2 = "heruntergefahren"
 SR3 = "neugestartet"
 
+######
+from datetime import datetime
+###########################
+screenpower = True
+currentfolder = AUDIO_BASEPATH 
+current_selectedfolder=currentfolder
+shutdown_reason = "changeme"
+lastinput = datetime.now()
+job_t = -1
+job_i = -1
+job_s = -1
