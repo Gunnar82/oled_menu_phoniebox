@@ -198,7 +198,6 @@ class Idle(WindowBase):
 
             if title != oldtitle:
                 oldtitle = title
-                print (oldtitle)
                 settings.screenpower = True
                 settings.lastinput = datetime.datetime.now()
                 titlex = 0
