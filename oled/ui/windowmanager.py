@@ -9,8 +9,7 @@ class WindowManager():
         self.windows = {}
         self.activewindow = []
         self.loop = loop
-        self.screenpower = True
-        self.lastinput = datetime.now()
+        settings.lastinput = datetime.now()
         self._lastcontrast = settings.CONTRAST_FULL
         self.loop.create_task(self._render())
 
@@ -39,54 +38,59 @@ class WindowManager():
 
     def clear_window(self):
         print("Show blank screen")
-        self.screenpower = False
+        settings.screenpower = False
         self.device.clear()
         #Low-Power sleep mode
         self.device.hide()
 
     async def _render(self):
         while self.loop.is_running():
-            if ((datetime.now() - self.lastinput).total_seconds() >= settings.MENU_TIMEOUT) and self.activewindow.timeout:
+            if ((datetime.now() - settings.lastinput).total_seconds() >= settings.MENU_TIMEOUT) and self.activewindow.timeout:
                 self.set_window(self.activewindow.timeoutwindow)
 
-            if ((datetime.now() - self.lastinput).total_seconds() >= settings.CONTRAST_TIMEOUT and self.activewindow.contrasthandle):
+            if ((datetime.now() - settings.lastinput).total_seconds() >= settings.CONTRAST_TIMEOUT and self.activewindow.contrasthandle):
                 contrast = settings.CONTRAST_DARK
             else:
                 contrast = settings.CONTRAST_FULL
 
-            if ((datetime.now() - self.lastinput).total_seconds() >= settings.DARK_TIMEOUT and self.activewindow.contrasthandle):
-                contrast = 0
-                self.screenpower = False
+            if ((settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5)):
+                settings.screenpower = True
+            else:
+                if ((datetime.now() - settings.lastinput).total_seconds() >= settings.DARK_TIMEOUT and self.activewindow.contrasthandle):
+                    contrast = 0
+                    settings.screenpower = False
 
             if self._lastcontrast != contrast:
                 self._lastcontrast = contrast
                 self.device.contrast(contrast)
 
-            if self.activewindow != [] and self.screenpower:
-                try:
+            if self.activewindow != [] and settings.screenpower:
+                #try:
+                if True:
                     self.activewindow.render()
-                except (NotImplementedError, AttributeError):
-                    pass
+                #except (NotImplementedError, AttributeError):
+                #    pass
 
 
 
             await asyncio.sleep(0.25)
 
     def push_callback(self,lp=False):
-        self.lastinput = datetime.now()
-        if self.screenpower:
+        settings.lastinput = datetime.now()
+        settings.staywake = False
+        if settings.screenpower:
             try:
                 self.activewindow.push_callback(lp=lp)
             except (NotImplementedError, AttributeError):
                 pass
         else:
-            self.screenpower = True
+            settings.screenpower = True
             self.device.show()
             self.set_window("idle")
 
     def turn_callback(self, direction, key=None):
         try:
-            self.lastinput = datetime.now()
+            settings.lastinput = datetime.now()
             self.activewindow.turn_callback(direction,key=key)
         except (NotImplementedError, AttributeError):
             pass

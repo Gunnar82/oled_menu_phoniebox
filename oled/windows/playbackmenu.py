@@ -29,9 +29,6 @@ class Playbackmenu(WindowBase):
         self._duration = -1
         self._state = "starting"
         self._statex ="unknown"
-        self.job_t = -1
-        self.job_i = -1
-        self.job_s = -1
         self.counter = 1
         self.skipselected = False
         self.descr = []
@@ -49,7 +46,6 @@ class Playbackmenu(WindowBase):
     def activate(self):
         self._activepbm = True
         self.loop.create_task(self._generatenowplaying())
-        self.loop.create_task(self._linuxjob())
         self.counter = 1
         self.skipselected = False
 
@@ -127,8 +123,8 @@ class Playbackmenu(WindowBase):
 
 
             #shutdowntimer ? aktiv dann Zeit anzeigen
-            if self.job_t >= 0:
-                draw.text((108, 51 ), "%2.2d" % (int(self.job_t)), font=Playbackmenu.fontsmall, fill="white")
+            if settings.job_t >= 0:
+                draw.text((108, 51 ), "%2.2d" % (int(settings.job_t)), font=Playbackmenu.fontsmall, fill="white")
 
 
             #draw.text((10,10),"CONTROLS", font=Idle.bigfong, fill="white")
@@ -149,16 +145,6 @@ class Playbackmenu(WindowBase):
                 draw.text((40, 20), "\uf04d", font=Playbackmenu.faiconsbig, fill="white") #play
             draw.text((70, 20), "\uf062", font=Playbackmenu.faiconsbig, fill="white") #menu
             draw.text((100, 20), "\uf0a8", font=Playbackmenu.faiconsbig, fill="white") #menu
-
-
-    async def _linuxjob(self):
-
-        while self.loop.is_running() and self._activepbm:
-            self.job_t = fn.linux_job_remaining("t")
-            self.job_s = fn.linux_job_remaining("s")
-            self.job_i = fn.linux_job_remaining("i")
-
-            await asyncio.sleep(20)
 
 
     async def _generatenowplaying(self):

@@ -35,9 +35,6 @@ class Idle(WindowBase):
         self._duration = -1
         self._state = "starting"
         self._statex = "unknown"
-        self.job_t = -1
-        self.job_i = -1
-        self.job_s = -1
         self.timeout=False
         self.LocalOutputEnabled = False
         self.BluetoothFound = False
@@ -66,8 +63,6 @@ class Idle(WindowBase):
                 draw.text((115,5), "\uf293", font=Idle.faiconsbig, fill="white")
             else:
                 draw.text((115,5), "\uf294", font=Idle.faiconsbig, fill="white")
-
-
 
 
             #Trennleiste waagerecht
@@ -130,15 +125,15 @@ class Idle(WindowBase):
             draw.text((_xpos, 51 ),_spos , font=Idle.fontsmall, fill="white")
 
             #shutdowntimer ? aktiv dann Zeit anzeigen
-            if self.job_t >= 0:
-                draw.text((108, 51 ), "%2.2d" % (int(self.job_t)), font=Idle.fontsmall, fill="white")
+            if settings.job_t >= 0:
+                draw.text((108, 51 ), "%2.2d" % (int(settings.job_t)), font=Idle.fontsmall, fill="white")
 
 
-            if ((self._state == "stop") or (self.job_t >=0 and self.job_t <= 5) or (self.job_i >= 0 and self.job_i <=5)):
-                if self.job_i >= 0:
-                    draw.text((1,1), "i: " +  str(self.job_i) + "m", font=Idle.bigfont, fill="white") 
-                if self.job_t >= 0:
-                    draw.text((64,1), "t: " +  str(self.job_t) + "m", font=Idle.bigfont, fill="white") 
+            if ((self._state == "stop") or (settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5)):
+                if settings.job_i >= 0:
+                    draw.text((1,1), "i: " +  str(settings.job_i) + "m", font=Idle.bigfont, fill="white") 
+                if settings.job_t >= 0:
+                    draw.text((64,1), "t: " +  str(settings.job_t) + "m", font=Idle.bigfont, fill="white") 
                 return
 
 
@@ -151,10 +146,10 @@ class Idle(WindowBase):
 
     async def _linuxjob(self):
 
-        while self.loop.is_running() and self._active:
-            self.job_t = fn.linux_job_remaining("t")
-            self.job_s = fn.linux_job_remaining("s")
-            self.job_i = fn.linux_job_remaining("i")
+        while self.loop.is_running():
+            settings.job_t = fn.linux_job_remaining("t")
+            settings.job_s = fn.linux_job_remaining("s")
+            settings.job_i = fn.linux_job_remaining("i")
 
             await asyncio.sleep(20)
 
