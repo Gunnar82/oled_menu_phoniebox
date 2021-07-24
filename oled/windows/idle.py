@@ -196,7 +196,8 @@ class Idle(WindowBase):
             if title != oldtitle:
                 settings.screenpower = True
                 if oldtitle != "":
-                    settings.lastinput = datetime.datetime.now() - datetime.timedelta(seconds=settings.CONTRAST_TIMEOUT)
+                    if (datetime.datetime.now() - settings.lastinput).total_seconds() >= settings.DARK_TIMEOUT:
+                        settings.lastinput = datetime.datetime.now() - datetime.timedelta(seconds=settings.CONTRAST_TIMEOUT)
                 titlex = 0
                 oldtitle = title
             else:
