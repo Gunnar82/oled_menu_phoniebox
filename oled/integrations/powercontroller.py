@@ -110,8 +110,8 @@ class PowerController():
         print ("pc-poweroff")
         #self.bus.write_byte_data(ADDRESS, REG_BUTTONSTATE, 0)
         self.bus.write_byte_data(ADDRESS, REG_LEDR, 0)
-        self.bus.write_byte_data(ADDRESS, REG_LEDG, 100)
-        self.bus.write_byte_data(ADDRESS, REG_LEDB, 0)
+        self.bus.write_byte_data(ADDRESS, REG_LEDG, 0)
+        self.bus.write_byte_data(ADDRESS, REG_LEDB, 100)
         self.bus.write_byte_data(ADDRESS, REG_LEDMODE, LEDMODE_BLINK)
         #self.bus.write_byte_data(ADDRESS, REG_POWEROFFTIMER, 30) # poweroff in 30 seconds
 
@@ -127,7 +127,7 @@ class PowerController():
         self.bus.write_byte_data(ADDRESS, REG_LEDB, 0)
         self.bus.write_byte_data(ADDRESS, REG_LEDMODE, LEDMODE_STATIC)
 
-        self.bus.write_byte_data(ADDRESS, REG_BUTTONPOWEROFFTIME, 20) # We deal with this directly
+        self.bus.write_byte_data(ADDRESS, REG_BUTTONPOWEROFFTIME, 10) # We deal with this directly
         self.bus.write_byte_data(ADDRESS, REG_BUTTONMODE, BUTTONMODE_SHORT_LONG_PRESS)
         self.bus.write_byte_data(ADDRESS, REG_INTERRUPTPIN, self.intpin) # Set interrupt pin 
         self.bus.write_byte_data(ADDRESS, REG_BUTTONSTATE, 0)
