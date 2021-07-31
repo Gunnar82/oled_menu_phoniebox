@@ -89,6 +89,7 @@ class WindowManager():
 
     def turn_callback(self, direction, key=None):
         try:
+            settings.screenpower = True
             settings.lastinput = datetime.now()
             self.activewindow.turn_callback(direction,key=key)
         except (NotImplementedError, AttributeError):

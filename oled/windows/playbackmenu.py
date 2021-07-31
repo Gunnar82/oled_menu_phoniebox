@@ -33,6 +33,7 @@ class Playbackmenu(WindowBase):
         self.skipselected = False
         self.descr = []
         self.descr.append("Zurück / Vor")
+        self.descr.append ("Stop")
         self.descr.append ("Play / Pause")
         self.descr.append("Hauptmenü")
         self.descr.append("Zurück")
@@ -46,7 +47,7 @@ class Playbackmenu(WindowBase):
     def activate(self):
         self._activepbm = True
         self.loop.create_task(self._generatenowplaying())
-        self.counter = 1
+        self.counter = 2
         self.skipselected = False
 
     def deactivate(self):
@@ -131,20 +132,19 @@ class Playbackmenu(WindowBase):
             #draw.text((18, 2), "\uf071", font=Playbackmenu.faicons, fill="white")
 
             #selection line
-            draw.line((10+(self.counter)*30, 42, 30+(self.counter)*30, 42), width=2, fill="white")
+            draw.line((10+(self.counter)*20, 42, 30+(self.counter)*20, 42), width=2, fill="white")
             fillcolor = "black" if self.skipselected else "white"
             bgcolor   = "white" if self.skipselected else "black"
             draw.rectangle((7,17,30,40),fill=bgcolor,outline=bgcolor)
-            draw.text((10, 20), "\uf048", font=Playbackmenu.faiconsbig, fill=fillcolor) #prev
-            draw.text((20, 20), "\uf051", font=Playbackmenu.faiconsbig, fill=fillcolor) #next
+            draw.text((5, 20), "\uf048", font=Playbackmenu.faiconsbig, fill=fillcolor) #prev
+            draw.text((15, 20), "\uf051", font=Playbackmenu.faiconsbig, fill=fillcolor) #next
+            draw.text((30, 20), "\uf04d", font=Playbackmenu.faiconsbig, fill="white") #play
             if self._state == "play":
-                draw.text((40, 20), "\uf04c", font=Playbackmenu.faiconsbig, fill="white") #pause
-            elif self._state == "pause":
-                draw.text((40, 20), "\uf04b", font=Playbackmenu.faiconsbig, fill="white") #play
-            else:
-                draw.text((40, 20), "\uf04d", font=Playbackmenu.faiconsbig, fill="white") #play
+                draw.text((50, 20), "\uf04c", font=Playbackmenu.faiconsbig, fill="white") #pause
+            else: #self._state == "pause":
+                draw.text((50, 20), "\uf04b", font=Playbackmenu.faiconsbig, fill="white") #play
             draw.text((70, 20), "\uf062", font=Playbackmenu.faiconsbig, fill="white") #menu
-            draw.text((100, 20), "\uf0a8", font=Playbackmenu.faiconsbig, fill="white") #menu
+            draw.text((90, 20), "\uf0a8", font=Playbackmenu.faiconsbig, fill="white") #menu
 
 
     async def _generatenowplaying(self):
@@ -177,10 +177,12 @@ class Playbackmenu(WindowBase):
 
     def push_callback(self,lp=False):
         if self.counter == 1:
-            os.system("/home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=playerpause")
+            os.system("/home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=playerstop")
         elif self.counter == 2:
-            self.windowmanager.set_window("mainmenu")
+            os.system("/home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=playerpause")
         elif self.counter == 3:
+            self.windowmanager.set_window("mainmenu")
+        elif self.counter == 4:
             self.windowmanager.set_window("idle")
         elif self.counter == 0:
             if self.skipselected:
@@ -216,7 +218,7 @@ class Playbackmenu(WindowBase):
             else:
                 integrations.playout.pc_next()
         else:
-            if (self.counter + direction <= 3 and self.counter + direction >= 0):
+            if (self.counter + direction <= 4 and self.counter + direction >= 0):
                 self.counter += direction
             
         #os.system("mpc volume {}{} > /dev/null".format(plus,direction))
