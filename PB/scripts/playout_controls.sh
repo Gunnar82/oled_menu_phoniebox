@@ -1005,7 +1005,12 @@ case $COMMAND in
         /usr/bin/php /home/pi/RPi-Jukebox-RFID/scripts/helperscripts/cli_ReadWifiIp.php
         ;;
     savepos)
+        echo "SAVEPOS:$FOLDER:"
         ${PATHDATA}/resume_play.sh -c=savepos
+        ;;
+    resume)
+        echo "RESUME:$FOLDER:"
+        ${PATHDATA}/resume_play.sh -c=resume
         ;;
     *)
         echo Unknown COMMAND $COMMAND VALUE $VALUE

@@ -86,6 +86,7 @@ then
         SINGLE="OFF"
         SONG="-1"
         PLAYLISTLENGTH="-1"
+	TRACKONLY=false
     fi
     
     #########################################################
@@ -102,6 +103,7 @@ then
     if [ "$SHUFFLE" ]; then NEWSHUFFLE="$SHUFFLE"; fi
     if [ "$LOOP" ]; then NEWLOOP="$LOOP"; fi
     if [ "$SONG" ]; then NEWSONG="$SONG"; fi
+    if [ "$TRACKONLY" ]; then NEWTRACKONLY="$TRACKONLY"; fi
     if [ "$PLAYLISTLENGTH" ]; then NEWPLAYLISTLENGTH="$PLAYLISTLENGTH"; fi
     if [ "$SINGLE" ]; then NEWSINGLE="$SINGLE"; fi
 
@@ -124,6 +126,7 @@ then
     echo "SHUFFLE=\"%SHUFFLE%\"" >> "${AUDIOFOLDERSPATH}/${FOLDER}/folder.conf"
     echo "LOOP=\"%LOOP%\"" >> "${AUDIOFOLDERSPATH}/${FOLDER}/folder.conf"
     echo "SONG=\"%SONG%\"" >> "${AUDIOFOLDERSPATH}/${FOLDER}/folder.conf"
+    echo "TRACKONLY=\"%TRACKONLY%\"" >> "${AUDIOFOLDERSPATH}/${FOLDER}/folder.conf"
     echo "PLAYLISTLENGTH=\"%PLAYLISTLENGTH%\"" >> "${AUDIOFOLDERSPATH}/${FOLDER}/folder.conf"
     echo "SINGLE=\"%SINGLE%\"" >> "${AUDIOFOLDERSPATH}/${FOLDER}/folder.conf"
 
@@ -143,6 +146,7 @@ then
     if [ "$NEWSHUFFLE" ]; then SHUFFLE="$NEWSHUFFLE"; fi
     if [ "$NEWLOOP" ]; then LOOP="$NEWLOOP"; fi
     if [ "$NEWSONG" ]; then SONG="$NEWSONG"; fi
+    if [ "$NEWTRACKONLY" ]; then TRACKONLY="$NEWTRACKONLY"; fi
     if [ "$NEWPLAYLISTLENGTH" ]; then PLAYLISTLENGTH="$NEWPLAYLISTLENGTH"; fi
     
     if [ "$NEWSINGLE" ]; then SINGLE="$NEWSINGLE"; fi
@@ -158,6 +162,7 @@ then
     sudo sed -i 's/%SHUFFLE%/'"$SHUFFLE"'/' "${AUDIOFOLDERSPATH}/${FOLDER}/folder.conf"
     sudo sed -i 's/%LOOP%/'"$LOOP"'/' "${AUDIOFOLDERSPATH}/${FOLDER}/folder.conf" 
     sudo sed -i 's/%SONG%/'"$SONG"'/' "${AUDIOFOLDERSPATH}/${FOLDER}/folder.conf"
+    sudo sed -i 's/%TRACKONLY%/'"$TRACKONLY"'/' "${AUDIOFOLDERSPATH}/${FOLDER}/folder.conf"
     sudo sed -i 's/%SINGLE%/'"$SINGLE"'/' "${AUDIOFOLDERSPATH}/${FOLDER}/folder.conf"
     sudo sed -i 's/%PLAYLISTLENGTH%/'"$PLAYLISTLENGTH"'/' "${AUDIOFOLDERSPATH}/${FOLDER}/folder.conf"
     sudo chown pi:www-data "${AUDIOFOLDERSPATH}/${FOLDER}/folder.conf"

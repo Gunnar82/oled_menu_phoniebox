@@ -105,6 +105,7 @@ savepos)
 resume)
     # Read the current config file (include will execute == read)
     # read vars from folder.conf
+    TRACKONLY="false"
     . "$AUDIOFOLDERSPATH/$FOLDER/folder.conf"
     if [ "${DEBUG_resume_play_sh}" == "TRUE" ]; then echo "  savepos FOLDER: $FOLDER" >> $PATHDATA/../logs/debug.log; fi
     if [ "${DEBUG_resume_play_sh}" == "TRUE" ]; then echo "  entering: resume with value $RESUME" >> $PATHDATA/../logs/debug.log; fi
@@ -139,7 +140,7 @@ resume)
                 # workaround, see https://github.com/MiczFlor/RPi-Jukebox-RFID/issues/878#issuecomment-672283454
                 echo -e "play $PLAYLISTPOS" | nc -w 1 localhost 6600
                 REALPOS=`expr $SONG + 1`
-                if [ ! -z $PLAYLISTLENGTH ] && [ $PLAYLISTLENGTH -gt $REALPOS ] ; then
+                if [ ! -z $PLAYLISTLENGTH ] && [ $PLAYLISTLENGTH -gt $REALPOS ] && [ $TRACKONLY = "false" ] ; then
                     echo -e seekcur $ELAPSED \\nclose | nc -w 1 localhost 6600
                 fi
             else
