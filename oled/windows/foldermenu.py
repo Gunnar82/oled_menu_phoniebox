@@ -11,7 +11,8 @@ class Foldermenu(MenuBase):
 
     
     def playfolder(self,folder):
-        foldername = folder[len(settings.AUDIO_BASEPATH):]
+        foldername = folder[len(settings.AUDIO_BASEPATH_BASE):]
+        print (foldername)
         os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/rfid_trigger_play.sh -d=\"%s\"" % (foldername))
         self.windowmanager.set_window("idle")
 
@@ -19,8 +20,8 @@ class Foldermenu(MenuBase):
         self.counter = 2
         settings.current_selectedfolder = settings.currentfolder
         settings.currentfolder = functions.get_parent_folder(settings.currentfolder)
-        if len(settings.currentfolder) < len(settings.AUDIO_BASEPATH):
-            settings.currentfolder = settings.AUDIO_BASEPATH
+        if len(settings.currentfolder) < len(settings.audio_basepath):
+            settings.currentfolder = settings.audio_basepath
         self.generate_folders(settings.currentfolder)
 
 
@@ -80,7 +81,7 @@ class Foldermenu(MenuBase):
 
     def push_callback(self,lp=False):
         if self.counter == 0:
-            settings.currentfolder = settings.AUDIO_BASEPATH
+            settings.currentfolder = settings.audio_basepath
             self.windowmanager.set_window("mainmenu")
         elif self.counter == 1:
             self.on_key_left()
