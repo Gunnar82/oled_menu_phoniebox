@@ -56,7 +56,7 @@ class WindowManager():
                 settings.screenpower = True
             else:
                 if ((datetime.now() - settings.lastinput).total_seconds() >= settings.DARK_TIMEOUT and self.activewindow.contrasthandle):
-                    contrast = 0
+                    contrast = settings.CONTRAST_BLACK
                     settings.screenpower = False
 
             if self._lastcontrast != contrast:

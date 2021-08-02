@@ -12,7 +12,7 @@ DARK_TIMEOUT = 60
 
 CONTRAST_FULL = 245
 CONTRAST_DARK = 32
-
+CONTRAST_BLACK = 10
 PLAYOUT_CONTROLS = "sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh"
 
 
@@ -37,7 +37,7 @@ FONT_CLOCK = "fonts/calibri.ttf"
 ALSA_DEV_LOCAL="hifiberrydac"
 
 #BluetoothKopfhoerer
-ENABLED_DEV_BT_1 = "OFF"
+ENABLED_DEV_BT_1 = "ON"
 NAME_DEV_BT_1 = "BT1"
 ALSA_DEV_BT_1 = "bt_dev_1"
 MAC_DEV_BT_1 = "4A:F5:FF:38:28:D5"
