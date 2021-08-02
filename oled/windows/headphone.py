@@ -18,6 +18,7 @@ class Headphonemenu(WindowBase):
         self.descr.append(settings.NAME_DEV_BT_1 + " " + settings.ENABLED_DEV_BT_1)
         self.descr.append(settings.NAME_DEV_BT_2 + " " + settings.ENABLED_DEV_BT_2)
         self.descr.append("Lautsprecher")
+        integrations.bluetooth.enable_dev_local()
 
 
     def render(self):
