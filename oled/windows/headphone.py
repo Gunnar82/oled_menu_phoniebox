@@ -32,11 +32,11 @@ class Headphonemenu(WindowBase):
 
 #            draw.text((13, 25), text="Zurück", font=Headphonemenu.font, fill="white")
             draw.text((5, 35), text="\uf0a8", font=Headphonemenu.faicons, fill="white")
-            text = "\uf293" if settings.ENABLED_DEV_BT_1 == "ON" else "\uf294"
+            text = "\uf293" if settings.ENABLED_DEV_BT_1 == "ON" else "\uf057"
 #            draw.text((30, 25), text="Bluetooth 1", font=Headphonemenu.font, fill="white")
             draw.text((35, 35), text=text, font=Headphonemenu.faicons, fill="white")
 
-            text = "\uf293" if settings.ENABLED_DEV_BT_2 == "ON" else "\uf294"
+            text = "\uf293" if settings.ENABLED_DEV_BT_2 == "ON" else "\uf057"
 #            draw.text((30, 25), text="Kopfhörer", font=Headphonemenu.font, fill="white")
             draw.text((65, 35), text=text, font=Headphonemenu.faicons, fill="white")
 

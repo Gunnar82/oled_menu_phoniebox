@@ -41,7 +41,7 @@ class Shutdownmenu(WindowBase):
             draw.text((65, 25), text="\uf0e2", font=Shutdownmenu.faicons, fill="white")
 
             draw.text((90, 14), text="0", font=Shutdownmenu.font, fill="white")
-            draw.text((90, 25), text="\uf0a2", font=Shutdownmenu.faicons, fill="white")
+            draw.text((90, 25), text="\uf1f7", font=Shutdownmenu.faicons, fill="white")
 
 
 #####

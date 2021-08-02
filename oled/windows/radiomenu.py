@@ -7,6 +7,7 @@ class Radiomenu(MenuBase):
         super().__init__(windowmanager, "Radiosender")
 
     def activate(self):
+        self.counter = 2
         self.menu = self.mopidyconnection.radiostations
 
     def push_callback(self,lp=False):
