@@ -53,8 +53,9 @@ STATUS_LED_ENABLED=True
 STATUS_LED_PIN=6
 STATUS_LED_ALWAYS_ON=False
 
-
-AUDIO_BASEPATH = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders"
+AUDIO_BASEPATH_BASE = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders"
+AUDIO_BASEPATH_MUSIC = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/Musik"
+AUDIO_BASEPATH_HOERBUCH = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/Hörspiele"
 SR1 = "beendet"
 SR2 = "heruntergefahren"
 SR3 = "neugestartet"
@@ -63,10 +64,11 @@ SR3 = "neugestartet"
 from datetime import datetime
 ###########################
 screenpower = True
-currentfolder = AUDIO_BASEPATH 
-current_selectedfolder=currentfolder
 shutdown_reason = "changeme"
 lastinput = datetime.now()
 job_t = -1
 job_i = -1
 job_s = -1
+audio_basepath = AUDIO_BASEPATH_MUSIC
+currentfolder = audio_basepath
+current_selectedfolder=currentfolder
