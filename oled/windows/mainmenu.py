@@ -51,24 +51,27 @@ class Mainmenu(WindowBase):
         
 
     def push_callback(self,lp=False):
-        if self.counter == 0:
-            self.windowmanager.set_window("idle")
-        elif self.counter == 1:
-            settings.audio_basepath = settings.AUDIO_BASEPATH_MUSIC
-            settings.currentfolder = settings.AUDIO_BASEPATH_MUSIC
-            self.windowmanager.set_window("foldermenu")
-        elif self.counter == 2:
-            settings.audio_basepath = settings.AUDIO_BASEPATH_HOERBUCH
-            settings.currentfolder = settings.AUDIO_BASEPATH_HOERBUCH
-            self.windowmanager.set_window("foldermenu")
-        elif self.counter == 3:
-            self.windowmanager.set_window("radiomenu")
-        elif self.counter == 4:
-            self.windowmanager.set_window("headphonemenu")
-        elif self.counter == 5:
-            self.windowmanager.set_window("shutdownmenu")
-        elif self.counter == 6:
-            self.windowmanager.set_window("infomenu")
+        if lp == True:
+            self.counter = 6 if (self.counter < 5)  else 1 
+        else:
+            if self.counter == 0:
+                self.windowmanager.set_window("idle")
+            elif self.counter == 1:
+                settings.audio_basepath = settings.AUDIO_BASEPATH_MUSIC
+                settings.currentfolder = settings.AUDIO_BASEPATH_MUSIC
+                self.windowmanager.set_window("foldermenu")
+            elif self.counter == 2:
+                settings.audio_basepath = settings.AUDIO_BASEPATH_HOERBUCH
+                settings.currentfolder = settings.AUDIO_BASEPATH_HOERBUCH
+                self.windowmanager.set_window("foldermenu")
+            elif self.counter == 3:
+                self.windowmanager.set_window("radiomenu")
+            elif self.counter == 4:
+                self.windowmanager.set_window("headphonemenu")
+            elif self.counter == 5:
+                self.windowmanager.set_window("shutdownmenu")
+            elif self.counter == 6:
+                self.windowmanager.set_window("infomenu")
 
     def turn_callback(self, direction, key=None):
         if key:
@@ -81,5 +84,5 @@ class Mainmenu(WindowBase):
             else:
                 direction = 1
 
-        if self.counter + direction <= 6 and self.counter + direction >= 0:
+        if (self.counter + direction < 6 and self.counter + direction >= 0):
             self.counter += direction
