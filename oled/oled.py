@@ -9,6 +9,8 @@ import integrations.bluetooth
 from integrations.display import get_display
 from integrations.rotaryencoder import RotaryEncoder
 from integrations.powercontroller import PowerController
+from integrations.keyboard import KeyboardCtrl
+import settings
 
 from integrations.mopidy import MopidyControl
 from integrations.musicmanager import Musicmanager
@@ -84,12 +86,33 @@ def main():
     def push_callback(_lp=False):
         windowmanager.push_callback(lp=_lp)
 
-    #RotaryEncoder(loop, turn_callback, push_callback
+    ####keyboard control
+    mKeyboard = KeyboardCtrl(loop, turn_callback, push_callback)
+
+
+    ###Rotarycontroller Setup
+    haspowercontroller = False
+
+    if True:
+        if settings.ROTARYENCODER:
+            print ("Rotaryconctroller")
+            rc = RotaryEncoder(loop, turn_callback, push_callback)
+#    except:
+#        print ("err")
+
+
+    ####Powercontroller Init
     haspowercontroller = True
     try:
-        pc = PowerController(loop, turn_callback, push_callback)
+        if settings.POWERCONTROLLER:
+            print ("Poweronctroller")
+            pc = PowerController(loop, turn_callback, push_callback)
+        else:
+            haspowercontroller = False
     except:
         haspowercontroller = False
+
+
 
     try:
         loop.run_forever()
