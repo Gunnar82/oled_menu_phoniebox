@@ -33,7 +33,6 @@ class RotaryEncoder():
         switch_b = GPIO.input(settings.PIN_DT)
 
         if self.current_clk == switch_a and self.current_dt == switch_b:
-            print ("same")
             #Same interrupt as before? -> Bouncing -> no action
             pass
         else:
@@ -44,10 +43,8 @@ class RotaryEncoder():
             if (switch_a and switch_b): #both ones active
                 self.lockrotary.acquire()
                 if channel == settings.PIN_DT: #Direction depends on which one was last
-                    print("1")
                     self.turn_callback(1)
                 else:
-                    print("-1")
                     self.turn_callback(-1)
                 self.lockrotary.release()
 
