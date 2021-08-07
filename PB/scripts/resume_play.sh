@@ -140,6 +140,11 @@ resume)
                 # workaround, see https://github.com/MiczFlor/RPi-Jukebox-RFID/issues/878#issuecomment-672283454
                 echo -e "play $PLAYLISTPOS" | nc -w 1 localhost 6600
                 REALPOS=`expr $SONG + 1`
+                echo $FOLDER
+		if [[ $FOLDER = /Musik* ]] ; then
+		    TRACKONLY="true"
+		fi
+
                 if [ ! -z $PLAYLISTLENGTH ] && [ $PLAYLISTLENGTH -gt $REALPOS ] && [ $TRACKONLY = "false" ] ; then
                     echo -e seekcur $ELAPSED \\nclose | nc -w 1 localhost 6600
                 fi
