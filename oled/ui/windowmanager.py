@@ -64,11 +64,10 @@ class WindowManager():
                 self.device.contrast(contrast)
 
             if self.activewindow != [] and settings.screenpower:
-                #try:
-                if True:
+                try:
                     self.activewindow.render()
-                #except (NotImplementedError, AttributeError):
-                #    pass
+                except (NotImplementedError, AttributeError):
+                    pass
 
 
 

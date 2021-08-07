@@ -13,12 +13,14 @@ class MenuBase(WindowBase):
         self.title = title
         self.left_pressed = False
         self.right_pressed = False
+        self.drawtextx = 0
 
     def render(self):
         if self.left_pressed:
             self.left_pressed = False
             self.on_key_left()
             return
+
 
         if self.right_pressed:
             self.right_pressed = False
@@ -48,7 +50,16 @@ class MenuBase(WindowBase):
 
             #Playlists
             for i in range(4 if len(self.menu) >= 4 else len(self.menu)):
-                draw.text((8, 17+i*12), text=self.menu[i+self.page], font=font, fill="white")
+                if self.counter -2  == i + self.page:
+                    drawtext = self.menu[i+self.page]
+                    if font.getsize(drawtext[self.drawtextx:])[0] > 127:
+                        self.drawtextx += 1
+                    else:
+                        self.drawtextx = 0
+                    draw.text((8, 17+i*12), drawtext[self.drawtextx:], font=font, fill="white")
+                else:
+                    draw.text((8, 17+i*12), self.menu[i+self.page], font=font, fill="white")
+
 
     def on_key_left(self):
         raise NotImplementedError()
@@ -77,3 +88,5 @@ class MenuBase(WindowBase):
             #short menu < 4 items
             elif len(self.menu) <= 4 and (self.counter-1) + direction <= len(self.menu):
                 self.counter += direction
+
+
