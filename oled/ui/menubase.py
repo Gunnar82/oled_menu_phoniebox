@@ -50,7 +50,7 @@ class MenuBase(WindowBase):
 
             #Playlists
             for i in range(4 if len(self.menu) >= 4 else len(self.menu)):
-                if self.counter -2  == i + self.page:
+                if self.counter +self.page -2  == i + self.page:
                     drawtext = self.menu[i+self.page]
                     if font.getsize(drawtext[self.drawtextx:])[0] > 127:
                         self.drawtextx += 1
