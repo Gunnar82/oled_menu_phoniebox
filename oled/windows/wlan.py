@@ -11,6 +11,7 @@ import subprocess
 class Wlanmenu(WindowBase):
     font = ImageFont.truetype(settings.FONT_TEXT, size=12)
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=15)
+    faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=35)
 
     def __init__(self, windowmanager):
         super().__init__(windowmanager)
@@ -24,6 +25,7 @@ class Wlanmenu(WindowBase):
         self._hostapd_wifi_psk = "n/a"
         self._ip_addr = "n/a"
         self.timeout = False
+        self.busy = False
 
     def activate(self):
         self._active = True
@@ -37,21 +39,26 @@ class Wlanmenu(WindowBase):
 
     def render(self):
         with canvas(self.device) as draw:
+
+            if self.busy:
+                draw.text((50, 25), text="\uf251", font=Wlanmenu.faiconsbig, fill="white") #zurück
+                return
+
             mwidth = Wlanmenu.font.getsize(self.descr[self.counter])
             draw.text((64 - int(mwidth[0]/2),1), text=self.descr[self.counter], font=Wlanmenu.font, fill="white")
 
-            x_coord = 2 + self.counter * 20
-            y_coord = 19
+            x_coord = 2 
+            y_coord = 19+ self.counter * 20
 
             draw.rectangle((x_coord, y_coord, x_coord+20, y_coord+20), outline=255, fill=0)
 
             draw.text((5, 22), text="\uf0a8", font=Wlanmenu.faicons, fill="white") #zurück
-            draw.text((27, 22), text="\uf09e" if self._hostapd else "\uf140", font=Wlanmenu.faicons, fill="white") #script starten
-            draw.text((5, 50), text="IP: %s" % (self._ip_addr), font=Wlanmenu.font, fill="white") #zurück
+            draw.text((5, 42), text="\uf09e" if self._hostapd else "\uf140", font=Wlanmenu.faicons, fill="white") #script starten
+            draw.text((30, 22), text="IP: %s" % (self._ip_addr), font=Wlanmenu.font, fill="white") #zurück
 
             if self._hostapd:
-                draw.text((65, 20), text=self._hostapd_wifi_ssid, font=Wlanmenu.font, fill="white") #zurück
-                draw.text((65, 35), text=self._hostapd_wifi_psk, font=Wlanmenu.font, fill="white") #script starten
+                draw.text((30, 35), text=self._hostapd_wifi_ssid, font=Wlanmenu.font, fill="white") #zurück
+                draw.text((30, 50), text=self._hostapd_wifi_psk, font=Wlanmenu.font, fill="white") #script starten
 
 
     async def _wlanstate(self):
@@ -102,10 +109,13 @@ class Wlanmenu(WindowBase):
             self.windowmanager.set_window("mainmenu")
         elif self.counter == 1:
             try:
+                self.busy = True
                 os.system('sudo /usr/bin/autohotspotN')
 
             except:
                 pass
+            finally:
+                self.busy = False
 
 
     def turn_callback(self, direction, key=None):
