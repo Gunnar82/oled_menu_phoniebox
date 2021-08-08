@@ -67,7 +67,9 @@ class Mainmenu(WindowBase):
                 settings.currentfolder = settings.AUDIO_BASEPATH_HOERBUCH
                 self.windowmanager.set_window("foldermenu")
             elif self.counter == 3:
-                self.windowmanager.set_window("radiomenu")
+                settings.audio_basepath = settings.AUDIO_BASEPATH_RADIO
+                settings.currentfolder = settings.AUDIO_BASEPATH_RADIO
+                self.windowmanager.set_window("foldermenu")
             elif self.counter == 4:
                 self.windowmanager.set_window("headphonemenu")
             elif self.counter == 5:

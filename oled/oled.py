@@ -21,7 +21,6 @@ import windows.headphone
 import windows.mainmenu
 import windows.playbackmenu
 import windows.playlistmenu
-import windows.radiomenu
 import windows.foldermenu
 import windows.shutdownmenu
 import windows.folderinfo
@@ -63,7 +62,6 @@ def main():
     loadedwins.append(windows.info.Infomenu(windowmanager))
     loadedwins.append(windows.headphone.Headphonemenu(windowmanager))
     loadedwins.append(windows.playlistmenu.Playlistmenu(windowmanager, mopidy))
-    loadedwins.append(windows.radiomenu.Radiomenu(windowmanager, mopidy))
     loadedwins.append(windows.foldermenu.Foldermenu(windowmanager))
     loadedwins.append(windows.folderinfo.FolderInfo(windowmanager))
     loadedwins.append(windows.ende.Ende(windowmanager))

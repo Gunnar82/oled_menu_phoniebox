@@ -7,8 +7,6 @@ Software settings
 POWERCONTROLLER=False
 ROTARYENCODER=True
 
-RADIO_PLAYLIST = "GBRadio"
-
 MENU_TIMEOUT = 20
 START_TIMEOUT = 2
 
@@ -19,10 +17,6 @@ CONTRAST_FULL = 245
 CONTRAST_DARK = 32
 CONTRAST_BLACK = 10
 PLAYOUT_CONTROLS = "sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh"
-
-
-STATIONSPLAYLIST = "/home/pi/RPi-Jukebox-RFID/playlists/GBRadio.m3u"
-EMULATED = False
 
 #Pins for rotary encoder
 PIN_CLK = 24
@@ -61,6 +55,8 @@ STATUS_LED_ALWAYS_ON=False
 AUDIO_BASEPATH_BASE = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders"
 AUDIO_BASEPATH_MUSIC = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/Musik"
 AUDIO_BASEPATH_HOERBUCH = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/Hörspiele"
+AUDIO_BASEPATH_RADIO = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/Radio"
+
 SR1 = "beendet"
 SR2 = "heruntergefahren"
 SR3 = "neugestartet"
