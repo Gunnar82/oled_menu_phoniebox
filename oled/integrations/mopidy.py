@@ -69,7 +69,6 @@ class MopidyControl():
 
     async def _refresh_content(self):
         while self.loop.is_running() and self.connected:
-            await self._refresh_radiostations()
             await self._refresh_playlists()
             await asyncio.sleep(600)
 
@@ -110,8 +109,7 @@ class MopidyControl():
         else:
             self.playlists = []
             for playlist in playlists:
-                if playlist["playlist"] != settings.RADIO_PLAYLIST:
-                    self.playlists.append(playlist["playlist"])
+                self.playlists.append(playlist["playlist"])
 
 
     def playpause(self):

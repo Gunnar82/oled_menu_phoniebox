@@ -3,7 +3,7 @@ from ui.menubase import MenuBase
 import settings
 import os 
 import integrations.functions as functions
-
+import integrations.playout as playout
 class Foldermenu(MenuBase):
     position = 0
     folders = []
@@ -12,8 +12,7 @@ class Foldermenu(MenuBase):
     
     def playfolder(self,folder):
         foldername = folder[len(settings.AUDIO_BASEPATH_BASE):]
-        print (foldername)
-        os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/rfid_trigger_play.sh -d=\"%s\"" % (foldername))
+        playout.pc_playfolder(foldername)
         self.windowmanager.set_window("idle")
 
     def on_key_left(self):
@@ -33,7 +32,7 @@ class Foldermenu(MenuBase):
         self.folders = []
         for file in os.listdir(path):
             d = os.path.join(path, file)
-            if os.path.isdir(d) and (str(file) != settings.RADIO_PLAYLIST):
+            if os.path.isdir(d):
                 self.folders.append(file)
         self.folders.sort()
 
@@ -46,6 +45,7 @@ class Foldermenu(MenuBase):
         self.generate_folders_array(folder)
         self.menu = []
         self.menu = self.folders
+
         if settings.current_selectedfolder.rfind(settings.currentfolder) == 0:
             search = settings.current_selectedfolder[len(settings.currentfolder)+1:]
             try:
