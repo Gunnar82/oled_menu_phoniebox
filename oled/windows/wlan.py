@@ -23,6 +23,7 @@ class Wlanmenu(WindowBase):
         self.descr.append("Hotspot umschalten")
         self._hostapd_wifi_ssid = "n/a"
         self._hostapd_wifi_psk = "n/a"
+        self.wifi_ssid = "n/a"
         self._ip_addr = "n/a"
         self.timeout = False
         self.busy = False
@@ -59,7 +60,8 @@ class Wlanmenu(WindowBase):
             if self._hostapd:
                 draw.text((30, 35), text=self._hostapd_wifi_ssid, font=Wlanmenu.font, fill="white") #zurück
                 draw.text((30, 50), text=self._hostapd_wifi_psk, font=Wlanmenu.font, fill="white") #script starten
-
+            else:
+                draw.text((30,35), text="WiFi: %s" % (self.wifi_ssid), font=Wlanmenu.font, fill="white")
 
     async def _wlanstate(self):
 
@@ -93,7 +95,14 @@ class Wlanmenu(WindowBase):
                 except:
                     self._hostapd_wifi_psk = "n/a"
 
-                
+                try:
+                    subprocess_result = subprocess.Popen('iwgetid',shell=True,stdout=subprocess.PIPE)
+                    subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
+                    self.wifi_ssid = subprocess_output[0].decode('utf-8')
+                    self.wifi_ssid = self.wifi_ssid[self.wifi_ssid.rfind(":")+1:]
+                except:
+                    self.wifi = "n/a"
+
 
 
 
