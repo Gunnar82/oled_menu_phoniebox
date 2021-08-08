@@ -26,6 +26,7 @@ import windows.foldermenu
 import windows.shutdownmenu
 import windows.folderinfo
 import windows.start
+import windows.wlan
 import windows.ende
 
 import settings
@@ -66,6 +67,7 @@ def main():
     loadedwins.append(windows.foldermenu.Foldermenu(windowmanager))
     loadedwins.append(windows.folderinfo.FolderInfo(windowmanager))
     loadedwins.append(windows.ende.Ende(windowmanager))
+    loadedwins.append(windows.wlan.Wlanmenu(windowmanager))
     loadedwins.append(shutdownscreen)
 
     loadedwins.append(windows.start.Start(windowmanager, mopidy))

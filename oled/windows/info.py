@@ -39,12 +39,11 @@ class Infomenu(WindowBase):
                 self.temp = "n/a"
 
             try:
-                s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                s.connect(("msftconnectest.com", 80))
-                self.ipaddr = s.getsockname()[0]
-                s.close()
+                subprocess_result = subprocess.Popen('hostname -I',shell=True,stdout=subprocess.PIPE)
+                subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
+                self.ipaddr = subprocess_output[0].decode('utf-8')
             except:
-                self.ipaddr = socket.gethostbyname(socket.gethostname())
+                self.ipaddr = "n/a"
 
             try:
                 self.hostapd = True if os.system('systemctl is-active --quiet hostapd.service') == 0 else False

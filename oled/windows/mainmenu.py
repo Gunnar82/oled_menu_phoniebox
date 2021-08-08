@@ -19,6 +19,7 @@ class Mainmenu(WindowBase):
         self.descr.append("Einstellungen")
         self.descr.append("Ausschaltmenü")
         self.descr.append("Betriebsinfos")
+        self.descr.append("WLAN / Hotspot")
 
     def render(self):
         with canvas(self.device) as draw:
@@ -48,6 +49,7 @@ class Mainmenu(WindowBase):
                 draw.text((83, 46), text="\uf011", font=Mainmenu.faicons, fill="white") #shutdown
             elif self.counter <= 11:
                 draw.text((11, 20), text="\uf022", font=Mainmenu.faicons, fill="white") #infos
+                draw.text((44, 20), text="\uf09e", font=Mainmenu.faicons, fill="white") #infos
         
 
     def push_callback(self,lp=False):
@@ -72,6 +74,8 @@ class Mainmenu(WindowBase):
                 self.windowmanager.set_window("shutdownmenu")
             elif self.counter == 6:
                 self.windowmanager.set_window("infomenu")
+            elif self.counter == 7:
+                self.windowmanager.set_window("wlanmenu")
 
     def turn_callback(self, direction, key=None):
         if key:
@@ -84,5 +88,5 @@ class Mainmenu(WindowBase):
             else:
                 direction = 1
 
-        if (self.counter + direction < 6 and self.counter + direction >= 0):
+        if (self.counter + direction < 8 and self.counter + direction >= 0):
             self.counter += direction
