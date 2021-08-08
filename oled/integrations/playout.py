@@ -8,8 +8,15 @@ def pc_next():
 def pc_stop():
     os.system("%s -c=playerstop" % (settings.PLAYOUT_CONTROLS))
 
+def pc_volup():
+    os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumeup")
+
+def pc_voldown():
+    os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumedown")
+
 def savepos():
     os.system("%s -c=savepos" % (settings.PLAYOUT_CONTROLS))
+
 
 def pc_playfolder(folder=settings.AUDIO_BASEPATH_RADIO):
     os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/rfid_trigger_play.sh -d=\"%s\"" % (folder))

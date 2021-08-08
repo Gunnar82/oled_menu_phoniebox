@@ -7,7 +7,7 @@ from PIL import ImageFont
 import settings
 import os
 import integrations.bluetooth
-import integrations.playout
+import integrations.playout as playout
 import integrations.functions as fn
 import RPi.GPIO as GPIO
 
@@ -237,7 +237,7 @@ class Idle(WindowBase):
                     album = filename[:filename.rfind('/')] #.split("/")[0]
                     album = album.replace('/',' - ')
                 elif playing['file'].startswith('http'):
-                    album = "WebRadio"
+                    album = "Livestream"
                 else:
                     album = ""
             except:
@@ -284,15 +284,15 @@ class Idle(WindowBase):
     def turn_callback(self, direction, key=None):
         if key:
             if key == 'up':
-                os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumeup")
+                playout.pc_volup()
             elif key == 'down':
-                os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumedown")
+                playout.pc_voldown()
             elif key == 'left':
-                integrations.playout.pc_prev()
+                playout.pc_prev()
             else:
-                integrations.playout.pc_next()
+                playout.pc_next()
         else:
             if (direction > 0):
-                os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumeup")
+                playout.pc_volup()
             else:
-                os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumedown")
+                playout.pc_voldown()
