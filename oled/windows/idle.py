@@ -27,6 +27,7 @@ class Idle(WindowBase):
         self._playingname = ""
         self._playingtitle = ""
         self._playingalbum = ""
+        self._playingfile = ""
         self._volume = -1
         self._time = -1
         self._elapsed = -1
@@ -252,7 +253,7 @@ class Idle(WindowBase):
             self._playingalbum = album[albumx:albumx+19]
 
 
-
+            self._playingfile = playing['file'] if ("file" in playing) else ""
             self._volume = status['volume'] if ("volume" in status) else -1
             self._elapsed = status['elapsed'] if ("elapsed" in status) else -1
             self._time = status['time'] if ("time" in status) else -1
@@ -288,9 +289,18 @@ class Idle(WindowBase):
             elif key == 'down':
                 playout.pc_voldown()
             elif key == 'left':
-                playout.pc_prev()
+
+                if self._playingalbum == "Livestream":
+                    cfolder = fn.get_folder_of_livestream(self._playingfile)
+                    playout.pc_playfolder (fn.get_folder(cfolder,-1))
+                else:
+                    playout.pc_prev()
             else:
-                playout.pc_next()
+                if self._playingalbum == "Livestream":
+                    cfolder = fn.get_folder_of_livestream(self._playingfile)
+                    playout.pc_playfolder (fn.get_folder(cfolder,1))
+                else:
+                    playout.pc_next()
         else:
             if (direction > 0):
                 playout.pc_volup()

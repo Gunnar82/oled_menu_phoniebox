@@ -1,6 +1,7 @@
 import os
 import subprocess, re
 import datetime
+import settings
 
 def get_parent_folder(folder):
     return os.path.dirname(folder)
@@ -38,3 +39,41 @@ def linux_job_remaining(job_name):
             return int(round((dtQueue.timestamp() - dtNow.timestamp()) / 60, 0))
         else:
             return -1
+
+
+def get_folder_of_livestream(url):
+    basefolder = settings.AUDIO_BASEPATH_RADIO
+
+    for folder in os.listdir(basefolder):
+        d = os.path.join(basefolder, folder)
+        if os.path.isdir(d):
+           filename = os.path.join(d,'livestream.txt')
+           try:
+               with open(filename, 'r') as file:
+                    data = file.read().replace('\n', '')
+               if data == url:
+                   return d
+           except:
+               pass
+
+    return "n/a"
+
+
+def get_folder(folder,direction = 1):
+    parent = get_parent_folder(folder)
+    entrys = []
+    for folders in os.listdir(parent):
+        d = os.path.join(parent, folders)
+        if os.path.isdir(d):
+            entrys.append(d)
+    entrys.sort()
+    pos = entrys.index(folder)
+    pos += direction
+
+    if pos < 0:
+        pos = 0
+    if pos > len(entrys) -1:
+        pos = len(entrys) -1
+    rel_path = os.path.relpath(entrys[pos],settings.AUDIO_BASEPATH_BASE)
+    return rel_path
+

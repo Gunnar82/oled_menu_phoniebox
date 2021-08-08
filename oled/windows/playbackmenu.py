@@ -5,9 +5,10 @@ from ui.windowbase import WindowBase
 from luma.core.render import canvas
 from PIL import ImageFont
 import settings
-import integrations.playout
+import integrations.playout as playout
 import os
 import integrations.functions as fn
+
 import RPi.GPIO as GPIO
 
 class Playbackmenu(WindowBase):
@@ -22,6 +23,8 @@ class Playbackmenu(WindowBase):
         self._activepbm = False
         self.musicmanager = musicmanager
         self._volume = -1
+        self._playingfile = ""
+        self._playingalbum = ""
         self._time = -1
         self._elapsed = -1
         self._playlistlength = -1
@@ -164,7 +167,8 @@ class Playbackmenu(WindowBase):
             #print (playing)
             #print(status)
 
-
+            self._playingfile = playing['file'] if ("file" in playing) else ""
+            self._playingalbum = "Livestream" if (self._playingfile.startswith('http')) else "" 
             self._volume = status['volume'] if ("volume" in status) else -1
             self._elapsed = status['elapsed'] if ("elapsed" in status) else -1
             self._time = status['time'] if ("time" in status) else -1
@@ -214,9 +218,19 @@ class Playbackmenu(WindowBase):
 
         if self.skipselected:
             if direction < 0:
-                integrations.playout.pc_prev()
+                if self._playingalbum == "Livestream":
+                    cfolder = fn.get_folder_of_livestream(self._playingfile)
+                    playout.pc_playfolder (fn.get_folder(cfolder,-1))
+                else:
+                    playout.pc_prev()
+
             else:
-                integrations.playout.pc_next()
+                if self._playingalbum == "Livestream":
+                    cfolder = fn.get_folder_of_livestream(self._playingfile)
+                    playout.pc_playfolder (fn.get_folder(cfolder,1))
+                else:
+                    playout.pc_next()
+
         else:
             if (self.counter + direction <= 4 and self.counter + direction >= 0):
                 self.counter += direction
