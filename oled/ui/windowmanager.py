@@ -80,10 +80,6 @@ class WindowManager():
                             self.looptime = self._looptime
 
 
-                    if self.rendertime != self._rendertime:
-                        self.rendertime = self._rendertime
-
-
             if self._lastcontrast != contrast:
                 self._lastcontrast = contrast
                 self.device.contrast(contrast)
