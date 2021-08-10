@@ -264,7 +264,7 @@ class Idle(WindowBase):
             
         
 
-            await asyncio.sleep(1)
+            await asyncio.sleep(self.windowmanager.looptime)
 
     def push_callback(self,lp=False):
         if lp:

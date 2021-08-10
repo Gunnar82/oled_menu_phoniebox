@@ -12,10 +12,14 @@ START_TIMEOUT = 2
 
 CONTRAST_TIMEOUT = 10 #MENU_TIMEOUT
 DARK_TIMEOUT = 60
-
+DARK_RENDERTIME = 10 #sekunden
 CONTRAST_FULL = 245
 CONTRAST_DARK = 32
 CONTRAST_BLACK = 10
+
+
+
+
 PLAYOUT_CONTROLS = "sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh"
 
 #Pins for rotary encoder
