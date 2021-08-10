@@ -178,7 +178,7 @@ class Idle(WindowBase):
         oldalbum = ""
         filename = ""
 
-        while self.loop.is_running() and self._active:
+        while self.loop.is_running() and self.windowmanager.windows["idle"] == self.windowmanager.activewindow:
             playing = self.musicmanager.nowplaying()
             status = self.musicmanager.status()
             filename = playing['file'] if ("file" in playing) else ""
@@ -207,10 +207,6 @@ class Idle(WindowBase):
 
 
             self._playingtitle = title[titlex:]
-
-            if not settings.screenpower:
-                await asyncio.sleep(5)
-                continue
 
             try:
                 if "name" in playing:
@@ -261,8 +257,6 @@ class Idle(WindowBase):
             self._song = str(int(status['song']) + 1) if ("song" in status) else -1
             self._duration = status['duration'] if ("duration" in status) else -1
             self._state = status['state'] if ("state" in status) else "unknown"
-            
-        
 
             await asyncio.sleep(self.windowmanager.looptime)
 

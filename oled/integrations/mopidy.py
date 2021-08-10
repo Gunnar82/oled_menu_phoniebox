@@ -51,7 +51,6 @@ class MopidyControl():
             except musicpd.ConnectionError:
                 print("Error updating mopidy status, no connection!")
                 self._connectionlost()
-
             await asyncio.sleep(3)
 
 
@@ -64,7 +63,7 @@ class MopidyControl():
                 print("Error updating mopidy status, no connection!")
                 self._connectionlost()
 
-            await asyncio.sleep(1)
+            await asyncio.sleep(2)
 
 
     async def _refresh_content(self):
