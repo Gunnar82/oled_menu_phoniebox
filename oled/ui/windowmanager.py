@@ -6,9 +6,9 @@ import settings
 class WindowManager():
     def __init__(self, loop, device):
         self._rendertime = 0.25
-        self._looptime = 1
+        self._looptime = 2
 
-        self.looptime = 1
+        self.looptime = 2
         self.rendertime = 0.25
         self.device = device
         self.windows = {}
