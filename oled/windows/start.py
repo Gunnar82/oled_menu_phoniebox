@@ -21,7 +21,7 @@ class Start(WindowBase):
         with canvas(self.device) as draw:
             if self.mopidyconnection.connected and ((datetime.now() - self.startup).total_seconds() >= settings.START_TIMEOUT):
                 #print ("init")
-                self.windowmanager.set_window("playlistmenu") #idle")
+                self.windowmanager.set_window("idle")
             draw.text((25, 3), text="Wird gestartet...", font=Start.font, fill="white")
             draw.text((50, 25), text="\uf251", font=Start.fontawesome, fill="white")
 
