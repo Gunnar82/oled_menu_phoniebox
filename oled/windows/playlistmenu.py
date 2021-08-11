@@ -16,12 +16,15 @@ class Playlistmenu(MenuBase):
         if song > 0:
             if song > 4:
                 self.counter = 4
-                self.page = song -4
+                self.page = song -4 + 1
             else:
                 self.counter = song +1
 
     def push_callback(self,lp=False):
-        if self.counter < 2:
+        if self.counter < 2 and self.page == 0:
             self.windowmanager.set_window("mainmenu")
         else:
-            playout.pc_play(self.counter-2 + 1) # 1 based
+            playout.pc_play(self.page + self.counter-2 + 1) # 1 based
+
+    def on_key_left(self):
+        self.windowmanager.set_window("playbackmenu")

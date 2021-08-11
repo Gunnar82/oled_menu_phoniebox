@@ -71,7 +71,6 @@ class MenuBase(WindowBase):
         raise NotImplementedError()
 
     def turn_callback(self, direction, key=None):
-        print (self.page)
         if key:
             if key == 'left':
                 self.left_pressed = True
