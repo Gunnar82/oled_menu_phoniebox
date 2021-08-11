@@ -13,7 +13,7 @@ class Foldermenu(MenuBase):
     def playfolder(self,folder):
         foldername = folder[len(settings.AUDIO_BASEPATH_BASE):]
         playout.pc_playfolder(foldername)
-        self.windowmanager.set_window("idle")
+        self.windowmanager.set_window("playlistmenu")
 
     def on_key_left(self):
         self.counter = 2
