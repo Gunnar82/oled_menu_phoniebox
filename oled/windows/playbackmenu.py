@@ -40,6 +40,7 @@ class Playbackmenu(WindowBase):
         self.descr.append ("Play / Pause")
         self.descr.append("Hauptmenü")
         self.descr.append("Zurück")
+        self.descr.append("Wiedergabeliste")
          #self.loop.create_task(self._find_dev_bt())
         if settings.STATUS_LED_ENABLED:
             GPIO.setmode(GPIO.BCM)            # choose BCM or BOARD
@@ -188,7 +189,9 @@ class Playbackmenu(WindowBase):
             self.windowmanager.set_window("mainmenu")
         elif self.counter == 4:
             self.windowmanager.set_window("idle")
-        elif self.counter == 0:
+        elif self.counter == 5:
+            self.windowmanager.set_window("playlistmenu")
+        elif sel.counter == 0:
             if self.skipselected:
                 self.skipselected = False
                 self.timeout=True
@@ -232,7 +235,7 @@ class Playbackmenu(WindowBase):
                     playout.pc_next()
 
         else:
-            if (self.counter + direction <= 4 and self.counter + direction >= 0):
+            if (self.counter + direction <= 5 and self.counter + direction >= 0):
                 self.counter += direction
             
         #os.system("mpc volume {}{} > /dev/null".format(plus,direction))

@@ -61,7 +61,7 @@ def main():
     loadedwins.append(windows.mainmenu.Mainmenu(windowmanager))
     loadedwins.append(windows.info.Infomenu(windowmanager))
     loadedwins.append(windows.headphone.Headphonemenu(windowmanager))
-    loadedwins.append(windows.playlistmenu.Playlistmenu(windowmanager, mopidy))
+    loadedwins.append(windows.playlistmenu.Playlistmenu(windowmanager, musicmanager))
     loadedwins.append(windows.foldermenu.Foldermenu(windowmanager))
     loadedwins.append(windows.folderinfo.FolderInfo(windowmanager))
     loadedwins.append(windows.ende.Ende(windowmanager))

@@ -28,6 +28,27 @@ class Musicmanager():
                 self.source = "mpd"
             return self.shairportconnection.nowplaying()
 
+    def playlist(self):
+        if self.source == "mpd":
+            try:
+                playlist = self.mopidyconnection.client.playlist().copy()
+                for idx, a in enumerate(playlist):
+                    if a.startswith("file"): 
+                        a = a[a.find(":")+1:]
+
+                    a = a.strip()
+
+                    if not (a.startswith("http")): #stream
+                        a = a[a.rfind("/") + 1:] #filename only
+                    playlist[idx] = a
+
+                return playlist
+            except:
+                return []
+        else:
+            return []
+
+
     def playpause(self):
         if self.source == "mpd":
             return self.mopidyconnection.playpause()

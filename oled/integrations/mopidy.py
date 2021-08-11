@@ -69,7 +69,8 @@ class MopidyControl():
     async def _refresh_content(self):
         while self.loop.is_running() and self.connected:
             await self._refresh_playlists()
-            await asyncio.sleep(600)
+            
+            await asyncio.sleep(60)
 
 
     async def _refresh_radiostations(self):

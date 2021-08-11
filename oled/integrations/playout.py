@@ -8,6 +8,12 @@ def pc_next():
 def pc_stop():
     os.system("%s -c=playerstop" % (settings.PLAYOUT_CONTROLS))
 
+def pc_play(pos = 0):
+    os.system("%s -c=playerplay -v=%d" % (settings.PLAYOUT_CONTROLS, pos))
+
+
+
+
 def pc_volup():
     os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumeup")
 
