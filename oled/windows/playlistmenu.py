@@ -2,12 +2,12 @@
 from ui.menubase import MenuBase
 
 class Playlistmenu(MenuBase):
-    def __init__(self, windowmanager, mopidyconnection):
-        self.mopidyconnection = mopidyconnection
+    def __init__(self, windowmanager, musicmanager):
+        self.musicmanager = musicmanager
         super().__init__(windowmanager, "Playlists")
 
     def activate(self):
-        self.menu = self.mopidyconnection.playlists
+        self.menu = []
 
     def push_callback(self,lp=False):
         if self.counter == 0:
