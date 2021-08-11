@@ -149,6 +149,7 @@ class Playbackmenu(WindowBase):
                 draw.text((50, 20), "\uf04b", font=Playbackmenu.faiconsbig, fill="white") #play
             draw.text((70, 20), "\uf062", font=Playbackmenu.faiconsbig, fill="white") #menu
             draw.text((90, 20), "\uf0a8", font=Playbackmenu.faiconsbig, fill="white") #menu
+            draw.text((110, 20), "\uf0ca", font=Playbackmenu.faiconsbig, fill="white") #menu
 
 
     async def _generatenowplaying(self):
