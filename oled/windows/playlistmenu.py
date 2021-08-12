@@ -11,14 +11,17 @@ class Playlistmenu(MenuBase):
 
     def activate(self):
         self.menu = self.musicmanager.playlist()
-        status = self.musicmanager.status()
-        song = int(status['song']) + 1 if ("song" in status) else -1
-        if song > 0:
-            if song > 4:
-                self.counter = 4
-                self.page = song -4 + 1
-            else:
-                self.counter = song +1
+        song = -1 
+        while song < 0:
+            print ("-1")
+            status = self.musicmanager.status()
+            song = int(status['song']) + 1 if ("song" in status) else -1
+
+        if song > 4:
+            self.counter = 5
+            self.page = song -4
+        else:
+            self.counter = song + 1
 
     def push_callback(self,lp=False):
         if self.counter < 2 and self.page == 0:

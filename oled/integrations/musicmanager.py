@@ -1,4 +1,6 @@
 """ Manages music status and control commands for Mopidy and AirPlay """
+import eyed3
+import settings
 
 class Musicmanager():
     def __init__(self, mopidyconnection):
@@ -37,11 +39,21 @@ class Musicmanager():
                         a = a[a.find(":")+1:]
 
                     a = a.strip()
+                    fullpath = settings.AUDIO_BASEPATH_BASE + "/" + a
 
                     if not (a.startswith("http")): #stream
-                        a = a[a.rfind("/") + 1:] #filename only
-                    playlist[idx] = a
+                        try:
+                            audiofile = eyed3.load(fullpath)
+                            if  (audiofile.tag.title != None):
+                                a = str(audiofile.tag.title)
+                                if  (audiofile.tag.artist != None):
+                                    a += " | " + str(audiofile.tag.artist)
 
+                            audiofile.close()
+                        except:
+                            pass
+                        #a = a[a.rfind("/") + 1:] #filename only
+                    playlist[idx] = a
                 return playlist
             except:
                 return []
