@@ -80,13 +80,15 @@ class MenuBase(WindowBase):
 
         if self.counter + direction >= 0:
             #first 4 items in long menu
-            if len(self.menu) > 4 and (self.counter-1) + direction <= 4 and self.page == 0:
-                self.counter += direction
-            #other items in long menu
-            elif len(self.menu) > 4 and self.page + direction + 4 <= len(self.menu):
-                self.page += direction
+            if len(self.menu) > 4:
+                if ((self.counter-1) + direction >= 1) and ((self.counter-1) + direction <= 4):
+                    self.counter += direction
+                #other items in long menu
+                elif (self.page + direction + 4 <= len(self.menu)) and (self.page + direction + 4 >0):
+                    self.page += direction
             #short menu < 4 items
-            elif len(self.menu) <= 4 and (self.counter-1) + direction <= len(self.menu):
-                self.counter += direction
+            else:
+                if len(self.menu) <= 4 and (self.counter-1) + direction <= len(self.menu):
+                    self.counter += direction
 
 
