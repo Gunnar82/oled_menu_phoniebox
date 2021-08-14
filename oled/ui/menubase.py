@@ -14,6 +14,7 @@ class MenuBase(WindowBase):
         self.left_pressed = False
         self.right_pressed = False
         self.drawtextx = 0
+        self.position = -1
 
     def render(self):
         if self.left_pressed:
@@ -80,15 +81,22 @@ class MenuBase(WindowBase):
 
         if self.counter + direction >= 0:
             #first 4 items in long menu
-            if len(self.menu) > 4:
-                if ((self.counter-1) + direction >= 1) and ((self.counter-1) + direction <= 4):
-                    self.counter += direction
-                #other items in long menu
-                elif (self.page + direction + 4 <= len(self.menu)) and (self.page + direction + 4 >0):
-                    self.page += direction
-            #short menu < 4 items
-            else:
-                if len(self.menu) <= 4 and (self.counter-1) + direction <= len(self.menu):
-                    self.counter += direction
+            if self.counter > 1:
+                if len(self.menu) > 4:
+                    if ((self.counter-1) + direction >= 1) and ((self.counter-1) + direction <= 4):
+                        self.counter += direction
+                    #other items in long menu
+                    elif (self.page + direction + 4 <= len(self.menu)) and (self.page + direction  >= 0):
+                        self.page += direction
+                    elif (self.page == 0) and (self.counter > 0):
+                        self.counter += direction
+                #short menu < 4 items
+                else:
+                    if len(self.menu) <= 4 and (self.counter-1) + direction <= len(self.menu):
+                        self.counter += direction
+            elif self.counter + direction >= 0:
+                self.counter += direction
+            self.position = (self.counter + self.page -2 ) if (self.counter > 1) else -1
+
 
 
