@@ -5,7 +5,6 @@ import os
 import integrations.functions as functions
 import integrations.playout as playout
 class Foldermenu(MenuBase):
-    position = 0
     folders = []
     
 
@@ -71,9 +70,8 @@ class Foldermenu(MenuBase):
         else:
             self.timeout = False
  
-        self.position = self.counter + self.page
         try:
-            folder = self.folders[self.position-2]
+            folder = self.folders[self.position]
             fullpath = os.path.join(settings.currentfolder,folder)
             settings.current_selectedfolder = fullpath
         except:

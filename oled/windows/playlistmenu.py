@@ -26,7 +26,7 @@ class Playlistmenu(MenuBase):
         if self.counter < 2 and self.page == 0:
             self.windowmanager.set_window("mainmenu")
         else:
-            playout.pc_play(self.page + self.counter-2 + 1) # 1 based
+            playout.pc_play(self.position + 1) # 1 based
 
     def on_key_left(self):
         self.windowmanager.set_window("playbackmenu")
