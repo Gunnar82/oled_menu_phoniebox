@@ -48,6 +48,8 @@ class Musicmanager():
                                 a = str(audiofile.tag.title)
                                 if  (audiofile.tag.artist != None):
                                     a += " | " + str(audiofile.tag.artist)
+                            else:
+                                a = a[a.rfind("/")+1:]
 
                             audiofile.close()
                         except:
