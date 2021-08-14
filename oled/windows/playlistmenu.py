@@ -13,7 +13,6 @@ class Playlistmenu(MenuBase):
         self.menu = self.musicmanager.playlist()
         song = -1 
         while song < 0:
-            print ("-1")
             status = self.musicmanager.status()
             song = int(status['song']) + 1 if ("song" in status) else -1
 

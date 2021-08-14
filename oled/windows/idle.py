@@ -182,8 +182,6 @@ class Idle(WindowBase):
             playing = self.musicmanager.nowplaying()
             status = self.musicmanager.status()
             filename = playing['file'] if ("file" in playing) else ""
-            #print (playing)
-            #print(status)
 
             try:
                 if "title" in playing:

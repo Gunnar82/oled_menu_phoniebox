@@ -166,8 +166,6 @@ class Playbackmenu(WindowBase):
             playing = self.musicmanager.nowplaying()
             status = self.musicmanager.status()
             filename = playing['file'] if ("file" in playing) else ""
-            #print (playing)
-            #print(status)
 
             self._playingfile = playing['file'] if ("file" in playing) else ""
             self._playingalbum = "Livestream" if (self._playingfile.startswith('http')) else "" 
