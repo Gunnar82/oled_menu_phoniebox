@@ -1,0 +1,3 @@
+OPTIONS="-p a2dp-source -p a2dp-sink"
+
+LIBASOUND_THREAD_SAFE=0
