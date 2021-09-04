@@ -190,7 +190,7 @@ class Playbackmenu(WindowBase):
             self.windowmanager.set_window("idle")
         elif self.counter == 5:
             self.windowmanager.set_window("playlistmenu")
-        elif sel.counter == 0:
+        elif self.counter == 0:
             if self.skipselected:
                 self.skipselected = False
                 self.timeout=True
