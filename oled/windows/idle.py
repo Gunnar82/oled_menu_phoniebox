@@ -10,7 +10,7 @@ import integrations.bluetooth
 import integrations.playout as playout
 import integrations.functions as fn
 import RPi.GPIO as GPIO
-
+import locale
 
 
 class Idle(WindowBase):
@@ -21,6 +21,7 @@ class Idle(WindowBase):
     faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=12)
 
     def __init__(self, windowmanager, musicmanager):
+        locale.setlocale(locale.LC_ALL, "de_DE.UTF-8")
         super().__init__(windowmanager)
         self._active = False
         self.musicmanager = musicmanager
@@ -135,6 +136,8 @@ class Idle(WindowBase):
                     draw.text((1,1), "i: " +  str(settings.job_i) + "m", font=Idle.bigfont, fill="white") 
                 if settings.job_t >= 0:
                     draw.text((64,1), "t: " +  str(settings.job_t) + "m", font=Idle.bigfont, fill="white") 
+                draw.text((1,30), "%s" % (now.strftime("%a, %d.%m.%y %H:%M")), font=Idle.font, fill="white")
+
                 return
 
 
