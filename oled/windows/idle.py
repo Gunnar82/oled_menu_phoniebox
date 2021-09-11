@@ -21,7 +21,7 @@ class Idle(WindowBase):
     faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=12)
 
     def __init__(self, windowmanager, musicmanager):
-        locale.setlocale(locale.LC_ALL, "de_DE.UTF-8")
+        locale.setlocale(locale.LC_TIME, "de_DE.UTF-8")
         super().__init__(windowmanager)
         self._active = False
         self.musicmanager = musicmanager
@@ -279,23 +279,37 @@ class Idle(WindowBase):
 
     def turn_callback(self, direction, key=None):
         if key:
-            if key == 'up':
+            if key == 'up' or key == '2':
                 playout.pc_volup()
-            elif key == 'down':
+            elif key == 'down' or key == '8':
                 playout.pc_voldown()
-            elif key == 'left':
+            elif key == 'left' or key =='4':
 
                 if self._playingalbum == "Livestream":
                     cfolder = fn.get_folder_of_livestream(self._playingfile)
                     playout.pc_playfolder (fn.get_folder(cfolder,-1))
                 else:
                     playout.pc_prev()
-            else:
+            elif key == 'right' or key == '6':
                 if self._playingalbum == "Livestream":
                     cfolder = fn.get_folder_of_livestream(self._playingfile)
                     playout.pc_playfolder (fn.get_folder(cfolder,1))
                 else:
                     playout.pc_next()
+            elif key == 'A':
+                settings.audio_basepath = settings.AUDIO_BASEPATH_MUSIC
+                settings.currentfolder = settings.AUDIO_BASEPATH_MUSIC
+                self.windowmanager.set_window("foldermenu")
+            elif key == 'B':
+                settings.audio_basepath = settings.AUDIO_BASEPATH_HOERBUCH
+                settings.currentfolder = settings.AUDIO_BASEPATH_HOERBUCH
+                self.windowmanager.set_window("foldermenu")
+            elif key == 'C':
+                settings.audio_basepath = settings.AUDIO_BASEPATH_RADIO
+                settings.currentfolder = settings.AUDIO_BASEPATH_RADIO
+                self.windowmanager.set_window("foldermenu")
+            elif key =='D':
+                self.windowmanager.set_window("shutdownmenu")
         else:
             if (direction > 0):
                 playout.pc_volup()

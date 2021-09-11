@@ -60,6 +60,7 @@ class Foldermenu(MenuBase):
                 self.page = 0
 
     def activate(self):
+        self.title = os.path.split(settings.currentfolder)[-1]
         self.folders = []
         self.generate_folders(settings.currentfolder)
 
