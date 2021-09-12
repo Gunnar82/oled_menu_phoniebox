@@ -93,13 +93,13 @@ class Shutdownmenu(WindowBase):
 
     def turn_callback(self, direction, key=None):
         if key:
-            if key == 'up':
+            if key == 'up' or key == '2':
                 direction = -4
-            elif key == 'down':
+            elif key == 'down' or key == '8':
                 direction = 4
-            elif key == 'left':
+            elif key == 'left' or key == '4':
                 direction = -1
-            else:
+            elif key == 'right' or key == '6':
                 direction = 1
 
         if self.counter + direction <= 7 and self.counter + direction >= 0:

@@ -73,11 +73,17 @@ class MenuBase(WindowBase):
 
     def turn_callback(self, direction, key=None):
         if key:
-            if key == 'left':
+            if key == 'left' or key == '4' or key == '#':
                 self.left_pressed = True
-            if key == 'right':
+                return
+            elif key == 'right' or key == '6' or key == '*':
                 self.right_pressed = True
                 return
+            elif key == '2':
+                direction = -1
+            elif key == '8':
+                direction = 1
+
 
         if self.counter + direction >= 0:
             #first 4 items in long menu

@@ -209,12 +209,14 @@ class Playbackmenu(WindowBase):
 
     def turn_callback(self, direction, key=None):
         if key:
-            if key == 'right':
+            if key == 'right' or key == '6':
                 direction = 1
-            elif key == 'left':
+            elif key == 'left' or key == '4':
                 direction = -1
             elif key == 'down':
                 direction = 0
+            elif key == '#':
+                self.windowmanager.set_window('idle')
             else:
                 direction = 0
 

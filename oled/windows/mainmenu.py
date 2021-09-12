@@ -81,14 +81,17 @@ class Mainmenu(WindowBase):
 
     def turn_callback(self, direction, key=None):
         if key:
-            if key == 'up':
+            if key == 'up' or key == '2':
                 direction = -3
-            elif key == 'down':
+            elif key == 'down' or key == '8':
                 direction = 3
-            elif key == 'left':
+            elif key == 'left' or key == '4':
                 direction = -1
-            else:
+            elif key == 'right' or key == '6':
                 direction = 1
+            elif key == '#':
+               self.windowmanager.set_window("idle")
+
 
         if (self.counter + direction < 8 and self.counter + direction >= 0):
             self.counter += direction
