@@ -74,7 +74,7 @@ class keypad_4x4_i2c:
 
     def button_down_callback(self,channel):
         key = self.getch()
-        time.sleep(0.2)
+        time.sleep(0.3)
         if key != None:
             if key == '*':
                 self.push_callback()

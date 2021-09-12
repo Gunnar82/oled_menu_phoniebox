@@ -7,7 +7,7 @@ from ui.menubase import MenuBase
 class Playlistmenu(MenuBase):
     def __init__(self, windowmanager, musicmanager):
         self.musicmanager = musicmanager
-        super().__init__(windowmanager, "Wiedergabeliste")
+        super().__init__(windowmanager, "Playlist")
 
     def activate(self):
         self.menu = self.musicmanager.playlist()
@@ -38,7 +38,10 @@ class Playlistmenu(MenuBase):
                 self.page = len(self.menu) -4
 
         super().turn_callback(direction,key=key)
-
+        if self.position >= 0:
+            self.title = "%2.2d / %2.2d" %(self.position + 1,len(self.menu))
+        else:
+            self.title = "Playlist"
 
     def push_callback(self,lp=False):
         if self.counter < 2 and self.page == 0:
