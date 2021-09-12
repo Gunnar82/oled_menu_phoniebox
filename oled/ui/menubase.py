@@ -10,7 +10,7 @@ class MenuBase(WindowBase):
         self.counter = 0
         self.page = 0
         self.menu = []
-        self.title = title
+        self.basetitle = title
         self.left_pressed = False
         self.right_pressed = False
         self.drawtextx = 0
@@ -27,6 +27,11 @@ class MenuBase(WindowBase):
             self.right_pressed = False
             self.on_key_right()
             return
+
+        if self.position >= 0:
+            self.title = "%2.2d / %2.2d" %(self.position + 1,len(self.menu))
+        else:
+            self.title = self.basetitle
 
         font = ImageFont.truetype(settings.FONT_TEXT, size=12)
         faicons = ImageFont.truetype(settings.FONT_ICONS, size=11)
