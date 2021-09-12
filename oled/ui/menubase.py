@@ -73,7 +73,7 @@ class MenuBase(WindowBase):
 
     def turn_callback(self, direction, key=None):
         if key:
-            if key == 'left' or key == '4' or key == '#':
+            if key == 'left' or key == '4' or key == '0':
                 self.left_pressed = True
                 return
             elif key == 'right' or key == '6' or key == '*':
@@ -83,6 +83,9 @@ class MenuBase(WindowBase):
                 direction = -1
             elif key == '8':
                 direction = 1
+            elif key == '#':
+                self.windowmanager.set_window("idle")
+                return
 
 
         if self.counter + direction >= 0:

@@ -310,6 +310,9 @@ class Idle(WindowBase):
                 self.windowmanager.set_window("foldermenu")
             elif key =='D':
                 self.windowmanager.set_window("shutdownmenu")
+            elif key =='#':
+                self.windowmanager.set_window("playlistmenu")
+
         else:
             if (direction > 0):
                 playout.pc_volup()

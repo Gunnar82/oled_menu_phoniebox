@@ -101,6 +101,8 @@ class Shutdownmenu(WindowBase):
                 direction = -1
             elif key == 'right' or key == '6':
                 direction = 1
+            elif key == '#':
+                self.windowmanager.set_window('idle')
 
         if self.counter + direction <= 7 and self.counter + direction >= 0:
             self.counter += direction
