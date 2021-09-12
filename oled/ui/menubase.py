@@ -29,7 +29,7 @@ class MenuBase(WindowBase):
             return
 
         if self.position >= 0:
-            self.title = "%2.2d / %2.2d" %(self.position + 1,len(self.menu))
+            self.title = "%s %2.2d / %2.2d" %(self.basetitle, self.position + 1,len(self.menu))
         else:
             self.title = self.basetitle
 
