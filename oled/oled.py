@@ -10,7 +10,6 @@ from integrations.display import get_display
 from integrations.rotaryencoder import RotaryEncoder
 from integrations.powercontroller import PowerController
 from integrations.keyboard import KeyboardCtrl
-from integrations.keypad_4x4_i2c import keypad_4x4_i2c
 
 import settings
 
@@ -90,7 +89,11 @@ def main():
 
     ####keyboard control
     mKeyboard = KeyboardCtrl(loop, turn_callback, push_callback)
-    mKeypad = keypad_4x4_i2c(loop, turn_callback, push_callback)
+
+    if settings.KEYPAD_ENABLED:
+        from integrations.keypad_4x4_i2c import keypad_4x4_i2c
+
+        mKeypad = keypad_4x4_i2c(loop, settings.KEYPAD_ADDR, settings.KEYPAD_INTPIN, turn_callback, push_callback)
 
     ###Rotarycontroller Setup
     haspowercontroller = False

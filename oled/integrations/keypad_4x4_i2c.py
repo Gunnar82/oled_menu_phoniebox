@@ -82,17 +82,17 @@ class keypad_4x4_i2c:
                 self.turn_callback(0,key)
 
     # initialize the keypad class
-    def __init__(self, loop, turn_callback, push_callback):
+    def __init__(self, loop, addr, intpin, turn_callback, push_callback):
         self.loop = loop
         self.turn_callback = turn_callback
         self.push_callback = push_callback
 
-        self.I2CADDR = 0x27
+        self.I2CADDR = addr
         self.reset()
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(5, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-        GPIO.add_event_detect(5, GPIO.BOTH, callback=self.button_down_callback, bouncetime=100)
+        GPIO.add_event_detect(intpin, GPIO.BOTH, callback=self.button_down_callback, bouncetime=100)
 
 
 # test code
