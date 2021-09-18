@@ -20,6 +20,7 @@ class Mainmenu(WindowBase):
         self.descr.append("Ausschaltmenü")
         self.descr.append("Betriebsinfos")
         self.descr.append("WLAN / Hotspot")
+        self.descr.append("Firewall")
 
         self.window_on_back = "idle"
 
@@ -52,7 +53,8 @@ class Mainmenu(WindowBase):
             elif self.counter <= 11:
                 draw.text((11, 20), text="\uf022", font=Mainmenu.faicons, fill="white") #infos
                 draw.text((44, 20), text="\uf09e", font=Mainmenu.faicons, fill="white") #infos
-        
+                draw.text((83, 20), text="\uf1cb", font=Mainmenu.faicons, fill="white") #infos
+
 
     def push_callback(self,lp=False):
         if lp == True:
@@ -80,6 +82,8 @@ class Mainmenu(WindowBase):
                 self.windowmanager.set_window("infomenu")
             elif self.counter == 7:
                 self.windowmanager.set_window("wlanmenu")
+            elif self.counter == 8:
+                self.windowmanager.set_window("firewallmenu")
 
     def turn_callback(self, direction, key=None):
         if key:
@@ -95,5 +99,5 @@ class Mainmenu(WindowBase):
                self.windowmanager.set_window("idle")
 
 
-        if (self.counter + direction < 8 and self.counter + direction >= 0):
+        if (self.counter + direction < 9 and self.counter + direction >= 0):
             self.counter += direction

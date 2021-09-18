@@ -11,6 +11,7 @@ from integrations.rotaryencoder import RotaryEncoder
 from integrations.powercontroller import PowerController
 from integrations.keyboard import KeyboardCtrl
 
+
 import settings
 
 from integrations.mopidy import MopidyControl
@@ -28,6 +29,7 @@ import windows.folderinfo
 import windows.start
 import windows.wlan
 import windows.ende
+import windows.firewall
 
 import settings
 
@@ -68,7 +70,7 @@ def main():
     loadedwins.append(windows.ende.Ende(windowmanager))
     loadedwins.append(windows.wlan.Wlanmenu(windowmanager))
     loadedwins.append(shutdownscreen)
-
+    loadedwins.append(windows.firewall.Firewallmenu(windowmanager))
     loadedwins.append(windows.start.Start(windowmanager, mopidy))
 
     for window in loadedwins:
