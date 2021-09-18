@@ -10,6 +10,7 @@ class WindowBase():
         self.timeout = True
         self.contrasthandle = True
         self.timeoutwindow="idle"
+        self.window_on_back = "mainmenu"
 
     def activate(self):
         raise NotImplementedError()
@@ -23,5 +24,5 @@ class WindowBase():
     def push_callback(self,lp=False):
         raise NotImplementedError()
 
-    def turn_callback(self, direction, ud=False):
+    def turn_callback(self, direction, key=None):
         raise NotImplementedError()

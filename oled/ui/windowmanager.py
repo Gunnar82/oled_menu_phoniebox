@@ -116,7 +116,10 @@ class WindowManager():
             settings.screenpower = True
             settings.lastinput = datetime.now()
             self.device.contrast(settings.CONTRAST_FULL)
-
-            self.activewindow.turn_callback(direction,key=key)
+            if key == '#':
+                print ("activate window_on_back: %s" % (self.activewindow.window_on_back))
+                self.set_window(self.activewindow.window_on_back)
+            else:
+                self.activewindow.turn_callback(direction,key=key)
         except (NotImplementedError, AttributeError):
             pass

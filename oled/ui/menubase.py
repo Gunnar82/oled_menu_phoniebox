@@ -88,9 +88,6 @@ class MenuBase(WindowBase):
                 direction = -1
             elif key == '8':
                 direction = 1
-            elif key == '#':
-                self.windowmanager.set_window("idle")
-                return
 
 
         if self.counter + direction >= 0:

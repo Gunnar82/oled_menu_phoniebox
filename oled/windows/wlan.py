@@ -130,14 +130,10 @@ class Wlanmenu(WindowBase):
 
     def turn_callback(self, direction, key=None):
         if key:
-            if key == 'right':
+            if key == 'right' or key == '6':
                 direction = 1
-            elif key == 'left':
+            elif key == 'left' or key == '4':
                 direction = -1
-            elif key == 'down':
-                direction = 0
-            else:
-                direction = 0
 
         if self.counter + direction <= 1 and self.counter + direction >= 0:
             self.counter += direction

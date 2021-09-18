@@ -10,6 +10,7 @@ class Playlistmenu(MenuBase):
         super().__init__(windowmanager, "Playlist")
 
     def activate(self):
+        self.window_on_back = "idle"
         self.menu = self.musicmanager.playlist()
         self.song = -1
         cnt = 0 

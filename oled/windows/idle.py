@@ -40,6 +40,8 @@ class Idle(WindowBase):
         self.timeout=False
         self.LocalOutputEnabled = False
         self.BluetoothFound = False
+        self.window_on_back = "playlistmenu"
+
         #self.loop.create_task(self._find_dev_bt())
         if settings.STATUS_LED_ENABLED:
             GPIO.setmode(GPIO.BCM)            # choose BCM or BOARD  
@@ -310,9 +312,6 @@ class Idle(WindowBase):
                 self.windowmanager.set_window("foldermenu")
             elif key =='D':
                 self.windowmanager.set_window("shutdownmenu")
-            elif key =='#':
-                self.windowmanager.set_window("playlistmenu")
-
         else:
             if (direction > 0):
                 playout.pc_volup()

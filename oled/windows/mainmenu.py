@@ -21,6 +21,8 @@ class Mainmenu(WindowBase):
         self.descr.append("Betriebsinfos")
         self.descr.append("WLAN / Hotspot")
 
+        self.window_on_back = "idle"
+
     def render(self):
         with canvas(self.device) as draw:
             mwidth = Mainmenu.font.getsize(self.descr[self.counter])
