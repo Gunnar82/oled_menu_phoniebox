@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Dec 20 16:10:13 2018
 
-@author: Film
 """
 
 # Original from William Henning
