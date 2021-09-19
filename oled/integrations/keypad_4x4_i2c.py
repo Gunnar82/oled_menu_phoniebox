@@ -15,6 +15,7 @@ import sys
 import RPi.GPIO as GPIO
 
 class keypad_4x4_i2c:
+    busy = False
 
     INTERRUPT_ENABLE_A                      = 0x04   # interrupt on change (0=disable, 1=enable)
     INTERRUPT_COMPARE_VALUE_A               = 0x06   # default comparison for interrupt on change
@@ -68,18 +69,24 @@ class keypad_4x4_i2c:
             col = self.i2c.read_byte_data(self.I2CADDR, self.RD_A) >> 4
             row = self.DECODE[row]
             col = self.DECODE[col]
-            self.reset()
+
             return self.KEYCODE[col][row]
 
 
     def button_down_callback(self,channel):
-        key = self.getch()
-        time.sleep(0.3)
-        if key != None:
-            if key == '*':
-                self.push_callback()
-            else:
-                self.turn_callback(0,key)
+        if not self.busy:
+            try:
+                self.busy = True
+                key = self.getch()
+                if key != None:
+                    if key == '*':
+                        self.push_callback()
+                    else:
+                        self.turn_callback(0,key)
+            finally:
+                self.reset()
+                time.sleep(0.2)
+                self.busy = False
 
     # initialize the keypad class
     def __init__(self, loop, addr, intpin, turn_callback, push_callback):
