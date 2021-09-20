@@ -93,7 +93,7 @@ class WindowManager():
 
                 try:
                     if self.activewindow.busy:
-                        busy.render(self.device)
+                        busy.render(self.device,self.activewindow)
                     else:
                         self.activewindow.render()
                 except (NotImplementedError, AttributeError):
@@ -114,6 +114,8 @@ class WindowManager():
                 pass
             finally:
                 self.activewindow.busy = False
+                self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
+
         else:
             settings.screenpower = True
             self.device.show()

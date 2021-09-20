@@ -1,5 +1,7 @@
 """ View class to inherit other views from """
 
+import settings
+
 class WindowBase():
     def __init__(self, windowmanager):
         self.windowmanager = windowmanager
@@ -12,6 +14,7 @@ class WindowBase():
         self.timeoutwindow="idle"
         self.window_on_back = "mainmenu"
         self.busy = False
+        self.busysymbol = settings.SYMBOL_SANDCLOCK
 
     def activate(self):
         raise NotImplementedError()

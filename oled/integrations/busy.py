@@ -11,12 +11,12 @@ faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=35)
 
 
 
-def render(device):
+def render(device,activewindow):
     with canvas(device) as draw:
 
         mwidth = font.getsize(settings.PLEASE_WAIT)
         draw.text(((64 - int(mwidth[0]/2)), 5), text=settings.PLEASE_WAIT, font=font, fill="white") #sanduhr
 
-        mwidth = faiconsbig.getsize("\uf251")
-        draw.text(((64 - int(mwidth[0]/2)), 25), text="\uf251", font=faiconsbig, fill="white") #sanduhr
+        mwidth = faiconsbig.getsize(activewindow.busysymbol)
+        draw.text(((64 - int(mwidth[0]/2)), 25), text=activewindow.busysymbol, font=faiconsbig, fill="white") #sanduhr
 

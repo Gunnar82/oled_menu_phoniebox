@@ -270,22 +270,17 @@ class Idle(WindowBase):
             self.windowmanager.set_window("playbackmenu")
 
 
-                #self._showcontrols = False
-            #self.windowmanager.set_window("mainmenu")
-        #elif self.counter == 1:
-        #    self.musicmanager.previous()
-        #elif self.counter == 2:
-        #    self.musicmanager.playpause()
-        #elif self.counter == 3:
-        #    self.musicmanager.next()
-
     def turn_callback(self, direction, key=None):
         if key:
             if key == 'up' or key == '2':
+                self.busysymbol = settings.SYMBOL_VOL_UP
                 playout.pc_volup()
             elif key == 'down' or key == '8':
+                self.busysymbol = settings.SYMBOL_VOL_DN
+
                 playout.pc_voldown()
             elif key == 'left' or key =='4':
+                self.busysymbol = settings.SYMBOL_PREV
 
                 if self._playingalbum == "Livestream":
                     cfolder = fn.get_folder_of_livestream(self._playingfile)
@@ -293,6 +288,7 @@ class Idle(WindowBase):
                 else:
                     playout.pc_prev()
             elif key == 'right' or key == '6':
+                self.busysymbol = settings.SYMBOL_NEXT
                 if self._playingalbum == "Livestream":
                     cfolder = fn.get_folder_of_livestream(self._playingfile)
                     playout.pc_playfolder (fn.get_folder(cfolder,1))
