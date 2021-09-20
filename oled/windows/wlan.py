@@ -9,7 +9,7 @@ import subprocess
 
 
 class Wlanmenu(WindowBase):
-    font = ImageFont.truetype(settings.FONT_TEXT, size=12)
+    font = ImageFont.truetype(settings.FONT_TEXT, size=10)
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=15)
     faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=35)
 
@@ -130,9 +130,9 @@ class Wlanmenu(WindowBase):
 
     def turn_callback(self, direction, key=None):
         if key:
-            if key == 'right' or key == '6':
+            if key == 'right' or key == '6' or key == '8':
                 direction = 1
-            elif key == 'left' or key == '4':
+            elif key == 'left' or key == '4' or key == '2':
                 direction = -1
 
         if self.counter + direction <= 1 and self.counter + direction >= 0:

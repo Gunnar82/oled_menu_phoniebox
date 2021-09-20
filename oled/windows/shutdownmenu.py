@@ -5,6 +5,7 @@ from PIL import ImageFont
 import settings
 import os
 import integrations.playout as playout
+import integrations.functions as fn
 
 class Shutdownmenu(WindowBase):
     font = ImageFont.truetype(settings.FONT_TEXT, size=10)
@@ -40,21 +41,21 @@ class Shutdownmenu(WindowBase):
             draw.text((65, 14), text="RT", font=Shutdownmenu.font, fill="white")
             draw.text((65, 25), text="\uf0e2", font=Shutdownmenu.faicons, fill="white")
 
-            draw.text((90, 14), text="0", font=Shutdownmenu.font, fill="white")
-            draw.text((90, 25), text="\uf1f7", font=Shutdownmenu.faicons, fill="white")
+            draw.text((90, 14), text="RTO", font=Shutdownmenu.font, fill="white")
+            draw.text((90, 25), text="\uf0e2", font=Shutdownmenu.faicons, fill="white")
 
 
 #####
-            draw.text((15, 40), text="15", font=Shutdownmenu.font, fill="white")
+            draw.text((15, 40), text="0", font=Shutdownmenu.font, fill="white")
             draw.text((15, 51), text="\uf0f3", font=Shutdownmenu.faicons, fill="white")
 
-            draw.text((40, 40), text="30", font=Shutdownmenu.font, fill="white")
+            draw.text((40, 40), text="15", font=Shutdownmenu.font, fill="white")
             draw.text((40, 51), text="\uf0f3", font=Shutdownmenu.faicons, fill="white")
 
-            draw.text((65, 40), text="60", font=Shutdownmenu.font, fill="white")
+            draw.text((65, 40), text="30", font=Shutdownmenu.font, fill="white")
             draw.text((65, 51), text="\uf0f3", font=Shutdownmenu.faicons, fill="white")
 
-            draw.text((90, 40), text="90", font=Shutdownmenu.font, fill="white")
+            draw.text((90, 40), text="60", font=Shutdownmenu.font, fill="white")
             draw.text((90, 51), text="\uf0f3", font=Shutdownmenu.faicons, fill="white")
 
 
@@ -75,15 +76,15 @@ class Shutdownmenu(WindowBase):
             self.loop.stop()
         
         elif self.counter == 3:
-            os.system("%s -c=shutdownafter -v=00" % settings.PLAYOUT_CONTROLS)
+            fn.restart_oled()
         elif self.counter == 4:
-            os.system("%s -c=shutdownafter -v=15" % settings.PLAYOUT_CONTROLS)
+            os.system("%s -c=shutdownafter -v=0" % settings.PLAYOUT_CONTROLS)
         elif self.counter == 5:
-            os.system("%s -c=shutdownafter -v=30" % settings.PLAYOUT_CONTROLS)
+            os.system("%s -c=shutdownafter -v=15" % settings.PLAYOUT_CONTROLS)
         elif self.counter == 6:
-            os.system("%s -c=shutdownafter -v=60" % settings.PLAYOUT_CONTROLS)
+            os.system("%s -c=shutdownafter -v=30" % settings.PLAYOUT_CONTROLS)
         elif self.counter == 7:
-            os.system("%s -c=shutdownafter -v=90" % settings.PLAYOUT_CONTROLS)
+            os.system("%s -c=shutdownafter -v=60" % settings.PLAYOUT_CONTROLS)
         
         self.windowmanager.set_window("idle")
             #self.mopidyconnection.stop()

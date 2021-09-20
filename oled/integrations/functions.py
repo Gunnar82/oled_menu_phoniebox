@@ -77,3 +77,8 @@ def get_folder(folder,direction = 1):
     rel_path = os.path.relpath(entrys[pos],settings.AUDIO_BASEPATH_BASE)
     return rel_path
 
+
+def restart_oled():
+    print ("restarting oled service")
+    os.system("sudo service oled restart")
+

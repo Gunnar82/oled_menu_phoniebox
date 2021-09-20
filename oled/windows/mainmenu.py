@@ -3,6 +3,7 @@ from ui.windowbase import WindowBase
 from luma.core.render import canvas
 from PIL import ImageFont
 import settings
+import integrations.functions as fn
 
 class Mainmenu(WindowBase):
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=18)
@@ -22,6 +23,7 @@ class Mainmenu(WindowBase):
         self.descr.append("WLAN / Hotspot")
         self.descr.append("Firewall")
 
+
         self.window_on_back = "idle"
 
     def render(self):
@@ -36,9 +38,12 @@ class Mainmenu(WindowBase):
             elif self.counter >=3 and self.counter < 6:
                 y_coord = 44
                 x_coord = 6 + (self.counter - 3) * 35
-            if self.counter >=6 and self.counter  < 9: #3 icons in one row
+            elif self.counter >=6 and self.counter  < 9: #3 icons in one row
                 y_coord = 15
                 x_coord = 7 + (self.counter - 6) * 35
+            elif self.counter >= 9:
+                y_coord = 44
+                x_coord = 6 + (self.counter - 9) * 35
 
             draw.rectangle((x_coord, y_coord, x_coord+25, y_coord+25), outline=255, fill=0)
 
@@ -54,6 +59,7 @@ class Mainmenu(WindowBase):
                 draw.text((11, 20), text="\uf022", font=Mainmenu.faicons, fill="white") #infos
                 draw.text((44, 20), text="\uf09e", font=Mainmenu.faicons, fill="white") #infos
                 draw.text((83, 20), text="\uf1cb", font=Mainmenu.faicons, fill="white") #infos
+
 
 
     def push_callback(self,lp=False):
