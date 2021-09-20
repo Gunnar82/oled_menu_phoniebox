@@ -26,6 +26,8 @@ class Playlistmenu(MenuBase):
             self.counter = self.song + 1
 
     def turn_callback(self,direction,key=False):
+        super().turn_callback(direction,key=key)
+
         if key in ['A','B','C','D']:
             if key == 'A':
                 self.page = 0
@@ -38,7 +40,6 @@ class Playlistmenu(MenuBase):
                 self.counter = 5
                 self.page = len(self.menu) -4
 
-        super().turn_callback(direction,key=key)
         if self.position >= 0:
             self.title = "%2.2d / %2.2d" %(self.position + 1,len(self.menu))
         else:
