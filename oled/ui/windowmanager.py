@@ -106,7 +106,6 @@ class WindowManager():
         settings.staywake = False
         if settings.screenpower:
             self.activewindow.busy = True
-            print (self.activewindow.busy)
 
             try:
                 self.device.contrast(settings.CONTRAST_FULL)
