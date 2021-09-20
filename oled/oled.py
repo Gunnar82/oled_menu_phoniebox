@@ -7,7 +7,7 @@ import os
 from subprocess import call
 import integrations.bluetooth
 from integrations.display import get_display
-from integrations.rotaryencoder import RotaryEncoder
+
 
 from integrations.keyboard import KeyboardCtrl
 
@@ -90,7 +90,12 @@ def main():
         windowmanager.push_callback(lp=_lp)
 
     ####keyboard control
-    mKeyboard = KeyboardCtrl(loop, turn_callback, push_callback)
+    if settings.KEYBOARD_ENABLED:
+        from integrations.keyboard import KeyboardCtrl
+
+        mKeyboard = KeyboardCtrl(loop, turn_callback, push_callback)
+
+    ### KEYPAD 4x4 MCP23017 I2C
 
     if settings.KEYPAD_ENABLED:
         from integrations.keypad_4x4_i2c import keypad_4x4_i2c
@@ -99,6 +104,8 @@ def main():
 
     ###Rotaryencoder Setup
     if settings.ROTARYENCODER_ENABLED:
+        from integrations.rotaryencoder import RotaryEncoder
+
         print ("Rotaryconctroller")
         rc = RotaryEncoder(loop, turn_callback, push_callback)
 
