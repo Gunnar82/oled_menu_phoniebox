@@ -8,7 +8,7 @@ from subprocess import call
 import integrations.bluetooth
 from integrations.display import get_display
 from integrations.rotaryencoder import RotaryEncoder
-from integrations.powercontroller import PowerController
+
 from integrations.keyboard import KeyboardCtrl
 
 
@@ -97,28 +97,27 @@ def main():
 
         mKeypad = keypad_4x4_i2c(loop, settings.KEYPAD_ADDR, settings.KEYPAD_INTPIN, turn_callback, push_callback)
 
-    ###Rotarycontroller Setup
-    haspowercontroller = False
-
-    if True:
-        if settings.ROTARYENCODER:
-            print ("Rotaryconctroller")
-            rc = RotaryEncoder(loop, turn_callback, push_callback)
-#    except:
-#        print ("err")
+    ###Rotaryencoder Setup
+    if settings.ROTARYENCODER_ENABLED:
+        print ("Rotaryconctroller")
+        rc = RotaryEncoder(loop, turn_callback, push_callback)
 
 
     ####Powercontroller Init
-    haspowercontroller = True
-    try:
-        if settings.POWERCONTROLLER:
-            print ("Poweronctroller")
-            pc = PowerController(loop, turn_callback, push_callback)
-        else:
-            haspowercontroller = False
-    except:
-        haspowercontroller = False
+    if settings.POWERCONTROLLER_ENABLED:
+        from integrations.powercontroller import PowerController
 
+        haspowercontroller = True
+        try:
+            if settings.POWERCONTROLLER:
+                print ("Poweronctroller")
+                pc = PowerController(loop, turn_callback, push_callback)
+            else:
+                haspowercontroller = False
+        except:
+            haspowercontroller = False
+    else:
+        haspowercontroller = False
 
 
     try:

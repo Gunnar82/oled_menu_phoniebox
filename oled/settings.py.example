@@ -2,10 +2,11 @@
 Software settings
 """
 
+ufw_services_allow = ["Samba","ssh","http"]
+
 
 ####CONTROL
-POWERCONTROLLER=False
-ROTARYENCODER=True
+
 
 MENU_TIMEOUT = 20
 START_TIMEOUT = 2
@@ -21,6 +22,24 @@ CONTRAST_DARK = 32
 CONTRAST_BLACK = 15
 
 
+### Power Controller
+POWERCONTROLLER_ENABLED = False
+
+###
+
+### Power Controller
+ROTARYENCODER_ENABLED = True
+
+###
+
+
+
+### KEYPAD 4x4 I2C + MCP23017
+KEYPAD_ENABLED = True
+KEYPAD_INTPIN = 5
+KEYPAD_ADDR = 0x27
+
+####
 
 
 PLAYOUT_CONTROLS = "sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh"
@@ -67,6 +86,8 @@ AUDIO_BASEPATH_RADIO = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/Radio"
 SR1 = "beendet"
 SR2 = "heruntergefahren"
 SR3 = "neugestartet"
+
+PLEASE_WAIT = "Bitte Warten..."
 
 ######
 from datetime import datetime
