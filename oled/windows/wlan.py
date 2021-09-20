@@ -11,7 +11,6 @@ import subprocess
 class Wlanmenu(WindowBase):
     font = ImageFont.truetype(settings.FONT_TEXT, size=10)
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=15)
-    faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=35)
 
     def __init__(self, windowmanager):
         super().__init__(windowmanager)
@@ -26,7 +25,6 @@ class Wlanmenu(WindowBase):
         self.wifi_ssid = "n/a"
         self._ip_addr = "n/a"
         self.timeout = False
-        self.busy = False
 
     def activate(self):
         self._active = True
@@ -41,9 +39,6 @@ class Wlanmenu(WindowBase):
     def render(self):
         with canvas(self.device) as draw:
 
-            if self.busy:
-                draw.text((50, 25), text="\uf251", font=Wlanmenu.faiconsbig, fill="white") #zurück
-                return
 
             mwidth = Wlanmenu.font.getsize(self.descr[self.counter])
             draw.text((64 - int(mwidth[0]/2),1), text=self.descr[self.counter], font=Wlanmenu.font, fill="white")
@@ -104,12 +99,6 @@ class Wlanmenu(WindowBase):
                     self._hostapd_wifi_psk = "n/a"
 
 
-
-
-
-
-
-
             await asyncio.sleep(5)
 
 
@@ -119,14 +108,10 @@ class Wlanmenu(WindowBase):
             self.windowmanager.set_window("mainmenu")
         elif self.counter == 1:
             try:
-                self.busy = True
                 os.system('sudo /usr/bin/autohotspotN')
 
             except:
                 pass
-            finally:
-                self.busy = False
-
 
     def turn_callback(self, direction, key=None):
         if key:

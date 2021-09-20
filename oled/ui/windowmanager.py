@@ -2,6 +2,7 @@
 import asyncio
 from datetime import datetime
 import settings
+import integrations.busy as busy
 
 class WindowManager():
     def __init__(self, loop, device):
@@ -32,6 +33,7 @@ class WindowManager():
                 pass
             self.activewindow = self.windows[windowid]
             try:
+                self.activewindow.busy = False
                 self.activewindow.activate()
             except (NotImplementedError, AttributeError):
                 pass
@@ -50,7 +52,6 @@ class WindowManager():
 
     async def _render(self):
         while self.loop.is_running():
-
             if ((datetime.now() - settings.lastinput).total_seconds() >= settings.MENU_TIMEOUT) and self.activewindow.timeout:
                 self.set_window(self.activewindow.timeoutwindow)
 
@@ -91,7 +92,10 @@ class WindowManager():
                     await asyncio.sleep(0.25)
 
                 try:
-                    self.activewindow.render()
+                    if self.activewindow.busy:
+                        busy.render(self.device)
+                    else:
+                        self.activewindow.render()
                 except (NotImplementedError, AttributeError):
                     pass
 
@@ -101,11 +105,16 @@ class WindowManager():
         settings.lastinput = datetime.now()
         settings.staywake = False
         if settings.screenpower:
+            self.activewindow.busy = True
+            print (self.activewindow.busy)
+
             try:
                 self.device.contrast(settings.CONTRAST_FULL)
                 self.activewindow.push_callback(lp=lp)
             except (NotImplementedError, AttributeError):
                 pass
+            finally:
+                self.activewindow.busy = False
         else:
             settings.screenpower = True
             self.device.show()
@@ -113,6 +122,7 @@ class WindowManager():
 
     def turn_callback(self, direction, key=None):
         try:
+            self.activewindow.busy = True
             settings.screenpower = True
             settings.lastinput = datetime.now()
             self.device.contrast(settings.CONTRAST_FULL)
@@ -123,3 +133,5 @@ class WindowManager():
                 self.activewindow.turn_callback(direction,key=key)
         except (NotImplementedError, AttributeError):
             pass
+        finally:
+            self.activewindow.busy = False

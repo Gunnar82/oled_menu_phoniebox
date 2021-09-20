@@ -12,12 +12,10 @@ import re
 class Firewallmenu(WindowBase):
     font = ImageFont.truetype(settings.FONT_TEXT, size=12)
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=18)
-    faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=35)
 
     def __init__(self, windowmanager):
         super().__init__(windowmanager)
         self.counter = 0
-        self.busy = False
         self._ufw_status = "n/a"
 
 
@@ -26,9 +24,6 @@ class Firewallmenu(WindowBase):
             mwidth = Firewallmenu.font.getsize("Firewall")
             draw.text((64 - int(mwidth[0]/2),1), text="Firewall", font=Firewallmenu.font, fill="white")
 
-            if self.busy:
-                draw.text((50, 25), text="\uf251", font=Firewallmenu.faiconsbig, fill="white") #zurück
-                return
             draw.text((10, 15), text=self._ufw_status, font=Firewallmenu.font, fill="white")
             
 
@@ -38,16 +33,13 @@ class Firewallmenu(WindowBase):
             self.windowmanager.set_window("mainmenu")
 
     def turn_callback(self, direction, key=None):
-        try:
-            self.busy = True
-            if key == 'A':
-                for srv in settings.ufw_services_allow:
-                    os.system("sudo ufw deny %s" % (srv))
-            elif key == 'B':
-                for srv in settings.ufw_services_allow:
-                    os.system("sudo ufw allow %s" % (srv))
-        finally:
-            self.busy = False
+
+        if key == 'A':
+            for srv in settings.ufw_services_allow:
+                os.system("sudo ufw deny %s" % (srv))
+        elif key == 'B':
+            for srv in settings.ufw_services_allow:
+                os.system("sudo ufw allow %s" % (srv))
 
     def activate(self):
         self._active = True

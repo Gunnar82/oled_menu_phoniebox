@@ -11,6 +11,7 @@ class WindowBase():
         self.contrasthandle = True
         self.timeoutwindow="idle"
         self.window_on_back = "mainmenu"
+        self.busy = False
 
     def activate(self):
         raise NotImplementedError()
