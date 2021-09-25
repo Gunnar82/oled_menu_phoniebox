@@ -89,14 +89,14 @@ class WindowManager():
                 while (contrast == settings.CONTRAST_BLACK) and count < 4 * settings.DARK_RENDERTIME:
                     count += 1
                     await asyncio.sleep(0.25)
-
-                try:
-                    if self.activewindow.busy:
-                        busy.render(self.device,self.activewindow)
-                    else:
-                        self.activewindow.render()
-                except (NotImplementedError, AttributeError):
-                    pass
+                if settings.screenpower:
+                    try:
+                        if self.activewindow.busy:
+                            busy.render(self.device,self.activewindow)
+                        else:
+                            self.activewindow.render()
+                    except (NotImplementedError, AttributeError):
+                        pass
 
             await asyncio.sleep(0.25)
 

@@ -198,7 +198,6 @@ class Idle(WindowBase):
 
 
             if title != oldtitle:
-                settings.screenpower = True
                 if oldtitle != "":
                     if (datetime.datetime.now() - settings.lastinput).total_seconds() >= settings.DARK_TIMEOUT:
                         settings.lastinput = datetime.datetime.now() - datetime.timedelta(seconds=settings.CONTRAST_TIMEOUT)
@@ -308,8 +307,15 @@ class Idle(WindowBase):
                 self.windowmanager.set_window("foldermenu")
             elif key =='D':
                 self.windowmanager.set_window("shutdownmenu")
+            elif key == '5':
+                 self.windowmanager.clear_window()
+
+            elif key =='0':
+                playout.pc_mute()
         else:
             if (direction > 0):
+                self.busysymbol = settings.SYMBOL_VOL_UP
                 playout.pc_volup()
             else:
+                self.busysymbol = settings.SYMBOL_VOL_DN
                 playout.pc_voldown()

@@ -11,6 +11,8 @@ def pc_stop():
 def pc_play(pos = 0):
     os.system("%s -c=playerplay -v=%d" % (settings.PLAYOUT_CONTROLS, pos))
 
+def pc_mute():
+    os.system("%s -c=mute" % (settings.PLAYOUT_CONTROLS))
 
 
 
