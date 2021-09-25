@@ -81,6 +81,21 @@ def main():
 
     windowmanager.set_window("start")
 
+    ####loop check for shutdown und idle tasks
+    async def _linuxjob(self):
+
+        while loop.is_running():
+            settings.job_t = fn.linux_job_remaining("t")
+            settings.job_s = fn.linux_job_remaining("s")
+            settings.job_i = fn.linux_job_remaining("i")
+
+            if ((settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5)):
+                windowmanager.show_window()
+
+
+            await asyncio.sleep(20)
+
+
 
     #Rotary encoder setup
     def turn_callback(direction,_key=False):
@@ -126,6 +141,10 @@ def main():
     else:
         haspowercontroller = False
 
+    try:
+        loop.create_task(self._linuxjob())
+    except:
+        pass
 
     try:
         loop.run_forever()

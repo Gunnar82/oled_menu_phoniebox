@@ -54,7 +54,6 @@ class Idle(WindowBase):
     def activate(self):
         self._active = True
         self.loop.create_task(self._generatenowplaying())
-        self.loop.create_task(self._linuxjob())
 
     def deactivate(self):
         self._active = False
@@ -146,18 +145,6 @@ class Idle(WindowBase):
             draw.text((1, 5), self._playingalbum, font=Idle.font, fill="white")
             draw.text((1, 19), self._playingname, font=Idle.font, fill="white")
             draw.text((1, 32), self._playingtitle, font=Idle.font, fill="white")
-
-
-
-
-    async def _linuxjob(self):
-
-        while self.loop.is_running():
-            settings.job_t = fn.linux_job_remaining("t")
-            settings.job_s = fn.linux_job_remaining("s")
-            settings.job_i = fn.linux_job_remaining("i")
-
-            await asyncio.sleep(20)
 
 
     async def _find_dev_bt(self):
@@ -309,7 +296,6 @@ class Idle(WindowBase):
                 self.windowmanager.set_window("shutdownmenu")
             elif key == '5':
                  self.windowmanager.clear_window()
-
             elif key =='0':
                 self.busysymbol = settings.SYMBOL_VOL_MUTE
                 playout.pc_mute()
