@@ -49,11 +49,24 @@ class Idle(WindowBase):
             if settings.STATUS_LED_ALWAYS_ON:
                 GPIO.output(settings.STATUS_LED_PIN, 1) 
 
+    async def _linuxjob(self):
+
+        while self.loop.is_running():
+            settings.job_t = fn.linux_job_remaining("t")
+            settings.job_s = fn.linux_job_remaining("s")
+            settings.job_i = fn.linux_job_remaining("i")
+
+            if ((settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5)):
+                self.windowmanager.show_window()
+
+            await asyncio.sleep(20)
 
 
     def activate(self):
         self._active = True
         self.loop.create_task(self._generatenowplaying())
+        self.loop.create_task(self._linuxjob())
+
 
     def deactivate(self):
         self._active = False
