@@ -63,7 +63,6 @@ class WindowManager():
                             self.looptime = int (settings.DARK_RENDERTIME // 2)
 
                     contrast = settings.CONTRAST_BLACK
-                    settings.screenpower = False
 
                 else:
                     if  (datetime.now() - settings.lastinput).total_seconds() >= settings.CONTRAST_TIMEOUT:
@@ -87,7 +86,7 @@ class WindowManager():
 
             if self.activewindow != []:
                 count = 0
-                while (not settings.screenpower) and count < 4 * settings.DARK_RENDERTIME:
+                while (contrast == settings.CONTRAST_BLACK) and count < 4 * settings.DARK_RENDERTIME:
                     count += 1
                     await asyncio.sleep(0.25)
 
@@ -125,6 +124,7 @@ class WindowManager():
         try:
             self.activewindow.busy = True
             settings.screenpower = True
+            self.device.show()
             settings.lastinput = datetime.now()
             self.device.contrast(settings.CONTRAST_FULL)
             if key == '#':
