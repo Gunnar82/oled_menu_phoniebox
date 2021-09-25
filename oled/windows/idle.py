@@ -311,6 +311,7 @@ class Idle(WindowBase):
                  self.windowmanager.clear_window()
 
             elif key =='0':
+                self.busysymbol = settings.SYMBOL_VOL_MUTE
                 playout.pc_mute()
         else:
             if (direction > 0):
