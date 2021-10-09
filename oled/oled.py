@@ -110,21 +110,19 @@ def main():
 
 
     ####Powercontroller Init
+    haspowercontroller = False
     if settings.POWERCONTROLLER_ENABLED:
         from integrations.powercontroller import PowerController
 
         haspowercontroller = True
         try:
-            if settings.POWERCONTROLLER:
-                print ("Poweronctroller")
-                pc = PowerController(loop, turn_callback, push_callback)
-            else:
-                haspowercontroller = False
+            print ("Poweronctroller")
+            pc = PowerController(loop, turn_callback, push_callback)
+            haspowercontroller = False
         except:
             haspowercontroller = False
-    else:
-        haspowercontroller = False
 
+    ###main
     try:
         loop.run_forever()
     except (KeyboardInterrupt, SystemExit):
