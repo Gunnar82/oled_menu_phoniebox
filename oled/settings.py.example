@@ -43,6 +43,14 @@ KEYPAD_ADDR = 0x27
 ####
 
 
+
+SYMBOL_SANDCLOCK = "\uf251"
+SYMBOL_VOL_UP = "\uf026 \uf176"
+SYMBOL_VOL_DN = "\uf026 \uf175"
+SYMBOL_VOL_MUTE = "\uf026"
+SYMBOL_NEXT = "\uf051"
+SYMBOL_PREV = "\uf048"
+
 PLAYOUT_CONTROLS = "sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh"
 
 #Pins for rotary encoder
