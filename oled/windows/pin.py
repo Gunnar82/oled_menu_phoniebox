@@ -36,6 +36,7 @@ class PinMenu(WindowBase):
             with open(filename) as f:
                 line = f.readlines()[0]
                 pc.pc_playfolder(line)
+                self.windowmanager.set_window("playlistmenu")
         except:
             self.descr = "PIN n/a"
 
@@ -43,5 +44,12 @@ class PinMenu(WindowBase):
     def turn_callback(self, direction, key=None):
         if key in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']:
             self.pincode += key
+        elif key == 'A':
+            self.pincode = ""
+        elif key == 'B':
+            try:
+                self.pincode = self.pincode[:-1]
+            except:
+                pass
         elif key == '#':
                self.windowmanager.set_window("idle")
