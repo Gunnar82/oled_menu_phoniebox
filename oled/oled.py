@@ -30,6 +30,7 @@ import windows.start
 import windows.wlan
 import windows.ende
 import windows.firewall
+import windows.pin
 
 import settings
 
@@ -72,6 +73,7 @@ def main():
     loadedwins.append(shutdownscreen)
     loadedwins.append(windows.firewall.Firewallmenu(windowmanager))
     loadedwins.append(windows.start.Start(windowmanager, mopidy))
+    loadedwins.append(windows.pin.PinMenu(windowmanager))
 
     for window in loadedwins:
         windowmanager.add_window(window.__class__.__name__.lower(), window)
