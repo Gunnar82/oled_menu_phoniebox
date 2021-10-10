@@ -2,4 +2,4 @@
 *.otf
 *.pyc
 settings.py
-pins/*
+oled/pins/*
