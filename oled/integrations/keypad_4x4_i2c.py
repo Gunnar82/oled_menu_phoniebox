@@ -67,7 +67,6 @@ class keypad_4x4_i2c:
             col = self.i2c.read_byte_data(self.I2CADDR, self.RD_A) >> 4
             row = self.DECODE[row]
             col = self.DECODE[col]
-
             return self.KEYCODE[col][row]
 
 
@@ -95,7 +94,7 @@ class keypad_4x4_i2c:
         self.I2CADDR = addr
         self.reset()
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(5, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.setup(intpin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
         GPIO.add_event_detect(intpin, GPIO.BOTH, callback=self.button_down_callback, bouncetime=100)
 
