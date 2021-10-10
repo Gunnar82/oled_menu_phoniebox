@@ -306,7 +306,9 @@ class Idle(WindowBase):
                 settings.currentfolder = settings.AUDIO_BASEPATH_RADIO
                 self.windowmanager.set_window("foldermenu")
             elif key =='D':
-                self.windowmanager.set_window("pinmenu") #shutdownmenu")
+                self.windowmanager.set_window("shutdownmenu")
+            elif key =='9':
+                self.windowmanager.set_window("pinmenu")
             elif key == '5':
                  self.windowmanager.clear_window()
             elif key =='0':
