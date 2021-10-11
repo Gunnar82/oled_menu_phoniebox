@@ -1,0 +1,12 @@
+find /home/pi/RPi-Jukebox-RFID/shared/audiofolders -type d \
+  \( -exec sh -c 'find "$1" -mindepth 1 -maxdepth 1 -type d -print0 | grep -cz "^" >/dev/null 2>&1' _ {} \; -o -print \) > /tmp/gen_files.tmp
+
+cat /tmp/gen_files.tmp | while read line
+do
+    RND=`shuf -i1000-9999 -n1`
+
+    echo $line > /home/pi/oledctrl/oled/pins/$RND
+done
+
+
+rm /tmp/gen_files.tmp
