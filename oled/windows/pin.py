@@ -16,6 +16,8 @@ class PinMenu(WindowBase):
         self.pincode = ""
         self.descr = "PIN-Menü"
         self.window_on_back = "idle"
+        self.line3 = ""
+        self.drawtextx = 0
 
     def render(self):
          with canvas(self.device) as draw:
@@ -23,10 +25,18 @@ class PinMenu(WindowBase):
             draw.text((64 - int(mwidth[0]/2),1), text=self.descr, font=PinMenu.font, fill="white")
             mwidth = PinMenu.font.getsize(self.pincode)
             draw.text((64 - int(mwidth[0]/2),20), text=self.pincode, font=PinMenu.font, fill="white")
+            if self.font.getsize(self.line3[self.drawtextx:])[0] > 127:
+                self.drawtextx += 1
+            else:
+                self.drawtextx = 0
+
+            mwidth = PinMenu.font.getsize(self.line3)
+            draw.text((64 - int(mwidth[0]/2),40), text=self.line3[self.drawtextx:], font=PinMenu.font, fill="white")
 
 
     def activate(self):
         self.pincode = ""
+        self.line3 = ""
 
 
     def push_callback(self,lp=False):
@@ -34,11 +44,11 @@ class PinMenu(WindowBase):
 
         try:
             with open(filename) as f:
-                line = f.readlines()[0]
+                line = f.readlines()[0][len(settings.AUDIO_BASEPATH_BASE):].strip()
                 pc.pc_playfolder(line)
                 self.windowmanager.set_window("playlistmenu")
         except:
-            self.descr = "PIN n/a"
+            self.line3 = "PIN n/a"
 
 
     def turn_callback(self, direction, key=None):
@@ -53,3 +63,10 @@ class PinMenu(WindowBase):
                 pass
         elif key == '#':
                self.windowmanager.set_window("idle")
+        try:
+            filename = '/home/pi/oledctrl/oled/pins/' + self.pincode
+            with open(filename) as f:
+                line = f.readlines()[0].strip()
+                self.line3 = line[len(settings.AUDIO_BASEPATH_BASE):].replace("/", " | ")
+        except:
+            self.line3 = ""
