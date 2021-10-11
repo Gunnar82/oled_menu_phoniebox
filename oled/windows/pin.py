@@ -5,6 +5,8 @@ from PIL import ImageFont
 import settings
 import integrations.functions as fn
 import integrations.playout as pc
+from pathlib import Path
+
 
 class PinMenu(WindowBase):
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=18)
@@ -37,16 +39,21 @@ class PinMenu(WindowBase):
     def activate(self):
         self.pincode = ""
         self.line3 = ""
+        self.pinfiles = {}
+        for path in Path(settings.AUDIO_BASEPATH_BASE).rglob('pin'):
+            try:
+                with open(path) as f:
+                    line = f.readlines()[0].strip()
+                    self.pinfiles[str(line)] = str(path.parent)
+            except:
+                pass
 
 
     def push_callback(self,lp=False):
-        filename = '/home/pi/oledctrl/oled/pins/' + self.pincode
-
         try:
-            with open(filename) as f:
-                line = f.readlines()[0][len(settings.AUDIO_BASEPATH_BASE):].strip()
-                pc.pc_playfolder(line)
-                self.windowmanager.set_window("playlistmenu")
+            line = self.pinfiles[self.pincode][len(settings.AUDIO_BASEPATH_BASE):].strip()
+            pc.pc_playfolder(line)
+            self.windowmanager.set_window("playlistmenu")
         except:
             self.line3 = "PIN n/a"
 
@@ -64,9 +71,6 @@ class PinMenu(WindowBase):
         elif key == '#':
                self.windowmanager.set_window("idle")
         try:
-            filename = '/home/pi/oledctrl/oled/pins/' + self.pincode
-            with open(filename) as f:
-                line = f.readlines()[0].strip()
-                self.line3 = line[len(settings.AUDIO_BASEPATH_BASE):].replace("/", " | ")
+            self.line3 = self.pinfiles[self.pincode].replace("/"," | ")
         except:
             self.line3 = ""

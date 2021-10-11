@@ -1,0 +1,1 @@
+find  /home/pi/oledctrl/oled/pins -type f  -exec cat {} \; -printf "\t%f"
