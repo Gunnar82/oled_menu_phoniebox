@@ -15,7 +15,7 @@ done
 
 
 find /home/pi/RPi-Jukebox-RFID/shared/audiofolders -type d \
-  \( -exec sh -c 'find "$1" -mindepth 1 -maxdepth 1 -type d -print0 | grep -cz "^" >/dev/null 2>&1' _ {} \; -o -print \) | sort -z > /tmp/gen_files.tmp
+  \( -exec sh -c 'find "$1" -mindepth 1 -maxdepth 1 -type d -print0 | grep -cz "^" >/dev/null 2>&1' _ {} \; -o -print \) | sort -d > /tmp/gen_files.tmp
 if [[ -f /tmp/gen_maxval.tmp ]] ; then
     cnt=`cat /tmp/gen_maxval.tmp`
     rm /tmp/gen_maxval.tmp
