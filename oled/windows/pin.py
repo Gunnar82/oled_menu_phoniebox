@@ -20,6 +20,7 @@ class PinMenu(WindowBase):
         self.window_on_back = "idle"
         self.line3 = ""
         self.drawtextx = 0
+        self.timeout=False
 
     def render(self):
          with canvas(self.device) as draw:
@@ -32,8 +33,7 @@ class PinMenu(WindowBase):
             else:
                 self.drawtextx = 0
 
-            mwidth = PinMenu.font.getsize(self.line3)
-            draw.text((64 - int(mwidth[0]/2),40), text=self.line3[self.drawtextx:], font=PinMenu.font, fill="white")
+            draw.text((1 , 40), text=self.line3[self.drawtextx:], font=PinMenu.font, fill="white")
 
 
     def activate(self):
@@ -71,6 +71,6 @@ class PinMenu(WindowBase):
         elif key == '#':
                self.windowmanager.set_window("idle")
         try:
-            self.line3 = self.pinfiles[self.pincode].replace("/"," | ")
+            self.line3 = self.pinfiles[self.pincode][len(settings.AUDIO_BASEPATH_BASE):].replace("/"," | ")
         except:
             self.line3 = ""

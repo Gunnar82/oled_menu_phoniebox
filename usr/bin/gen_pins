@@ -1,11 +1,34 @@
+find /home/pi/RPi-Jukebox-RFID/shared/audiofolders -name pin > /tmp/gen_files.tmp
+
+maxval=1000
+cat /tmp/gen_files.tmp | while read line
+
+do
+    mval=`cat "${line%%*( )}"`
+    myval=`expr $mval`
+    
+    if [ "$myval" -gt "$maxval" ] ; then
+        maxval=$myval
+        echo $maxval > /tmp/gen_maxval.tmp
+    fi
+done
+
+
 find /home/pi/RPi-Jukebox-RFID/shared/audiofolders -type d \
-  \( -exec sh -c 'find "$1" -mindepth 1 -maxdepth 1 -type d -print0 | grep -cz "^" >/dev/null 2>&1' _ {} \; -o -print \) > /tmp/gen_files.tmp
+  \( -exec sh -c 'find "$1" -mindepth 1 -maxdepth 1 -type d -print0 | grep -cz "^" >/dev/null 2>&1' _ {} \; -o -print \) | sort -z > /tmp/gen_files.tmp
+if [[ -f /tmp/gen_maxval.tmp ]] ; then
+    cnt=`cat /tmp/gen_maxval.tmp`
+    rm /tmp/gen_maxval.tmp
+else
+    cnt=1000
+fi
 
 cat /tmp/gen_files.tmp | while read line
 do
-    RND=`shuf -i1000-9999 -n1`
-
-    echo $line > /home/pi/oledctrl/oled/pins/$RND
+    if [[ ! -f $line/pin ]] ; then
+        let cnt=cnt+1
+        echo $cnt >  "$line/pin"
+    fi 
 done
 
 
