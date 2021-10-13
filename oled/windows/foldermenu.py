@@ -11,6 +11,7 @@ class Foldermenu(MenuBase):
     
     def playfolder(self,folder):
         foldername = folder[len(settings.AUDIO_BASEPATH_BASE):]
+        print (folder)
         playout.pc_playfolder(foldername)
         self.windowmanager.set_window("playlistmenu")
 

@@ -868,6 +868,9 @@ case $COMMAND in
         sudo echo ${FOLDER} > ${PATHDATA}/../settings/Latest_Folder_Played
         sudo chown pi:www-data ${PATHDATA}/../settings/Latest_Folder_Played
         sudo chmod 777 ${PATHDATA}/../settings/Latest_Folder_Played
+        if [[ "${FOLDER}" =~ ^/Radio/* ]]; then sudo echo ${FOLDER} > ${PATHDATA}/../settings/Latest_Radio_Folder_Played ; sudo chmod 777 ${PATHDATA}/../settings/Latest_Radio_Folder_Played; fi
+        if [[ "${FOLDER}" =~ ^/Musik/* ]]; then sudo echo ${FOLDER} > ${PATHDATA}/../settings/Latest_Musik_Folder_Played ; sudo chmod 777 ${PATHDATA}/../settings/Latest_Musik_Folder_Played; fi
+        if [[ "${FOLDER}" =~ ^/Hörspiele/* ]]; then sudo echo ${FOLDER} > ${PATHDATA}/../settings/Latest_Hörspiele_Folder_Played ; sudo chmod 777 ${PATHDATA}/../settings/Latest_Hörspiele_Folder_Played; fi
         if [ "${DEBUG_playout_controls_sh}" == "TRUE" ]; then echo "  echo ${FOLDER} > ${PATHDATA}/../settings/Latest_Folder_Played" >> ${PATHDATA}/../logs/debug.log; fi
         if [ "${DEBUG_playout_controls_sh}" == "TRUE" ]; then echo "  VAR Latest_Folder_Played: ${FOLDER}" >> ${PATHDATA}/../logs/debug.log; fi
         if [ "${DEBUG_playout_controls_sh}" == "TRUE" ]; then echo "  # end playout_controls.sh playlistaddplay" >> ${PATHDATA}/../logs/debug.log; fi
