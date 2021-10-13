@@ -311,9 +311,16 @@ class Idle(WindowBase):
                 self.windowmanager.set_window("pinmenu")
             elif key == '5':
                  self.windowmanager.clear_window()
-            elif key =='0':
+            elif key == '0':
                 self.busysymbol = settings.SYMBOL_VOL_MUTE
                 playout.pc_mute()
+            elif key == '1':
+                playout.pc_play_last_hoerspiel()
+            elif key == '3':
+                playout.pc_play_last_radio()
+            elif key == '7':
+                playout.pc_play_last_musik()
+
         else:
             if (direction > 0):
                 self.busysymbol = settings.SYMBOL_VOL_UP
