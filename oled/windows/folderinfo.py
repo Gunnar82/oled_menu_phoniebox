@@ -50,7 +50,6 @@ class FolderInfo(WindowBase):
                 _key, _val = line.split('=',2)
                 self.settings[_key] = _val.replace("\"","").strip()
 
-
     def render(self):
         with canvas(self.device) as draw:
             try:

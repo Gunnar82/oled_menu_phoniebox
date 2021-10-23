@@ -71,13 +71,15 @@ class Foldermenu(MenuBase):
             self.timeout = True
         else:
             self.timeout = False
- 
-        try:
-            folder = self.folders[self.position]
-            fullpath = os.path.join(settings.currentfolder,folder)
-            settings.current_selectedfolder = fullpath
-        except:
-            settings.current_selectedfolder = settings.currentfolder
+        if key == '9':
+            self.windowmanager.set_window("folderinfo")
+        else:
+            try:
+                folder = self.folders[self.position]
+                fullpath = os.path.join(settings.currentfolder,folder)
+                settings.current_selectedfolder = fullpath
+            except:
+                settings.current_selectedfolder = settings.currentfolder
 
     def push_callback(self,lp=False):
         if self.counter == 0:
@@ -97,7 +99,7 @@ class Foldermenu(MenuBase):
                     self.generate_folders(settings.current_selectedfolder)
                     settings.currentfolder = settings.current_selectedfolder
                     self.page = 0
-                    self.counter = 2
+                    self.counter = 1
                 else:
                     print ("play %s " % (settings.current_selectedfolder))
                     self.playfolder(settings.current_selectedfolder)
