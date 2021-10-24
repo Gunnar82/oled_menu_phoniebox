@@ -89,7 +89,7 @@ class FolderInfo(WindowBase):
 
             try:
                 list_of_files = os.listdir(settings.current_selectedfolder)
-                self.line4 = "Anzahl MP3: %d, pin: %s" % (len([x for x in list_of_files if x.endswith(".mp3")]), self.settings["pin"])
+                self.line4 = "MP3: %d, pin: %s" % (len([x for x in list_of_files if x.endswith(".mp3")]), self.settings["pin"])
             except:
                 pass
 
