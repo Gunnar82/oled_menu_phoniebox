@@ -143,6 +143,9 @@ resume)
 		if [[ $FOLDER == /H* ]] ; then
                     TRACKONLY="false"
 		fi
+		if [[ $FOLDER == /Musik* ]] ; then
+                    TRACKONLY="true"
+		fi
 
                 if [ ! -z $PLAYLISTLENGTH ] && [ $PLAYLISTLENGTH -gt $REALPOS ] && [ $TRACKONLY == "false" ]; then 
                     echo -e seekcur $ELAPSED \\nclose | nc -w 1 localhost 6600
