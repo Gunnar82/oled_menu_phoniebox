@@ -98,6 +98,7 @@ class WindowManager():
                         if self.activewindow.busy:
                             busy.render(self.device,self.activewindow)
                         else:
+                            self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
                             self.activewindow.render()
                     except (NotImplementedError, AttributeError):
                         pass
