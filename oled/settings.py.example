@@ -23,12 +23,12 @@ CONTRAST_BLACK = 15
 
 
 ### Power Controller
-POWERCONTROLLER_ENABLED = False
+POWERCONTROLLER_ENABLED = True
 
 ###
 
 ### Power Controller
-ROTARYENCODER_ENABLED = True
+ROTARYENCODER_ENABLED = False
 
 ###
 
@@ -37,7 +37,7 @@ KEYBOARD_ENABLED = True
 
 ### KEYPAD 4x4 I2C + MCP23017
 KEYPAD_ENABLED = True
-KEYPAD_INTPIN = 5
+KEYPAD_INTPIN = 13
 KEYPAD_ADDR = 0x27
 
 ####
@@ -50,6 +50,7 @@ SYMBOL_VOL_DN = "\uf026 \uf175"
 SYMBOL_VOL_MUTE = "\uf026"
 SYMBOL_NEXT = "\uf051"
 SYMBOL_PREV = "\uf048"
+SYMBOL_ERROR = "\uf00d"
 
 PLAYOUT_CONTROLS = "sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh"
 
@@ -83,7 +84,7 @@ MAC_DEV_BT_2 = "FC:58:FA:FE:09:4C"
 
 INTPIN=2
 
-STATUS_LED_ENABLED=True
+STATUS_LED_ENABLED=False
 STATUS_LED_PIN=6
 STATUS_LED_ALWAYS_ON=False
 
@@ -91,6 +92,12 @@ AUDIO_BASEPATH_BASE = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders"
 AUDIO_BASEPATH_MUSIC = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/Musik"
 AUDIO_BASEPATH_HOERBUCH = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/Hörspiele"
 AUDIO_BASEPATH_RADIO = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/Radio"
+
+FILE_LAST_HOERSPIELE="/home/pi/RPi-Jukebox-RFID/settings/Latest_Hörspiele_Folder_Played"
+FILE_LAST_RADIO="/home/pi/RPi-Jukebox-RFID/settings/Latest_Radio_Folder_Played"
+FILE_LAST_MUSIC="/home/pi/RPi-Jukebox-RFID/settings/Latest_Musik_Folder_Played"
+
+
 
 SR1 = "beendet"
 SR2 = "heruntergefahren"

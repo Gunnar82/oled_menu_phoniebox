@@ -27,6 +27,7 @@ class FolderInfo(WindowBase):
         self.settings["SINGLE"]="n/a"
         self.settings["SONG"]="0"
         self.settings["PLAYLISTLENGTH"]="0"
+        self.settings["pin"] = "n/a"
         self.line1 = "n/a"
         self.line2 = "n/a"
         self.line3 = "n/a"
@@ -43,7 +44,21 @@ class FolderInfo(WindowBase):
         except:
             return False
 
+
+    def read_pin(self,_fn):
+        try:
+            pin = open(_fn,"r")
+            self.settings["pin"] = pin.read().replace('\n','')
+            pin.close()
+            return True
+        except:
+            return False
+
     def activate(self):
+
+        self.fn = os.path.join(settings.current_selectedfolder,"pin")
+        self.read_pin(self.fn)
+
         self.fn = os.path.join(settings.current_selectedfolder,"folder.conf")
         if self.read_folderconf(self.fn):
             for line in self.lines:
@@ -54,7 +69,7 @@ class FolderInfo(WindowBase):
         with canvas(self.device) as draw:
             try:
                 if functions.has_subfolders(settings.current_selectedfolder):
-                    self.line1 = "Subdir" 
+                    self.line1 = "Subdir"
                 else:
                     self.line1 = self.settings["CURRENTFILENAME"][self.settings["CURRENTFILENAME"].rfind("/")+1:]
             except:
@@ -74,7 +89,7 @@ class FolderInfo(WindowBase):
 
             try:
                 list_of_files = os.listdir(settings.current_selectedfolder)
-                self.line4 = "Anzahl MP3: %d" % (len([x for x in list_of_files if x.endswith(".mp3")]))
+                self.line4 = "Anzahl MP3: %d, pin: %s" % (len([x for x in list_of_files if x.endswith(".mp3")]), self.settings["pin"])
             except:
                 pass
 

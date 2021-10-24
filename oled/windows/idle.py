@@ -11,6 +11,7 @@ import integrations.playout as playout
 import integrations.functions as fn
 import RPi.GPIO as GPIO
 import locale
+import time
 
 
 class Idle(WindowBase):
@@ -314,12 +315,22 @@ class Idle(WindowBase):
             elif key == '0':
                 self.busysymbol = settings.SYMBOL_VOL_MUTE
                 playout.pc_mute()
-            elif key == '1':
-                playout.pc_play_last_hoerspiel()
-            elif key == '3':
-                playout.pc_play_last_radio()
-            elif key == '7':
-                playout.pc_play_last_musik()
+            elif key in ['1', '3', '7']:
+
+                if key == '1':
+                    what = settings.FILE_LAST_HOERSPIELE
+                elif key == '3':
+                    what = settings.FILE_LAST_RADIO
+                elif key == '7':
+                    what = settings.FILE_LAST_MUSIC
+
+                if playout.checkfolder(what) != 0:
+                    self.busysymbol = settings.SYMBOL_ERROR
+                    time.sleep(5)
+                else:
+                    playout.playlast_checked(what)
+
+
 
         else:
             if (direction > 0):
