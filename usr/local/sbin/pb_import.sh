@@ -2,21 +2,21 @@
 
 DATE=`date +"%d/%m/%Y %H:%M:%S"`
 DEVICE=$1
-MOUNTPATH="/media/$DEVICE/"
+MOUNTPATH="/media/pb_import/$DEVICE/"
 IMPORTFILE="$MOUNTPATH/PB_import.txt"
 DESTPATH="/home/pi/RPi-Jukebox-RFID/shared/audiofolders/"
 
 
 
 
-mkdir $MOUNTPATH
+mkdir -p $MOUNTPATH
 mount /dev/$DEVICE $MOUNTPATH -oro
 
-    /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
-    /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
-
+/usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
 
 if [ -f "$IMPORTFILE" ]; then
+    /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
+
     rsync -ru --size-only $MOUNTPATH $DESTPATH
     RET=$?
     if [ $RET -eq 0 ] ; then

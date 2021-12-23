@@ -1,0 +1,1 @@
+KERNEL=="sd[b-z]1", ACTION=="add",ATTR{type}=="1", ATTR{timeout}="1800",  RUN+="/usr/local/sbin/pb_import.sh %k"

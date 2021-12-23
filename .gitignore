@@ -1,5 +1,6 @@
 *.ttf
 *.otf
 *.pyc
+*.mp3
 settings.py
 oled/pins/*
