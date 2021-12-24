@@ -1,9 +1,9 @@
 #!/bin/bash
 
 
-DATE=`date +"%d/%m/%Y %H:%M:%S"`
+DATE=`date +"%d-%m-%Y-%H-%M-%S"`
 DEVICE=$1
-MOUNTPATH="/media/pb_import/$DEVICE/"
+MOUNTPATH="/media/pb_import/$DEVICE"
 IMPORTFILE="$MOUNTPATH/PB_import.txt"
 EXPORTFILE="$MOUNTPATH/PB_export.txt"
 
@@ -20,7 +20,7 @@ sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
 if  [ -f "$EXPORTFILE" ]; then
     sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
     sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
-    rsync -r $DESTPATH $MOUNTPATH
+    rsync -r $DESTPATH $MOUNTPATH/export/ --log-file=$MOUNTPATH/export-$DATE.log
 
         sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
         sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
@@ -32,7 +32,7 @@ if  [ -f "$EXPORTFILE" ]; then
 elif [ -f "$IMPORTFILE" ]; then
     sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
 
-    rsync -ru --size-only $MOUNTPATH $DESTPATH
+    rsync -ru --size-only $MOUNTPATH/import/ $DESTPATH --log-file=$MOUNTPATH/import-$DATE.log
     RET=$?
     if [ $RET -eq 0 ] ; then
 	chown -R pi.pi $DESTPATH
