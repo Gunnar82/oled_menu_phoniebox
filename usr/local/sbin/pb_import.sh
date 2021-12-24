@@ -5,17 +5,31 @@ DATE=`date +"%d/%m/%Y %H:%M:%S"`
 DEVICE=$1
 MOUNTPATH="/media/pb_import/$DEVICE/"
 IMPORTFILE="$MOUNTPATH/PB_import.txt"
+EXPORTFILE="$MOUNTPATH/PB_export.txt"
+
 DESTPATH="/home/pi/RPi-Jukebox-RFID/shared/audiofolders/"
 
 
 
 
 mkdir -p $MOUNTPATH
-mount /dev/$DEVICE $MOUNTPATH -oro
+mount /dev/$DEVICE $MOUNTPATH
 
 sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
 
-if [ -f "$IMPORTFILE" ]; then
+if  [ -f "$EXPORTFILE" ]; then
+    sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
+    sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
+    rsync -r $DESTPATH $MOUNTPATH
+
+        sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
+        sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
+        sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
+        sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
+        RV=0
+
+
+elif [ -f "$IMPORTFILE" ]; then
     sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
 
     rsync -ru --size-only $MOUNTPATH $DESTPATH
