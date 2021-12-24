@@ -9,45 +9,52 @@ EXPORTFILE="$MOUNTPATH/PB_export.txt"
 
 DESTPATH="/home/pi/RPi-Jukebox-RFID/shared/audiofolders/"
 
+SOUNDPATH="/home/pi/oledctrl/audio/"
+PLAYOUTCONTROLS="/home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh"
+
+function playsound ()
+{
+	file=$1
+	count=$2
+
+	$PLAYOUTCONTROLS -c=playerstop
+	while [ $count -gt 0 ]
+	do
+		sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-$file.mp3
+		count=$[$count-1]
+	done
+}
 
 
 
 mkdir -p $MOUNTPATH
 mount /dev/$DEVICE $MOUNTPATH
 
-sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
+playsound "07" 1
 
 if  [ -f "$EXPORTFILE" ]; then
-    sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
-    sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
-    rsync -r $DESTPATH $MOUNTPATH/export/ --log-file=$MOUNTPATH/export-$DATE.log
+    playsound "07" 2
+    rsync --delete -rv --size-only $DESTPATH $MOUNTPATH/audio/ --log-file=$MOUNTPATH/export-$DATE.log
 
-        sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
-        sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
-        sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
-        sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
-        RV=0
+        playsound "07" 4
+	RV=0
 
 
 elif [ -f "$IMPORTFILE" ]; then
-    sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
+    playsound "07" 1
 
-    rsync -ru --size-only $MOUNTPATH/import/ $DESTPATH --log-file=$MOUNTPATH/import-$DATE.log
+    rsync -ruv --size-only $MOUNTPATH/audio/ $DESTPATH --log-file=$MOUNTPATH/import-$DATE.log
     RET=$?
     if [ $RET -eq 0 ] ; then
 	chown -R pi.pi $DESTPATH
-	sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
-	sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
-	sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-07.mp3
+	playsound "07" 3
 	RV=0
     else
-	sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-03.mp3
-	sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-03.mp3
-	sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-03.mp3
+	playsound "03" 3
 	RV=1
     fi
 else
-    sudo /usr/bin/mpg123 /home/pi/oledctrl/audio/beep-05.mp3
+    playsound "05" 1
     RV=2
 fi
 
