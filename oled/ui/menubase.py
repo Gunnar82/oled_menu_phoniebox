@@ -15,6 +15,7 @@ class MenuBase(WindowBase):
         self.right_pressed = False
         self.drawtextx = 0
         self.position = -1
+        self.progress = {}
 
     def render(self):
         if self.left_pressed:
@@ -62,9 +63,18 @@ class MenuBase(WindowBase):
                         self.drawtextx += 1
                     else:
                         self.drawtextx = 0
+
                     draw.text((8, 17+i*12), drawtext[self.drawtextx:], font=font, fill="white")
+
                 else:
                     draw.text((8, 17+i*12), self.menu[i+self.page], font=font, fill="white")
+                    draw.rectangle((90 , 17+i*12 , 128 , 34+i*12 ), outline="black", fill="black")
+
+                    try:
+                        drawtext = self.progress[self.menu[i+self.page]]
+                        draw.text((100, 17+i*12), "%2.0d%%" % (drawtext*100), font=font, fill="white")
+                    except:
+                        pass
 
 
     def on_key_left(self):

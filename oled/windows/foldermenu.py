@@ -6,9 +6,7 @@ import integrations.functions as functions
 import integrations.playout as playout
 class Foldermenu(MenuBase):
     folders = []
-    
 
-    
     def playfolder(self,folder):
         foldername = folder[len(settings.AUDIO_BASEPATH_BASE):]
         print (folder)
@@ -30,11 +28,37 @@ class Foldermenu(MenuBase):
 
     def generate_folders_array(self,path):
         self.folders = []
+        self.progress = {}
+
         for file in os.listdir(path):
             d = os.path.join(path, file)
             if os.path.isdir(d):
+                try:
+                    settings = {}
+                    settings["SONG"]="0"
+                    settings["PLAYLISTLENGTH"]="0"
+                    settings["RESUME"] = "off"
+
+                    fn = os.path.join(d,"folder.conf")
+
+                    folder_conf = open(fn,"r")
+                    lines = folder_conf.readlines()
+                    folder_conf.close()
+
+                    for line in lines:
+                        _key, _val = line.split('=',2)
+                        settings[_key] = _val.replace("\"","").strip()
+
+                    if (settings["SONG"] != "0") and (settings["PLAYLISTLENGTH"] != "0") and ((settings["RESUME"]).lower() == "on"):
+                        prozent = float(int(settings["SONG"]) / int(settings["PLAYLISTLENGTH"]))
+                        self.progress[file] = prozent
+                except:
+                    pass
+
                 self.folders.append(file)
+
         self.folders.sort()
+
 
     def __init__(self, windowmanager):
         super().__init__(windowmanager, "Auswahl")
