@@ -50,9 +50,9 @@ class Mainmenu(WindowBase):
             #icons as menu buttons
             if self.counter <= 5:
                 draw.text((11, 20), text="\uf0a8", font=Mainmenu.faicons, fill="white") #back
-                draw.text((44, 20), text="\uf001", font=Mainmenu.faicons, fill="white") #musik
-                draw.text((83, 20), text="\uf02d", font=Mainmenu.faicons, fill="white") #hoerbuch
-                draw.text((11, 46), text="\uf1eb", font=Mainmenu.faicons, fill="white") #radio
+                draw.text((44, 20), text=settings.SYMBOL_MUSIC, font=Mainmenu.faicons, fill="white") #musik
+                draw.text((83, 20), text=settings.SYMBOL_HOERSPIEL, font=Mainmenu.faicons, fill="white") #hoerbuch
+                draw.text((11, 46), text=settings.SYMBOL_RADIO, font=Mainmenu.faicons, fill="white") #radio
                 draw.text((44, 46), text="\uf085", font=Mainmenu.faicons, fill="white") #infos
                 draw.text((83, 46), text="\uf011", font=Mainmenu.faicons, fill="white") #shutdown
             elif self.counter <= 11:
