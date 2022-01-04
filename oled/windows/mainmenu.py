@@ -17,6 +17,7 @@ class Mainmenu(WindowBase):
         self.descr.append ("Musik")
         self.descr.append("Hörspiele")
         self.descr.append("Internetadio")
+        self.descr.append("USB-Stick")
         self.descr.append("Einstellungen")
         self.descr.append("Ausschaltmenü")
         self.descr.append("Betriebsinfos")
@@ -53,12 +54,13 @@ class Mainmenu(WindowBase):
                 draw.text((44, 20), text=settings.SYMBOL_MUSIC, font=Mainmenu.faicons, fill="white") #musik
                 draw.text((83, 20), text=settings.SYMBOL_HOERSPIEL, font=Mainmenu.faicons, fill="white") #hoerbuch
                 draw.text((11, 46), text=settings.SYMBOL_RADIO, font=Mainmenu.faicons, fill="white") #radio
-                draw.text((44, 46), text="\uf085", font=Mainmenu.faicons, fill="white") #infos
-                draw.text((83, 46), text="\uf011", font=Mainmenu.faicons, fill="white") #shutdown
+                draw.text((44, 46), text=settings.SYMBOL_USB, font=Mainmenu.faicons, fill="white") #radio
+                draw.text((83, 46), text="\uf085", font=Mainmenu.faicons, fill="white") #infos
             elif self.counter <= 11:
-                draw.text((11, 20), text="\uf022", font=Mainmenu.faicons, fill="white") #infos
-                draw.text((44, 20), text="\uf09e", font=Mainmenu.faicons, fill="white") #infos
-                draw.text((83, 20), text="\uf1cb", font=Mainmenu.faicons, fill="white") #infos
+                draw.text((11, 20), text="\uf011", font=Mainmenu.faicons, fill="white") #shutdown
+                draw.text((44, 20), text="\uf022", font=Mainmenu.faicons, fill="white") #infos
+                draw.text((83, 20), text="\uf09e", font=Mainmenu.faicons, fill="white") #infos
+                draw.text((11, 46), text="\uf1cb", font=Mainmenu.faicons, fill="white") #infos
 
 
 
@@ -81,7 +83,12 @@ class Mainmenu(WindowBase):
                 settings.currentfolder = settings.AUDIO_BASEPATH_RADIO
                 self.windowmanager.set_window("foldermenu")
             elif self.counter == 4:
-                self.windowmanager.set_window("headphonemenu")
+                settings.audio_basepath = settings.AUDIO_BASEPATH_USB
+                settings.currentfolder = settings.AUDIO_BASEPATH_USB
+                fn.mountusb()
+                self.windowmanager.set_window("foldermenu")
+#            elif self.counter == 4:
+#                self.windowmanager.set_window("headphonemenu")
             elif self.counter == 5:
                 self.windowmanager.set_window("shutdownmenu")
             elif self.counter == 6:

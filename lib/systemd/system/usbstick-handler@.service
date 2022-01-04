@@ -7,4 +7,4 @@ After=dev-%i.device
 Type=oneshot
 RemainAfterExit=no
 ExecStart=/home/pi/oledctrl/usr/local/sbin/pb_import.sh %I
-#ExecStop=/usr/bin/pumount /dev/%I
+ExecStop=/home/pi/oledctrl/usr/local/sbin/pb_import_finished.sh %I

@@ -82,3 +82,22 @@ def restart_oled():
     print ("restarting oled service")
     os.system("sudo service oled restart")
 
+
+def get_usb_name():
+    for file in os.listdir("/tmp/phoniebox"):
+        if file.startswith("usb_"):
+            return (file.split("_")[1])
+
+def mountusb():
+    usbdev=get_usb_name()
+    if (usbdev == "n/a"):
+        return -1
+
+    if not os.path.ismount(settings.AUDIO_BASEPATH_USB):
+        os.system("unionfs-fuse -orw,cow,allow_other /media/pb_import/tmpfs/=rw:/media/pb_import/%s=ro %s" % (usbdev, settings.AUDIO_BASEPATH_USB))
+        os.system("mpc update")
+    else:
+        print ("already mounted")
+
+def umountusb():
+    os.system("/home/pi/RPi-Jukebox-RFID/shared/audiofolders/usb/")

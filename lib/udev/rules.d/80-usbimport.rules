@@ -1,1 +1,2 @@
 ACTION=="add", KERNEL=="sd[b-z][0-9]", TAG+="systemd", ENV{SYSTEMD_WANTS}="usbstick-handler@%k"
+ACTION=="remove", KERNEL=="sd[b-z][0-9]", TAG+="systemd", RUN+="/home/pi/oledctrl/usr/local/sbin/pb_eject.sh %k"
