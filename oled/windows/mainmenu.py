@@ -66,7 +66,7 @@ class Mainmenu(WindowBase):
 
     def push_callback(self,lp=False):
         if lp == True:
-            self.counter = 6 if (self.counter < 5)  else 1 
+            self.counter = 6 if (self.counter < 5)  else 1
         else:
             if self.counter == 0:
                 self.windowmanager.set_window("idle")
@@ -87,15 +87,15 @@ class Mainmenu(WindowBase):
                 settings.currentfolder = settings.AUDIO_BASEPATH_USB
                 fn.mountusb()
                 self.windowmanager.set_window("foldermenu")
-#            elif self.counter == 4:
-#                self.windowmanager.set_window("headphonemenu")
             elif self.counter == 5:
-                self.windowmanager.set_window("shutdownmenu")
+                self.windowmanager.set_window("headphonemenu")
             elif self.counter == 6:
-                self.windowmanager.set_window("infomenu")
+                self.windowmanager.set_window("shutdownmenu")
             elif self.counter == 7:
-                self.windowmanager.set_window("wlanmenu")
+                self.windowmanager.set_window("infomenu")
             elif self.counter == 8:
+                self.windowmanager.set_window("wlanmenu")
+            elif self.counter == 9:
                 self.windowmanager.set_window("firewallmenu")
 
     def turn_callback(self, direction, key=None):
@@ -112,5 +112,5 @@ class Mainmenu(WindowBase):
                self.windowmanager.set_window("idle")
 
 
-        if (self.counter + direction < 9 and self.counter + direction >= 0):
+        if (self.counter + direction < 10 and self.counter + direction >= 0):
             self.counter += direction
