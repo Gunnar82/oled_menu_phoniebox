@@ -28,16 +28,24 @@ function playsound ()
 
 
 mkdir -p $MOUNTPATH
-mount /dev/$DEVICE $MOUNTPATH
+mount /dev/$DEVICE $MOUNTPATH -orw
 
 playsound "07" 1
 
 if  [ -f "$EXPORTFILE" ]; then
     playsound "07" 2
+
     rsync --delete -rv --size-only $DESTPATH $MOUNTPATH/audio/ --log-file=$MOUNTPATH/export-$DATE.log
+    RET=$?
+    if [ $RET -eq 0 ] ; then
 
         playsound "07" 4
+        rm "$EXPORTFILE"
 	RV=0
+    else
+        playsound "03" 4
+        RV=1
+    fi
 
 
 elif [ -f "$IMPORTFILE" ]; then
