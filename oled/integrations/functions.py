@@ -94,6 +94,7 @@ def mountusb():
         return -1
 
     if not os.path.ismount(settings.AUDIO_BASEPATH_USB):
+        print (usbdev)
         os.system("unionfs-fuse -orw,cow,allow_other /media/pb_import/tmpfs/=rw:/media/pb_import/%s=ro %s" % (usbdev, settings.AUDIO_BASEPATH_USB))
         os.system("mpc update")
     else:
