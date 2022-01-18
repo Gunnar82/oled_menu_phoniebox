@@ -13,6 +13,9 @@ import RPi.GPIO as GPIO
 import locale
 import time
 
+if settings.X728_ENABLED:
+    import integrations.x728v21 as x728
+
 
 class Idle(WindowBase):
     bigfont = ImageFont.truetype(settings.FONT_CLOCK, size=22)
@@ -42,6 +45,8 @@ class Idle(WindowBase):
         self.LocalOutputEnabled = False
         self.BluetoothFound = False
         self.window_on_back = "playlistmenu"
+        self.battsymbol = ""
+        self.battcapacity = -1
 
         #self.loop.create_task(self._find_dev_bt())
         if settings.STATUS_LED_ENABLED:
@@ -76,10 +81,9 @@ class Idle(WindowBase):
         with canvas(self.device) as draw:
             now = datetime.datetime.now()
 
-            if self.BluetoothFound == True:
-                draw.text((115,5), "\uf293", font=Idle.faiconsbig, fill="white")
-            else:
-                draw.text((115,5), "\uf294", font=Idle.faiconsbig, fill="white")
+            if settings.X728_ENABLED:
+                draw.text((110,5), self.battsymbol, font=Idle.faiconsbig, fill="white")
+            
 
 
             #Trennleiste waagerecht
@@ -145,13 +149,23 @@ class Idle(WindowBase):
             if settings.job_t >= 0:
                 draw.text((108, 51 ), "%2.2d" % (int(settings.job_t)), font=Idle.fontsmall, fill="white")
 
+            if (self.battcapacity >= 0 and self.battcapacity <= 20):
+                draw.text((15,10), "Batterie laden!", font=Idle.font, fill="white")
+                draw.text((50,30), "%d%%" % (self.battcapacity), font=Idle.font, fill="white")
+
+                return
+
+
 
             if ((self._state == "stop") or (settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5)):
-                if settings.job_i >= 0:
-                    draw.text((1,1), "i: " +  str(settings.job_i) + "m", font=Idle.bigfont, fill="white") 
-                if settings.job_t >= 0:
-                    draw.text((64,1), "t: " +  str(settings.job_t) + "m", font=Idle.bigfont, fill="white") 
-                draw.text((1,30), "%s" % (now.strftime("%a, %d.%m.%y %H:%M")), font=Idle.font, fill="white")
+                if (self.battcapacity >= 0):
+                    draw.text((20,10), "Batterie: %d%%" % (self.battcapacity), font=Idle.font, fill="white")
+
+                if settings.job_i >= 0 or settings.job_t >= 0:
+                    if settings.job_i >= settings.job_t:
+                        draw.text((64,1), "AUS in " +  str(settings.job_t) + "m", font=Idle.bigfont, fill="white")
+                    else:
+                        draw.text((1,30), "%s" % (now.strftime("%a, %d.%m.%y %H:%M")), font=Idle.font, fill="white")
 
                 return
 
@@ -188,6 +202,9 @@ class Idle(WindowBase):
             playing = self.musicmanager.nowplaying()
             status = self.musicmanager.status()
             filename = playing['file'] if ("file" in playing) else ""
+            if settings.X728_ENABLED:
+                self.battsymbol = x728.getSymbol()
+                self.battcapacity = x728.readCapacity()
 
             try:
                 if "title" in playing:

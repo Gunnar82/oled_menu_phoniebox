@@ -1,0 +1,16 @@
+#!/bin/bash
+BUTTON=26
+
+case "$1" in
+  poweroff)
+	echo "$BUTTON" > /sys/class/gpio/export;
+	echo "out" > /sys/class/gpio/gpio$BUTTON/direction
+	echo "1" > /sys/class/gpio/gpio$BUTTON/value
+
+	echo "X728 Shutting down..."
+	/bin/sleep 1
+
+	#restore GPIO 26
+	#echo "0" > /sys/class/gpio/gpio$BUTTON/value
+        ;;
+esac
