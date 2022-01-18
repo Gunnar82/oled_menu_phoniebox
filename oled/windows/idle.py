@@ -155,17 +155,19 @@ class Idle(WindowBase):
 
                 return
 
-
-
             if ((self._state == "stop") or (settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5)):
                 if (self.battcapacity >= 0):
                     draw.text((20,10), "Batterie: %d%%" % (self.battcapacity), font=Idle.font, fill="white")
 
                 if settings.job_i >= 0 or settings.job_t >= 0:
                     if settings.job_i >= settings.job_t:
-                        draw.text((64,1), "AUS in " +  str(settings.job_t) + "m", font=Idle.bigfont, fill="white")
+                        aus = settings.job_i
                     else:
-                        draw.text((1,30), "%s" % (now.strftime("%a, %d.%m.%y %H:%M")), font=Idle.font, fill="white")
+                        aus = settings.job_t
+
+                    draw.text((20,30), "AUS in " +  str(aus) + "min", font=Idle.font, fill="white")
+                else:
+                    draw.text((1,30), "%s" % (now.strftime("%a, %d.%m.%y %H:%M")), font=Idle.font, fill="white")
 
                 return
 
