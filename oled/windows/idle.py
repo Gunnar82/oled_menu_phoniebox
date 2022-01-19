@@ -157,7 +157,7 @@ class Idle(WindowBase):
                     draw.text((110,52), self.battsymbol, font=Idle.faiconsbig, fill="white")
 
 
-            if (self.battcapacity >= 0 and self.battcapacity <= 20):
+            if (self.battcapacity >= 0 and self.battcapacity <= settings.X728_BATT_LOW):
                 draw.text((15,10), "Batterie laden!", font=Idle.font, fill="white")
                 draw.text((50,30), "%d%%" % (self.battcapacity), font=Idle.font, fill="white")
 
