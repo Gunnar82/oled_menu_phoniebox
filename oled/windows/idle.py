@@ -82,8 +82,8 @@ class Idle(WindowBase):
             now = datetime.datetime.now()
 
             if settings.X728_ENABLED:
-                draw.text((110,5), self.battsymbol, font=Idle.faiconsbig, fill="white")
-            
+                draw.text((110,52), self.battsymbol, font=Idle.faiconsbig, fill="white")
+
 
 
             #Trennleiste waagerecht
@@ -148,6 +148,10 @@ class Idle(WindowBase):
             #shutdowntimer ? aktiv dann Zeit anzeigen
             if settings.job_t >= 0:
                 draw.text((108, 51 ), "%2.2d" % (int(settings.job_t)), font=Idle.fontsmall, fill="white")
+            else:
+                if settings.X728_ENABLED:
+                    draw.text((110,52), self.battsymbol, font=Idle.faiconsbig, fill="white")
+
 
             if (self.battcapacity >= 0 and self.battcapacity <= 20):
                 draw.text((15,10), "Batterie laden!", font=Idle.font, fill="white")
