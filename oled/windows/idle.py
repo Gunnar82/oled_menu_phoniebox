@@ -66,7 +66,7 @@ class Idle(WindowBase):
                 self.battsymbol = x728.getSymbol()
                 self.battcapacity = x728.readCapacity()
 
-            if ((settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5)):
+            if ((settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (self.battcapacity <= settings.X728_BATT_LOW)):
                 self.windowmanager.show_window()
 
             await asyncio.sleep(20)
@@ -163,7 +163,7 @@ class Idle(WindowBase):
 
                 return
 
-            if ((self._state == "stop") or (settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5)):
+            if ((self._state == "stop") or (settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (self.battcapacity <= settings.X728_BATT_LOW)):
                 if (self.battcapacity >= 0):
                     draw.text((20,10), "Batterie: %d%%" % (self.battcapacity), font=Idle.font, fill="white")
 
