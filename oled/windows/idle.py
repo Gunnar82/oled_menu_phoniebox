@@ -62,6 +62,10 @@ class Idle(WindowBase):
             settings.job_s = fn.linux_job_remaining("s")
             settings.job_i = fn.linux_job_remaining("i")
 
+            if settings.X728_ENABLED:
+                self.battsymbol = x728.getSymbol()
+                self.battcapacity = x728.readCapacity()
+
             if ((settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5)):
                 self.windowmanager.show_window()
 
@@ -208,9 +212,6 @@ class Idle(WindowBase):
             playing = self.musicmanager.nowplaying()
             status = self.musicmanager.status()
             filename = playing['file'] if ("file" in playing) else ""
-            if settings.X728_ENABLED:
-                self.battsymbol = x728.getSymbol()
-                self.battcapacity = x728.readCapacity()
 
             try:
                 if "title" in playing:

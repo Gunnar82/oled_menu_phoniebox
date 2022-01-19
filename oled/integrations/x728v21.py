@@ -33,13 +33,13 @@ def readCapacity():
 
 def getSymbol():
     capacity = readCapacity()
-
+    print (capacity)
     if capacity < 15:
-        return "\uf243"
+        return "\uf244"
     elif capacity < 30:
-        return "\uf242"
+        return "\uf243"
     elif capacity < 50:
-        return "\uf241"
+        return "\uf242"
     elif capacity < 90:
         return "\uf241"
     else:
