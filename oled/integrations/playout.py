@@ -41,3 +41,6 @@ def savepos():
 
 def pc_playfolder(folder=settings.AUDIO_BASEPATH_RADIO):
     os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/rfid_trigger_play.sh -d=\"%s\"" % (folder))
+
+def pc_shutdown():
+    os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=shutdown")
