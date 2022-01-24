@@ -60,6 +60,7 @@ SYMBOL_MUSIC = "\uf001"
 SYMBOL_HOERSPIEL = "\uf02d"
 SYMBOL_USB = "\uf287"
 
+SYMBOL_CARD_READ= "\uf140 \uf001"
 
 PLAYOUT_CONTROLS = "sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh"
 
@@ -114,6 +115,7 @@ SR2 = "heruntergefahren"
 SR3 = "neugestartet"
 
 PLEASE_WAIT = "Bitte Warten..."
+CARD_READ = "Karte gelesen!"
 
 ######
 from datetime import datetime

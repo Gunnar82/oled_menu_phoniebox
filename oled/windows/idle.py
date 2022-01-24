@@ -6,6 +6,8 @@ from luma.core.render import canvas
 from PIL import ImageFont
 import settings
 import os
+
+
 import integrations.bluetooth
 import integrations.playout as playout
 import integrations.functions as fn
@@ -23,6 +25,7 @@ class Idle(WindowBase):
     fontsmall = ImageFont.truetype(settings.FONT_TEXT, size=10)
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=8)
     faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=12)
+    faiconsxl = ImageFont.truetype(settings.FONT_ICONS, size=30)
 
     def __init__(self, windowmanager, musicmanager):
         locale.setlocale(locale.LC_TIME, "de_DE.UTF-8")
@@ -79,6 +82,7 @@ class Idle(WindowBase):
 
 
     def deactivate(self):
+
         self._active = False
 
     def render(self):
@@ -87,8 +91,6 @@ class Idle(WindowBase):
 
             if settings.X728_ENABLED:
                 draw.text((110,52), self.battsymbol, font=Idle.faiconsbig, fill="white")
-
-
 
             #Trennleiste waagerecht
             draw.rectangle((0,49,128,49),outline="white",fill="white")

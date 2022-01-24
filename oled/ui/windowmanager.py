@@ -3,6 +3,9 @@ import asyncio
 from datetime import datetime
 import settings
 import integrations.busy as busy
+import integrations.rfid as rfid
+
+from integrations.rfidwatcher import RfidWatcher
 
 class WindowManager():
     def __init__(self, loop, device):
@@ -18,6 +21,11 @@ class WindowManager():
         settings.lastinput = datetime.now()
         self._lastcontrast = settings.CONTRAST_FULL
         self.loop.create_task(self._render())
+        self.lastrfidate = datetime(2000,1,1)
+
+        self.rfidwatcher = RfidWatcher()
+        self.rfidwatcher.start()
+
 
         print("Rendering task created")
 
@@ -93,9 +101,15 @@ class WindowManager():
                     count += 1
                     await asyncio.sleep(0.25)
 
+                if self.rfidwatcher.get_state():
+                    self.show_window()
+                    self.lastrfidate = datetime.now()
+
                 if settings.screenpower:
                     try:
-                        if self.activewindow.busy:
+                        if (datetime.now() - self.lastrfidate).total_seconds() < 3:
+                            rfid.render(self.device,self.activewindow)
+                        elif self.activewindow.busy:
                             busy.render(self.device,self.activewindow)
                         else:
                             self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
