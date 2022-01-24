@@ -155,3 +155,7 @@ class WindowManager():
             pass
         finally:
             self.activewindow.busy = False
+
+    def __del__(self):
+        self.rfidwatcher.stop()
+

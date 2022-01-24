@@ -108,7 +108,7 @@ AUDIO_BASEPATH_USB = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/usb"
 FILE_LAST_HOERSPIELE="/home/pi/RPi-Jukebox-RFID/settings/Latest_Hörspiele_Folder_Played"
 FILE_LAST_RADIO="/home/pi/RPi-Jukebox-RFID/settings/Latest_Radio_Folder_Played"
 FILE_LAST_MUSIC="/home/pi/RPi-Jukebox-RFID/settings/Latest_Musik_Folder_Played"
-
+LATEST_RFID="/home/pi/RPi-Jukebox-RFID/settings/Latest_RFID"
 
 SR1 = "beendet"
 SR2 = "heruntergefahren"

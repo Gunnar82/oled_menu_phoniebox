@@ -10,7 +10,8 @@ class MyHandler(FileSystemEventHandler):
 
     def on_modified(self, event):
         global rfid_watcher_changed
-        rfid_watcher_changed = True
+        if event.src_path == settings.LATEST_RFID:
+            rfid_watcher_changed = True
         settings.lastinput = datetime.now()
 
 class RfidWatcher:
