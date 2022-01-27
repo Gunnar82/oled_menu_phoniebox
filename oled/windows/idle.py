@@ -89,15 +89,25 @@ class Idle(WindowBase):
         with canvas(self.device) as draw:
             now = datetime.datetime.now()
 
+            #shutdowntimer ? aktiv dann Zeit anzeigen
+            if settings.job_t >= 0:
+                draw.text((108, 51 ), "%2.2d" % (int(settings.job_t)), font=Idle.fontsmall, fill="white")
+            elif settings.X728_ENABLED:
+                draw.text((112,52), self.battsymbol, font=Idle.faicons, fill="white")
+
             if settings.X728_ENABLED:
-                draw.text((110,52), self.battsymbol, font=Idle.faiconsbig, fill="white")
+                #battery load line
+                timelinepos = int(float(self._elapsed) / float(self._duration)  * 128) # TODO Device.with
+                #Fortschritssleiste Wiedergabe
+                draw.rectangle((0,63,int(self.battcapacity/100*128),64),outline="white",fill="white")
+
 
             #Trennleiste waagerecht
             draw.rectangle((0,49,128,49),outline="white",fill="white")
             #Trennleisten senkrecht
-            draw.rectangle((16,49,16,64),outline="white",fill="white")
-            draw.rectangle((65,49,65,64),outline="white",fill="white")
-            draw.rectangle((105,49,105,64),outline="white",fill="white")
+            draw.rectangle((16,49,16,60),outline="white",fill="white")
+            draw.rectangle((65,49,65,60),outline="white",fill="white")
+            draw.rectangle((105,49,105,60),outline="white",fill="white")
 
             #volume
             draw.text((1, 51 ), str(self._volume), font=Idle.fontsmall, fill="white")
@@ -151,12 +161,6 @@ class Idle(WindowBase):
             _xpos = 85 - int(Idle.fontsmall.getsize(_spos)[0]/2)
             draw.text((_xpos, 51 ),_spos , font=Idle.fontsmall, fill="white")
 
-            #shutdowntimer ? aktiv dann Zeit anzeigen
-            if settings.job_t >= 0:
-                draw.text((108, 51 ), "%2.2d" % (int(settings.job_t)), font=Idle.fontsmall, fill="white")
-            else:
-                if settings.X728_ENABLED:
-                    draw.text((110,52), self.battsymbol, font=Idle.faiconsbig, fill="white")
 
 
             if (self.battcapacity >= 0 and self.battcapacity <= settings.X728_BATT_LOW):
