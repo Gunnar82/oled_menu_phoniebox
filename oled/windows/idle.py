@@ -97,10 +97,11 @@ class Idle(WindowBase):
 
             if settings.X728_ENABLED:
                 #battery load line
-                timelinepos = int(float(self._elapsed) / float(self._duration)  * 128) # TODO Device.with
-                #Fortschritssleiste Wiedergabe
-                draw.rectangle((0,63,int(self.battcapacity/100*128),64),outline="white",fill="white")
-
+                try:
+                    pos = int(self.battcapacity/100*128)
+                    draw.rectangle((0,3,pos,3),outline="white",fill="white")
+                except:
+                    print ("err")
 
             #Trennleiste waagerecht
             draw.rectangle((0,49,128,49),outline="white",fill="white")
