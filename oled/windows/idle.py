@@ -68,7 +68,8 @@ class Idle(WindowBase):
                 self.battcapacity = x728.readCapacity()
 
             if ((settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (self.battcapacity <= settings.X728_BATT_LOW)):
-                self.windowmanager.show_window()
+                if not settings.STATUS_LED_ENABLED:
+                    self.windowmanager.show_window()
 
             await asyncio.sleep(20)
 
@@ -120,9 +121,7 @@ class Idle(WindowBase):
                         _xpos = 41 - int(Idle.fontsmall.getsize(_spos)[0]/2)
 
                         draw.text((_xpos, 51 ),_spos, font=Idle.fontsmall, fill="white")
-                        if self._statex != self._state:
-                            self._statex = self._state
-                            self.led.startpulse(0) 
+                        self.led.startpulse(0) 
                     else:
                         _spos = self._state
                         _xpos = 41 - int(Idle.fontsmall.getsize(_spos)[0]/2)

@@ -17,10 +17,10 @@ class statusled:
                 while cloop < self.pulsing:
                     cloop += 1
                     self.pwm.start(dc)
-                    for dc in range(0, 101, 5):    # Loop 0 to 100 stepping dc by 5 each loop
+                    for dc in range(0, 10, 1):    # Loop 0 to 100 stepping dc by 5 each loop
                         self.pwm.ChangeDutyCycle(dc)
                         time.sleep(0.05)             # wait .05 seconds at current LED brightness
-                    for dc in range(95, 0, -5):    # Loop 95 to 5 stepping dc down by 5 each loop
+                    for dc in range(10, 0, -1):    # Loop 95 to 5 stepping dc down by 5 each loop
                         self.pwm.ChangeDutyCycle(dc)
                         time.sleep(0.05)             # wait .05 seconds at current LED brightness
                     self.pwm.stop()
@@ -43,6 +43,7 @@ class statusled:
         self.loop.create_task(self._pulse())
 
     def startpulse(self,count = 1):
+        print (count)
         self.pulsing = count
 
     def stoppulse(self):
