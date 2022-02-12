@@ -2,6 +2,9 @@
 Software settings
 """
 
+
+
+
 ufw_services_allow = ["ssh","http"]
 
 
@@ -46,7 +49,7 @@ KEYPAD_ADDR = 0x27
 ### X728 UPS support
 X728_ENABLED = True
 X728_BATT_LOW = 12
-X728_BATT_EMERG = 7 # Shutdown Battery Percentage
+X728_BATT_EMERG = 70 # Shutdown Battery Percentage
 
 SYMBOL_SANDCLOCK = "\uf251"
 SYMBOL_VOL_UP = "\uf026 \uf067"

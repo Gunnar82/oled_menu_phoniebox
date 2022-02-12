@@ -166,6 +166,12 @@ class Idle(WindowBase):
                 draw.text((50,30), "%d%%" % (self.battcapacity), font=Idle.font, fill="white")
 
                 return
+            elif (self.battcapacity >= 0 and self.battcapacity <= settings.X728_BATT_EMERG): 
+                playout.savepos()
+                playout.pc_shutdown()
+                self.loop.stop()
+
+                return
 
             if ((self._state == "stop") or (settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (self.battcapacity <= settings.X728_BATT_LOW)):
                 if (self.battcapacity >= 0):
