@@ -162,13 +162,13 @@ class Idle(WindowBase):
 
             if (self.battcapacity >= 0 and self.battcapacity <= settings.X728_BATT_LOW):
                 draw.text((15,10), "Batterie laden!", font=Idle.font, fill="white")
+                self.led.startpulse(3)
                 draw.text((50,30), "%d%%" % (self.battcapacity), font=Idle.font, fill="white")
 
                 return
 
             if ((self._state == "stop") or (settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (self.battcapacity <= settings.X728_BATT_LOW)):
                 if (self.battcapacity >= 0):
-                    self.led.startpulse(3)
                     draw.text((20,10), "Batterie: %d%%" % (self.battcapacity), font=Idle.font, fill="white")
 
                 if settings.job_i >= 0 or settings.job_t >= 0:
