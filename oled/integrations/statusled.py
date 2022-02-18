@@ -8,11 +8,33 @@ import asyncio
 
 class statusled:
     async def _pulse(self):
+        try:
+            status = self.musicmanager.status()
+            if status['state'] == "stop":
+                self.pulsing = 1 
+        except:
+            self.pulsing = 0
+
+
         # main loop of program
         dc=0                               # set dc variable to 0 for 0%
         self.pwm.start(dc)                      # Start PWM with 0% duty cycle
         try:
-            while settings.STATUS_LED_ENABLED:                      # Loop until Ctl C is pressed to stop.
+            while settings.STATUS_LED_ENABLED and self.loop.is_running():                      # Loop until Ctl C is pressed to stop.
+                try:
+                    status = self.musicmanager.status()
+                    if settings.job_i >= 0 or settings.job_t >= 0 and ( settings.job_i <= 5 or settings.job_t <= 5):
+                        self.pulsing = 2
+                    elif settings.battcapacity <= settings.X728_BATT_LOW:
+                        self.pulsing = 3
+                    elif status['state'] == 'play':
+                        self.pulsing = 0
+
+                    elif status['state'] == "pause" or status['state'] == "stop":
+                        self.pulsing = 1
+                except:
+                     self.pulsing = 10
+
                 cloop = 0
                 while cloop < self.pulsing:
                     cloop += 1
@@ -30,10 +52,9 @@ class statusled:
         except:
             pass
 
-    def __init__(self,loop):
+    def __init__(self,loop,musicmanager):
         self.loop = loop
-        self.pulsing = 0
-
+        self.musicmanager = musicmanager
         GPIO.setmode(GPIO.BCM)    # Set Pi to use pin number when referencing GPIO pins.
                               # Can use GPIO.setmode(GPIO.BCM) instead to use 
                               # Broadcom SOC channel names.

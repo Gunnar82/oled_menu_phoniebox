@@ -124,6 +124,11 @@ def main():
         except:
             haspowercontroller = False
 
+    ######Status LED
+    if settings.STATUS_LED_ENABLED:
+        import integrations.statusled as statusled
+        led = statusled.statusled(loop,musicmanager)
+
     ###main
     try:
         loop.run_forever()

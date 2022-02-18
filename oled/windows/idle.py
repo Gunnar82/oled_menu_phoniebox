@@ -14,10 +14,10 @@ import integrations.functions as fn
 import RPi.GPIO as GPIO
 import locale
 import time
-import integrations.statusled as statusled
 
 if settings.X728_ENABLED:
     import integrations.x728v21 as x728
+
 
 
 class Idle(WindowBase):
@@ -50,11 +50,9 @@ class Idle(WindowBase):
         self.BluetoothFound = False
         self.window_on_back = "playlistmenu"
         self.battsymbol = ""
-        self.battcapacity = -1
+
 
         #self.loop.create_task(self._find_dev_bt())
-        self.led = statusled.statusled(self.loop)
-
 
     async def _linuxjob(self):
 
@@ -65,9 +63,9 @@ class Idle(WindowBase):
 
             if settings.X728_ENABLED:
                 self.battsymbol = x728.getSymbol()
-                self.battcapacity = x728.readCapacity()
+                settings.battcapacity = x728.readCapacity()
 
-            if ((settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (self.battcapacity <= settings.X728_BATT_LOW)):
+            if ((settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (settings.battcapacity <= settings.X728_BATT_LOW)):
                 if not settings.STATUS_LED_ENABLED:
                     self.windowmanager.show_window()
 
@@ -97,7 +95,7 @@ class Idle(WindowBase):
             if settings.X728_ENABLED:
                 #battery load line
                 try:
-                    pos = int(self.battcapacity/100*128)
+                    pos = int(settings.battcapacity/100*128)
                     draw.rectangle((0,3,pos,3),outline="white",fill="white")
                 except:
                     print ("err")
@@ -121,7 +119,6 @@ class Idle(WindowBase):
                         _xpos = 41 - int(Idle.fontsmall.getsize(_spos)[0]/2)
 
                         draw.text((_xpos, 51 ),_spos, font=Idle.fontsmall, fill="white")
-                        self.led.startpulse(0) 
                     else:
                         _spos = self._state
                         _xpos = 41 - int(Idle.fontsmall.getsize(_spos)[0]/2)
@@ -129,7 +126,6 @@ class Idle(WindowBase):
                         draw.text((_xpos, 51), _spos, font=Idle.fontsmall, fill="white") #other than play
                         if self._statex != self._state:
                             self._statex = self._state
-                            self.led.startpulse(1) 
 
                 except KeyError:
                     pass
@@ -159,29 +155,27 @@ class Idle(WindowBase):
 
 
 
-            if (self.battcapacity >= 0 and self.battcapacity <= settings.X728_BATT_LOW):
+            if (settings.battcapacity >= 0 and settings.battcapacity <= settings.X728_BATT_LOW):
                 draw.text((15,10), "Batterie laden!", font=Idle.font, fill="white")
-                self.led.startpulse(3)
-                draw.text((50,30), "%d%%" % (self.battcapacity), font=Idle.font, fill="white")
+                draw.text((50,30), "%d%%" % (settings.battcapacity), font=Idle.font, fill="white")
 
                 return
-            elif (self.battcapacity >= 0 and self.battcapacity <= settings.X728_BATT_EMERG): 
+            elif (settings.battcapacity >= 0 and settings.battcapacity <= settings.X728_BATT_EMERG): 
                 playout.savepos()
                 playout.pc_shutdown()
                 self.loop.stop()
 
                 return
 
-            if ((self._state == "stop") or (settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (self.battcapacity <= settings.X728_BATT_LOW)):
-                if (self.battcapacity >= 0):
-                    draw.text((20,10), "Batterie: %d%%" % (self.battcapacity), font=Idle.font, fill="white")
+            if ((self._state == "stop") or (settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (settings.battcapacity <= settings.X728_BATT_LOW)):
+                if (settings.battcapacity >= 0):
+                    draw.text((20,10), "Batterie: %d%%" % (settings.battcapacity), font=Idle.font, fill="white")
 
                 if settings.job_i >= 0 or settings.job_t >= 0:
                     if settings.job_i >= settings.job_t:
                         aus = settings.job_i
                     else:
                         aus = settings.job_t
-                    self.led.startpulse(2)
                     draw.text((20,30), "AUS in " +  str(aus) + "min", font=Idle.font, fill="white")
                 else:
                     draw.text((1,30), "%s" % (now.strftime("%a, %d.%m.%y %H:%M")), font=Idle.font, fill="white")

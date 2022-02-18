@@ -130,3 +130,4 @@ job_s = -1
 audio_basepath = AUDIO_BASEPATH_MUSIC
 currentfolder = audio_basepath
 current_selectedfolder=currentfolder
+battcapacity = -1
