@@ -23,7 +23,10 @@ class statusled:
             while settings.STATUS_LED_ENABLED and self.loop.is_running():                      # Loop until Ctl C is pressed to stop.
                 try:
                     status = self.musicmanager.status()
-                    if (settings.job_i >= 0 and settings.job_i <= 0) or ( settings.job_t >= 0 and settings.job_t <= 5):
+                    print (settings.job_i)
+                    print (settings.job_t)
+
+                    if (settings.job_i >= 0 and settings.job_i <= 5) or ( settings.job_t >= 0 and settings.job_t <= 5):
                         self.pulsing = 2
                     elif settings.battcapacity <= settings.X728_BATT_LOW:
                         self.pulsing = 3
