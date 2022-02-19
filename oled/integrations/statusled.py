@@ -28,7 +28,7 @@ class statusled:
 
                     if (settings.job_i >= 0 and settings.job_i <= 5) or ( settings.job_t >= 0 and settings.job_t <= 5):
                         self.pulsing = 2
-                    elif settings.battcapacity <= settings.X728_BATT_LOW:
+                    elif settings.battcapacity >= 0 and settings.battcapacity <= settings.X728_BATT_LOW:
                         self.pulsing = 3
                     elif status['state'] == 'play':
                         self.pulsing = 0
