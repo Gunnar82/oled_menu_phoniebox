@@ -3,64 +3,75 @@ import smbus
 import sys
 import time
 import RPi.GPIO as GPIO
-import integrations.playout as playout
+#import integrations.playout as playout
+import settings
+import asyncio
 
 
-# Global settings
-# GPIO is 26 for x728 v2.0, GPIO is 13 for X728 v1.2/v1.3
-GPIO_PORT 	= 26
-GPIO_SHUTDOWN   = 5
-GPIO_BOOT	= 12
+class x728:
 
-I2C_ADDR    = 0x36
-
-GPIO.setmode(GPIO.BCM)
-#GPIO.setup(GPIO_BOOT, GPIO.OUT)
-#GPIO.output(GPIO_BOOT,1)
-GPIO.setup(GPIO_PORT, GPIO.OUT)
-GPIO.setup(GPIO_SHUTDOWN, GPIO.IN)
-
-GPIO.setwarnings(False)
-
-#def shutdown_handler(channel):
-#    playout.pc_shutdown()
+    def readVoltage(self):
+         read = self.bus.read_word_data(self.I2C_ADDR, 2)
+         swapped = struct.unpack("<H", struct.pack(">H", read))[0]
+         self.voltage = swapped * 1.25 /1000/16
 
 
-#GPIO.add_event_detect(GPIO_SHUTDOWN, GPIO.RISING, callback=shutdown_handler)
+    def readCapacity(self):
 
-bus = smbus.SMBus(1) # 0 = /dev/i2c-0 (port I2C0), 1 = /dev/i2c-1 (port I2C1)
+         read = self.bus.read_word_data(self.I2C_ADDR, 4)
+         swapped = struct.unpack("<H", struct.pack(">H", read))[0]
+         self.capacity = swapped/256
 
-def shutdown_handler(channel):
-    print ("SD")
+    async def _handler(self):
+        while self.loop.is_running():
+            try:
+                self.readVoltage()
+                self.readCapacity()
 
-def readVoltage():
+                settings.battcapacity = self.capacity
+                settings.battsymbol = self.getSymbol()
+            except:
+                pass
 
-     address = I2C_ADDR
-     read = bus.read_word_data(address, 2)
-     swapped = struct.unpack("<H", struct.pack(">H", read))[0]
-     voltage = swapped * 1.25 /1000/16
-     return voltage
-
-def readCapacity():
-
-     address = I2C_ADDR
-     read = bus.read_word_data(address, 4)
-     swapped = struct.unpack("<H", struct.pack(">H", read))[0]
-     capacity = swapped/256
-     return capacity
+            await asyncio.sleep (10)
 
 
-def getSymbol():
-    capacity = readCapacity()
-    print (capacity)
-    if capacity < 15:
-        return "\uf244"
-    elif capacity < 30:
-        return "\uf243"
-    elif capacity < 50:
-        return "\uf242"
-    elif capacity < 90:
-        return "\uf241"
-    else:
-        return "\uf240"
+    def __init__(self,loop):
+        # Global settings
+        self.loop = loop
+        # GPIO is 26 for x728 v2.0, GPIO is 13 for X728 v1.2/v1.3
+        self.GPIO_PORT 	= 26
+        self.GPIO_SHUTDOWN   = 5
+        self.GPIO_BOOT	= 12
+        self.voltage = 0
+        self.capacity = 0
+
+
+        self.I2C_ADDR    = 0x36
+
+        #GPIO.setmode(GPIO.BCM)
+        #GPIO.setup(GPIO_BOOT, GPIO.OUT)
+        #GPIO.output(GPIO_BOOT,1)
+        #GPIO.setup(self.GPIO_PORT, GPIO.OUT)
+        #GPIO.setup(self.GPIO_SHUTDOWN, GPIO.IN)
+
+        #GPIO.setwarnings(False)
+
+        #GPIO.add_event_detect(GPIO_SHUTDOWN, GPIO.RISING, callback=shutdown_handler)
+
+        self.bus = smbus.SMBus(1) # 0 = /dev/i2c-0 (port I2C0), 1 = /dev/i2c-1 (port I2C1)
+
+        self.loop.create_task(self._handler())
+
+    def getSymbol(self):
+        if self.capacity < 10:
+            return "\uf244"
+        elif self.capacity < 30:
+            return "\uf243"
+        elif self.capacity < 60:
+            return "\uf242"
+        elif self.capacity < 90:
+             return "\uf241"
+        else:
+            return "\uf240"
 

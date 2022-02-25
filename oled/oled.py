@@ -129,6 +129,11 @@ def main():
         import integrations.statusled as statusled
         led = statusled.statusled(loop,musicmanager)
 
+    ####x728V2.1
+    if settings.X728_ENABLED:
+        import integrations.x728v21 as x728v21
+        x728 = x728v21.x728(loop)
+
     ###main
     try:
         loop.run_forever()

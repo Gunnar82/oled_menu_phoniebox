@@ -15,9 +15,6 @@ import RPi.GPIO as GPIO
 import locale
 import time
 
-if settings.X728_ENABLED:
-    import integrations.x728v21 as x728
-
 
 
 class Idle(WindowBase):
@@ -49,7 +46,6 @@ class Idle(WindowBase):
         self.LocalOutputEnabled = False
         self.BluetoothFound = False
         self.window_on_back = "playlistmenu"
-        self.battsymbol = ""
 
 
         #self.loop.create_task(self._find_dev_bt())
@@ -61,11 +57,7 @@ class Idle(WindowBase):
             settings.job_s = fn.linux_job_remaining("s")
             settings.job_i = fn.linux_job_remaining("i")
 
-            if settings.X728_ENABLED:
-                self.battsymbol = x728.getSymbol()
-                settings.battcapacity = x728.readCapacity()
-
-            if ((settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (settings.battcapacity <= settings.X728_BATT_LOW)):
+            if ((settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (settings.X728_ENABLED and settings.battcapacity <= settings.X728_BATT_LOW)):
                 if not settings.STATUS_LED_ENABLED:
                     self.windowmanager.show_window()
 
@@ -90,7 +82,7 @@ class Idle(WindowBase):
             if settings.job_t >= 0:
                 draw.text((108, 51 ), "%2.2d" % (int(settings.job_t)), font=Idle.fontsmall, fill="white")
             elif settings.X728_ENABLED:
-                draw.text((112,52), self.battsymbol, font=Idle.faicons, fill="white")
+                draw.text((112,52), settings.battsymbol, font=Idle.faicons, fill="white")
 
             if settings.X728_ENABLED:
                 #battery load line
@@ -129,7 +121,6 @@ class Idle(WindowBase):
 
                 except KeyError:
                     pass
-            
 
             #Widgets
             if not self.musicmanager.mopidyconnection.connected:
@@ -153,13 +144,12 @@ class Idle(WindowBase):
             _xpos = 85 - int(Idle.fontsmall.getsize(_spos)[0]/2)
             draw.text((_xpos, 51 ),_spos , font=Idle.fontsmall, fill="white")
 
-
-
             if (settings.battcapacity >= 0 and settings.battcapacity <= settings.X728_BATT_LOW):
                 draw.text((15,10), "Batterie laden!", font=Idle.font, fill="white")
                 draw.text((50,30), "%d%%" % (settings.battcapacity), font=Idle.font, fill="white")
 
                 return
+
             elif (settings.battcapacity >= 0 and settings.battcapacity <= settings.X728_BATT_EMERG): 
                 playout.savepos()
                 playout.pc_shutdown()
