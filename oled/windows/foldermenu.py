@@ -88,6 +88,7 @@ class Foldermenu(MenuBase):
         self.basetitle = os.path.split(settings.currentfolder)[-1]
         self.folders = []
         self.generate_folders(settings.currentfolder)
+        self.on_key_left()
 
     def turn_callback(self,direction,key=False):
         super().turn_callback(direction,key=key)

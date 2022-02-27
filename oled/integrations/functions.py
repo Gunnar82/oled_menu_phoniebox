@@ -102,3 +102,14 @@ def mountusb():
 
 def umountusb():
     os.system("/home/pi/RPi-Jukebox-RFID/shared/audiofolders/usb/")
+
+def get_folger_from_file(filename):
+    try:
+        with open (filename) as f:
+            lines = f.readlines()
+            f.close()
+            path = settings.AUDIO_BASEPATH_BASE + lines[0].rstrip()
+            return (path)
+    except:
+        return settings.AUDIO_BASEPATH_BASE
+

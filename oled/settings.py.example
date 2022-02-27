@@ -106,7 +106,7 @@ AUDIO_BASEPATH_RADIO = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/Radio"
 AUDIO_BASEPATH_USB = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/usb"
 
 
-FILE_LAST_HOERSPIELE="/home/pi/RPi-Jukebox-RFID/settings/Latest_Hörspiele_Folder_Played"
+FILE_LAST_HOERBUCH="/home/pi/RPi-Jukebox-RFID/settings/Latest_Hörspiele_Folder_Played"
 FILE_LAST_RADIO="/home/pi/RPi-Jukebox-RFID/settings/Latest_Radio_Folder_Played"
 FILE_LAST_MUSIC="/home/pi/RPi-Jukebox-RFID/settings/Latest_Musik_Folder_Played"
 LATEST_RFID="/home/pi/RPi-Jukebox-RFID/settings/Latest_RFID"
@@ -131,3 +131,4 @@ audio_basepath = AUDIO_BASEPATH_MUSIC
 currentfolder = audio_basepath
 current_selectedfolder=currentfolder
 battcapacity = -1
+battsymbol = "\uf240"

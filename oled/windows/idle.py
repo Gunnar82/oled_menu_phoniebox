@@ -313,15 +313,15 @@ class Idle(WindowBase):
                     playout.pc_next()
             elif key == 'A':
                 settings.audio_basepath = settings.AUDIO_BASEPATH_MUSIC
-                settings.currentfolder = settings.AUDIO_BASEPATH_MUSIC
+                settings.currentfolder = fn.get_folger_from_file(settings.FILE_LAST_MUSIC)
                 self.windowmanager.set_window("foldermenu")
             elif key == 'B':
-                settings.audio_basepath = settings.AUDIO_BASEPATH_HOERBUCH
-                settings.currentfolder = settings.AUDIO_BASEPATH_HOERBUCH
+                settings.audio_basepath = settings.AUDIO_BASEPATH_HOERBUCH 
+                settings.currentfolder = fn.get_folger_from_file(settings.FILE_LAST_HOERBUCH)
                 self.windowmanager.set_window("foldermenu")
             elif key == 'C':
                 settings.audio_basepath = settings.AUDIO_BASEPATH_RADIO
-                settings.currentfolder = settings.AUDIO_BASEPATH_RADIO
+                settings.currentfolder = fn.get_folger_from_file(settings.FILE_LAST_RADIO)
                 self.windowmanager.set_window("foldermenu")
             elif key =='D':
                 self.windowmanager.set_window("shutdownmenu")
@@ -335,7 +335,7 @@ class Idle(WindowBase):
             elif key in ['1', '3', '7']:
 
                 if key == '1':
-                    what = settings.FILE_LAST_HOERSPIELE
+                    what = settings.FILE_LAST_HOERBUCH
                 elif key == '3':
                     what = settings.FILE_LAST_RADIO
                 elif key == '7':
