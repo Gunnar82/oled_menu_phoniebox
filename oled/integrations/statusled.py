@@ -48,7 +48,7 @@ class statusled:
                         time.sleep(0.05)             # wait .05 seconds at current LED brightness
                     self.pwm.stop()
 
-                await asyncio.sleep(3)
+                await asyncio.sleep(15)
 
         except:
             pass
