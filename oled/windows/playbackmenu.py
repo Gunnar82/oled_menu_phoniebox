@@ -136,7 +136,7 @@ class Playbackmenu(WindowBase):
             #draw.text((18, 2), "\uf071", font=Playbackmenu.faicons, fill="white")
 
             #selection line
-            draw.line((10+(self.counter)*20, 42, 30+(self.counter)*20, 42), width=2, fill="white")
+            draw.line((10+(self.counter)*20, 42, 30+(self.counter)*20, 42), width=2, fill=settings.COLOR_SELECTED)
             fillcolor = "black" if self.skipselected else "white"
             bgcolor   = "white" if self.skipselected else "black"
             draw.rectangle((7,17,30,40),fill=bgcolor,outline=bgcolor)

@@ -1,10 +1,10 @@
 """ Playlist menu """
-from ui.menubase import MenuBase
+from ui.listbase import ListBase
 import settings
 import os 
 import integrations.functions as functions
 import integrations.playout as playout
-class Foldermenu(MenuBase):
+class Foldermenu(ListBase):
     folders = []
 
     def playfolder(self,folder):

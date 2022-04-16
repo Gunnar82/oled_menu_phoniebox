@@ -5,119 +5,87 @@ from PIL import ImageFont
 import settings
 
 class MenuBase(WindowBase):
-    def __init__(self, windowmanager, title):
+    faicons = ImageFont.truetype(settings.FONT_ICONS, size=18)
+    font = ImageFont.truetype(settings.FONT_TEXT, size=12)
+
+    def __init__(self, windowmanager,title):
         super().__init__(windowmanager)
         self.counter = 0
-        self.page = 0
-        self.menu = []
+        self.descr = []
         self.basetitle = title
-        self.left_pressed = False
-        self.right_pressed = False
-        self.drawtextx = 0
-        self.position = -1
-        self.progress = {}
 
     def render(self):
-        if self.left_pressed:
-            self.left_pressed = False
-            self.on_key_left()
-            return
-
-
-        if self.right_pressed:
-            self.right_pressed = False
-            self.on_key_right()
-            return
-
-        if self.position >= 0:
-            self.title = "%s %2.2d / %2.2d" %(self.basetitle, self.position + 1,len(self.menu))
-        else:
-            self.title = self.basetitle
-
-        font = ImageFont.truetype(settings.FONT_TEXT, size=12)
-        faicons = ImageFont.truetype(settings.FONT_ICONS, size=11)
         with canvas(self.device) as draw:
-            #Back button and selection arrow
-            if self.counter == 0:
-                draw.text((1, 1), text="\uf137", font=faicons, fill="white")
-                draw.text((110, 1), text="\uf106", font=faicons, fill="white")
-            elif self.counter == 1:
-                draw.text((1, 1), text="\uf104", font=faicons, fill="white")
-                draw.text((110, 1), text="\uf139", font=faicons, fill="white")
+            mwidth = MenuBase.font.getsize(self.descr[self.counter][0])
+            draw.text((64 - int(mwidth[0]/2),1), text=self.descr[self.counter][0], font=MenuBase.font, fill="white")
 
-            else:
-                draw.text((1, 1), text="\uf104", font=faicons, fill="white")
-                draw.text((110, 1), text="\uf106", font=faicons, fill="white")
-                #Selection arrow
-                draw.polygon(((1, 7+(self.counter-1)*12), (1, 11+(self.counter-1)*12),
-                                        (5, 9+(self.counter-1)*12)), fill="white")
+            #rectangle as selection marker
+            if self.counter < 4: #4 icons in one row
+                y_coord = 15
+                x_coord = 7 + self.counter * 35
+            elif self.counter >=4  and self.counter < 8:
+                y_coord = 44
+                x_coord = 6 + (self.counter - 4) * 35
+            elif self.counter >=8 and self.counter  < 12: #3 icons in one row
+                y_coord = 63 if settings.DISPLAY > 64 else 15
+                x_coord = 7 + (self.counter - 8) * 35
+            elif self.counter >= 12:
+                y_coord = 92 if settings.DISPLAY > 64 else 44
+                x_coord = 6 + (self.counter - 12) * 35
 
-            #Calculate title coordinate from text lenght
-            draw.text(((128-len(self.title)*5)/2, 1), text=self.title, font=font, fill="white")
+            #draw.rectangle((x_coord, y_coord, x_coord+25, y_coord+25), outline=settings.COLOR_YELLOW, fill=0)
 
-            #Playlists
-            for i in range(4 if len(self.menu) >= 4 else len(self.menu)):
-                if self.counter +self.page -2  == i + self.page:
-                    drawtext = self.menu[i+self.page]
-                    if font.getsize(drawtext[self.drawtextx:])[0] > 127:
-                        self.drawtextx += 1
+            #icons as menu buttons
+            i = 0
+
+            if self.counter <= 16:
+                while (i <= 16) and (i < len(self.descr)):
+                    if (i < 4):
+                        x_coord = 11 + i * 33
+                        y_coord = 20
+                    elif (i < 8):
+                        x_coord = 11 + (i-4) * 33
+                        y_coord = 45
+                    elif (i < 12):
+                        x_coord = 11 + (i-8) * 33
+                        y_coord = 70
+                    elif (i < 16):
+                        x_coord = 11 + (i-12) * 33
+                        y_coord = 95
+
+
+                    if (self.counter == i):
+                        fill = settings.COLOR_SELECTED
+                        outline = 255
                     else:
-                        self.drawtextx = 0
+                        fill = "white"
+                        outline = "black"
 
-                    draw.text((8, 17+i*12), drawtext[self.drawtextx:], font=font, fill="white")
+                    draw.text((x_coord, y_coord), text=self.descr[i][1], font=MenuBase.faicons, outline=outline, fill=fill)
 
-                else:
-                    draw.text((8, 17+i*12), self.menu[i+self.page], font=font, fill="white")
-                    draw.rectangle((90 , 17+i*12 , 128 , 34+i*12 ), outline="black", fill="black")
+                    i += 1
 
-                    try:
-                        drawtext = self.progress[self.menu[i+self.page]]
-                        draw.text((100, 17+i*12), "%2.0d%%" % (drawtext*100), font=font, fill="white")
-                    except:
-                        pass
-
-
-    def on_key_left(self):
-        raise NotImplementedError()
-
-    def on_key_right(self):
-        raise NotImplementedError()
+    def activate(self):
+        self.counter = 0
 
     def push_callback(self,lp=False):
         raise NotImplementedError()
 
     def turn_callback(self, direction, key=None):
         if key:
-            if key == 'left' or key == '4' or key == '0':
-                self.left_pressed = True
-                return
-            elif key == 'right' or key == '6' or key == '*':
-                self.right_pressed = True
-                return
-            elif key == '2':
+            if key == 'up' or key == '2':
+                direction = -4
+            elif key == 'down' or key == '8':
+                direction = 4
+            elif key == 'left' or key == '4':
                 direction = -1
-            elif key == '8':
+            elif key == 'right' or key == '6':
                 direction = 1
+            elif key == '#':
+               self.windowmanager.set_window("idle")
 
 
-        if self.counter + direction >= 0:
-            #first 4 items in long menu
-            if self.counter > 1:
-                if len(self.menu) > 4:
-                    if ((self.counter-1) + direction >= 1) and ((self.counter-1) + direction <= 4):
-                        self.counter += direction
-                    #other items in long menu
-                    elif (self.page + direction + 4 <= len(self.menu)) and (self.page + direction  >= 0):
-                        self.page += direction
-                    elif (self.page == 0) and (self.counter > 0):
-                        self.counter += direction
-                #short menu < 4 items
-                else:
-                    if len(self.menu) <= 4 and (self.counter-1) + direction <= len(self.menu):
-                        self.counter += direction
-            elif self.counter + direction >= 0:
-                self.counter += direction
-            self.position = (self.counter + self.page -2 ) if (self.counter > 1) else -1
-
+        if (self.counter + direction < len(self.descr) and self.counter + direction >= 0):
+            self.counter += direction
 
 

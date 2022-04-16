@@ -113,3 +113,13 @@ def get_folger_from_file(filename):
     except:
         return settings.AUDIO_BASEPATH_BASE
 
+
+def get_battload_color():
+    if settings.battcapacity == -1:
+        return "WHITE"
+    elif settings.battcapacity >= 70:
+        return settings.COLOR_GREEN
+    elif settings.battcapacity >= 30:
+        return settings.COLOR_YELLOW
+    else:
+        return settings.COLOR_RED

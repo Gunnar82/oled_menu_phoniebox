@@ -4,6 +4,7 @@ from luma.core.render import canvas
 from PIL import ImageFont
 import settings
 import integrations.bluetooth
+import integrations.functions as fn
 
 from datetime import datetime
 
@@ -27,8 +28,8 @@ class Start(WindowBase):
             if settings.X728_ENABLED:
                 symbol = settings.battsymbol
 
-                draw.text((50, 20), text=symbol, font=Start.fontawesome, fill="white")
-                draw.text((25, 50), text="%d%% geladen" % (settings.battcapacity), font=Start.font, fill="white")
+                draw.text((50, 20), text=symbol, font=Start.fontawesome, fill=fn.get_battload_color())
+                draw.text((25, 50), text="%d%% geladen" % (settings.battcapacity), font=Start.font, fill=fn.get_battload_color())
             else:
                 draw.text((50, 25), text="\uf251", font=Start.fontawesome, fill="white")
 

@@ -82,13 +82,13 @@ class Idle(WindowBase):
             if settings.job_t >= 0:
                 draw.text((108, 51 ), "%2.2d" % (int(settings.job_t)), font=Idle.fontsmall, fill="white")
             elif settings.X728_ENABLED:
-                draw.text((112,52), settings.battsymbol, font=Idle.faicons, fill="white")
+                draw.text((112,52), settings.battsymbol, font=Idle.faicons, fill=fn.get_battload_color())
 
             if settings.X728_ENABLED:
                 #battery load line
                 try:
                     pos = int(settings.battcapacity/100*128)
-                    draw.rectangle((0,3,pos,3),outline="white",fill="white")
+                    draw.rectangle((0,3,pos,3),outline=fn.get_battload_color(),fill=fn.get_battload_color())
                 except:
                     print ("err")
 
@@ -136,7 +136,7 @@ class Idle(WindowBase):
             else:
                 timelinepos = 128 # device.width
             #Fortschritssleiste Wiedergabe
-            draw.rectangle((0,0,timelinepos,1),outline="white",fill="white")
+            draw.rectangle((0,0,timelinepos,1),outline="BLUE",fill="BLUE")
 
 
             #paylistpos
@@ -145,8 +145,8 @@ class Idle(WindowBase):
             draw.text((_xpos, 51 ),_spos , font=Idle.fontsmall, fill="white")
 
             if (settings.battcapacity >= 0 and settings.battcapacity <= settings.X728_BATT_LOW):
-                draw.text((15,10), "Batterie laden!", font=Idle.font, fill="white")
-                draw.text((50,30), "%d%%" % (settings.battcapacity), font=Idle.font, fill="white")
+                draw.text((15,10), "Batterie laden!", font=Idle.font, fill=fn.get_battload_capacity())
+                draw.text((50,30), "%d%%" % (settings.battcapacity), font=Idle.font, fill=fn.get_battload_capacity())
 
                 return
 
@@ -159,7 +159,7 @@ class Idle(WindowBase):
 
             if ((self._state == "stop") or (settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (settings.battcapacity <= settings.X728_BATT_LOW)):
                 if (settings.battcapacity >= 0):
-                    draw.text((20,10), "Batterie: %d%%" % (settings.battcapacity), font=Idle.font, fill="white")
+                    draw.text((20,10), "Batterie: %d%%" % (settings.battcapacity), font=Idle.font, fill=fn.get_battload_color())
 
                 if settings.job_i >= 0 or settings.job_t >= 0:
                     if settings.job_i >= settings.job_t:

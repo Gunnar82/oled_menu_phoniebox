@@ -1,12 +1,15 @@
-"""
-Software settings
-"""
+""" Software settings """
 
 ufw_services_allow = ["ssh","http"]
 
 
-####CONTROL
+###DISPLAY_SETTINGS i2c
+DISPLAY_TYPE = "spi" # or "i2c"
+DISPLAY_WIDTH = 128
+DISPLAY_HEIGHT = 128 # or 64
+DISPLAY_RGB = True
 
+####CONTROL
 
 MENU_TIMEOUT = 20
 START_TIMEOUT = 2
@@ -33,11 +36,11 @@ ROTARYENCODER_ENABLED = True
 ###
 
 ### KEYBOARD support
-KEYBOARD_ENABLED = True
+KEYBOARD_ENABLED = False
 
 ### KEYPAD 4x4 I2C + MCP23017
 KEYPAD_ENABLED = True
-KEYPAD_INTPIN = 22
+KEYPAD_INTPIN = 17
 KEYPAD_ADDR = 0x27
 
 ####
@@ -67,7 +70,7 @@ PLAYOUT_CONTROLS = "sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh"
 
 #Pins for rotary encoder
 PIN_CLK = 24
-PIN_DT = 23
+PIN_DT = 1
 PIN_SW = 25
 
 #Settings for the connection to Mopidy
@@ -117,6 +120,15 @@ SR3 = "neugestartet"
 
 PLEASE_WAIT = "Bitte Warten..."
 CARD_READ = "Karte gelesen!"
+
+
+####COLOR DEFINITIONS FOR RGB OLED ####
+COLOR_RED	= "#ff0000"
+COLOR_YELLOW	= "#ffff00"
+COLOR_BLUE 	= "#000000"
+COLOR_GREEN 	= "#00ff00"
+
+COLOR_SELECTED = COLOR_YELLOW
 
 ######
 from datetime import datetime

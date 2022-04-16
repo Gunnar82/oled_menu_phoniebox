@@ -2,9 +2,9 @@
 import settings
 import integrations.playout as playout
 import time
-from ui.menubase import MenuBase
+from ui.listbase import ListBase
 
-class Playlistmenu(MenuBase):
+class Playlistmenu(ListBase):
     def __init__(self, windowmanager, musicmanager):
         self.musicmanager = musicmanager
         super().__init__(windowmanager, "Playlist")
