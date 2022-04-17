@@ -13,57 +13,44 @@ class MenuBase(WindowBase):
         self.counter = 0
         self.descr = []
         self.basetitle = title
+        self.lines_per_page = 4 if settings.DISPLAY_HEIGHT == 128 else 2
+        self.symbols_per_line = 4
 
     def render(self):
         with canvas(self.device) as draw:
             mwidth = MenuBase.font.getsize(self.descr[self.counter][0])
             draw.text((64 - int(mwidth[0]/2),1), text=self.descr[self.counter][0], font=MenuBase.font, fill="white")
 
-            #rectangle as selection marker
-            if self.counter < 4: #4 icons in one row
-                y_coord = 15
-                x_coord = 7 + self.counter * 35
-            elif self.counter >=4  and self.counter < 8:
-                y_coord = 44
-                x_coord = 6 + (self.counter - 4) * 35
-            elif self.counter >=8 and self.counter  < 12: #3 icons in one row
-                y_coord = 63 if settings.DISPLAY > 64 else 15
-                x_coord = 7 + (self.counter - 8) * 35
-            elif self.counter >= 12:
-                y_coord = 92 if settings.DISPLAY > 64 else 44
-                x_coord = 6 + (self.counter - 12) * 35
-
-            #draw.rectangle((x_coord, y_coord, x_coord+25, y_coord+25), outline=settings.COLOR_YELLOW, fill=0)
-
             #icons as menu buttons
-            i = 0
+            symbols_per_page = self.lines_per_page * self.symbols_per_line
 
-            if self.counter <= 16:
-                while (i <= 16) and (i < len(self.descr)):
-                    if (i < 4):
-                        x_coord = 11 + i * 33
-                        y_coord = 20
-                    elif (i < 8):
-                        x_coord = 11 + (i-4) * 33
-                        y_coord = 45
-                    elif (i < 12):
-                        x_coord = 11 + (i-8) * 33
-                        y_coord = 70
-                    elif (i < 16):
-                        x_coord = 11 + (i-12) * 33
-                        y_coord = 95
+            page = (self.counter) // (self.lines_per_page * self.symbols_per_line) 
 
+            i = page * symbols_per_page
 
-                    if (self.counter == i):
-                        fill = settings.COLOR_SELECTED
-                        outline = 255
-                    else:
-                        fill = "white"
-                        outline = "black"
+            current_line = 0
+            current_symbol = 0
 
-                    draw.text((x_coord, y_coord), text=self.descr[i][1], font=MenuBase.faicons, outline=outline, fill=fill)
+            while (i < symbols_per_page * (page+1)) and (i < len(self.descr)):
+                x_coord = 11 + 33 * current_symbol
+                y_coord = 20 + 25 * current_line
 
-                    i += 1
+                if (self.counter == i):
+                    fill = settings.COLOR_SELECTED
+                    outline = 255
+                else:
+                    fill = "white"
+                    outline = "black"
+
+                draw.text((x_coord, y_coord), text=self.descr[i][1], font=MenuBase.faicons, outline=outline, fill=fill)
+
+                current_symbol += 1
+
+                if current_symbol >= self.symbols_per_line:
+                    current_symbol = 0
+                    current_line += 1
+
+                i += 1
 
     def activate(self):
         self.counter = 0

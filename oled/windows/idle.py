@@ -80,9 +80,9 @@ class Idle(WindowBase):
 
             #shutdowntimer ? aktiv dann Zeit anzeigen
             if settings.job_t >= 0:
-                draw.text((108, 51 ), "%2.2d" % (int(settings.job_t)), font=Idle.fontsmall, fill="white")
+                draw.text((108, settings.DISPLAY_HEIGHT -14 ), "%2.2d" % (int(settings.job_t)), font=Idle.fontsmall, fill="white")
             elif settings.X728_ENABLED:
-                draw.text((112,52), settings.battsymbol, font=Idle.faicons, fill=fn.get_battload_color())
+                draw.text((112,settings.DISPLAY_HEIGHT -12), settings.battsymbol, font=Idle.faicons, fill=fn.get_battload_color())
 
             if settings.X728_ENABLED:
                 #battery load line
@@ -93,14 +93,14 @@ class Idle(WindowBase):
                     print ("err")
 
             #Trennleiste waagerecht
-            draw.rectangle((0,49,128,49),outline="white",fill="white")
+            draw.rectangle((0,settings.DISPLAY_HEIGHT -15,128,settings.DISPLAY_HEIGHT - 15),outline="white",fill="white")
             #Trennleisten senkrecht
-            draw.rectangle((16,49,16,60),outline="white",fill="white")
-            draw.rectangle((65,49,65,60),outline="white",fill="white")
-            draw.rectangle((105,49,105,60),outline="white",fill="white")
+            draw.rectangle((16,settings.DISPLAY_HEIGHT -15,16,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
+            draw.rectangle((65,settings.DISPLAY_HEIGHT -15,65,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
+            draw.rectangle((105,settings.DISPLAY_HEIGHT -15,105,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
 
             #volume
-            draw.text((1, 51 ), str(self._volume), font=Idle.fontsmall, fill="white")
+            draw.text((1, settings.DISPLAY_HEIGHT -14 ), str(self._volume), font=Idle.fontsmall, fill="white")
 
             #Buttons
             if self.musicmanager.source == "mpd":
@@ -110,12 +110,12 @@ class Idle(WindowBase):
                         _spos = fn.to_min_sec(self._elapsed)
                         _xpos = 41 - int(Idle.fontsmall.getsize(_spos)[0]/2)
 
-                        draw.text((_xpos, 51 ),_spos, font=Idle.fontsmall, fill="white")
+                        draw.text((_xpos, settings.DISPLAY_HEIGHT -14 ),_spos, font=Idle.fontsmall, fill="white")
                     else:
                         _spos = self._state
                         _xpos = 41 - int(Idle.fontsmall.getsize(_spos)[0]/2)
 
-                        draw.text((_xpos, 51), _spos, font=Idle.fontsmall, fill="white") #other than play
+                        draw.text((_xpos, settings.DISPLAY_HEIGHT -14), _spos, font=Idle.fontsmall, fill="white") #other than play
                         if self._statex != self._state:
                             self._statex = self._state
 
@@ -142,7 +142,7 @@ class Idle(WindowBase):
             #paylistpos
             _spos = "%2.2d/%2.2d" % (int(self._song), int(self._playlistlength))
             _xpos = 85 - int(Idle.fontsmall.getsize(_spos)[0]/2)
-            draw.text((_xpos, 51 ),_spos , font=Idle.fontsmall, fill="white")
+            draw.text((_xpos, settings.DISPLAY_HEIGHT -14 ),_spos , font=Idle.fontsmall, fill="white")
 
             if (settings.battcapacity >= 0 and settings.battcapacity <= settings.X728_BATT_LOW):
                 draw.text((15,10), "Batterie laden!", font=Idle.font, fill=fn.get_battload_capacity())
@@ -157,7 +157,7 @@ class Idle(WindowBase):
 
                 return
 
-            if ((self._state == "stop") or (settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (settings.battcapacity <= settings.X728_BATT_LOW)):
+            if ((self._state == "stop") or (settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (settings.battcapacity <= settings.X728_BATT_LOW) or (settings.DISPLAY_HEIGHT > 64)):
                 if (settings.battcapacity >= 0):
                     draw.text((20,10), "Batterie: %d%%" % (settings.battcapacity), font=Idle.font, fill=fn.get_battload_color())
 
@@ -170,12 +170,13 @@ class Idle(WindowBase):
                 else:
                     draw.text((1,30), "%s" % (now.strftime("%a, %d.%m.%y %H:%M")), font=Idle.font, fill="white")
 
-                return
+                if settings.DISPLAY_HEIGHT <= 64:
+                    return
 
 
-            draw.text((1, 5), self._playingalbum, font=Idle.font, fill="white")
-            draw.text((1, 19), self._playingname, font=Idle.font, fill="white")
-            draw.text((1, 32), self._playingtitle, font=Idle.font, fill="white")
+            draw.text((1, settings.DISPLAY_HEIGHT - 59), self._playingalbum, font=Idle.font, fill="white")
+            draw.text((1, settings.DISPLAY_HEIGHT - 45), self._playingname, font=Idle.font, fill="white")
+            draw.text((1, settings.DISPLAY_HEIGHT - 32), self._playingtitle, font=Idle.font, fill="white")
 
 
     async def _find_dev_bt(self):
