@@ -6,7 +6,6 @@ import settings
 
 class MenuBase(WindowBase):
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=18)
-    faicons_selected = ImageFont.truetype(settings.FONT_ICONS, size=22)
     font = ImageFont.truetype(settings.FONT_TEXT, size=12)
 
     def __init__(self, windowmanager,title):
@@ -33,7 +32,7 @@ class MenuBase(WindowBase):
             current_symbol = 0
 
             while (i < symbols_per_page * (page+1)) and (i < len(self.descr)):
-                x_coord = 11 + 33 * current_symbol
+                x_coord = 11 + 31 * current_symbol
                 y_coord = 20 + 25 * current_line
 
                 if (self.counter == i):
@@ -43,7 +42,10 @@ class MenuBase(WindowBase):
                     fill = "white"
                     outline = "black"
 
-                draw.text((x_coord, y_coord), text=self.descr[i][1], font=(MenuBase.faicons_selected if (self.counter == i) else MenuBase.faicons) , outline=outline, fill=fill)
+                if (i == self.counter):
+                    y_coord -= 2
+
+                draw.text((x_coord, y_coord) , text=self.descr[i][1], font=MenuBase.faicons, outline=outline, fill=fill)
 
                 current_symbol += 1
 
