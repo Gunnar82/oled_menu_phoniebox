@@ -25,30 +25,25 @@ class Idle(WindowBase):
     faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=12)
     faiconsxl = ImageFont.truetype(settings.FONT_ICONS, size=30)
 
-    def __init__(self, windowmanager, musicmanager):
+    def __init__(self, windowmanager, musicmanager, nowplaying):
         locale.setlocale(locale.LC_TIME, "de_DE.UTF-8")
         super().__init__(windowmanager)
-        self._active = False
+        active = False
         self.musicmanager = musicmanager
-        self._playingname = ""
-        self._playingtitle = ""
-        self._playingalbum = ""
-        self._playingfile = ""
-        self._volume = -1
-        self._time = -1
-        self._elapsed = -1
-        self._playlistlength = -1
-        self._song = -1
-        self._duration = -1
-        self._state = "starting"
-        self._statex = "unknown"
+        self.nowplaying = nowplaying
         self.timeout=False
+        self.oldtitle = ""
+        self.oldname = ""
+        self.oldalbum = ""
+        self.namex = 0
+        self.titlex = 0
+        self.albumx = 0
         self.LocalOutputEnabled = False
         self.BluetoothFound = False
         self.window_on_back = "playlistmenu"
 
 
-        #self.loop.create_task(self._find_dev_bt())
+        #self.loop.create_task(find_dev_bt())
 
     async def _linuxjob(self):
 
@@ -65,18 +60,48 @@ class Idle(WindowBase):
 
 
     def activate(self):
-        self._active = True
-        self.loop.create_task(self._generatenowplaying())
+        self.titlex = 0
+        self.namex = 0
+        self.albumx = 0
+        self.oldname = ""
+        self.oldtitle = ""
+        self.oldalbum = ""
+
+        active = True
+        #self.loop.create_task(generatenowplaying())
         self.loop.create_task(self._linuxjob())
 
 
     def deactivate(self):
 
-        self._active = False
+        active = False
 
     def render(self):
         with canvas(self.device) as draw:
             now = datetime.datetime.now()
+            #Titel Scrollbar
+            if self.nowplaying._playingtitle != self.oldtitle:
+                if self.oldtitle != "":
+                    if (datetime.datetime.now() - settings.lastinput).total_seconds() >= settings.DARK_TIMEOUT:
+                        settings.lastinput = datetime.datetime.now() - datetime.timedelta(seconds=settings.CONTRAST_TIMEOUT)
+                self.titlex = 0
+                self.oldtitle = self.nowplaying._playingtitle
+            else:
+                if Idle.font.getsize(self.nowplaying._playingtitle[self.titlex:])[0] > 127:
+                    self.titlex += 1
+           ###name Scrollbar
+            if self.nowplaying._playingname == self.oldname and Idle.font.getsize(self.nowplaying._playingname[self.namex:])[0] > 127:
+                self.namex += 1
+            else:
+                self.namex = 0
+                self.oldname = self.nowplaying._playingname
+
+            ####aslum scrollbar
+            if self.nowplaying._playingalbum == self.oldalbum and Idle.font.getsize(self.nowplaying._playingalbum[self.albumx:])[0] > 115:
+                self.albumx += 1
+            else:
+                self.albumx = 0
+                self.oldalbum = self.nowplaying._playingalbum
 
             #shutdowntimer ? aktiv dann Zeit anzeigen
             if settings.job_t >= 0:
@@ -100,24 +125,24 @@ class Idle(WindowBase):
             draw.rectangle((105,settings.DISPLAY_HEIGHT -15,105,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
 
             #volume
-            draw.text((1, settings.DISPLAY_HEIGHT -14 ), str(self._volume), font=Idle.fontsmall, fill="white")
+            draw.text((1, settings.DISPLAY_HEIGHT -14 ), str(self.nowplaying._volume), font=Idle.fontsmall, fill="white")
 
             #Buttons
             if self.musicmanager.source == "mpd":
                 try:
-                    if self._state == "play":
+                    if self.nowplaying._state == "play":
                         #elapsed
-                        _spos = fn.to_min_sec(self._elapsed)
+                        _spos = fn.to_min_sec(self.nowplaying._elapsed)
                         _xpos = 41 - int(Idle.fontsmall.getsize(_spos)[0]/2)
 
                         draw.text((_xpos, settings.DISPLAY_HEIGHT -14 ),_spos, font=Idle.fontsmall, fill="white")
                     else:
-                        _spos = self._state
+                        _spos = self.nowplaying._state
                         _xpos = 41 - int(Idle.fontsmall.getsize(_spos)[0]/2)
 
                         draw.text((_xpos, settings.DISPLAY_HEIGHT -14), _spos, font=Idle.fontsmall, fill="white") #other than play
-                        if self._statex != self._state:
-                            self._statex = self._state
+                        if self.nowplaying._statex != self.nowplaying._state:
+                            self.nowplaying._statex = self.nowplaying._state
 
                 except KeyError:
                     pass
@@ -131,8 +156,8 @@ class Idle(WindowBase):
 
             #Currently playing song
             #Line 1 2 3
-            if float(self._duration) >= 0:
-                timelinepos = int(float(self._elapsed) / float(self._duration)  * 128) # TODO Device.with
+            if float(self.nowplaying._duration) >= 0:
+                timelinepos = int(float(self.nowplaying._elapsed) / float(self.nowplaying._duration)  * 128) # TODO Device.with
             else:
                 timelinepos = 128 # device.width
             #Fortschritssleiste Wiedergabe
@@ -140,7 +165,7 @@ class Idle(WindowBase):
 
 
             #paylistpos
-            _spos = "%2.2d/%2.2d" % (int(self._song), int(self._playlistlength))
+            _spos = "%2.2d/%2.2d" % (int(self.nowplaying._song), int(self.nowplaying._playlistlength))
             _xpos = 85 - int(Idle.fontsmall.getsize(_spos)[0]/2)
 
             draw.text((_xpos, settings.DISPLAY_HEIGHT -14 ),_spos , font=Idle.fontsmall, fill="white")
@@ -158,7 +183,7 @@ class Idle(WindowBase):
 
                 return
 
-            if ((self._state == "stop") or (settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (settings.battcapacity <= settings.X728_BATT_LOW) or (settings.DISPLAY_HEIGHT > 64)):
+            if ((self.nowplaying._state == "stop") or (settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (settings.battcapacity <= settings.X728_BATT_LOW) or (settings.DISPLAY_HEIGHT > 64)):
                 if (settings.battcapacity >= 0):
                     text = "Batterie: %d%%" % (settings.battcapacity)
                     mwidth = Idle.font.getsize(text)
@@ -179,9 +204,9 @@ class Idle(WindowBase):
                     return
 
 
-            draw.text((1, settings.DISPLAY_HEIGHT - 59), self._playingalbum, font=Idle.font, fill="white")
-            draw.text((1, settings.DISPLAY_HEIGHT - 45), self._playingname, font=Idle.font, fill="white")
-            draw.text((1, settings.DISPLAY_HEIGHT - 32), self._playingtitle, font=Idle.font, fill="white")
+            draw.text((1, settings.DISPLAY_HEIGHT - 59), self.nowplaying._playingalbum[self.albumx:self.albumx+19], font=Idle.font, fill="white")
+            draw.text((1, settings.DISPLAY_HEIGHT - 45), self.nowplaying._playingname[self.namex:], font=Idle.font, fill="white")
+            draw.text((1, settings.DISPLAY_HEIGHT - 32), self.nowplaying._playingtitle[self.titlex:], font=Idle.font, fill="white")
 
 
     async def _find_dev_bt(self):
@@ -196,95 +221,6 @@ class Idle(WindowBase):
                 integrations.bluetooth.enable_dev_local()
     
                 self.LocalOutputEnabled = True
-
-
-    async def _generatenowplaying(self):
-        namex = 0
-        albumx = 0
-        titlex = 0
-        oldname = ""
-        oldtitle = ""
-        oldalbum = ""
-        filename = ""
-
-        while self.loop.is_running() and self.windowmanager.windows["idle"] == self.windowmanager.activewindow:
-            playing = self.musicmanager.nowplaying()
-            status = self.musicmanager.status()
-            filename = playing['file'] if ("file" in playing) else ""
-
-            try:
-                if "title" in playing:
-                    title = playing['title']
-                else:
-                    title = filename[filename.rfind("/")+1:]
-            except:
-                title = "n/a"
-
-
-            if title != oldtitle:
-                if oldtitle != "":
-                    if (datetime.datetime.now() - settings.lastinput).total_seconds() >= settings.DARK_TIMEOUT:
-                        settings.lastinput = datetime.datetime.now() - datetime.timedelta(seconds=settings.CONTRAST_TIMEOUT)
-                titlex = 0
-                oldtitle = title
-            else:
-                if Idle.font.getsize(title[titlex:])[0] > 127:
-                    titlex += 1
-
-
-            self._playingtitle = title[titlex:]
-
-            try:
-                if "name" in playing:
-                    name = playing['name']
-                elif "artist" in playing:
-                    name = playing['artist']
-                else:
-                    name = "n/v"
-            except:
-                name = "n/a"
-
-            if name == oldname and Idle.font.getsize(name[namex:])[0] > 127:
-                namex += 1
-            else:
-                namex = 0
-                oldname = name
-
-
-            self._playingname = name[namex:]
-
-            try:
-                if "album" in playing:
-                    album = playing['album']
-                elif not playing['file'].startswith('http'):
-                    album = filename[:filename.rfind('/')] #.split("/")[0]
-                    album = album.replace('/',' - ')
-                elif playing['file'].startswith('http'):
-                    album = "Livestream"
-                else:
-                    album = ""
-            except:
-                album = ""
-
-            if album == oldalbum and Idle.font.getsize(album[albumx:])[0] > 115:
-                albumx += 1
-            else:
-                albumx = 0
-                oldalbum = album
-
-            self._playingalbum = album[albumx:albumx+19]
-
-
-            self._playingfile = playing['file'] if ("file" in playing) else ""
-            self._volume = status['volume'] if ("volume" in status) else -1
-            self._elapsed = status['elapsed'] if ("elapsed" in status) else -1
-            self._time = status['time'] if ("time" in status) else -1
-            self._playlistlength = status['playlistlength'] if ("playlistlength" in status) else -1
-            self._song = str(int(status['song']) + 1) if ("song" in status) else -1
-            self._duration = status['duration'] if ("duration" in status) else -1
-            self._state = status['state'] if ("state" in status) else "unknown"
-
-            await asyncio.sleep(self.windowmanager.looptime)
 
     def push_callback(self,lp=False):
         if lp:
@@ -305,15 +241,15 @@ class Idle(WindowBase):
             elif key == 'left' or key =='4':
                 self.busysymbol = settings.SYMBOL_PREV
 
-                if self._playingalbum == "Livestream":
-                    cfolder = fn.get_folder_of_livestream(self._playingfile)
+                if self.nowplaying._playingalbum == "Livestream":
+                    cfolder = fn.get_folder_of_livestream(self.nowplaying._playingfile)
                     playout.pc_playfolder (fn.get_folder(cfolder,-1))
                 else:
                     playout.pc_prev()
             elif key == 'right' or key == '6':
                 self.busysymbol = settings.SYMBOL_NEXT
-                if self._playingalbum == "Livestream":
-                    cfolder = fn.get_folder_of_livestream(self._playingfile)
+                if self.nowplaying._playingalbum == "Livestream":
+                    cfolder = fn.get_folder_of_livestream(self.nowplaying._playingfile)
                     playout.pc_playfolder (fn.get_folder(cfolder,1))
                 else:
                     playout.pc_next()

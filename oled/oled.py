@@ -55,9 +55,15 @@ def main():
     #shairport = ShairportMetadata(airplay_callback)
     musicmanager = Musicmanager(mopidy)
 
+    ###processing nowplaying
+    import integrations.nowplaying as nowplaying
+
+    _nowplaying = nowplaying.nowplaying(loop,musicmanager,windowmanager)
+
+
     #Import all window classes and generate objects of them
     loadedwins = []
-    idlescreen = windows.idle.Idle(windowmanager, musicmanager)
+    idlescreen = windows.idle.Idle(windowmanager, musicmanager, _nowplaying)
     playbackm = windows.playbackmenu.Playbackmenu(windowmanager,musicmanager)
     shutdownscreen = windows.shutdownmenu.Shutdownmenu(windowmanager, mopidy,"Powermenü")
     loadedwins.append(idlescreen)
@@ -133,6 +139,7 @@ def main():
     if settings.X728_ENABLED:
         import integrations.x728v21 as x728v21
         x728 = x728v21.x728(loop)
+
 
     ###main
     try:
