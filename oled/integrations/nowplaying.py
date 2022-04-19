@@ -5,6 +5,7 @@ import RPi.GPIO as GPIO   # Import the GPIO library.
 import time               # Import time library
 import settings
 import asyncio
+import integrations.functions as fn
 
 class nowplaying:
     filename = ""
@@ -75,11 +76,25 @@ class nowplaying:
         except:
             pass
 
+    async def _linuxjob(self):
+
+        while self.loop.is_running():
+            settings.job_t = fn.linux_job_remaining("t")
+            settings.job_s = fn.linux_job_remaining("s")
+            settings.job_i = fn.linux_job_remaining("i")
+
+            if ((settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (settings.X728_ENABLED and settings.battcapacity <= settings.X728_BATT_LOW)):
+                if not settings.STATUS_LED_ENABLED:
+                    self.windowmanager.show_window()
+
+            await asyncio.sleep(20)
+
     def __init__(self,loop,musicmanager,windowmanager):
         self.loop = loop
         self.musicmanager = musicmanager
         self.windowmanager = windowmanager
         self.loop.create_task(self._generatenowplaying())
+        self.loop.create_task(self._linuxjob())
         self._playingname = ""
         self._playingtitle = ""
         self._playingalbum = ""
@@ -93,13 +108,4 @@ class nowplaying:
         self._state = "starting"
         self._statex = "unknown"
 
-    def startpulse(self,count = 1):
-        print (count)
-        self.pulsing = count
 
-    def stoppulse(self):
-        self.pulsing = 0
-        self.pwm.stop()
-
-    def stoploop(self):
-        GPIO.cleanup()                     # resets GPIO ports used back to input mode

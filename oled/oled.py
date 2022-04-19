@@ -63,8 +63,8 @@ def main():
 
     #Import all window classes and generate objects of them
     loadedwins = []
-    idlescreen = windows.idle.Idle(windowmanager, musicmanager, _nowplaying)
-    playbackm = windows.playbackmenu.Playbackmenu(windowmanager,musicmanager)
+    idlescreen = windows.idle.Idle(windowmanager, _nowplaying)
+    playbackm = windows.playbackmenu.Playbackmenu(windowmanager,_nowplaying)
     shutdownscreen = windows.shutdownmenu.Shutdownmenu(windowmanager, mopidy,"Powermenü")
     loadedwins.append(idlescreen)
     loadedwins.append(playbackm)

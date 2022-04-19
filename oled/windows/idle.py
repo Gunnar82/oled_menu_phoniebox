@@ -25,11 +25,10 @@ class Idle(WindowBase):
     faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=12)
     faiconsxl = ImageFont.truetype(settings.FONT_ICONS, size=30)
 
-    def __init__(self, windowmanager, musicmanager, nowplaying):
+    def __init__(self, windowmanager, nowplaying):
         locale.setlocale(locale.LC_TIME, "de_DE.UTF-8")
         super().__init__(windowmanager)
         active = False
-        self.musicmanager = musicmanager
         self.nowplaying = nowplaying
         self.timeout=False
         self.oldtitle = ""
@@ -45,18 +44,6 @@ class Idle(WindowBase):
 
         #self.loop.create_task(find_dev_bt())
 
-    async def _linuxjob(self):
-
-        while self.loop.is_running():
-            settings.job_t = fn.linux_job_remaining("t")
-            settings.job_s = fn.linux_job_remaining("s")
-            settings.job_i = fn.linux_job_remaining("i")
-
-            if ((settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (settings.X728_ENABLED and settings.battcapacity <= settings.X728_BATT_LOW)):
-                if not settings.STATUS_LED_ENABLED:
-                    self.windowmanager.show_window()
-
-            await asyncio.sleep(20)
 
 
     def activate(self):
@@ -68,8 +55,6 @@ class Idle(WindowBase):
         self.oldalbum = ""
 
         active = True
-        #self.loop.create_task(generatenowplaying())
-        self.loop.create_task(self._linuxjob())
 
 
     def deactivate(self):
@@ -79,29 +64,14 @@ class Idle(WindowBase):
     def render(self):
         with canvas(self.device) as draw:
             now = datetime.datetime.now()
-            #Titel Scrollbar
-            if self.nowplaying._playingtitle != self.oldtitle:
-                if self.oldtitle != "":
-                    if (datetime.datetime.now() - settings.lastinput).total_seconds() >= settings.DARK_TIMEOUT:
-                        settings.lastinput = datetime.datetime.now() - datetime.timedelta(seconds=settings.CONTRAST_TIMEOUT)
-                self.titlex = 0
-                self.oldtitle = self.nowplaying._playingtitle
-            else:
-                if Idle.font.getsize(self.nowplaying._playingtitle[self.titlex:])[0] > 127:
-                    self.titlex += 1
-           ###name Scrollbar
-            if self.nowplaying._playingname == self.oldname and Idle.font.getsize(self.nowplaying._playingname[self.namex:])[0] > 127:
-                self.namex += 1
-            else:
-                self.namex = 0
-                self.oldname = self.nowplaying._playingname
 
-            ####aslum scrollbar
-            if self.nowplaying._playingalbum == self.oldalbum and Idle.font.getsize(self.nowplaying._playingalbum[self.albumx:])[0] > 115:
-                self.albumx += 1
-            else:
-                self.albumx = 0
-                self.oldalbum = self.nowplaying._playingalbum
+            #Trennleiste waagerecht
+            draw.rectangle((0,settings.DISPLAY_HEIGHT -15,128,settings.DISPLAY_HEIGHT - 15),outline="white",fill="white")
+            #Trennleisten senkrecht
+            draw.rectangle((16,settings.DISPLAY_HEIGHT -15,16,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
+            draw.rectangle((65,settings.DISPLAY_HEIGHT -15,65,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
+            draw.rectangle((105,settings.DISPLAY_HEIGHT -15,105,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
+
 
             #shutdowntimer ? aktiv dann Zeit anzeigen
             if settings.job_t >= 0:
@@ -117,42 +87,29 @@ class Idle(WindowBase):
                 except:
                     print ("err")
 
-            #Trennleiste waagerecht
-            draw.rectangle((0,settings.DISPLAY_HEIGHT -15,128,settings.DISPLAY_HEIGHT - 15),outline="white",fill="white")
-            #Trennleisten senkrecht
-            draw.rectangle((16,settings.DISPLAY_HEIGHT -15,16,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
-            draw.rectangle((65,settings.DISPLAY_HEIGHT -15,65,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
-            draw.rectangle((105,settings.DISPLAY_HEIGHT -15,105,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
 
             #volume
             draw.text((1, settings.DISPLAY_HEIGHT -14 ), str(self.nowplaying._volume), font=Idle.fontsmall, fill="white")
 
             #Buttons
-            if self.musicmanager.source == "mpd":
-                try:
-                    if self.nowplaying._state == "play":
-                        #elapsed
-                        _spos = fn.to_min_sec(self.nowplaying._elapsed)
-                        _xpos = 41 - int(Idle.fontsmall.getsize(_spos)[0]/2)
+            try:
+                if self.nowplaying._state == "play":
+                    #elapsed
+                    _spos = fn.to_min_sec(self.nowplaying._elapsed)
+                    _xpos = 41 - int(Idle.fontsmall.getsize(_spos)[0]/2)
 
-                        draw.text((_xpos, settings.DISPLAY_HEIGHT -14 ),_spos, font=Idle.fontsmall, fill="white")
-                    else:
-                        _spos = self.nowplaying._state
-                        _xpos = 41 - int(Idle.fontsmall.getsize(_spos)[0]/2)
+                    draw.text((_xpos, settings.DISPLAY_HEIGHT -14 ),_spos, font=Idle.fontsmall, fill="white")
+                else:
+                    _spos = self.nowplaying._state
+                    _xpos = 41 - int(Idle.fontsmall.getsize(_spos)[0]/2)
 
-                        draw.text((_xpos, settings.DISPLAY_HEIGHT -14), _spos, font=Idle.fontsmall, fill="white") #other than play
-                        if self.nowplaying._statex != self.nowplaying._state:
-                            self.nowplaying._statex = self.nowplaying._state
+                    draw.text((_xpos, settings.DISPLAY_HEIGHT -14), _spos, font=Idle.fontsmall, fill="white") #other than play
+                    if self.nowplaying._statex != self.nowplaying._state:
+                        self.nowplaying._statex = self.nowplaying._state
 
-                except KeyError:
-                    pass
+            except KeyError:
+                pass
 
-            #Widgets
-            if not self.musicmanager.mopidyconnection.connected:
-                draw.text((18, 2), "\uf071", font=Idle.faicons, fill="white")
-
-            #Current time
-            #draw.text((62, -1), now.strftime("%H:%M"), font=Idle.clockfont, fill="white")
 
             #Currently playing song
             #Line 1 2 3
@@ -202,6 +159,31 @@ class Idle(WindowBase):
 
                 if settings.DISPLAY_HEIGHT <= 64:
                     return
+
+            #Titel Scrollbar
+            if self.nowplaying._playingtitle != self.oldtitle:
+                if self.oldtitle != "":
+                    if (datetime.datetime.now() - settings.lastinput).total_seconds() >= settings.DARK_TIMEOUT:
+                        settings.lastinput = datetime.datetime.now() - datetime.timedelta(seconds=settings.CONTRAST_TIMEOUT)
+                self.titlex = 0
+                self.oldtitle = self.nowplaying._playingtitle
+            else:
+                if Idle.font.getsize(self.nowplaying._playingtitle[self.titlex:])[0] > 127:
+                    self.titlex += 1
+
+           ###name Scrollbar
+            if self.nowplaying._playingname == self.oldname and Idle.font.getsize(self.nowplaying._playingname[self.namex:])[0] > 127:
+                self.namex += 1
+            else:
+                self.namex = 0
+                self.oldname = self.nowplaying._playingname
+
+            ####album scrollbar
+            if self.nowplaying._playingalbum == self.oldalbum and Idle.font.getsize(self.nowplaying._playingalbum[self.albumx:])[0] > 115:
+                self.albumx += 1
+            else:
+                self.albumx = 0
+                self.oldalbum = self.nowplaying._playingalbum
 
 
             draw.text((1, settings.DISPLAY_HEIGHT - 59), self.nowplaying._playingalbum[self.albumx:self.albumx+19], font=Idle.font, fill="white")

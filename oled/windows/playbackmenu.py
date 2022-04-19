@@ -18,10 +18,10 @@ class Playbackmenu(WindowBase):
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=8)
     faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=16)
 
-    def __init__(self, windowmanager, musicmanager):
+    def __init__(self, windowmanager, nowplaying):
         super().__init__(windowmanager)
         self._activepbm = False
-        self.musicmanager = musicmanager
+        self.nowplaying = nowplaying
         self._volume = -1
         self._playingfile = ""
         self._playingalbum = ""
@@ -44,7 +44,6 @@ class Playbackmenu(WindowBase):
 
     def activate(self):
         self._activepbm = True
-        self.loop.create_task(self._generatenowplaying())
         self.counter = 2
         self.skipselected = False
 
@@ -66,36 +65,30 @@ class Playbackmenu(WindowBase):
             draw.rectangle((105,settings.DISPLAY_HEIGHT -15,105,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
 
             #volume
-            draw.text((1, settings.DISPLAY_HEIGHT -14 ), str(self._volume), font=Playbackmenu.fontsmall, fill="white")
+            draw.text((1, settings.DISPLAY_HEIGHT -14 ), str(self.nowplaying._volume), font=Playbackmenu.fontsmall, fill="white")
 
 
             #Buttons
-            if self.musicmanager.source == "mpd":
-                if True:
-                    if self._state == "play":
-                        #elapsed
-                        _spos = fn.to_min_sec(self._elapsed)
-                        _xpos = 41 - int(Playbackmenu.fontsmall.getsize(_spos)[0]/2)
+            try:
+                if self.nowplaying._state == "play":
+                    #elapsed
+                    _spos = fn.to_min_sec(self.nowplaying._elapsed)
+                    _xpos = 41 - int(Playbackmenu.fontsmall.getsize(_spos)[0]/2)
 
-                        draw.text((_xpos, settings.DISPLAY_HEIGHT -14  ),_spos, font=Playbackmenu.fontsmall, fill="white")
-                    else:
-                        _spos = self._state
-                        _xpos = 41 - int(Playbackmenu.fontsmall.getsize(_spos)[0]/2)
+                    draw.text((_xpos, settings.DISPLAY_HEIGHT -14  ),_spos, font=Playbackmenu.fontsmall, fill="white")
+                else:
+                    _spos = self.nowplaying._state
+                    _xpos = 41 - int(Playbackmenu.fontsmall.getsize(_spos)[0]/2)
 
-                        draw.text((_xpos, settings.DISPLAY_HEIGHT -14 ), _spos, font=Playbackmenu.fontsmall, fill="white") #other than play
-
-
-                #except KeyError:
-                #    pass
+                    draw.text((_xpos, settings.DISPLAY_HEIGHT -14 ), _spos, font=Playbackmenu.fontsmall, fill="white") #other than play
 
 
-            #Widgets
-            if not self.musicmanager.mopidyconnection.connected:
-                draw.text((18, 2), "\uf071", font=Playbackmenu.faicons, fill="white")
+            except KeyError:
+                pass
 
             try:
-                if float(self._duration) >= 0:
-                    timelinepos = int(float(self._elapsed) / float(self._duration)  * 128) # TODO Device.with
+                if float(self.nowplaying._duration) >= 0:
+                    timelinepos = int(float(self.nowplaying._elapsed) / float(self.nowplaying._duration)  * 128) # TODO Device.with
                 else:
                     timelinepos = 128 # device.width
             except:
@@ -110,7 +103,7 @@ class Playbackmenu(WindowBase):
 
 
            #paylistpos
-            _spos = "%2.2d/%2.2d" % (int(self._song), int(self._playlistlength))
+            _spos = "%2.2d/%2.2d" % (int(self.nowplaying._song), int(self.nowplaying._playlistlength))
             _xpos = 85 - int(Playbackmenu.fontsmall.getsize(_spos)[0]/2)
             draw.text((_xpos, settings.DISPLAY_HEIGHT -14 ),_spos , font=Playbackmenu.fontsmall, fill="white")
 
@@ -133,34 +126,6 @@ class Playbackmenu(WindowBase):
             while (i < len(self.descr)):
                 draw.text((5 + i*21, 18 if (i == self.counter) else 20 ), self.descr[i][1], font=Playbackmenu.faiconsbig, fill=settings.COLOR_SELECTED if (i == self.counter) else fillcolor ) #prev
                 i += 1
-
-
-    async def _generatenowplaying(self):
-        namex = 0
-        albumx = 0
-        titlex = 0
-        oldname = ""
-        oldtitle = ""
-        oldalbum = ""
-        filename = ""
-
-        while self.loop.is_running() and self._activepbm:
-
-            playing = self.musicmanager.nowplaying()
-            status = self.musicmanager.status()
-            filename = playing['file'] if ("file" in playing) else ""
-
-            self._playingfile = playing['file'] if ("file" in playing) else ""
-            self._playingalbum = "Livestream" if (self._playingfile.startswith('http')) else "" 
-            self._volume = status['volume'] if ("volume" in status) else -1
-            self._elapsed = status['elapsed'] if ("elapsed" in status) else -1
-            self._time = status['time'] if ("time" in status) else -1
-            self._playlistlength = status['playlistlength'] if ("playlistlength" in status) else -1
-            self._song = str(int(status['song']) + 1) if ("song" in status) else -1
-            self._duration = status['duration'] if ("duration" in status) else -1
-            self._state = status['state'] if ("state" in status) else "unknown"
-            
-            await asyncio.sleep(0.25)
 
     def push_callback(self,lp=False):
         if self.counter == 1:
@@ -196,15 +161,15 @@ class Playbackmenu(WindowBase):
 
         if self.skipselected:
             if direction < 0:
-                if self._playingalbum == "Livestream":
-                    cfolder = fn.get_folder_of_livestream(self._playingfile)
+                if self.nowplaying._playingalbum == "Livestream":
+                    cfolder = fn.get_folder_of_livestream(self.nowplaying._playingfile)
                     playout.pc_playfolder (fn.get_folder(cfolder,-1))
                 else:
                     playout.pc_prev()
 
             else:
-                if self._playingalbum == "Livestream":
-                    cfolder = fn.get_folder_of_livestream(self._playingfile)
+                if self.nowplaying._playingalbum == "Livestream":
+                    cfolder = fn.get_folder_of_livestream(self.nowplaying._playingfile)
                     playout.pc_playfolder (fn.get_folder(cfolder,1))
                 else:
                     playout.pc_next()
