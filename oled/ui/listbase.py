@@ -16,7 +16,7 @@ class ListBase(WindowBase):
         self.drawtextx = 0
         self.position = -1
         self.progress = {}
-        self.displaylines = 8 if settings.DISPLAY_HEIGHT > 64 else 4
+        self.displaylines = 9 if settings.DISPLAY_HEIGHT > 64 else 4
 
     def render(self):
         if self.left_pressed:

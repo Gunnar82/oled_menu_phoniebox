@@ -16,7 +16,6 @@ class nowplaying:
             _playingtitle = ""
 
             while self.loop.is_running():
-                print ("generate nowplaying")
                 playing = self.musicmanager.nowplaying()
                 status = self.musicmanager.status()
                 filename = playing['file'] if ("file" in playing) else ""

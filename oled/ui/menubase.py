@@ -64,9 +64,9 @@ class MenuBase(WindowBase):
     def turn_callback(self, direction, key=None):
         if key:
             if key == 'up' or key == '2':
-                direction = -4
+                direction = -self.symbols_per_line
             elif key == 'down' or key == '8':
-                direction = 4
+                direction = self.symbols_per_line
             elif key == 'left' or key == '4':
                 direction = -1
             elif key == 'right' or key == '6':
