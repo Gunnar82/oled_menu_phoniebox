@@ -114,7 +114,7 @@ class ListBase(WindowBase):
                         self.counter += direction
                 #short menu < 4 items
                 else:
-                    if len(self.menu) <= displaylines and (self.counter-1) + direction <= len(self.menu):
+                    if len(self.menu) <= self.displaylines and (self.counter-1) + direction <= len(self.menu):
                         self.counter += direction
             elif self.counter + direction >= 0:
                 self.counter += direction
