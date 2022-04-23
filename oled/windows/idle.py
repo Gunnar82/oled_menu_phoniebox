@@ -116,7 +116,7 @@ class Idle(WindowBase):
             else:
                 timelinepos = 128 # device.width
             #Fortschritssleiste Wiedergabe
-            draw.rectangle((0,0,timelinepos,1),outline="BLUE",fill="BLUE")
+            draw.rectangle((0,0,timelinepos,1),outline=settings.COLOR_BLUE, fill=settings.COLOR_BLUE)
 
             #paylistpos
             _spos = "%2.2d/%2.2d" % (int(self.nowplaying._song), int(self.nowplaying._playlistlength))
@@ -133,7 +133,7 @@ class Idle(WindowBase):
 
             if ((self.nowplaying._state == "stop") or (settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (settings.battcapacity <= settings.X728_BATT_LOW) or (settings.DISPLAY_HEIGHT > 64)):
                 if (settings.battcapacity >= 0):
-                    text = "Batterie: %d%%" % (settings.battcapacity) if settings.battcapacity > settings.X728_BATT_LOW else "Batterie laden! %d%%" % (settings.battcapacity)
+                    text = "Batterie: %d%%%s" % (settings.battcapacity, ", lädt." if settings.battloading else " ") if settings.battcapacity > settings.X728_BATT_LOW else "Batterie laden! %d%%" % (settings.battcapacity)
                     mwidth = Idle.font.getsize(text)
                     ungerade = (time.time() % 2) // 1
                     fill = "black" if ungerade and  settings.battcapacity <= settings.X728_BATT_LOW else  fn.get_battload_color()

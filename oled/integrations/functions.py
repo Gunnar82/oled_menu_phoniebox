@@ -115,7 +115,9 @@ def get_folger_from_file(filename):
 
 
 def get_battload_color():
-    if settings.battcapacity == -1:
+    if settings.battloading:
+        return settings.COLOR_BLUE
+    elif settings.battcapacity == -1:
         return "WHITE"
     elif settings.battcapacity >= 70:
         return settings.COLOR_GREEN

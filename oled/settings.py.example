@@ -48,7 +48,7 @@ KEYPAD_ADDR = 0x27
 
 ### X728 UPS support
 X728_ENABLED = True
-X728_BATT_LOW = 12
+X728_BATT_LOW = 25
 X728_BATT_EMERG = 5 # Shutdown Battery Percentage
 
 SYMBOL_SANDCLOCK = "\uf251"
@@ -127,6 +127,7 @@ COLOR_RED	= "#ff0000"
 COLOR_YELLOW	= "#ffff00"
 COLOR_BLUE 	= "#000000"
 COLOR_GREEN 	= "#00ff00"
+COLOR_BLUE	= "BLUE"
 
 COLOR_SELECTED = COLOR_YELLOW
 COLOR_SELECTED_OUTLINE = "black"
@@ -145,3 +146,5 @@ currentfolder = audio_basepath
 current_selectedfolder=currentfolder
 battcapacity = -1
 battsymbol = "\uf240"
+battloading = False
+

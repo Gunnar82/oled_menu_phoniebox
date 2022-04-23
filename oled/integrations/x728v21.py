@@ -6,6 +6,7 @@ import RPi.GPIO as GPIO
 #import integrations.playout as playout
 import settings
 import asyncio
+from datetime import datetime
 
 
 class x728:
@@ -23,6 +24,7 @@ class x728:
          self.capacity = swapped/256
 
     async def _handler(self):
+        olddate = datetime.now()
         while self.loop.is_running():
             try:
                 self.readVoltage()
@@ -30,8 +32,12 @@ class x728:
 
                 settings.battcapacity = self.capacity
                 settings.battsymbol = self.getSymbol()
+                if (datetime.now() - olddate).total_seconds() >= 30:
+                    settings.battloading = (self.oldvoltage < self.voltage)
+                    self.oldvoltage = self.voltage
+                    olddate = datetime.now()
             except:
-                pass
+                print ("err x728")
 
             await asyncio.sleep (10)
 
@@ -45,6 +51,8 @@ class x728:
         self.GPIO_BOOT	= 12
         self.voltage = 0
         self.capacity = 0
+        self.oldvoltage = 0
+        self.loading = False
 
 
         self.I2C_ADDR    = 0x36
