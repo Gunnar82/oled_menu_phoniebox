@@ -6,7 +6,7 @@ from luma.core.render import canvas
 from PIL import ImageFont
 import settings
 import os
-
+import time
 
 import integrations.bluetooth
 import integrations.playout as playout
@@ -87,7 +87,6 @@ class Idle(WindowBase):
                 except:
                     print ("err")
 
-
             #volume
             draw.text((1, settings.DISPLAY_HEIGHT -14 ), str(self.nowplaying._volume), font=Idle.fontsmall, fill="white")
 
@@ -110,7 +109,6 @@ class Idle(WindowBase):
             except KeyError:
                 pass
 
-
             #Currently playing song
             #Line 1 2 3
             if float(self.nowplaying._duration) >= 0:
@@ -120,32 +118,26 @@ class Idle(WindowBase):
             #Fortschritssleiste Wiedergabe
             draw.rectangle((0,0,timelinepos,1),outline="BLUE",fill="BLUE")
 
-
             #paylistpos
             _spos = "%2.2d/%2.2d" % (int(self.nowplaying._song), int(self.nowplaying._playlistlength))
             _xpos = 85 - int(Idle.fontsmall.getsize(_spos)[0]/2)
 
             draw.text((_xpos, settings.DISPLAY_HEIGHT -14 ),_spos , font=Idle.fontsmall, fill="white")
 
-            if (settings.battcapacity >= 0 and settings.battcapacity <= settings.X728_BATT_LOW):
-                draw.text((15,10), "Batterie laden!", font=Idle.font, fill=fn.get_battload_capacity())
-                draw.text((50,30), "%d%%" % (settings.battcapacity), font=Idle.font, fill=fn.get_battload_capacity())
-                if settings.DISPLAY_HEIGHT <= 64:
-                    return
 
-            elif (settings.battcapacity >= 0 and settings.battcapacity <= settings.X728_BATT_EMERG): 
+            if (settings.battcapacity >= 0 and settings.battcapacity <= settings.X728_BATT_EMERG): 
                 playout.savepos()
                 playout.pc_shutdown()
-                self.loop.stop()
 
                 return
 
             if ((self.nowplaying._state == "stop") or (settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (settings.battcapacity <= settings.X728_BATT_LOW) or (settings.DISPLAY_HEIGHT > 64)):
                 if (settings.battcapacity >= 0):
-                    text = "Batterie: %d%%" % (settings.battcapacity)
+                    text = "Batterie: %d%%" % (settings.battcapacity) if settings.battcapacity > settings.X728_BATT_LOW else "Batterie laden! %d%%" % (settings.battcapacity)
                     mwidth = Idle.font.getsize(text)
-                    draw.text(((settings.DISPLAY_WIDTH/2) - (mwidth[0]/2),10), text, font=Idle.font, fill=fn.get_battload_color())
-
+                    ungerade = (time.time() % 2) // 1
+                    fill = "black" if ungerade and  settings.battcapacity <= settings.X728_BATT_LOW else  fn.get_battload_color()
+                    draw.text(((settings.DISPLAY_WIDTH/2) - (mwidth[0]/2),10), text, font=Idle.font, fill=fill)
                 if settings.job_i >= 0 or settings.job_t >= 0:
                     if settings.job_i >= settings.job_t:
                         aus = settings.job_i
@@ -243,6 +235,7 @@ class Idle(WindowBase):
             elif key == 'B':
                 settings.audio_basepath = settings.AUDIO_BASEPATH_HOERBUCH 
                 settings.currentfolder = fn.get_folger_from_file(settings.FILE_LAST_HOERBUCH)
+                print (settings.currentfolder)
                 self.windowmanager.set_window("foldermenu")
             elif key == 'C':
                 settings.audio_basepath = settings.AUDIO_BASEPATH_RADIO
