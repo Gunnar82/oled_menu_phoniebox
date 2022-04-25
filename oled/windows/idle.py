@@ -235,7 +235,6 @@ class Idle(WindowBase):
             elif key == 'B':
                 settings.audio_basepath = settings.AUDIO_BASEPATH_HOERBUCH 
                 settings.currentfolder = fn.get_folger_from_file(settings.FILE_LAST_HOERBUCH)
-                print (settings.currentfolder)
                 self.windowmanager.set_window("foldermenu")
             elif key == 'C':
                 settings.audio_basepath = settings.AUDIO_BASEPATH_RADIO

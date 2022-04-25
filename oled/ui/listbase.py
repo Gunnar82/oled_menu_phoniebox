@@ -55,7 +55,7 @@ class ListBase(WindowBase):
 
             #Calculate title coordinate from text lenght
             draw.text(((128-len(self.title)*5)/2, 1), text=self.title, font=font, fill="white")
-            print (self.page)
+
             #Playlists
             menulen = self.displaylines if (len(self.menu) >= self.displaylines) else len(self.menu)
             for i in range(menulen):
@@ -70,7 +70,7 @@ class ListBase(WindowBase):
 
                 else:
                     draw.text((8, 17+i*12), self.menu[i+self.page], font=font, fill="white")
-                    draw.rectangle((90 , 17+i*12 , 128 , 34+i*12 ), outline="black", fill="black")
+                    #draw.rectangle((90 , 17+i*12 , 128 , 34+i*12 ), outline="black", fill="black")
 
                     try:
                         drawtext = self.progress[self.menu[i+self.page]]
