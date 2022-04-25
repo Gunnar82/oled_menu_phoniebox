@@ -19,9 +19,9 @@ class Playlistmenu(ListBase):
             self.song = int(status['song']) + 1 if ("song" in status) else -1
             cnt += 1
             time.sleep(0.1)
-        if self.song > 4:
-            self.counter = 5
-            self.page = self.song -4
+        if self.song > self.displaylines:
+            self.counter = self.displaylines + 1
+            self.page = self.song - self.displaylines
         else:
             self.counter = self.song + 1
 

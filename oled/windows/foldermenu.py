@@ -74,9 +74,9 @@ class Foldermenu(ListBase):
             search = settings.current_selectedfolder[len(settings.currentfolder)+1:]
             try:
                 _pos = self.folders.index(search)
-                if _pos > 3:
-                    self.counter = 5
-                    self.page = _pos -3
+                if _pos > self.displaylines - 1:
+                    self.counter = self.displaylines + 1
+                    self.page = _pos - self.displaylines - 1
                 else:
                     self.counter = _pos + 2
                     self.page = 0
@@ -85,10 +85,12 @@ class Foldermenu(ListBase):
                 self.page = 0
 
     def activate(self):
+        self.page = 0
         self.basetitle = os.path.split(settings.currentfolder)[-1]
         self.folders = []
         self.generate_folders(settings.currentfolder)
         self.on_key_left()
+
 
     def turn_callback(self,direction,key=False):
         super().turn_callback(direction,key=key)
