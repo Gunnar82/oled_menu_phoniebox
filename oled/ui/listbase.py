@@ -145,10 +145,6 @@ class ListBase(WindowBase):
                 self.counter = 0
                 self.page = 0
 
-
-        print (self.counter)
-        print (self.page)
-
         self.position = (self.counter + self.page -2 ) if (self.counter > 1) else -1
 
 
