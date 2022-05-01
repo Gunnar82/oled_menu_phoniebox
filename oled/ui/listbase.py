@@ -59,7 +59,7 @@ class ListBase(WindowBase):
             #Playlists
             menulen = self.displaylines if (len(self.menu) >= self.displaylines) else len(self.menu)
             for i in range(menulen):
-                if self.counter +self.page -2  == i + self.page:
+                if self.counter + self.page -2  == i + self.page:
                     drawtext = self.menu[i+self.page]
                     if font.getsize(drawtext[self.drawtextx:])[0] > 127:
                         self.drawtextx += 1
@@ -100,26 +100,56 @@ class ListBase(WindowBase):
                 direction = -1
             elif key == '8':
                 direction = 1
-
-
-        if self.counter + direction >= 0:
-            #first 4 items in long menu
-            if self.counter > 1:
-                if len(self.menu) > self.displaylines:
-                    if ((self.counter-1) + direction >= 1) and ((self.counter-1) + direction <= self.displaylines):
-                        self.counter += direction
-                    #other items in long menu
-                    elif (self.page + direction + self.displaylines <= len(self.menu)) and (self.page + direction  >= 0):
-                        self.page += direction
-                    elif (self.page == 0) and (self.counter > 0):
-                        self.counter += direction
-                #short menu < 4 items
+            elif key =='A':
+                direction = 0
+                self.page = 0
+                self.counter = 2
+            elif key == 'D':
+                direction = 0
+                if len(self.menu) <= self.displaylines:
+                    self.page = 0
                 else:
-                    if len(self.menu) <= self.displaylines and (self.counter-1) + direction <= len(self.menu):
-                        self.counter += direction
-            elif self.counter + direction >= 0:
+                    self.page = len(self.menu) - self.displaylines
+                    self.counter = self.displaylines + 1
+            elif key == 'B':
+                    direction = 0 - self.displaylines
+            elif key == 'C':
+                    direction = self.displaylines
+
+        if direction > 0:
+
+            if (self.counter + direction > self.displaylines + 1):
+                self.page += direction
+            else:
                 self.counter += direction
-            self.position = (self.counter + self.page -2 ) if (self.counter > 1) else -1
+
+            if self.counter + 1 + self.page > len(self.menu):
+                self.counter = self.displaylines + 1
+                self.page = len(self.menu) - self.displaylines
+
+        elif direction < 0:
+
+            if self.page > 0:
+
+                if self.counter + direction >= 2:
+                    self.counter += direction
+
+                elif self.page + direction >= 0:
+                    self.page += direction
+                elif self.page + direction < 0:
+                    self.page = 0
+            else:
+                self.counter += direction
+
+            if self.counter + 1 + self.page < 2:
+                self.counter = 0
+                self.page = 0
+
+
+        print (self.counter)
+        print (self.page)
+
+        self.position = (self.counter + self.page -2 ) if (self.counter > 1) else -1
 
 
 
