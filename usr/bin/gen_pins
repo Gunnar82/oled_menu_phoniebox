@@ -1,3 +1,5 @@
+#!/bin/bash
+
 find /home/pi/RPi-Jukebox-RFID/shared/audiofolders -name pin > /tmp/gen_files.tmp
 
 maxval=1000

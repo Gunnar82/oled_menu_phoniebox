@@ -1,1 +1,3 @@
+#!/bin/bash
+
 find  /home/pi/RPi-Jukebox-RFID/shared/audiofolders/ -name pin -type f  -printf "\t%p:" -exec cat {} \; | sort -d
