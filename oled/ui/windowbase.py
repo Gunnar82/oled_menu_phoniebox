@@ -24,7 +24,6 @@ class WindowBase():
         self.busysymbol = settings.SYMBOL_SANDCLOCK
 
     def renderbusy(self):
-        print ("busy")
         with canvas(self.device) as draw:
 
             mwidth = busyfont.getsize(settings.PLEASE_WAIT)

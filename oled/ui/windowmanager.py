@@ -109,7 +109,6 @@ class WindowManager():
                         if (datetime.now() - self.lastrfidate).total_seconds() < 3:
                             rfid.render(self.device,self.activewindow)
                         elif self.activewindow.busy:
-                            print ("renderbusy1")
                             self.activewindow.renderbusy()
                         else:
                             self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK

@@ -153,16 +153,16 @@ class Idle(WindowBase):
                     return
 
             #Titel Scrollbar
-            if self.nowplaying._playingtitle == self.oldtitle and Idle.font.getsize(self.nowplaying._playingtitle[self.titlex:])[0] > 127:
+            if self.nowplaying._playingtitle == self.oldtitle:
                 if Idle.font.getsize(self.nowplaying._playingtitle[self.titlex:])[0] > 127:
                     self.titlex += 1
             else:
-                if self.oldtitle != "":
-                    if (datetime.datetime.now() - settings.lastinput).total_seconds() >= settings.DARK_TIMEOUT:
-                        settings.lastinput = datetime.datetime.now() - datetime.timedelta(seconds=settings.CONTRAST_TIMEOUT)
                 self.titlex = 0
                 self.oldtitle = self.nowplaying._playingtitle
+                print ("title changed")
 
+                if (datetime.datetime.now() - settings.lastinput).total_seconds() >= settings.DARK_TIMEOUT:
+                     settings.lastinput = datetime.datetime.now() - datetime.timedelta(seconds=settings.CONTRAST_TIMEOUT)
 
            ###name Scrollbar
             if self.nowplaying._playingname == self.oldname and Idle.font.getsize(self.nowplaying._playingname[self.namex:])[0] > 127:
