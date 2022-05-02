@@ -24,7 +24,6 @@ class x728:
          self.capacity = swapped/256
 
     async def _handler(self):
-        olddate = datetime.now()
         while self.loop.is_running():
             try:
                 self.readVoltage()
@@ -32,11 +31,14 @@ class x728:
 
                 settings.battcapacity = self.capacity
                 settings.battsymbol = self.getSymbol()
-                if (datetime.now() - olddate).total_seconds() >= 60:
-                    settings.battloading = ((self.oldvoltage < self.voltage) and (self.oldcapacity < self.capacity))
-                    self.oldvoltage = self.voltage
-                    self.oldcapacity = self.capacity
-                    olddate = datetime.now()
+                if self.capacity > self.oldcapacity and self.oldcapacity > 0:
+                    settings.battloading = True
+                    self.loading = True
+                elif self.capacity < self.oldcapacity:
+                    settings.battloading = False
+                    self.loading = False
+
+                self.oldcapacity = self.capacity
             except:
                 print ("err x728")
 
@@ -53,7 +55,7 @@ class x728:
         self.voltage = 0
         self.capacity = 0
         self.oldvoltage = 0
-        self.oldcapacity = 0
+        self.oldcapacity = -1
         self.loading = False
 
 

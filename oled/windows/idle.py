@@ -159,7 +159,6 @@ class Idle(WindowBase):
             else:
                 self.titlex = 0
                 self.oldtitle = self.nowplaying._playingtitle
-                print ("title changed")
 
                 if (datetime.datetime.now() - settings.lastinput).total_seconds() >= settings.DARK_TIMEOUT:
                      settings.lastinput = datetime.datetime.now() - datetime.timedelta(seconds=settings.CONTRAST_TIMEOUT)
