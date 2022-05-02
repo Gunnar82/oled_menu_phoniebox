@@ -17,6 +17,7 @@ class ListBase(WindowBase):
         self.position = -1
         self.progress = {}
         self.displaylines = 9 if settings.DISPLAY_HEIGHT > 64 else 4
+        self.position = (self.counter + self.page -2 ) if (self.counter > 1) else -1
 
     def render(self):
         if self.left_pressed:
@@ -41,14 +42,14 @@ class ListBase(WindowBase):
             #Back button and selection arrow
             if self.counter == 0:
                 draw.text((1, 1), text="\uf137", font=faicons, fill=settings.COLOR_SELECTED)
-                draw.text((110, 1), text="\uf106", font=faicons, fill="white")
+                draw.text((117, 1), text="\uf106", font=faicons, fill="white")
             elif self.counter == 1:
                 draw.text((1, 1), text="\uf104", font=faicons, fill="white")
-                draw.text((110, 1), text="\uf139", font=faicons, fill=settings.COLOR_SELECTED)
+                draw.text((117, 1), text="\uf139", font=faicons, fill=settings.COLOR_SELECTED)
 
             else:
                 draw.text((1, 1), text="\uf104", font=faicons, fill="white")
-                draw.text((110, 1), text="\uf106", font=faicons, fill="white")
+                draw.text((117, 1), text="\uf106", font=faicons, fill="white")
                 #Selection arrow
                 draw.polygon(((1, 7+(self.counter-1)*12), (1, 11+(self.counter-1)*12),
                                         (5, 9+(self.counter-1)*12)), fill=settings.COLOR_SELECTED)
@@ -116,16 +117,27 @@ class ListBase(WindowBase):
             elif key == 'C':
                     direction = self.displaylines
 
-        if direction > 0:
 
-            if (self.counter + direction > self.displaylines + 1):
-                self.page += direction
+        if (len(self.menu) < self.displaylines):
+            print ("Handling Short Menu Items: %d, Lines: %d" % (len(self.menu), self.displaylines))
+
+            self.page = 0
+            if self.counter + direction -  2 > len(self.menu) - 1: # zero based
+                self.counter = len(self.menu) + 2 - 1
+            elif self.counter + direction < 0: # base counter is 2
+                self.counter = 0
             else:
-                self.counter += direction
-
-            if self.counter + 1 + self.page > len(self.menu):
-                self.counter = self.displaylines + 1
+               self.counter += direction
+        elif direction > 0:
+            if self.counter - 1 + self.page > len(self.menu) - 1: # zero based
+                self.counter = self.displaylines + 1 # self.counter: base is 2
                 self.page = len(self.menu) - self.displaylines
+            else:
+                if (self.counter + direction > self.displaylines + 1):
+                    self.page += direction
+                else:
+                    self.counter += direction
+
 
         elif direction < 0:
 

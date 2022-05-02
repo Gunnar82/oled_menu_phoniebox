@@ -20,6 +20,7 @@ class Foldermenu(ListBase):
         if len(settings.currentfolder) < len(settings.audio_basepath):
             settings.currentfolder = settings.audio_basepath
         self.generate_folders(settings.currentfolder)
+        self.basetitle = os.path.split(settings.currentfolder)[-1]
 
 
     def on_key_right(self):
@@ -86,18 +87,20 @@ class Foldermenu(ListBase):
 
     def activate(self):
         self.page = 0
-        self.basetitle = os.path.split(settings.currentfolder)[-1]
         self.folders = []
+
         self.generate_folders(settings.currentfolder)
         self.on_key_left()
 
-
     def turn_callback(self,direction,key=False):
         super().turn_callback(direction,key=key)
+        self.basetitle = os.path.split(settings.currentfolder)[-1]
+
         if (self.counter > 1):
             self.timeout = True
         else:
             self.timeout = False
+
         if key == '9':
             self.windowmanager.set_window("folderinfo")
         else:
