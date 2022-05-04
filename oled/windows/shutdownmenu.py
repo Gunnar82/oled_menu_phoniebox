@@ -24,6 +24,9 @@ class Shutdownmenu(MenuBase):
         self.descr.append(["Timer 15min", "\uf0a2"])
         self.descr.append(["Timer 30min", "\uf0a2"])
         self.descr.append(["Timer 60min", "\uf0a2"])
+        self.descr.append(["Idle AUS", "\uf185"])
+        self.descr.append(["Idle 5min", "\uf186"])
+        self.descr.append(["Idle 15min", "\uf186"])
 
 
     def push_callback(self,lp=False):
@@ -52,6 +55,12 @@ class Shutdownmenu(MenuBase):
             os.system("%s -c=shutdownafter -v=30" % settings.PLAYOUT_CONTROLS)
         elif self.counter == 7:
             os.system("%s -c=shutdownafter -v=60" % settings.PLAYOUT_CONTROLS)
+        elif self.counter == 8:
+            os.system("%s -c=setidletime -v=0" % settings.PLAYOUT_CONTROLS)
+        elif self.counter == 9:
+            os.system("%s -c=setidletime -v=5" % settings.PLAYOUT_CONTROLS)
+        elif self.counter == 10:
+            os.system("%s -c=setidletime -v=20" % settings.PLAYOUT_CONTROLS)
         
         self.windowmanager.set_window("idle")
             #self.mopidyconnection.stop()
