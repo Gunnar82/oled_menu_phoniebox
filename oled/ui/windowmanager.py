@@ -2,7 +2,6 @@
 import asyncio
 from datetime import datetime
 import settings
-import integrations.rfid as rfid
 
 from integrations.rfidwatcher import RfidWatcher
 
@@ -107,7 +106,9 @@ class WindowManager():
                 if settings.screenpower:
                     try:
                         if (datetime.now() - self.lastrfidate).total_seconds() < 3:
-                            rfid.render(self.device,self.activewindow)
+                            self.activewindow.busysymbol = settings.SYMBOL_CARD_READ
+                            self.activewindow.renderbusy()
+                            self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
                         elif self.activewindow.busy:
                             self.activewindow.renderbusy()
                         else:

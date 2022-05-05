@@ -34,7 +34,7 @@ class RfidWatcher:
         print("\nWatcher Terminated\n")
 
     def get_state(test=None):
-        global rfid_watcher_changed 
+        global rfid_watcher_changed
         if rfid_watcher_changed:
             rfid_watcher_changed = False
             return True
