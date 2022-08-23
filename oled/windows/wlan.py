@@ -6,7 +6,7 @@ import settings
 import os
 import asyncio
 import subprocess
-
+import qrcode
 
 class Wlanmenu(WindowBase):
     font = ImageFont.truetype(settings.FONT_TEXT, size=10)
