@@ -16,9 +16,9 @@ class Shutdownmenu(MenuBase):
         self.execshutdown = False
         self.execreboot = False
 
-        self.descr.append(["Neustart", "\uf0e2"])
-        self.descr.append(["Ja", "\uf011"])
-        self.descr.append(["No", "\uf0a8"])
+        self.descr.append(["Neustart OLED", "\uf0e2"])
+        self.descr.append(["AUS Sofort", "\uf011"])
+        self.descr.append(["Zurück", "\uf0a8"])
         self.descr.append(["Reboot", "\uf0e2"])
         self.descr.append(["Timer AUS", "\uf1f7"])
         self.descr.append(["Timer 15min", "\uf0a2"])
