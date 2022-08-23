@@ -10,8 +10,8 @@ class WindowManager():
         self._rendertime = 0.25
         self._looptime = 2
 
-        self.looptime = 2
-        self.rendertime = 0.25
+        self.looptime = self._looptime
+        self.rendertime = self._rendertime
         self.device = device
         self.windows = {}
         self.activewindow = []
@@ -61,32 +61,26 @@ class WindowManager():
 
     async def _render(self):
         while self.loop.is_running():
+            print (self.rendertime)
             if ((datetime.now() - settings.lastinput).total_seconds() >= settings.MENU_TIMEOUT) and self.activewindow.timeout:
                 self.set_window(self.activewindow.timeoutwindow)
 
             if self.activewindow.contrasthandle:
                 if (datetime.now() - settings.lastinput).total_seconds() >= settings.DARK_TIMEOUT:
-                    if self.rendertime != settings.DARK_RENDERTIME:
-                        self.rendertime = settings.DARK_RENDERTIME
-                    if self.looptime != settings.DARK_RENDERTIME:
-                            self.looptime = int (settings.DARK_RENDERTIME // 2)
+                    self.rendertime = settings.DARK_RENDERTIME
+                    self.looptime = int (settings.DARK_RENDERTIME // 2)
 
                     contrast = settings.CONTRAST_BLACK
 
-                else:
-                    if  (datetime.now() - settings.lastinput).total_seconds() >= settings.CONTRAST_TIMEOUT:
-                        contrast = settings.CONTRAST_DARK
-                        if self.rendertime != settings.CONTRAST_RENDERTIME:
-                            self.rendertime = settings.CONTRAST_RENDERTIME
-                        if self.looptime != settings.CONTRAST_RENDERTIME:
-                            self.looptime = settings.CONTRAST_RENDERTIME
+                elif  (datetime.now() - settings.lastinput).total_seconds() >= settings.CONTRAST_TIMEOUT:
+                    contrast = settings.CONTRAST_DARK
+                    self.rendertime = settings.CONTRAST_RENDERTIME
+                    self.looptime = settings.CONTRAST_RENDERTIME
 
-                    else:
-                        contrast = settings.CONTRAST_FULL
-                        if self.rendertime != self._rendertime:
-                            self.rendertime = self.rendertime
-                        if self.looptime != self._looptime:
-                            self.looptime = self._looptime
+                else:
+                    contrast = settings.CONTRAST_FULL
+                    self.rendertime = self._rendertime
+                    self.looptime = self._looptime
 
 
             if self._lastcontrast != contrast:
@@ -117,7 +111,7 @@ class WindowManager():
                     except (NotImplementedError, AttributeError):
                         pass
 
-            await asyncio.sleep(0.25)
+            await asyncio.sleep(self.rendertime)
 
     def push_callback(self,lp=False):
         settings.lastinput = datetime.now()

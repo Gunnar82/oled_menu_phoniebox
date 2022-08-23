@@ -11,8 +11,6 @@ import datetime
 class nowplaying:
     filename = ""
     oldtitle = ""
-    oldsong = ""
-    songchanged = False
 
     async def _generatenowplaying(self):
         try:
@@ -31,14 +29,6 @@ class nowplaying:
                         title = filename[filename.rfind("/")+1:]
                 except:
                     title = "n/a"
-                try:
-                    if (self.oldsong != self._song) and not self.songchanged:
-                        self.songchanged = True
-                        self.oldsong = self._song
-                        print ("OLDSONG : %s CURSONG : %s " % (self.oldsong, self._song))
-
-                except:
-                    self.oldsong = ""
 
                 if title != self.oldtitle:
                     if self.oldtitle != "":

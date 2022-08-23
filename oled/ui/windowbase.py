@@ -22,15 +22,19 @@ class WindowBase():
         self.window_on_back = "mainmenu"
         self.busy = False
         self.busysymbol = settings.SYMBOL_SANDCLOCK
+        self.busytext = settings.PLEASE_WAIT
 
     def renderbusy(self):
         with canvas(self.device) as draw:
 
-            mwidth = busyfont.getsize(settings.PLEASE_WAIT)
-            draw.text(((64 - int(mwidth[0]/2)), 5), text=settings.PLEASE_WAIT, font=busyfont, fill="white") #sanduhr
+            mwidth = busyfont.getsize(self.busytext)
+            draw.text(((64 - int(mwidth[0]/2)), 5), text=self.busytext, font=busyfont, fill="white") #sanduhr
 
             mwidth = busyfaiconsbig.getsize(self.busysymbol)
             draw.text(((64 - int(mwidth[0]/2)), 25), text=self.busysymbol, font=busyfaiconsbig, fill=settings.COLOR_RED) #sanduhr
+
+            self.windowmanager.activewindow.busy = False
+            self.windowmanager.activewindow.busytext = settings.PLEASE_WAIT
 
     def activate(self):
         raise NotImplementedError()

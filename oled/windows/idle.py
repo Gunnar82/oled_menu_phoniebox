@@ -53,6 +53,7 @@ class Idle(WindowBase):
         self.oldname = ""
         self.oldtitle = ""
         self.oldalbum = ""
+        self.oldsong = ""
 
         active = True
 
@@ -64,6 +65,17 @@ class Idle(WindowBase):
     def render(self):
         with canvas(self.device) as draw:
             now = datetime.datetime.now()
+
+            ####setting idle text / Icon on Song Number Changed
+            if (self.oldsong != self.nowplaying._song):
+                if (self.oldsong != ""):
+                    self.busytext = " %2.2d / %2.2d " % (int(self.nowplaying._song), int(self.nowplaying._playlistlength))
+                    self.busysymbol = settings.SYMBOL_CHANGING_SONG
+                    self.busy = True
+                    
+
+                self.oldsong = self.nowplaying._song
+                return
 
             #Trennleiste waagerecht
             draw.rectangle((0,settings.DISPLAY_HEIGHT -15,128,settings.DISPLAY_HEIGHT - 15),outline="white",fill="white")
