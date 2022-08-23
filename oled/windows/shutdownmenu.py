@@ -33,15 +33,15 @@ class Shutdownmenu(MenuBase):
         if self.counter == 0:
             fn.restart_oled()
 
-        elif self.counter == 3:
+        elif self.counter == 1:
             playout.savepos()
             self.mopidyconnection.stop()
             self.execshutdown = True
             print("Stopping event loop")
             self.loop.stop()
-        elif self.counter == 1:
-            self.windowmanager.set_window("mainmenu")
         elif self.counter == 2:
+            self.windowmanager.set_window("mainmenu")
+        elif self.counter == 3:
             self.windowmanager.set_window("start")
             self.mopidyconnection.stop()
             self.execreboot = True
