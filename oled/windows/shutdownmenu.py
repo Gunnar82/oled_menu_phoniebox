@@ -16,10 +16,10 @@ class Shutdownmenu(MenuBase):
         self.execshutdown = False
         self.execreboot = False
 
+        self.descr.append(["Neustart", "\uf0e2"])
         self.descr.append(["Ja", "\uf011"])
         self.descr.append(["No", "\uf0a8"])
         self.descr.append(["Reboot", "\uf0e2"])
-        self.descr.append(["Neustart", "\uf0e2"])
         self.descr.append(["Timer AUS", "\uf1f7"])
         self.descr.append(["Timer 15min", "\uf0a2"])
         self.descr.append(["Timer 30min", "\uf0a2"])
@@ -31,6 +31,9 @@ class Shutdownmenu(MenuBase):
 
     def push_callback(self,lp=False):
         if self.counter == 0:
+            fn.restart_oled()
+
+        elif self.counter == 3:
             playout.savepos()
             self.mopidyconnection.stop()
             self.execshutdown = True
@@ -45,8 +48,6 @@ class Shutdownmenu(MenuBase):
             print("Stopping event loop")
             self.loop.stop()
         
-        elif self.counter == 3:
-            fn.restart_oled()
         elif self.counter == 4:
             os.system("%s -c=shutdownafter -v=0" % settings.PLAYOUT_CONTROLS)
         elif self.counter == 5:
