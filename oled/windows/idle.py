@@ -67,13 +67,13 @@ class Idle(WindowBase):
             now = datetime.datetime.now()
 
             ####setting idle text / Icon on Song Number Changed
-            if (self.oldsong != self.nowplaying._song):
+            if (self.oldsong != self.nowplaying._song) and ((datetime.datetime.now() - settings.lastinput).total_seconds() >= 5):
                 if (self.oldsong != ""):
                     self.busytext = " Titel %2.2d von %2.2d " % (int(self.nowplaying._song), int(self.nowplaying._playlistlength))
                     self.busysymbol = settings.SYMBOL_CHANGING_SONG
                     self.changerendertimeonhint = True
                     self.busy = True
-                    
+
 
                 self.oldsong = self.nowplaying._song
 
