@@ -23,10 +23,14 @@ class WindowBase():
         self.busy = False
         self.busysymbol = settings.SYMBOL_SANDCLOCK
         self.busytext = settings.PLEASE_WAIT
+        self.changerendertimeonhint = False
 
     def renderbusy(self):
         with canvas(self.device) as draw:
-            self.windowmanager.rendertime = settings.BUSY_RENDERTIME
+            if self.changerendertimeonhint:
+                self.windowmanager.rendertime = settings.BUSY_RENDERTIME
+                self.changerendertimeonhint = False
+
             mwidth = busyfont.getsize(self.busytext)
             draw.text(((64 - int(mwidth[0]/2)), 5), text=self.busytext, font=busyfont, fill="white") #sanduhr
 
