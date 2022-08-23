@@ -29,11 +29,11 @@ def playlast_checked(playfile):
 
     pc_playfolder(lastfile)
 
-def pc_volup():
-    os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumeup")
+def pc_volup(step=1):
+    os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumeup -v=%d" % (step))
 
-def pc_voldown():
-    os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumedown")
+def pc_voldown(step=1):
+    os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumedown -v=%d" % (step))
 
 def savepos():
     os.system("%s -c=savepos" % (settings.PLAYOUT_CONTROLS))
