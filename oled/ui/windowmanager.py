@@ -61,7 +61,6 @@ class WindowManager():
 
     async def _render(self):
         while self.loop.is_running():
-            print (self.rendertime)
             if ((datetime.now() - settings.lastinput).total_seconds() >= settings.MENU_TIMEOUT) and self.activewindow.timeout:
                 self.set_window(self.activewindow.timeoutwindow)
 

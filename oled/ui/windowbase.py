@@ -26,7 +26,7 @@ class WindowBase():
 
     def renderbusy(self):
         with canvas(self.device) as draw:
-
+            self.windowmanager.rendertime = settings.BUSY_RENDERTIME
             mwidth = busyfont.getsize(self.busytext)
             draw.text(((64 - int(mwidth[0]/2)), 5), text=self.busytext, font=busyfont, fill="white") #sanduhr
 
@@ -35,6 +35,7 @@ class WindowBase():
 
             self.windowmanager.activewindow.busy = False
             self.windowmanager.activewindow.busytext = settings.PLEASE_WAIT
+
 
     def activate(self):
         raise NotImplementedError()

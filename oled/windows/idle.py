@@ -75,7 +75,7 @@ class Idle(WindowBase):
                     
 
                 self.oldsong = self.nowplaying._song
-                return
+
 
             #Trennleiste waagerecht
             draw.rectangle((0,settings.DISPLAY_HEIGHT -15,128,settings.DISPLAY_HEIGHT - 15),outline="white",fill="white")
