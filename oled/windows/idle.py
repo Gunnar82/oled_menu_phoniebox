@@ -223,11 +223,11 @@ class Idle(WindowBase):
         if key:
             if key == 'up' or key == '2':
                 self.busysymbol = settings.SYMBOL_VOL_UP
-                playout.pc_volup(5)
+                playout.pc_volup(3)
             elif key == 'down' or key == '8':
                 self.busysymbol = settings.SYMBOL_VOL_DN
 
-                playout.pc_voldown(5)
+                playout.pc_voldown(3)
             elif key == 'left' or key =='4':
                 self.busysymbol = settings.SYMBOL_PREV
 
