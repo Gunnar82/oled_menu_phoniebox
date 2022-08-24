@@ -169,8 +169,11 @@ class Idle(WindowBase):
             if self.nowplaying._playingtitle == self.oldtitle:
                 if Idle.font.getsize(self.nowplaying._playingtitle[self.titlex:])[0] > 127:
                     self.titlex += 1
+                else:
+                    self.titlex = 0
             else:
                 self.titlex = 0
+
                 self.oldtitle = self.nowplaying._playingtitle
 
                 if (datetime.datetime.now() - settings.lastinput).total_seconds() >= settings.DARK_TIMEOUT:
