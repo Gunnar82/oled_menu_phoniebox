@@ -20,15 +20,20 @@ class Wlanmenu(WindowBase):
         self.descr = []
         self.descr.append("Zurück")
         self.descr.append("Hotspot umschalten")
+        self.descr.append("QRCode Hotspot")
         self._hostapd_wifi_ssid = "n/a"
         self._hostapd_wifi_psk = "n/a"
         self.wifi_ssid = "n/a"
         self._ip_addr = "n/a"
         self.timeout = False
+        self.showqr = False
 
     def activate(self):
         self._active = True
         self.loop.create_task(self._wlanstate())
+        self.img = qrcode.make("ICH LIEBE DICH")
+        self.img = self.img.resize((128,128))
+
 
     def deactivate(self):
         self._active = False
@@ -39,6 +44,9 @@ class Wlanmenu(WindowBase):
     def render(self):
         with canvas(self.device) as draw:
 
+            if self.showqr:
+                draw.bitmap((0,0), self.img)
+                return
 
             mwidth = Wlanmenu.font.getsize(self.descr[self.counter])
             draw.text((64 - int(mwidth[0]/2),1), text=self.descr[self.counter], font=Wlanmenu.font, fill="white")
@@ -53,6 +61,9 @@ class Wlanmenu(WindowBase):
             draw.text((30, 22), text="IP: %s" % (self._ip_addr), font=Wlanmenu.font, fill="white") #zurück
 
             if self._hostapd:
+                self.img = qrcode.make("WIFI:S:%s;T:WPA;P:%s;" % (self._hostapd_wifi_ssid , self._hostapd_wifi_wsk))
+                self.img = self.img.resize((128,128))
+
                 draw.text((30, 35), text=self._hostapd_wifi_ssid, font=Wlanmenu.font, fill="white") #zurück
                 draw.text((30, 50), text=self._hostapd_wifi_psk, font=Wlanmenu.font, fill="white") #script starten
             else:
@@ -112,6 +123,11 @@ class Wlanmenu(WindowBase):
 
             except:
                 pass
+        elif self.counter == 2:
+            if self.showqr:
+                self.showqr = False
+            else:
+                self.showqr = True
 
     def turn_callback(self, direction, key=None):
         if key:
@@ -120,5 +136,5 @@ class Wlanmenu(WindowBase):
             elif key == 'left' or key == '4' or key == '2':
                 direction = -1
 
-        if self.counter + direction <= 1 and self.counter + direction >= 0:
+        if self.counter + direction <= 2 and self.counter + direction >= 0:
             self.counter += direction
