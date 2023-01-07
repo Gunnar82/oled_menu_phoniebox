@@ -15,6 +15,7 @@ class RotaryEncoder():
         self.loop = loop
         self.turn_callback = turn_callback
         self.push_callback = push_callback
+        self.lastchannel = -1
 
 
         #Config for pins!
@@ -42,10 +43,13 @@ class RotaryEncoder():
 
             if (switch_a and switch_b): #both ones active
                 self.lockrotary.acquire()
-                if channel == settings.PIN_DT: #Direction depends on which one was last
-                    self.turn_callback(1)
+                if (channel != self.lastchannel): # 
+                    self.lastchannel = channel
                 else:
-                    self.turn_callback(-1)
+                    if channel == settings.PIN_DT: #Direction depends on which one was last
+                        self.turn_callback(1)
+                    else:
+                        self.turn_callback(-1)
                 self.lockrotary.release()
 
 
