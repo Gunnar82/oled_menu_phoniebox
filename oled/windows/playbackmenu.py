@@ -1,4 +1,4 @@
-""" IDLE screen """
+""" playbackmenu """
 import datetime
 import asyncio
 from ui.windowbase import WindowBase
@@ -175,7 +175,7 @@ class Playbackmenu(WindowBase):
                     playout.pc_next()
 
         else:
-            if (self.counter + direction <= len(self.descr) and self.counter + direction >= 0):
+            if (self.counter + direction < len(self.descr) and self.counter + direction >= 0):
                 self.counter += direction
             
         #os.system("mpc volume {}{} > /dev/null".format(plus,direction))
