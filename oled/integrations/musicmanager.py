@@ -34,32 +34,6 @@ class Musicmanager():
         if self.source == "mpd":
             try:
                 playlist = self.mopidyconnection.client.playlist().copy()
-                for idx, a in enumerate(playlist):
-                    if a.startswith("file"): 
-                        a = a[a.find(":")+1:]
-
-                    a = a.strip()
-                    fullpath = settings.AUDIO_BASEPATH_BASE + "/" + a
-
-                    if not (a.startswith("http")): #stream
-                        try:
-                            audiofile = eyed3.load(fullpath)
-                            if (audiofile.tag.title != None):
-                                try:
-                                    a = "%2.2d | " % int(audiofile.tag.track_num[0])
-                                except:
-                                    a = " "
-                                a += str(audiofile.tag.title)
-                                if  (audiofile.tag.artist != None):
-                                    a += " | " + str(audiofile.tag.artist)
-                            else:
-                                a = a[a.rfind("/")+1:]
-
-                            audiofile.close()
-                        except:
-                            pass
-                        a = a[a.rfind("/") + 1:] #filename only
-                    playlist[idx] = a
                 return playlist
             except:
                 return []

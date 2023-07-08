@@ -2,6 +2,8 @@
 from ui.windowbase import WindowBase
 from luma.core.render import canvas
 from PIL import ImageFont
+from datetime import datetime
+
 import settings
 
 class ListBase(WindowBase):
@@ -18,6 +20,9 @@ class ListBase(WindowBase):
         self.progress = {}
         self.displaylines = 9 if settings.DISPLAY_HEIGHT > 64 else 4
         self.position = (self.counter + self.page -2 ) if (self.counter > 1) else -1
+        self.font = ImageFont.truetype(settings.FONT_TEXT, size=12)
+        self.faicons = ImageFont.truetype(settings.FONT_ICONS, size=11)
+        self.selection_changed = True
 
     def render(self):
         if self.left_pressed:
@@ -35,49 +40,49 @@ class ListBase(WindowBase):
             self.title = "%s %2.2d / %2.2d" %(self.basetitle, self.position + 1,len(self.menu))
         else:
             self.title = self.basetitle
-
-        font = ImageFont.truetype(settings.FONT_TEXT, size=12)
-        faicons = ImageFont.truetype(settings.FONT_ICONS, size=11)
         with canvas(self.device) as draw:
             #Back button and selection arrow
             if self.counter == 0:
-                draw.text((1, 1), text="\uf137", font=faicons, fill=settings.COLOR_SELECTED)
-                draw.text((117, 1), text="\uf106", font=faicons, fill="white")
+                draw.text((1, 1), text="\uf137", font=self.faicons, fill=settings.COLOR_SELECTED)
+                draw.text((117, 1), text="\uf106", font=self.faicons, fill="white")
             elif self.counter == 1:
-                draw.text((1, 1), text="\uf104", font=faicons, fill="white")
-                draw.text((117, 1), text="\uf139", font=faicons, fill=settings.COLOR_SELECTED)
+                draw.text((1, 1), text="\uf104", font=self.faicons, fill="white")
+                draw.text((117, 1), text="\uf139", font=self.faicons, fill=settings.COLOR_SELECTED)
 
             else:
-                draw.text((1, 1), text="\uf104", font=faicons, fill="white")
-                draw.text((117, 1), text="\uf106", font=faicons, fill="white")
+                draw.text((1, 1), text="\uf104", font=self.faicons, fill="white")
+                draw.text((117, 1), text="\uf106", font=self.faicons, fill="white")
                 #Selection arrow
                 draw.polygon(((1, 7+(self.counter-1)*12), (1, 11+(self.counter-1)*12),
                                         (5, 9+(self.counter-1)*12)), fill=settings.COLOR_SELECTED)
 
             #Calculate title coordinate from text lenght
-            draw.text(((128-len(self.title)*5)/2, 1), text=self.title, font=font, fill="white")
+            draw.text(((128-len(self.title)*5)/2, 1), text=self.title, font=self.font, fill="white")
 
             #Playlists
             menulen = self.displaylines if (len(self.menu) >= self.displaylines) else len(self.menu)
             for i in range(menulen):
-                if self.counter + self.page -2  == i + self.page:
-                    drawtext = self.menu[i+self.page]
-                    if font.getsize(drawtext[self.drawtextx:])[0] > 127:
-                        self.drawtextx += 1
-                    else:
-                        self.drawtextx = 0
 
-                    draw.text((8, 17+i*12), drawtext[self.drawtextx:], font=font, fill=settings.COLOR_SELECTED)
+                if self.counter + self.page -2  == i + self.page: #selected
+                    drawtext = self.menu[i+self.page]
+                    if (datetime.now()-settings.lastinput).total_seconds() > 5:
+                        if self.font.getsize(drawtext[self.drawtextx:])[0] > 127:
+                            self.drawtextx += 1
+                        else:
+                            self.drawtextx = 0
+
+                    draw.text((8, 17+i*12), drawtext[self.drawtextx:], font=self.font, fill=settings.COLOR_SELECTED)
 
                 else:
-                    draw.text((8, 17+i*12), self.menu[i+self.page], font=font, fill="white")
-                    #draw.rectangle((90 , 17+i*12 , 128 , 34+i*12 ), outline="black", fill="black")
+                    draw.text((8, 17+i*12), self.menu[i+self.page], font=self.font, fill="white")
+                    #drawrectangle((90 , 17+i*12 , 128 , 34+i*12 ), outline="black", fill="black")
 
                     try:
                         drawtext = self.progress[self.menu[i+self.page]]
-                        draw.text((100, 17+i*12), "%2.0d%%" % (drawtext*100), font=font, fill="white")
+                        draw.text((100, 17+i*12), "%2.0d%%" % (drawtext*100), font=self.font, fill="white")
                     except:
                         pass
+
 
 
     def on_key_left(self):
@@ -116,6 +121,7 @@ class ListBase(WindowBase):
                     direction = 0 - self.displaylines
             elif key == 'C':
                     direction = self.displaylines
+
 
 
         if (len(self.menu) < self.displaylines):
@@ -158,6 +164,7 @@ class ListBase(WindowBase):
                 self.page = 0
 
         self.position = (self.counter + self.page -2 ) if (self.counter > 1) else -1
+        self.selection_changed = True
 
 
 
