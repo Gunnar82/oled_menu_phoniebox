@@ -69,3 +69,11 @@ class Shutdownmenu(MenuBase):
             #print("Stopping event loop")
             #self.loop.stop()
 
+
+    def turn_callback(self, direction, key=None):
+        if key:
+            if key == 'C':
+                fn.restart_oled()
+
+            elif key == 'D':
+                self.left_pressed = True
