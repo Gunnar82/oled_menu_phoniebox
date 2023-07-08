@@ -73,16 +73,20 @@ class Shutdownmenu(MenuBase):
     def turn_callback(self, direction, key=None):
         if key:
             if key == 'A':
+                self.busytext = "Austimer 30 min"
+                self.busysymbol = "\uf0a2"
                 os.system("%s -c=shutdownafter -v=30" % settings.PLAYOUT_CONTROLS)
             elif key == 'B':
+                self.busytext = "Austimer deaktiviert"
+                self.busysymbol = "\uf1f7"
                 os.system("%s -c=shutdownafter -v=0" % settings.PLAYOUT_CONTROLS)
 
             elif key == 'C':
-                fn.restart_oled()
-
-            elif key == 'D':
                 playout.savepos()
                 self.mopidyconnection.stop()
                 self.execshutdown = True
                 print("Stopping event loop")
                 self.loop.stop()
+            elif key == 'D':
+                fn.restart_oled()
+
