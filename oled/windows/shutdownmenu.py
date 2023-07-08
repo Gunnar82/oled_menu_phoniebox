@@ -76,4 +76,8 @@ class Shutdownmenu(MenuBase):
                 fn.restart_oled()
 
             elif key == 'D':
-                self.left_pressed = True
+                playout.savepos()
+                self.mopidyconnection.stop()
+                self.execshutdown = True
+                print("Stopping event loop")
+                self.loop.stop()
