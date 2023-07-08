@@ -72,7 +72,12 @@ class Shutdownmenu(MenuBase):
 
     def turn_callback(self, direction, key=None):
         if key:
-            if key == 'C':
+            if key == 'A':
+                os.system("%s -c=shutdownafter -v=30" % settings.PLAYOUT_CONTROLS)
+            elif key == 'B':
+                os.system("%s -c=shutdownafter -v=0" % settings.PLAYOUT_CONTROLS)
+
+            elif key == 'C':
                 fn.restart_oled()
 
             elif key == 'D':
