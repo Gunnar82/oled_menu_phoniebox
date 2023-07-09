@@ -174,5 +174,6 @@ def main():
 
 if __name__ == '__main__':
     main()
-    RotaryEncoder.cleanup()
+    if settings.ROTARYENCODER_ENABLED:
+        RotaryEncoder.cleanup()
     sys.exit(0)
