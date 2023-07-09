@@ -44,7 +44,9 @@ class ListBase(WindowBase):
         with canvas(self.device) as draw:
             #progressbar
             try:
-                draw.rectangle((0,0,((self.position + 1) / len(self.menu) * settings.DISPLAY_WIDTH),0),outline=settings.COLOR_SELECTED, fill=settings.COLOR_SELECTED)
+                mypos = int((self.position + 1) / len(self.menu) * settings.DISPLAY_WIDTH)
+                draw.rectangle((0, settings.DISPLAY_HEIGHT - 1, settings.DISPLAY_WIDTH, settings.DISPLAY_HEIGHT - 1),outline=settings.COLOR_SELECTED, fill=settings.COLOR_SELECTED)
+                draw.rectangle((mypos - 5, settings.DISPLAY_HEIGHT - 1, mypos + 5, settings.DISPLAY_HEIGHT - 1),outline="black", fill="black")
             except:
                 pass
 
