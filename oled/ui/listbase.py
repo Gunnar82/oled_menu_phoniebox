@@ -40,6 +40,7 @@ class ListBase(WindowBase):
             self.title = "%s %2.2d / %2.2d" %(self.basetitle, self.position + 1,len(self.menu))
         else:
             self.title = self.basetitle
+
         with canvas(self.device) as draw:
             #Back button and selection arrow
             if self.counter == 0:
@@ -57,7 +58,7 @@ class ListBase(WindowBase):
                                         (5, 9+(self.counter-1)*12)), fill=settings.COLOR_SELECTED)
 
             #Calculate title coordinate from text lenght
-            draw.text(((128-len(self.title)*5)/2, 1), text=self.title, font=self.font, fill="white")
+            draw.text(((settings.DISPLAY_WIDTH-len(self.title)*5)/2, 1), text=self.title, font=self.font, fill="white")
 
             #Playlists
             menulen = self.displaylines if (len(self.menu) >= self.displaylines) else len(self.menu)
@@ -65,8 +66,8 @@ class ListBase(WindowBase):
 
                 if self.counter + self.page -2  == i + self.page: #selected
                     drawtext = self.menu[i+self.page]
-                    if (datetime.now()-settings.lastinput).total_seconds() > 5:
-                        if self.font.getsize(drawtext[self.drawtextx:])[0] > 127:
+                    if (datetime.now()-settings.lastinput).total_seconds() > 2:
+                        if self.font.getsize(drawtext[self.drawtextx:])[0] > settings.DISPLAY_WIDTH -1:
                             self.drawtextx += 1
                         else:
                             self.drawtextx = 0
@@ -74,7 +75,7 @@ class ListBase(WindowBase):
                     draw.text((8, 17+i*12), drawtext[self.drawtextx:], font=self.font, fill=settings.COLOR_SELECTED)
 
                 else:
-                    draw.text((8, 17+i*12), self.menu[i+self.page], font=self.font, fill="white")
+                    draw.text((8, 17+i*12), self.menu[i+self.page][:14], font=self.font, fill="white")
                     #drawrectangle((90 , 17+i*12 , 128 , 34+i*12 ), outline="black", fill="black")
 
                     try:
