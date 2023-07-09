@@ -71,6 +71,9 @@ class Shutdownmenu(MenuBase):
 
 
     def turn_callback(self, direction, key=None):
+
+        super().turn_callback(direction,key=key)
+
         if key:
             if key == 'A':
                 self.busytext = "Austimer 30 min"

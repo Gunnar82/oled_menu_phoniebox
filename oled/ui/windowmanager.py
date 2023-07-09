@@ -115,11 +115,14 @@ class WindowManager():
                             self.activewindow.render()
                     except (NotImplementedError, AttributeError):
                         pass
-
-            iTimerCounter = 0
-            while (((datetime.now() - settings.lastinput).total_seconds() > 1) and (iTimerCounter <= self.rendertime // self._RENDERTIME)):
+            print (self.rendertime)
+            iTimerCounter = 0 
+            while (((datetime.now() - settings.lastinput).total_seconds() < self.activewindow.busyrendertime) and (iTimerCounter < self.rendertime / self._RENDERTIME)):
+                print ("loop")
                 iTimerCounter += 1
                 await asyncio.sleep(self._RENDERTIME)
+
+            await asyncio.sleep(self._RENDERTIME)
 
     def push_callback(self,lp=False):
         settings.lastinput = datetime.now()

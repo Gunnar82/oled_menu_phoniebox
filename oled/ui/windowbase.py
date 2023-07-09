@@ -30,7 +30,6 @@ class WindowBase():
     def renderbusy(self):
         with canvas(self.device) as draw:
             if self.changerendertimeonhint:
-                self.windowmanager.rendertime = settings.BUSY_RENDERTIME
                 self.changerendertimeonhint = False
 
             mwidth = busyfont.getsize(self.busytext)
