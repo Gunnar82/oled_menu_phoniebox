@@ -9,9 +9,6 @@ import integrations.bluetooth
 from integrations.display import get_display
 
 
-from integrations.keyboard import KeyboardCtrl
-
-
 import settings
 
 from integrations.mopidy import MopidyControl
@@ -33,6 +30,11 @@ import windows.firewall
 import windows.pin
 
 import settings
+
+if settings.KEYBOARD_ENABLED:
+    from integrations.keyboard import KeyboardCtrl
+
+
 
 #Systemd exit
 def gracefulexit(signum, frame):
