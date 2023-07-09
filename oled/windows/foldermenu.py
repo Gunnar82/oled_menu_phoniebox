@@ -63,8 +63,8 @@ class Foldermenu(ListBase):
 
     def __init__(self, windowmanager):
         super().__init__(windowmanager, "Auswahl")
-        self.timeoutwindow="folderinfo"
-        #self.timeout = False
+        #self.timeoutwindow="folderinfo"
+        self.timeout = False
         
     def generate_folders(self,folder):
         self.generate_folders_array(folder)
