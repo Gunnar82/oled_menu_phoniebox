@@ -7,11 +7,9 @@ from integrations.rfidwatcher import RfidWatcher
 
 class WindowManager():
     def __init__(self, loop, device):
-        self._rendertime = 0.25
         self._looptime = 2
 
         self.looptime = self._looptime
-        self.rendertime = self._rendertime
         self.device = device
         self.windows = {}
         self.activewindow = []
@@ -39,6 +37,7 @@ class WindowManager():
                 pass
             self.activewindow = self.windows[windowid]
             try:
+                self.rendertime = self.activewindow._rendertime
                 self.activewindow.busy = False
                 self.activewindow.activate()
             except (NotImplementedError, AttributeError):
@@ -78,7 +77,7 @@ class WindowManager():
 
                 else:
                     contrast = settings.CONTRAST_FULL
-                    self.rendertime = self._rendertime
+                    self.rendertime = self.activewindow._rendertime
                     self.looptime = self._looptime
 
 

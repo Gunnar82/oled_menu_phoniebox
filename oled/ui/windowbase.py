@@ -24,6 +24,7 @@ class WindowBase():
         self.busysymbol = settings.SYMBOL_SANDCLOCK
         self.busytext = settings.PLEASE_WAIT
         self.changerendertimeonhint = False
+        self._rendertime = 0.25
 
     def renderbusy(self):
         with canvas(self.device) as draw:
