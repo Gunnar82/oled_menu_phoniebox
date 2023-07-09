@@ -23,6 +23,7 @@ class WindowBase():
         self.busy = False
         self.busysymbol = settings.SYMBOL_SANDCLOCK
         self.busytext = settings.PLEASE_WAIT
+        self.busyrendertime = 2
         self.changerendertimeonhint = False
         self._rendertime = 0.25
 

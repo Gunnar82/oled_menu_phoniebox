@@ -8,6 +8,7 @@ from integrations.rfidwatcher import RfidWatcher
 class WindowManager():
     def __init__(self, loop, device):
         self._looptime = 2
+        self._RENDERTIME = 0.25
 
         self.looptime = self._looptime
         self.device = device
@@ -64,6 +65,7 @@ class WindowManager():
                 self.set_window(self.activewindow.timeoutwindow)
 
             if self.activewindow.contrasthandle:
+                print ((datetime.now() - settings.lastinput).total_seconds())
                 if (datetime.now() - settings.lastinput).total_seconds() >= settings.DARK_TIMEOUT:
                     self.rendertime = settings.DARK_RENDERTIME
                     self.looptime = int (settings.DARK_RENDERTIME // 2)
@@ -71,9 +73,14 @@ class WindowManager():
                     contrast = settings.CONTRAST_BLACK
 
                 elif  (datetime.now() - settings.lastinput).total_seconds() >= settings.CONTRAST_TIMEOUT:
-                    contrast = settings.CONTRAST_DARK
-                    self.rendertime = settings.CONTRAST_RENDERTIME
                     self.looptime = settings.CONTRAST_RENDERTIME
+                    self.rendertime = settings.CONTRAST_RENDERTIME
+
+                    if settings.DISABLE_DISPLAY:
+                        if settings.screenpower:
+                            self.clear_window()
+                    else:
+                        contrast = settings.CONTRAST_DARK
 
                 else:
                     contrast = settings.CONTRAST_FULL
@@ -102,6 +109,7 @@ class WindowManager():
                             self.activewindow.renderbusy()
                             self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
                         elif self.activewindow.busy:
+                            self.rendertime = self.activewindow.busyrendertime
                             self.activewindow.renderbusy()
                         else:
                             self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
@@ -109,7 +117,10 @@ class WindowManager():
                     except (NotImplementedError, AttributeError):
                         pass
 
-            await asyncio.sleep(self.rendertime)
+            iTimerCounter = 0
+            while (((datetime.now() - settings.lastinput).total_seconds() > 1) and (iTimerCounter <= self.rendertime // self._RENDERTIME)):
+                iTimerCounter += 1
+                await asyncio.sleep(self._RENDERTIME)
 
     def push_callback(self,lp=False):
         settings.lastinput = datetime.now()
