@@ -65,7 +65,6 @@ class WindowManager():
                 self.set_window(self.activewindow.timeoutwindow)
 
             if self.activewindow.contrasthandle:
-                print ((datetime.now() - settings.lastinput).total_seconds())
                 if (datetime.now() - settings.lastinput).total_seconds() >= settings.DARK_TIMEOUT:
                     self.rendertime = settings.DARK_RENDERTIME
                     self.looptime = int (settings.DARK_RENDERTIME // 2)
