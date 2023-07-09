@@ -75,12 +75,14 @@ class Foldermenu(ListBase):
             search = settings.current_selectedfolder[len(settings.currentfolder)+1:]
             try:
                 _pos = self.folders.index(search)
+
                 if _pos > self.displaylines - 1:
                     self.counter = self.displaylines + 1
                     self.page = _pos - self.displaylines - 1
                 else:
                     self.counter = _pos + 2
                     self.page = 0
+                    self.position= _pos + 1
             except:
                 self.counter = 1
                 self.page = 0

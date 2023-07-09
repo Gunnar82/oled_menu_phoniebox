@@ -42,6 +42,12 @@ class ListBase(WindowBase):
             self.title = self.basetitle
 
         with canvas(self.device) as draw:
+            #progressbar
+            try:
+                draw.rectangle((0,0,((self.position + 1) / len(self.menu) * settings.DISPLAY_WIDTH),0),outline=settings.COLOR_SELECTED, fill=settings.COLOR_SELECTED)
+            except:
+                pass
+
             #Back button and selection arrow
             if self.counter == 0:
                 draw.text((1, 1), text="\uf137", font=self.faicons, fill=settings.COLOR_SELECTED)
