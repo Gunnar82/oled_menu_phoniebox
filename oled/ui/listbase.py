@@ -20,11 +20,12 @@ class ListBase(WindowBase):
         self.progress = {}
         self.displaylines = 9 if settings.DISPLAY_HEIGHT > 64 else 4
         self.position = (self.counter + self.page -2 ) if (self.counter > 1) else -1
-        self.font = ImageFont.truetype(settings.FONT_TEXT, size=12)
-        self.faicons = ImageFont.truetype(settings.FONT_ICONS, size=11)
+        self.font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_SMALL)
+        self.faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_SMALL)
         self.selection_changed = True
 
     def render(self):
+
         if self.left_pressed:
             self.left_pressed = False
             self.on_key_left()
@@ -53,14 +54,14 @@ class ListBase(WindowBase):
             #Back button and selection arrow
             if self.counter == 0:
                 draw.text((1, 1), text="\uf137", font=self.faicons, fill=settings.COLOR_SELECTED)
-                draw.text((117, 1), text="\uf106", font=self.faicons, fill="white")
+                draw.text((settings.DISPLAY_WIDTH - settings.FONT_SIZE_NORMAL, 1), text="\uf106", font=self.faicons, fill="white")
             elif self.counter == 1:
                 draw.text((1, 1), text="\uf104", font=self.faicons, fill="white")
-                draw.text((117, 1), text="\uf139", font=self.faicons, fill=settings.COLOR_SELECTED)
+                draw.text((settings.DISPLAY_WIDTH - settings.FONT_SIZE_NORMAL, 1), text="\uf139", font=self.faicons, fill=settings.COLOR_SELECTED)
 
             else:
                 draw.text((1, 1), text="\uf104", font=self.faicons, fill="white")
-                draw.text((117, 1), text="\uf106", font=self.faicons, fill="white")
+                draw.text((settings.DISPLAY_WIDTH - settings.FONT_SIZE_NORMAL, 1), text="\uf106", font=self.faicons, fill="white")
                 #Selection arrow
                 draw.polygon(((1, 7+(self.counter-1)*12), (1, 11+(self.counter-1)*12),
                                         (5, 9+(self.counter-1)*12)), fill=settings.COLOR_SELECTED)
@@ -70,6 +71,8 @@ class ListBase(WindowBase):
 
             #Playlists
             menulen = self.displaylines if (len(self.menu) >= self.displaylines) else len(self.menu)
+            startx = settings.FONT_HEIGHT_NORMAL
+
             for i in range(menulen):
 
                 if self.counter + self.page -2  == i + self.page: #selected
@@ -79,11 +82,10 @@ class ListBase(WindowBase):
                             self.drawtextx += 1
                         else:
                             self.drawtextx = 0
-
-                    draw.text((8, 17+i*12), drawtext[self.drawtextx:], font=self.font, fill=settings.COLOR_SELECTED)
+                    draw.text((startx, startx + i * settings.FONT_HEIGHT_NORMAL), drawtext[self.drawtextx:], font=self.font, fill=settings.COLOR_SELECTED)
 
                 else:
-                    draw.text((8, 17+i*12), self.menu[i+self.page][:14], font=self.font, fill="white")
+                    draw.text((startx, startx  + i * settings.FONT_HEIGHT_NORMAL), self.menu[i+self.page][:14], font=self.font, fill="white")
                     #drawrectangle((90 , 17+i*12 , 128 , 34+i*12 ), outline="black", fill="black")
 
                     try:

@@ -13,10 +13,10 @@ import RPi.GPIO as GPIO
 
 class Playbackmenu(WindowBase):
     bigfont = ImageFont.truetype(settings.FONT_CLOCK, size=22)
-    font = ImageFont.truetype(settings.FONT_TEXT, size=12)
+    font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_NORMAL)
     fontsmall = ImageFont.truetype(settings.FONT_TEXT, size=10)
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=8)
-    faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=16)
+    faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XL)
 
     def __init__(self, windowmanager, nowplaying):
         super().__init__(windowmanager)
@@ -54,7 +54,7 @@ class Playbackmenu(WindowBase):
         with canvas(self.device) as draw:
             now = datetime.datetime.now()
             mwidth = Playbackmenu.font.getsize(self.descr[self.counter][0])
-            draw.text((64 - int(mwidth[0]/2),1), text=self.descr[self.counter][0], font=Playbackmenu.font, fill="white")
+            draw.text((int(settings.DISPLAY_WIDTH / 2) - int(mwidth[0]/2),1), text=self.descr[self.counter][0], font=Playbackmenu.font, fill="white")
 
 
             #Trennleiste waagerecht
@@ -88,9 +88,9 @@ class Playbackmenu(WindowBase):
 
             try:
                 if float(self.nowplaying._duration) >= 0:
-                    timelinepos = int(float(self.nowplaying._elapsed) / float(self.nowplaying._duration)  * 128) # TODO Device.with
+                    timelinepos = int(float(self.nowplaying._elapsed) / float(self.nowplaying._duration)  * settings.DISPLAY_WIDTH) # TODO Device.with
                 else:
-                    timelinepos = 128 # device.width
+                    timelinepos = settings.DISPLAY_WIDTH # device.width
             except:
                 timelinepos = 128
 
@@ -123,8 +123,13 @@ class Playbackmenu(WindowBase):
             if (self.skipselected):
                 draw.line((8, 42, 20, 42), width=2, fill=settings.COLOR_SELECTED)
 
+            startx = int(settings.DISPLAY_WIDTH/2) - int(len(self.descr) / 2 * (settings.FONT_SIZE_XL + 10))
+
             while (i < len(self.descr)):
-                draw.text((5 + i*21, 18 if (i == self.counter) else 20 ), self.descr[i][1], font=Playbackmenu.faiconsbig, fill=settings.COLOR_SELECTED if (i == self.counter) else fillcolor ) #prev
+                xpos = startx + i * ( settings.FONT_SIZE_XL + 10)
+
+                draw.text((xpos, settings.FONT_HEIGHT_XL + 20 if (i == self.counter) else settings.FONT_HEIGHT_XL + 22 ), self.descr[i][1], font=Playbackmenu.faiconsbig, fill=settings.COLOR_SELECTED if (i == self.counter) else fillcolor ) #prev
+
                 i += 1
 
     def push_callback(self,lp=False):

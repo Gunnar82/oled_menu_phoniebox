@@ -115,7 +115,7 @@ class WindowManager():
                             self.activewindow.render()
                     except (NotImplementedError, AttributeError):
                         pass
-            print (self.rendertime)
+
             iTimerCounter = 0 
             while (((datetime.now() - settings.lastinput).total_seconds() < self.activewindow.busyrendertime) and (iTimerCounter < self.rendertime / self._RENDERTIME)):
                 print ("loop")

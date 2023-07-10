@@ -5,8 +5,8 @@ from PIL import ImageFont
 import settings
 
 class MenuBase(WindowBase):
-    faicons = ImageFont.truetype(settings.FONT_ICONS, size=18)
-    font = ImageFont.truetype(settings.FONT_TEXT, size=12)
+    faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XL)
+    font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_NORMAL)
 
     def __init__(self, windowmanager,title):
         super().__init__(windowmanager)
@@ -19,7 +19,7 @@ class MenuBase(WindowBase):
     def render(self):
         with canvas(self.device) as draw:
             mwidth = MenuBase.font.getsize(self.descr[self.counter][0])
-            draw.text((64 - int(mwidth[0]/2),1), text=self.descr[self.counter][0], font=MenuBase.font, fill="white")
+            draw.text((int(settings.DISPLAY_WIDTH / 2) - int(mwidth[0]/2),1), text=self.descr[self.counter][0], font=MenuBase.font, fill="white")
 
             #icons as menu buttons
             symbols_per_page = self.lines_per_page * self.symbols_per_line
@@ -31,9 +31,11 @@ class MenuBase(WindowBase):
             current_line = 0
             current_symbol = 0
 
+            startx = int(settings.DISPLAY_WIDTH / 2) - int(self.symbols_per_line / 2 * settings.FONT_HEIGHT_XXL + 5)
+
             while (i < symbols_per_page * (page+1)) and (i < len(self.descr)):
-                x_coord = 11 + 31 * current_symbol
-                y_coord = 20 + 25 * current_line
+                x_coord = startx + ( 5 + settings.FONT_HEIGHT_XXL ) * current_symbol
+                y_coord = settings.FONT_HEIGHT_XXL + settings.FONT_HEIGHT_XXL * current_line
 
                 if (self.counter == i):
                     fill = settings.COLOR_SELECTED
