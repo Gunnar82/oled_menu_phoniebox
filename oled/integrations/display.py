@@ -3,15 +3,26 @@ import settings
 
 def get_display():
 
-    from luma.oled.device import ssd1351
     from luma.core.interface.serial import spi,i2c
 
 
-    if settings.DISPLAY_TYPE == "i2c":
-        device = sh1106(i2c(port=1, address=0x3C))
+    if settings.DISPLAY_DRIVER == "ST7789":
+
+        from luma.lcd.device import st7789
+
+        serial = spi(port=0, device=0, gpio_SCLK=11, gpio_DC=9, SDA=10, gpio_CS=1,BACKLIGHT=13, backlight_enabled=True, bus_speed_hz=16000000)
+        device = st7789(serial_interface=serial,rotate=1, bgr=True)
+
     else:
-        serial = spi(port=0, device=0, gpio_SCLK=10, gpio_DC=22, gpio_RST=27, gpio_CS=16, bus_speed_hz=16000000)
-        device = ssd1351(serial_interface=serial,rotate=1, bgr=True)
+
+        from luma.oled.device import ssd1351
+
+        if settings.DISPLAY_TYPE == "i2c":
+            device = sh1106(i2c(port=1, address=0x3C))
+        else:
+            serial = spi(port=0, device=0, gpio_SCLK=10, gpio_DC=22, gpio_RST=27, gpio_CS=16, bus_speed_hz=16000000)
+            device = ssd1351(serial_interface=serial,rotate=1, bgr=True)
+
 
     device.contrast(settings.CONTRAST_FULL)
     device.cleanup = do_nothing

@@ -102,7 +102,7 @@ von Github aber geändert
 --> kopiren nach /home/pi/oledctrl
 
 sudo apt-get install python3-dev python3-pip libfreetype6-dev build-essential libopenjp2-7 libtiff5
-sudo apt-get install python3-smbus python3-musicpd
+sudo apt-get install python3-smbus python3-musicpd eyed3
 
 cd oledctrl/
 

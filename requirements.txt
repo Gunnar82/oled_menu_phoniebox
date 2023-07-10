@@ -1,5 +1,6 @@
 #Hardware and MPD Connection
 luma.oled==3.8.1
+luma-lcd
 python-musicpd==0.5.1
 RPi.GPIO==0.7.0
 keyboard
