@@ -85,7 +85,7 @@ class ListBase(WindowBase):
                     draw.text((startx, startx + i * settings.FONT_HEIGHT_NORMAL), drawtext[self.drawtextx:], font=self.font, fill=settings.COLOR_SELECTED)
 
                 else:
-                    draw.text((startx, startx  + i * settings.FONT_HEIGHT_NORMAL), self.menu[i+self.page][:14], font=self.font, fill="white")
+                    draw.text((startx, startx  + i * settings.FONT_HEIGHT_NORMAL), self.menu[i+self.page][:settings.FONT_SIZE_L], font=self.font, fill="white")
                     #drawrectangle((90 , 17+i*12 , 128 , 34+i*12 ), outline="black", fill="black")
 
                     try:
