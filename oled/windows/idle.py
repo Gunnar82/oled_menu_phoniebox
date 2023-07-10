@@ -19,8 +19,8 @@ import time
 
 class Idle(WindowBase):
     bigfont = ImageFont.truetype(settings.FONT_CLOCK, size=22)
-    font = ImageFont.truetype(settings.FONT_TEXT, size=12)
-    fontsmall = ImageFont.truetype(settings.FONT_TEXT, size=10)
+    font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_NORMAL)
+    fontsmall = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_SMALL)
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=8)
     faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=12)
     faiconsxl = ImageFont.truetype(settings.FONT_ICONS, size=30)
@@ -79,43 +79,47 @@ class Idle(WindowBase):
 
 
             #Trennleiste waagerecht
-            draw.rectangle((0,settings.DISPLAY_HEIGHT -15,128,settings.DISPLAY_HEIGHT - 15),outline="white",fill="white")
-            #Trennleisten senkrecht
-            draw.rectangle((16,settings.DISPLAY_HEIGHT -15,16,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
-            draw.rectangle((65,settings.DISPLAY_HEIGHT -15,65,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
-            draw.rectangle((105,settings.DISPLAY_HEIGHT -15,105,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
+            lineposy = settings.DISPLAY_HEIGHT - settings.FONT_HEIGHT_SMALL - 5
+            draw.rectangle((0,lineposy,settings.DISPLAY_WIDTH,lineposy),outline="white",fill="white")
+            #Trennleisten senkrecht3
+            xpos1 = int(settings.DISPLAY_WIDTH/6)
+            draw.rectangle((xpos1,lineposy,xpos1,settings.DISPLAY_HEIGHT -4),outline="yellow",fill="white")
+            xpos2 = int(3.5*settings.DISPLAY_WIDTH/6)
+            draw.rectangle((xpos2,lineposy,xpos2,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
+            xpos3 = int(5*settings.DISPLAY_WIDTH/6)
+            draw.rectangle((xpos3,lineposy,xpos3,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
 
 
             #shutdowntimer ? aktiv dann Zeit anzeigen
             if settings.job_t >= 0:
-                draw.text((110, settings.DISPLAY_HEIGHT -13 ), "%2.2d" % (int(settings.job_t)), font=Idle.fontsmall, fill="BLUE")
+                draw.text((xpos3 + 2, lineposy + 2 ), "%2.2d" % (int(settings.job_t)), font=Idle.fontsmall, fill="BLUE")
             elif settings.X728_ENABLED:
-                draw.text((112,settings.DISPLAY_HEIGHT -12), settings.battsymbol, font=Idle.faicons, fill=fn.get_battload_color())
+                draw.text((xpos3 + 2, lineposy + 2), settings.battsymbol, font=Idle.faicons, fill=fn.get_battload_color())
 
             if settings.X728_ENABLED:
                 #battery load line
                 try:
-                    pos = int(settings.battcapacity/100*128)
+                    pos = int(settings.battcapacity/100*settings.DISPLAY_WIDTH)
                     draw.rectangle((0,3,pos,3),outline=fn.get_battload_color(),fill=fn.get_battload_color())
                 except:
                     print ("err")
 
             #volume
-            draw.text((1, settings.DISPLAY_HEIGHT -14 ), str(self.nowplaying._volume), font=Idle.fontsmall, fill="white")
+            draw.text((1, lineposy + 2 ), str(self.nowplaying._volume), font=Idle.fontsmall, fill="white")
 
-            #Buttons
+            #Zeitanzeige
             try:
                 if self.nowplaying._state == "play":
                     #elapsed
                     _spos = fn.to_min_sec(self.nowplaying._elapsed)
-                    _xpos = 41 - int(Idle.fontsmall.getsize(_spos)[0]/2)
+                    _xpos = int((xpos1 + xpos2) / 2 ) - int(Idle.fontsmall.getsize(_spos)[0]/2)
 
-                    draw.text((_xpos, settings.DISPLAY_HEIGHT -14 ),_spos, font=Idle.fontsmall, fill="white")
+                    draw.text((_xpos, lineposy + 2 ),_spos, font=Idle.fontsmall, fill="white")
                 else:
                     _spos = self.nowplaying._state
-                    _xpos = 41 - int(Idle.fontsmall.getsize(_spos)[0]/2)
+                    _xpos = int((xpos1 + xpos2) / 2 ) - int(Idle.fontsmall.getsize(_spos)[0]/2)
 
-                    draw.text((_xpos, settings.DISPLAY_HEIGHT -14), _spos, font=Idle.fontsmall, fill="white") #other than play
+                    draw.text((_xpos, lineposy + 2), _spos, font=Idle.fontsmall, fill="white") #other than play
                     if self.nowplaying._statex != self.nowplaying._state:
                         self.nowplaying._statex = self.nowplaying._state
 
@@ -125,17 +129,17 @@ class Idle(WindowBase):
             #Currently playing song
             #Line 1 2 3
             if float(self.nowplaying._duration) >= 0:
-                timelinepos = int(float(self.nowplaying._elapsed) / float(self.nowplaying._duration)  * 128) # TODO Device.with
+                timelinepos = int(float(self.nowplaying._elapsed) / float(self.nowplaying._duration)  * settings.DISPLAY_WIDTH) # TODO Device.with
             else:
-                timelinepos = 128 # device.width
+                timelinepos = settings.DISPLAY_WIDTH # device.width
             #Fortschritssleiste Wiedergabe
             draw.rectangle((0,0,timelinepos,1),outline=settings.COLOR_BLUE, fill=settings.COLOR_BLUE)
 
-            #paylistpos
+            #Position in Playlist
             _spos = "%2.2d/%2.2d" % (int(self.nowplaying._song), int(self.nowplaying._playlistlength))
-            _xpos = 85 - int(Idle.fontsmall.getsize(_spos)[0]/2)
+            _xpos = int((xpos3 + xpos2) / 2) - int(Idle.fontsmall.getsize(_spos)[0]/2)
 
-            draw.text((_xpos, settings.DISPLAY_HEIGHT -14 ),_spos , font=Idle.fontsmall, fill="white")
+            draw.text((_xpos, lineposy + 2 ),_spos , font=Idle.fontsmall, fill="white")
 
 
             if (settings.battcapacity >= 0 and settings.battcapacity <= settings.X728_BATT_EMERG): 
@@ -194,9 +198,9 @@ class Idle(WindowBase):
                 self.oldalbum = self.nowplaying._playingalbum
 
 
-            draw.text((1, settings.DISPLAY_HEIGHT - 59), self.nowplaying._playingalbum[self.albumx:self.albumx+19], font=Idle.font, fill="white")
-            draw.text((1, settings.DISPLAY_HEIGHT - 45), self.nowplaying._playingname[self.namex:], font=Idle.font, fill="white")
-            draw.text((1, settings.DISPLAY_HEIGHT - 32), self.nowplaying._playingtitle[self.titlex:], font=Idle.font, fill="white")
+            draw.text((1, settings.DISPLAY_HEIGHT - 3*settings.FONT_HEIGHT_NORMAL ), self.nowplaying._playingalbum[self.albumx:self.albumx+19], font=Idle.font, fill="white")
+            draw.text((1, settings.DISPLAY_HEIGHT - 4*settings.FONT_HEIGHT_NORMAL ), self.nowplaying._playingname[self.namex:], font=Idle.font, fill="white")
+            draw.text((1, settings.DISPLAY_HEIGHT - 5*settings.FONT_HEIGHT_NORMAL ), self.nowplaying._playingtitle[self.titlex:], font=Idle.font, fill="white")
 
 
     async def _find_dev_bt(self):
