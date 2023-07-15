@@ -9,9 +9,9 @@ def get_display():
     if settings.DISPLAY_DRIVER == "ST7789":
 
         from luma.lcd.device import st7789
-
-        serial = spi(port=0, device=1, gpio_SCLK=11, gpio_SDA=10, gpio_DC = 9, gpio_CS = 1, gpio_RST=None, BACKLIGHT=13, bus_speed_hz=16000000)
-        device = st7789(serial_interface=serial,rotate=3, bgr=True)
+#11 10port=1, device=0,
+        serial = spi(port=0,device=1, gpio_SCLK=None, gpio_SDA=None, gpio_DC = 9, gpio_CS = 1, gpio_RST=None, BACKLIGHT=13, backlight_enabled=True, bus_speed_hz=8000000)
+        device = st7789(serial_interface=serial,rotate=3,bgf=True)
 
     else:
 
@@ -25,7 +25,7 @@ def get_display():
 
 
     device.contrast(settings.CONTRAST_FULL)
-    device.cleanup = do_nothing
+    #device.cleanup = do_nothing
 
     print("Using real display hardware")
     return device

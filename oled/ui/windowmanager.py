@@ -87,9 +87,11 @@ class WindowManager():
                     self.looptime = self._looptime
 
 
-            if self._lastcontrast != contrast:
+
+            if self._lastcontrast != contrast and settings.CONTRAST_HANLE:
                 self._lastcontrast = contrast
-                self.device.contrast(contrast)
+                if settings.CONTRAST_HANLDE:
+                    self.device.contrast(contrast)
 
             if self.activewindow != []:
                 count = 0
@@ -103,18 +105,19 @@ class WindowManager():
 
                 if settings.screenpower:
                     try:
-                        if (datetime.now() - self.lastrfidate).total_seconds() < 3:
-                            self.activewindow.busysymbol = settings.SYMBOL_CARD_READ
-                            self.activewindow.renderbusy()
-                            self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
-                        elif self.activewindow.busy:
-                            self.rendertime = self.activewindow.busyrendertime
-                            self.activewindow.renderbusy()
-                        else:
-                            self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
-                            self.activewindow.render()
+                        if not settings.callback_active:
+                            if (datetime.now() - self.lastrfidate).total_seconds() < 3:
+                                self.activewindow.busysymbol = settings.SYMBOL_CARD_READ
+                                self.activewindow.renderbusy()
+                                self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
+                            elif self.activewindow.busy:
+                                self.rendertime = self.activewindow.busyrendertime
+                                self.activewindow.renderbusy()
+                            else:
+                                self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
+                                self.activewindow.render()
                     except (NotImplementedError, AttributeError):
-                        pass
+                        print ("err")
 
             iTimerCounter = 0 
             while (((datetime.now() - settings.lastinput).total_seconds() < self.activewindow.busyrendertime) and (iTimerCounter < self.rendertime / self._RENDERTIME)):
