@@ -125,3 +125,13 @@ def get_battload_color():
         return settings.COLOR_YELLOW
     else:
         return settings.COLOR_RED
+
+
+def log(logtext,ll=1):
+
+    loglevel = ["ERROR", "INFO", "DEBUG", "DEBUG2", "DEBUG3"]
+
+    if ll > len(loglevel):
+        ll = len(loglevel) - 1
+    if settings.LOGLEVEL >= ll:
+        print ("%s: %s"%(loglevel[ll-1], logtext))

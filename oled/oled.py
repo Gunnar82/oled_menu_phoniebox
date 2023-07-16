@@ -7,7 +7,7 @@ import os
 from subprocess import call
 import integrations.bluetooth
 from integrations.display import get_display
-
+import integrations.functions as fn
 
 import settings
 
@@ -133,16 +133,16 @@ def main():
             haspowercontroller = False
 
     ######Status LED
-#    if settings.STATUS_LED_ENABLED:
-#        import integrations.statusled as statusled
-#        led = statusled.statusled(loop,musicmanager)
+    if settings.STATUS_LED_ENABLED:
+        import integrations.statusled as statusled
+        led = statusled.statusled(loop,musicmanager)
 
     ####x728V2.1
     if settings.X728_ENABLED:
         import integrations.x728v21 as x728v21
         x728 = x728v21.x728(loop)
 
-
+    #### gpiocontrol init
     if settings.GPIOControl:
         from integrations.gpiocontrol import GPIOControl
         gpioc = GPIOControl(loop, turn_callback, push_callback)
@@ -152,7 +152,7 @@ def main():
     try:
         loop.run_forever()
     except (KeyboardInterrupt, SystemExit):
-        print("Exiting")
+        fn.log("Exiting",ll=1)
     finally:
         loop.close()
 

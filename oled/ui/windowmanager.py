@@ -2,6 +2,7 @@
 import asyncio
 from datetime import datetime
 import settings
+import integrations.functions as fn
 
 from integrations.rfidwatcher import RfidWatcher
 
@@ -24,11 +25,11 @@ class WindowManager():
         self.rfidwatcher.start()
 
 
-        print("Rendering task created")
+        fn.log("Rendering task created",ll=2)
 
     def add_window(self, windowid, window):
         self.windows[windowid] = window
-        print(f"Added {windowid} window")
+        fn.log(f"Added {windowid} window",ll=2)
 
     def set_window(self, windowid):
         if windowid in self.windows:
@@ -43,9 +44,9 @@ class WindowManager():
                 self.activewindow.activate()
             except (NotImplementedError, AttributeError):
                 pass
-            print(f"Activated {windowid}")
+            fn.log(f"Activated {windowid}",ll=2)
         else:
-            print(f"Window {windowid} not found!")
+            fn.log(f"Window {windowid} not found!",ll=1)
 
     def show_window(self):
         settings.screenpower = True
@@ -53,7 +54,7 @@ class WindowManager():
 
 
     def clear_window(self):
-        print("Show blank screen")
+        fn.log("Show blank screen",ll=3)
         settings.screenpower = False
         self.device.clear()
         #Low-Power sleep mode
@@ -65,6 +66,7 @@ class WindowManager():
                 self.set_window(self.activewindow.timeoutwindow)
 
             if self.activewindow.contrasthandle:
+                fn.log("contrasthandle",ll=5)
                 if (datetime.now() - settings.lastinput).total_seconds() >= settings.DARK_TIMEOUT:
                     self.rendertime = settings.DARK_RENDERTIME
                     self.looptime = int (settings.DARK_RENDERTIME // 2)
@@ -74,9 +76,10 @@ class WindowManager():
                 elif  (datetime.now() - settings.lastinput).total_seconds() >= settings.CONTRAST_TIMEOUT:
                     self.looptime = settings.CONTRAST_RENDERTIME
                     self.rendertime = settings.CONTRAST_RENDERTIME
-
+                    fn.log("contrast_timeout",ll=5)
                     if settings.DISABLE_DISPLAY:
                         if settings.screenpower:
+                            fn.log("disable Display",ll=3)
                             self.clear_window()
                     else:
                         contrast = settings.CONTRAST_DARK
@@ -103,25 +106,29 @@ class WindowManager():
                     self.show_window()
                     self.lastrfidate = datetime.now()
 
-                if settings.screenpower:
+                if settings.screenpower and not settings.callback_active:
                     try:
                         if not settings.callback_active:
                             if (datetime.now() - self.lastrfidate).total_seconds() < 3:
+                                fn.log("render rfid symbol",ll=3)
                                 self.activewindow.busysymbol = settings.SYMBOL_CARD_READ
+                                self.activewindow.render()
                                 self.activewindow.renderbusy()
                                 self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
                             elif self.activewindow.busy:
+                                fn.log("render busy symbol",ll=3)
                                 self.rendertime = self.activewindow.busyrendertime
                                 self.activewindow.renderbusy()
+                                self.activewindow.render()
                             else:
                                 self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
                                 self.activewindow.render()
                     except (NotImplementedError, AttributeError):
-                        print ("err")
+                        fn.log("render error",ll=1)
 
             iTimerCounter = 0 
             while (((datetime.now() - settings.lastinput).total_seconds() < self.activewindow.busyrendertime) and (iTimerCounter < self.rendertime / self._RENDERTIME)):
-                print ("loop")
+                fn.log("renderloop: %d"%(iTimerCounter+1),ll=5)
                 iTimerCounter += 1
                 await asyncio.sleep(self._RENDERTIME)
 
@@ -137,7 +144,7 @@ class WindowManager():
                 self.device.contrast(settings.CONTRAST_FULL)
                 self.activewindow.push_callback(lp=lp)
             except (NotImplementedError, AttributeError):
-                pass
+                fn.log("window_manager: push_callback error",ll=1)
             finally:
                 self.activewindow.busy = False
                 self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
@@ -151,16 +158,16 @@ class WindowManager():
         try:
             self.activewindow.busy = True
             settings.screenpower = True
-            self.device.show()
+            #self.device.show()
             settings.lastinput = datetime.now()
             self.device.contrast(settings.CONTRAST_FULL)
             if key == '#':
-                print ("activate window_on_back: %s" % (self.activewindow.window_on_back))
+                fn.log("activate window_on_back: %s" % (self.activewindow.window_on_back),ll=2)
                 self.set_window(self.activewindow.window_on_back)
             else:
                 self.activewindow.turn_callback(direction,key=key)
         except (NotImplementedError, AttributeError):
-            pass
+            fn.log("window_manager: turn_callback error",ll=1)
         finally:
             self.activewindow.busy = False
 

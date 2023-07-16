@@ -13,7 +13,7 @@ class MenuBase(WindowBase):
         self.counter = 0
         self.descr = []
         self.basetitle = title
-        self.lines_per_page = 4 if settings.DISPLAY_HEIGHT == 128 else 2
+        self.lines_per_page = 4 if settings.DISPLAY_HEIGHT >= 128 else 2
         self.symbols_per_line = 4
 
     def render(self):

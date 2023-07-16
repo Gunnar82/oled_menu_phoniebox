@@ -10,7 +10,7 @@ def get_display():
 
         from luma.lcd.device import st7789
 #11 10port=1, device=0,
-        serial = spi(port=0,device=1, gpio_SCLK=None, gpio_SDA=None, gpio_DC = 9, gpio_CS = 1, gpio_RST=None, BACKLIGHT=13, backlight_enabled=True, bus_speed_hz=8000000)
+        serial = spi(port=0,device=1, gpio_SCLK=None, gpio_SDA=None, gpio_DC = 9, gpio_CS = 1, gpio_RST=None, BACKLIGHT=13, backlight_enabled=True, bus_speed_hz=32000000)
         device = st7789(serial_interface=serial,rotate=3,bgf=True)
 
     else:

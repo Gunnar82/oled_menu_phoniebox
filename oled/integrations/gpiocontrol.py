@@ -3,6 +3,7 @@ import asyncio
 import threading
 import settings # pylint: disable=import-error
 import time
+import integrations.functions as fn
 
 try:
     #Only avaiable on Raspberry
@@ -24,14 +25,15 @@ class GPIOControl():
         self._setup_gpio(settings.PIN_B)
         self._setup_gpio(settings.PIN_X)
         self._setup_gpio(settings.PIN_Y)
-        print("using gpiocontrol")
+        fn.log("using gpiocontrol",ll=2)
 
     def _button_press(self, *args):
         try:
+            time.sleep (0.1)
             if not settings.callback_active:
                 settings.callback_active = True
                 key = args[0]
-                print (format(args))
+                fn.log("gpiocontrol args %s"%(format(args)),ll=3)
 
                 if key == settings.PIN_A:
                     self.turn_callback(0,'#')
@@ -42,8 +44,8 @@ class GPIOControl():
                 elif key == settings.PIN_Y:
                     self.turn_callback(1)
         finally:
-            print ("ende")
-            time.sleep(0.2)
+            fn.log("gpiocontrol: ende",ll=3)
+            time.sleep(0.1)
             settings.callback_active = False
 
 
@@ -53,7 +55,7 @@ class GPIOControl():
         GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
         #Push Button
-        GPIO.add_event_detect(pin, GPIO.RISING, callback=self._button_press,bouncetime=150)
+        GPIO.add_event_detect(pin,GPIO.RISING, callback=self._button_press, bouncetime=300)
 
 
     @staticmethod
