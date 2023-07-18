@@ -10,21 +10,22 @@ import asyncio
 import re
 
 class Firewallmenu(WindowBase):
-    font = ImageFont.truetype(settings.FONT_TEXT, size=12)
-    faicons = ImageFont.truetype(settings.FONT_ICONS, size=18)
+    font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_NORMAL)
+    faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XL)
 
     def __init__(self, windowmanager):
         super().__init__(windowmanager)
         self.counter = 0
         self._ufw_status = "n/a"
+        self.descr = "Firewall"
+        (self.mwidth, self.mheight) = Firewallmenu.font.getsize(self.descr)
 
 
     def render(self):
         with canvas(self.device) as draw:
-            mwidth = Firewallmenu.font.getsize("Firewall")
-            draw.text((64 - int(mwidth[0]/2),1), text="Firewall", font=Firewallmenu.font, fill="white")
+            draw.text(((settings.DISPLAY_HEIGHT - self.mwidth) / 2,1), text=self.descr, font=Firewallmenu.font, fill="white")
 
-            draw.text((10, 15), text=self._ufw_status, font=Firewallmenu.font, fill="white")
+            draw.text((20, 15), text=self._ufw_status, font=Firewallmenu.font, fill="white")
             
 
 

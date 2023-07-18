@@ -62,9 +62,6 @@ class ListBase(WindowBase):
             else:
                 draw.text((1, 1), text="\uf104", font=self.faicons, fill="white")
                 draw.text((settings.DISPLAY_WIDTH - settings.FONT_SIZE_NORMAL, 1), text="\uf106", font=self.faicons, fill="white")
-                #Selection arrow
-                draw.polygon(((1, 7+(self.counter-1)*12), (1, 11+(self.counter-1)*12),
-                                        (5, 9+(self.counter-1)*12)), fill=settings.COLOR_SELECTED)
 
             #Calculate title coordinate from text lenght
             draw.text(((settings.DISPLAY_WIDTH-len(self.title)*5)/2, 1), text=self.title, font=self.font, fill="white")
@@ -82,6 +79,10 @@ class ListBase(WindowBase):
                             self.drawtextx += 1
                         else:
                             self.drawtextx = 0
+                    #Selection arrow
+                    draw.polygon(((1, 11+startx + i * settings.FONT_HEIGHT_NORMAL), (1, 15+startx + i * settings.FONT_HEIGHT_NORMAL),
+                                        (5, 13+startx + i * settings.FONT_HEIGHT_NORMAL)), fill=settings.COLOR_SELECTED)
+
                     draw.text((startx, startx + i * settings.FONT_HEIGHT_NORMAL), drawtext[self.drawtextx:], font=self.font, fill=settings.COLOR_SELECTED)
 
                 else:

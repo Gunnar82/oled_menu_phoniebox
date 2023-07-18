@@ -23,7 +23,7 @@ class Headphonemenu(MenuBase):
         elif self.counter == 1 and settings.ENABLED_DEV_BT_1 == "ON":
             integrations.bluetooth.enable_dev_bt_1()
             self.windowmanager.set_window("mainmenu")    
-        elif self.counter == 2 and settings.ENABLED_DEV_BT_1 == "ON":
+        elif self.counter == 2 and settings.ENABLED_DEV_BT_2 == "ON":
             integrations.bluetooth.enable_dev_bt_2()
             self.windowmanager.set_window("mainmenu")
         elif self.counter == 3:

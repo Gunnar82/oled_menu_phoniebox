@@ -9,8 +9,8 @@ import subprocess
 import qrcode
 
 class Wlanmenu(WindowBase):
-    font = ImageFont.truetype(settings.FONT_TEXT, size=10)
-    faicons = ImageFont.truetype(settings.FONT_ICONS, size=15)
+    font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_SMALL)
+    faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XL)
 
     def __init__(self, windowmanager):
         super().__init__(windowmanager)
@@ -31,8 +31,9 @@ class Wlanmenu(WindowBase):
     def activate(self):
         self._active = True
         self.loop.create_task(self._wlanstate())
-        self.img = qrcode.make("ICH LIEBE DICH")
-        self.img = self.img.resize((128,128))
+        self.img = qrcode.make("DEBUGME")
+        self.img = self.img.resize((settings.DISPLAY_HEIGHT,settings.DISPLAY_WIDTH))
+        (self.symwidth, self.symheight) = Wlanmenu.faicons.getsize("\uf0a8")
 
 
     def deactivate(self):
@@ -48,17 +49,19 @@ class Wlanmenu(WindowBase):
                 draw.bitmap((0,0), self.img)
                 return
 
-            mwidth = Wlanmenu.font.getsize(self.descr[self.counter])
-            draw.text((64 - int(mwidth[0]/2),1), text=self.descr[self.counter], font=Wlanmenu.font, fill="white")
+            (mwidth,mheight) = Wlanmenu.font.getsize(self.descr[self.counter])
+            draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2,1), text=self.descr[self.counter], font=Wlanmenu.font, fill="white")
 
-            x_coord = 2 
-            y_coord = 19+ self.counter * 20
 
-            draw.rectangle((x_coord, y_coord, x_coord+20, y_coord+20), outline=255, fill=0)
+            x_coord = 20 
+            y_coord = (self.counter+1)  * self.symheight
 
-            draw.text((5, 22), text="\uf0a8", font=Wlanmenu.faicons, fill="white") #zurück
-            draw.text((5, 42), text="\uf09e" if self._hostapd else "\uf140", font=Wlanmenu.faicons, fill="white") #script starten
-            draw.text((30, 22), text="IP: %s" % (self._ip_addr), font=Wlanmenu.font, fill="white") #zurück
+            draw.rectangle((x_coord, y_coord, x_coord+self.symwidth, y_coord+self.symheight), outline=255, fill=0)
+
+            draw.text((20,self.symheight), text="\uf0a8", font=Wlanmenu.faicons, fill="white") #zurück
+            draw.text((20,2 * self.symheight, 42), text="\uf09e" if self._hostapd else "\uf140", font=Wlanmenu.faicons, fill="white") #script starten
+
+            draw.text((20, 4.5 * self.symheight), text="IP: %s" % (self._ip_addr), font=Wlanmenu.font, fill="white") #zurück
 
             if self._hostapd:
                 self.img = qrcode.make("WIFI:S:%s;T:WPA;P:%s;" % (self._hostapd_wifi_ssid , self._hostapd_wifi_wsk))

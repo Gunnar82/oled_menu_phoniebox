@@ -8,8 +8,8 @@ import subprocess
 import os
 
 class Infomenu(WindowBase):
-    font = ImageFont.truetype(settings.FONT_TEXT, size=12)
-    faicons = ImageFont.truetype(settings.FONT_ICONS, size=18)
+    font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_NORMAL)
+    faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XL)
     ipaddr = ""
     wifi_ssid = ""
     hostapd = False
@@ -50,10 +50,11 @@ class Infomenu(WindowBase):
                 self.hostapd = True if os.system('systemctl is-active --quiet hostapd.service') == 0 else False
             except:
                 pass
-            draw.text((1, 1), text="IP: " + self.ipaddr, font=Infomenu.font, fill="white")
-            draw.text((1, 16), text="WiFi: " + self.wifi_ssid, font=Infomenu.font, fill="white")
-            draw.text((1, 31), text="hostapdi: " + str(self.hostapd), font=Infomenu.font, fill="white")
-            draw.text((1, 46), text=self.temp, font=Infomenu.font, fill="white")
+
+            draw.text((1, settings.FONT_HEIGHT_NORMAL), text="IP: " + self.ipaddr, font=Infomenu.font, fill="white")
+            draw.text((1, 2 * settings.FONT_HEIGHT_NORMAL), text="WiFi: " + self.wifi_ssid, font=Infomenu.font, fill="white")
+            draw.text((1, 3 * settings.FONT_HEIGHT_NORMAL), text="hostapdi: " + str(self.hostapd), font=Infomenu.font, fill="white")
+            draw.text((1, 4 * settings.FONT_HEIGHT_NORMAL), text=self.temp, font=Infomenu.font, fill="white")
 
 
     def push_callback(self,lp=False):

@@ -7,8 +7,8 @@ import integrations.bluetooth
 from datetime import datetime
 
 class Ende(WindowBase):
-    font = ImageFont.truetype(settings.FONT_TEXT, size=12)
-    fontawesome = ImageFont.truetype(settings.FONT_ICONS, size=25)
+    font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_L)
+    fontawesome = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XXL)
 
     def __init__(self, windowmanager):
         super().__init__(windowmanager)
@@ -17,10 +17,16 @@ class Ende(WindowBase):
 
     def activate(self):
         with canvas(self.device) as draw:
-            mwidth = Ende.font.getsize(settings.shutdown_reason)
-            draw.text((50, 3), text="wird", font=Ende.font, fill="white")
-            draw.text((50, 20), text="\uf011", font=Ende.fontawesome, fill="white")
-            draw.text((64 - int(mwidth[0]/2), 50), text=settings.shutdown_reason, font=Ende.font, fill="white")
+            line="wird"
+            (linex,liney) = Ende.font.getsize(line)
+            draw.text(((settings.DISPLAY_WIDTH - linex) / 2 , 3), text=line, font=Ende.font, fill="white")
+
+            line="\uf011"
+            (linex,liney) = Ende.fontawesome.getsize(line)
+            draw.text(( (settings.DISPLAY_WIDTH - linex) / 2, (settings.DISPLAY_HEIGHT - liney) / 2), text=line, font=Ende.fontawesome, fill="white")
+
+            (linex, liney) = Ende.font.getsize(settings.shutdown_reason)
+            draw.text(((settings.DISPLAY_WIDTH - linex) / 2 , settings.DISPLAY_HEIGHT - liney - 5), text=settings.shutdown_reason, font=Ende.font, fill="white")
 
     def push_callback(self,lp=False):
         pass
