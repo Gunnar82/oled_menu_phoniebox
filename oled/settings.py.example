@@ -94,18 +94,18 @@ FONT_TEXT = "fonts/arial.ttf"
 FONT_CLOCK = "fonts/calibri.ttf"
 
 
-ALSA_DEV_LOCAL="hifiberrydac"
+ALSA_DEV_LOCAL="hifiberry"
 
 #BluetoothKopfhoerer
-ENABLED_DEV_BT_1 = "ON"
-NAME_DEV_BT_1 = "BT1"
+ENABLED_DEV_BT_1 = True
+NAME_DEV_BT_1 = "Medion Box"
 ALSA_DEV_BT_1 = "bt_dev_1"
-MAC_DEV_BT_1 = "4A:F5:FF:38:28:D5"
+MAC_DEV_BT_1 = "FC:58:FA:FE:09:4C"
 
-ENABLED_DEV_BT_2 = "OFF"
-NAME_DEV_BT_2 = "BT2"
+ENABLED_DEV_BT_2 = True
+NAME_DEV_BT_2 = "Jabra 65"
 ALSA_DEV_BT_2 = "bt_dev_2"
-MAC_DEV_BT_2 = "FC:58:FA:FE:09:4C"
+MAC_DEV_BT_2 = "50:C2:ED:0D:4B:8D"
 
 INTPIN=2
 

@@ -1,5 +1,6 @@
 import settings
 import os
+import subprocess
 
 cmd_check_bt_dev = "sudo bluetoothctl connect %s && sudo l2ping %s -c 1" % (settings.MAC_DEV_BT_1, settings.MAC_DEV_BT_1)
 
@@ -20,6 +21,17 @@ def enable_dev_bt_2():
 
 def enable_dev_local():
     os.system("mpc enable \"%s\" && mpc disable \"%s\" && mpc disable \"%s\"" % (settings.ALSA_DEV_LOCAL, settings.ALSA_DEV_BT_1, settings.ALSA_DEV_BT_2))
+
+
+def output_status(device="hifiberry"):
+    result = subprocess.run("mpc outputs | grep %s" % (device), shell=True, capture_output=True)
+    message = str(result.stdout)
+    if "abled" in message:
+        return (message[message.find("is")+3:message.find('\n')-2])
+    else:
+       print ("unavailable")
+
+
 
 def check_dev_bt():
     return os.system(cmd_check_bt_dev) == 0
