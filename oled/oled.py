@@ -10,6 +10,8 @@ import integrations.functions as fn
 
 import settings
 
+from integrations.logging import *
+
 
 if settings.DISPLAY_DRIVER == "ST7789":
     import integrations.display.st7789 as idisplay
@@ -159,7 +161,7 @@ def main():
     try:
         loop.run_forever()
     except (KeyboardInterrupt, SystemExit):
-        fn.log("Exiting",ll=1)
+        log(lERROR,"Exiting")
     finally:
         loop.close()
 

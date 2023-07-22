@@ -10,7 +10,8 @@ import time
 
 import integrations.bluetooth
 import integrations.playout as playout
-import integrations.functions as fn
+from integrations.functions import *
+from integrations.logging import *
 import RPi.GPIO as GPIO
 import locale
 import time

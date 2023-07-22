@@ -5,6 +5,8 @@ import settings # pylint: disable=import-error
 import time
 import integrations.functions as fn
 
+from integrations.logging import *
+
 try:
     #Only avaiable on Raspberry
     import RPi.GPIO as GPIO # pylint: disable=import-error
@@ -25,7 +27,7 @@ class GPIOControl():
         self._setup_gpio(settings.PIN_B)
         self._setup_gpio(settings.PIN_X)
         self._setup_gpio(settings.PIN_Y)
-        fn.log("using gpiocontrol",ll=2)
+        log(lINFO,"using gpiocontrol")
 
     def _button_press(self, *args):
         try:
@@ -33,7 +35,7 @@ class GPIOControl():
             if not settings.callback_active:
                 settings.callback_active = True
                 key = args[0]
-                fn.log("gpiocontrol args %s"%(format(args)),ll=3)
+                log(lDEBUG,"gpiocontrol args %s"%(format(args)))
 
                 if key == settings.PIN_A:
                     self.turn_callback(0,'#')
@@ -44,7 +46,7 @@ class GPIOControl():
                 elif key == settings.PIN_Y:
                     self.turn_callback(1)
         finally:
-            fn.log("gpiocontrol: ende",ll=3)
+            log(lDEBUG,"gpiocontrol: ende")
             time.sleep(0.1)
             settings.callback_active = False
 
