@@ -103,7 +103,7 @@ def mountusb():
 def umountusb():
     os.system("/home/pi/RPi-Jukebox-RFID/shared/audiofolders/usb/")
 
-def get_folger_from_file(filename):
+def get_folder_from_file(filename):
     try:
         with open (filename) as f:
             lines = f.readlines()

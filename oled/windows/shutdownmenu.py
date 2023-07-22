@@ -5,7 +5,8 @@ from PIL import ImageFont
 import settings
 import os
 import integrations.playout as playout
-import integrations.functions as fn
+
+from integrations.functions import restart_oled
 
 class Shutdownmenu(MenuBase):
 
@@ -31,7 +32,7 @@ class Shutdownmenu(MenuBase):
 
     def push_callback(self,lp=False):
         if self.counter == 0:
-            fn.restart_oled()
+            restart_oled()
 
         elif self.counter == 1:
             playout.savepos()
@@ -91,5 +92,5 @@ class Shutdownmenu(MenuBase):
                 print("Stopping event loop")
                 self.loop.stop()
             elif key == 'D':
-                fn.restart_oled()
+                restart_oled()
 

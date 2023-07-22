@@ -5,9 +5,11 @@ from ui.windowbase import WindowBase
 from luma.core.render import canvas
 from PIL import ImageFont
 import settings
-import integrations.playout as playout
 import os
-import integrations.functions as fn
+
+from ui.windowbase import WindowBase
+import integrations.playout as playout
+from integrations.functions import to_min_sec,get_folder_of_livestream, get_folder
 
 import RPi.GPIO as GPIO
 
@@ -72,7 +74,7 @@ class Playbackmenu(WindowBase):
             try:
                 if self.nowplaying._state == "play":
                     #elapsed
-                    _spos = fn.to_min_sec(self.nowplaying._elapsed)
+                    _spos = to_min_sec(self.nowplaying._elapsed)
                     _xpos = 41 - int(Playbackmenu.fontsmall.getsize(_spos)[0]/2)
 
                     draw.text((_xpos, settings.DISPLAY_HEIGHT -14  ),_spos, font=Playbackmenu.fontsmall, fill="white")
@@ -167,15 +169,15 @@ class Playbackmenu(WindowBase):
         if self.skipselected:
             if direction < 0:
                 if self.nowplaying._playingalbum == "Livestream":
-                    cfolder = fn.get_folder_of_livestream(self.nowplaying._playingfile)
-                    playout.pc_playfolder (fn.get_folder(cfolder,-1))
+                    cfolder = get_folder_of_livestream(self.nowplaying._playingfile)
+                    playout.pc_playfolder (get_folder(cfolder,-1))
                 else:
                     playout.pc_prev()
 
             else:
                 if self.nowplaying._playingalbum == "Livestream":
-                    cfolder = fn.get_folder_of_livestream(self.nowplaying._playingfile)
-                    playout.pc_playfolder (fn.get_folder(cfolder,1))
+                    cfolder = get_folder_of_livestream(self.nowplaying._playingfile)
+                    playout.pc_playfolder (get_folder(cfolder,1))
                 else:
                     playout.pc_next()
 

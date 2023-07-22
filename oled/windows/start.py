@@ -5,7 +5,7 @@ from PIL import ImageFont
 import settings
 
 import integrations.bluetooth
-import integrations.functions as fn
+from integrations.functions import get_battload_color
 
 from datetime import datetime
 
@@ -39,8 +39,8 @@ class Start(WindowBase):
             if settings.X728_ENABLED:
                 symbol = settings.battsymbol
 
-                draw.text((50, 20), text=symbol, font=Start.fontawesome, fill=fn.get_battload_color())
-                draw.text((25, 50), text="%d%% geladen" % (settings.battcapacity), font=Start.font, fill=fn.get_battload_color())
+                draw.text((50, 20), text=symbol, font=Start.fontawesome, fill=get_battload_color())
+                draw.text((25, 50), text="%d%% geladen" % (settings.battcapacity), font=Start.font, fill=get_battload_color())
             else:
                 draw.text((self.xmid - int(self.symbol1width / 2), self.ymid -int(self.symbol1height / 2)), text=self.symbol1, font=Start.fontawesome, fill="white")
 

@@ -3,7 +3,7 @@ from ui.menubase import MenuBase
 from luma.core.render import canvas
 from PIL import ImageFont
 import settings
-import integrations.functions as fn
+from integrations.functions import mountusb
 
 class Mainmenu(MenuBase):
 
@@ -44,7 +44,7 @@ class Mainmenu(MenuBase):
             elif self.counter == 4:
                 settings.audio_basepath = settings.AUDIO_BASEPATH_USB
                 settings.currentfolder = settings.AUDIO_BASEPATH_USB
-                fn.mountusb()
+                mountusb()
                 self.windowmanager.set_window("foldermenu")
             elif self.counter == 5:
                 self.windowmanager.set_window("headphonemenu")

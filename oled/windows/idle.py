@@ -6,15 +6,16 @@ import settings
 from luma.core.render import canvas
 from PIL import ImageFont
 import os
+import RPi.GPIO as GPIO
+import locale
 import time
 
 import integrations.bluetooth
 import integrations.playout as playout
-from integrations.functions import *
+
+from integrations.functions import get_battload_color, to_min_sec, get_folder, get_folder_of_livestream, get_folder_from_file
+
 from integrations.logging import *
-import RPi.GPIO as GPIO
-import locale
-import time
 
 
 
@@ -95,13 +96,13 @@ class Idle(WindowBase):
             if settings.job_t >= 0:
                 draw.text((xpos3 + 2, lineposy + 2 ), "%2.2d" % (int(settings.job_t)), font=Idle.fontsmall, fill="BLUE")
             elif settings.X728_ENABLED:
-                draw.text((xpos3 + 2, lineposy + 2), settings.battsymbol, font=Idle.faicons, fill=fn.get_battload_color())
+                draw.text((xpos3 + 2, lineposy + 2), settings.battsymbol, font=Idle.faicons, fill=get_battload_color())
 
             if settings.X728_ENABLED:
                 #battery load line
                 try:
                     pos = int(settings.battcapacity/100*settings.DISPLAY_WIDTH)
-                    draw.rectangle((0,3,pos,3),outline=fn.get_battload_color(),fill=fn.get_battload_color())
+                    draw.rectangle((0,3,pos,3),outline=get_battload_color(),fill=get_battload_color())
                 except:
                     print ("err")
 
@@ -112,7 +113,7 @@ class Idle(WindowBase):
             try:
                 if self.nowplaying._state == "play":
                     #elapsed
-                    _spos = fn.to_min_sec(self.nowplaying._elapsed)
+                    _spos = to_min_sec(self.nowplaying._elapsed)
                     _xpos = int((xpos1 + xpos2) / 2 ) - int(Idle.fontsmall.getsize(_spos)[0]/2)
 
                     draw.text((_xpos, lineposy + 2 ),_spos, font=Idle.fontsmall, fill="white")
@@ -154,7 +155,7 @@ class Idle(WindowBase):
                     text = "Batterie: %d%%%s" % (settings.battcapacity, ", lädt." if settings.battloading else " ") if settings.battcapacity > settings.X728_BATT_LOW else "Batterie laden! %d%%" % (settings.battcapacity)
                     mwidth = Idle.font.getsize(text)
                     ungerade = (time.time() % 2) // 1
-                    fill = "black" if ungerade and  settings.battcapacity <= settings.X728_BATT_LOW else  fn.get_battload_color()
+                    fill = "black" if ungerade and  settings.battcapacity <= settings.X728_BATT_LOW else  get_battload_color()
                     draw.text(((settings.DISPLAY_WIDTH/2) - (mwidth[0]/2),10), text, font=Idle.font, fill=fill)
                 if settings.job_i >= 0 or settings.job_t >= 0:
                     if settings.job_i >= settings.job_t:
@@ -237,28 +238,28 @@ class Idle(WindowBase):
                 self.busysymbol = settings.SYMBOL_PREV
 
                 if self.nowplaying._playingalbum == "Livestream":
-                    cfolder = fn.get_folder_of_livestream(self.nowplaying._playingfile)
-                    playout.pc_playfolder (fn.get_folder(cfolder,-1))
+                    cfolder = get_folder_of_livestream(self.nowplaying._playingfile)
+                    playout.pc_playfolder (get_folder(cfolder,-1))
                 else:
                     playout.pc_prev()
             elif key == 'right' or key == '6':
                 self.busysymbol = settings.SYMBOL_NEXT
                 if self.nowplaying._playingalbum == "Livestream":
-                    cfolder = fn.get_folder_of_livestream(self.nowplaying._playingfile)
-                    playout.pc_playfolder (fn.get_folder(cfolder,1))
+                    cfolder = get_folder_of_livestream(self.nowplaying._playingfile)
+                    playout.pc_playfolder (get_folder(cfolder,1))
                 else:
                     playout.pc_next()
             elif key == 'A':
                 settings.audio_basepath = settings.AUDIO_BASEPATH_MUSIC
-                settings.currentfolder = fn.get_folger_from_file(settings.FILE_LAST_MUSIC)
+                settings.currentfolder = get_folder_from_file(settings.FILE_LAST_MUSIC)
                 self.windowmanager.set_window("foldermenu")
             elif key == 'B':
                 settings.audio_basepath = settings.AUDIO_BASEPATH_HOERBUCH 
-                settings.currentfolder = fn.get_folger_from_file(settings.FILE_LAST_HOERBUCH)
+                settings.currentfolder = get_folder_from_file(settings.FILE_LAST_HOERBUCH)
                 self.windowmanager.set_window("foldermenu")
             elif key == 'C':
                 settings.audio_basepath = settings.AUDIO_BASEPATH_RADIO
-                settings.currentfolder = fn.get_folger_from_file(settings.FILE_LAST_RADIO)
+                settings.currentfolder = get_folder_from_file(settings.FILE_LAST_RADIO)
                 self.windowmanager.set_window("foldermenu")
             elif key =='D':
                 self.windowmanager.set_window("shutdownmenu")

@@ -1,11 +1,10 @@
 """Manages the currently shown activewindow on screen and passes callbacks for the rotary encoder"""
-import asyncio
-from datetime import datetime
 import settings
+import asyncio
 
-from integrations.functions import *
 from integrations.logging import *
 
+from datetime import datetime
 from integrations.rfidwatcher import RfidWatcher
 
 class WindowManager():
