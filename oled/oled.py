@@ -6,10 +6,19 @@ import os
 
 from subprocess import call
 import integrations.bluetooth
-from integrations.display import get_display
 import integrations.functions as fn
 
 import settings
+
+
+if settings.DISPLAY_DRIVER == "ST7789":
+    import integrations.display.st7789 as idisplay
+elif settngs.DISPLAY_DRIVER = "ssd1351":
+    import integrations.display.ssd1351 as idisplay
+
+
+idisplay.set_fonts()
+
 
 from integrations.mopidy import MopidyControl
 from integrations.musicmanager import Musicmanager
@@ -29,12 +38,8 @@ import windows.ende
 import windows.firewall
 import windows.pin
 
-import settings
-
 if settings.KEYBOARD_ENABLED:
     from integrations.keyboard import KeyboardCtrl
-
-
 
 #Systemd exit
 def gracefulexit(signum, frame):
@@ -45,7 +50,7 @@ def main():
     loop = asyncio.get_event_loop()
 
     #Display = real hardware or emulator (depending on settings)
-    display = get_display()
+    display = idisplay.get_display()
 
     #screen = windowmanager
     windowmanager = WindowManager(loop, display)
