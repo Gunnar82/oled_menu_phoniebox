@@ -13,7 +13,7 @@ import settings
 
 if settings.DISPLAY_DRIVER == "ST7789":
     import integrations.display.st7789 as idisplay
-elif settngs.DISPLAY_DRIVER = "ssd1351":
+elif settngs.DISPLAY_DRIVER == "ssd1351":
     import integrations.display.ssd1351 as idisplay
 
 
@@ -37,9 +37,6 @@ import windows.wlan
 import windows.ende
 import windows.firewall
 import windows.pin
-
-if settings.KEYBOARD_ENABLED:
-    from integrations.keyboard import KeyboardCtrl
 
 #Systemd exit
 def gracefulexit(signum, frame):
@@ -103,22 +100,24 @@ def main():
     def push_callback(_lp=False):
         windowmanager.push_callback(lp=_lp)
 
+    #init Inputs
+
     ####keyboard control
     if settings.KEYBOARD_ENABLED:
-        from integrations.keyboard import KeyboardCtrl
+        from integrations.inputs.keyboard import KeyboardCtrl
 
         mKeyboard = KeyboardCtrl(loop, turn_callback, push_callback)
 
     ### KEYPAD 4x4 MCP23017 I2C
 
     if settings.KEYPAD_ENABLED:
-        from integrations.keypad_4x4_i2c import keypad_4x4_i2c
+        from integrations.inputs.keypad_4x4_i2c import keypad_4x4_i2c
 
         mKeypad = keypad_4x4_i2c(loop, settings.KEYPAD_ADDR, settings.KEYPAD_INTPIN, turn_callback, push_callback)
 
     ###Rotaryencoder Setup
     if settings.ROTARYENCODER_ENABLED:
-        from integrations.rotaryencoder import RotaryEncoder
+        from integrations.inputs.rotaryencoder import RotaryEncoder
 
         print ("Rotaryconctroller")
         rc = RotaryEncoder(loop, turn_callback, push_callback)
@@ -127,7 +126,7 @@ def main():
     ####Powercontroller Init
     haspowercontroller = False
     if settings.POWERCONTROLLER_ENABLED:
-        from integrations.powercontroller import PowerController
+        from integrations.inputs.powercontroller import PowerController
 
         haspowercontroller = True
         try:
@@ -136,6 +135,14 @@ def main():
             haspowercontroller = False
         except:
             haspowercontroller = False
+
+
+    #### gpiocontrol init
+    if settings.GPIOControl:
+        from integrations.inputs.gpiocontrol import GPIOControl
+        gpioc = GPIOControl(loop, turn_callback, push_callback)
+
+# end init inputs
 
     ######Status LED
     if settings.STATUS_LED_ENABLED:
@@ -146,11 +153,6 @@ def main():
     if settings.X728_ENABLED:
         import integrations.x728v21 as x728v21
         x728 = x728v21.x728(loop)
-
-    #### gpiocontrol init
-    if settings.GPIOControl:
-        from integrations.gpiocontrol import GPIOControl
-        gpioc = GPIOControl(loop, turn_callback, push_callback)
 
 
     ###main
