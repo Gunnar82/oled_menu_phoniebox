@@ -37,12 +37,14 @@ class Playbackmenu(WindowBase):
         self.counter = 1
         self.skipselected = False
         self.descr = []
-        self.descr.append([ "Zurück / Vor", "\uf048\uf051" ])
+        self.descr.append([ "Zurück / Vor", "\uf07e" ])
         self.descr.append([ "Stop", "\uf04d" ])
         self.descr.append([ "Play / Pause","\uf04c", "\uf04b" ])
         self.descr.append([ "Hauptmenü", "\uf062" ])
         self.descr.append([ "Zurück", "\uf0a8" ])
-        self.descr.append([ "Wiedergabeliste", "\uf0ca" ])
+        self.descr.append([ "Wiedergabeliste", "\uf03c" ])
+
+        self.symwidth,self.symheight = Playbackmenu.faiconsbig.getsize(self.descr[1][1])
 
     def activate(self):
         self._activepbm = True
@@ -125,10 +127,12 @@ class Playbackmenu(WindowBase):
             if (self.skipselected):
                 draw.line((8, 42, 20, 42), width=2, fill=settings.COLOR_SELECTED)
 
-            startx = int(settings.DISPLAY_WIDTH/2) - int(len(self.descr) / 2 * (settings.FONT_SIZE_XL + 10))
+
+
+            startx = int(settings.DISPLAY_WIDTH/2) - int(len(self.descr) / 2 * (self.symwidth * 1.3))
 
             while (i < len(self.descr)):
-                xpos = startx + i * ( settings.FONT_SIZE_XL + 10)
+                xpos = startx + i * (self.symwidth*1.3)
 
                 draw.text((xpos, settings.FONT_HEIGHT_XL + 20 if (i == self.counter) else settings.FONT_HEIGHT_XL + 22 ), self.descr[i][1], font=Playbackmenu.faiconsbig, fill=settings.COLOR_SELECTED if (i == self.counter) else fillcolor ) #prev
 

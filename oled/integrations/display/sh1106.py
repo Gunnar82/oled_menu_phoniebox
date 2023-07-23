@@ -3,12 +3,12 @@ import settings
 
 def get_display():
     settings.CONTRAST_HANDLE = True
+
     from luma.core.interface.serial import spi,i2c
 
     from luma.oled.device import ssd1351
 
-    serial = spi(port=0, device=0, gpio_SCLK=10, gpio_DC=22, gpio_RST=27, gpio_CS=16, bus_speed_hz=16000000)
-    device = ssd1351(serial_interface=serial,rotate=1, bgr=True)
+    device = sh1106(i2c(port=1, address=0x3C))
 
 
     device.contrast(settings.CONTRAST_FULL)
@@ -37,4 +37,4 @@ def set_fonts():
 
     settings.DISPLAY_WIDTH = 128
     settings.DISPLAY_HEIGHT = 128 # or 64
-    settings.DISPLAY_RGB = True
+    settings.DISPLAY_RGB = False

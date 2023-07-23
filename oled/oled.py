@@ -15,9 +15,10 @@ from integrations.logging import *
 
 if settings.DISPLAY_DRIVER == "ST7789":
     import integrations.display.st7789 as idisplay
-elif settngs.DISPLAY_DRIVER == "ssd1351":
+elif settings.DISPLAY_DRIVER == "ssd1351":
     import integrations.display.ssd1351 as idisplay
-
+else:
+    raise Exception("no DISPLAY")
 
 idisplay.set_fonts()
 
