@@ -86,14 +86,17 @@ class ListBase(WindowBase):
                     draw.text((startx, startx + i * settings.FONT_HEIGHT_SMALL), drawtext[self.drawtextx:], font=self.font, fill=settings.COLOR_SELECTED)
 
                 else:
-                    draw.text((startx, startx  + i * settings.FONT_HEIGHT_SMALL), self.menu[i+self.page][:settings.FONT_SIZE_L], font=self.font, fill="white")
-                    #drawrectangle((90 , 17+i*12 , 128 , 34+i*12 ), outline="black", fill="black")
-
+                    yoffsetright = 128
                     try:
                         drawtext = self.progress[self.menu[i+self.page]]
                         draw.text((100, 17+i*12), "%2.0d%%" % (drawtext*100), font=self.font, fill="white")
+                        yoffsetright = 16
                     except:
                         pass
+
+                    draw.text((startx, startx  + i * settings.FONT_HEIGHT_SMALL), self.menu[i+self.page][:yoffsetright], font=self.font, fill="white")
+                    #drawrectangle((90 , 17+i*12 , 128 , 34+i*12 ), outline="black", fill="black")
+
 
 
 
