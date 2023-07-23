@@ -103,9 +103,9 @@ ALSA_DEV_BT_1 = "bt_dev_1"
 MAC_DEV_BT_1 = "FC:58:FA:FE:09:4C"
 
 ENABLED_DEV_BT_2 = True
-NAME_DEV_BT_2 = "Jabra 65"
+NAME_DEV_BT_2 = "Skoda"
 ALSA_DEV_BT_2 = "bt_dev_2"
-MAC_DEV_BT_2 = "50:C2:ED:0D:4B:8D"
+MAC_DEV_BT_2 = "b4:ec:02:91:b3:4d"
 
 INTPIN=2
 
