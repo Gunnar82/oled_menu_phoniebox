@@ -92,10 +92,10 @@ class WindowManager():
 
 
 
-            if self._lastcontrast != contrast and settings.CONTRAST_HANDLE:
+            if self._lastcontrast != contrast:
                 self._lastcontrast = contrast
-                if settings.CONTRAST_HANLDE:
-                    self.device.contrast(contrast)
+
+                self.device.contrast(contrast)
 
             if self.activewindow != []:
                 count = 0

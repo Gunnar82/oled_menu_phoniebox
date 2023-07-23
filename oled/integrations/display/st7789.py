@@ -23,7 +23,6 @@ def do_nothing(obj):
 
 def set_fonts():
     print("set fonts")
-    settings.CONTRAST_HANDLE = False
 
     settings.FONT_SIZE_XXL = 50
     settings.FONT_SIZE_XL = 30
