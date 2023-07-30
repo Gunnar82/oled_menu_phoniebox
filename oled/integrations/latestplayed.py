@@ -22,11 +22,11 @@ class MyHandler(FileSystemEventHandler):
                 played.close()
                 log(lDEBUG,"LastPlayed: %s" %(line))
 
-                if line.startswith("Musik"):
+                if line.startswith("/Musik") or line.startswith("Musik"):
                     outfile = settings.FILE_LAST_MUSIC
-                elif line.startswith("Radio"):
+                elif line.startswith("/Radio" or line.startswith("Radio")):
                     outfile = settings.FILE_LAST_RADIO
-                elif line.startswith("Hörspiel"):
+                elif line.startswith("/Hörspiel")or line.startswith("Hörspiel"):
                     outfile = settings.FILE_LAST_HOERBUCH
 
                 log(lDEBUG,"LastPlayed: outfile: %s" % (outfile))
