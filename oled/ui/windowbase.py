@@ -1,16 +1,19 @@
 """ View class to inherit other views from """
 
 import settings
+
 from PIL import ImageFont
 from luma.core.render import canvas
 
-busyfont = ImageFont.truetype(settings.FONT_TEXT, size=12)
-busyfaicons = ImageFont.truetype(settings.FONT_ICONS, size=18)
-busyfaiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=35)
+
+busyfont = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_L)
+busyfaicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_L)
+busyfaiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XXXL)
 
 
 class WindowBase():
     def __init__(self, windowmanager):
+        self.windowtitle = "untitled"
         self.windowmanager = windowmanager
         self.counter = 0
         self.page = 0
@@ -22,24 +25,29 @@ class WindowBase():
         self.window_on_back = "mainmenu"
         self.busy = False
         self.busysymbol = settings.SYMBOL_SANDCLOCK
-        self.busytext = settings.PLEASE_WAIT
-        self.busyrendertime = 2
-        self.changerendertimeonhint = False
+        self.busytext1 = settings.PLEASE_WAIT
+        self.busytext2 = ""
+        self.busyrendertime = 3
+        self.changerendertimeonhint = True
         self._rendertime = 0.25
 
-    def renderbusy(self):
+    def renderbusy(self,symbolcolor = settings.COLOR_RED, textcolor1=settings.COLOR_WHITE, textcolor2=settings.COLOR_WHITE):
         with canvas(self.device) as draw:
             if self.changerendertimeonhint:
                 self.changerendertimeonhint = False
 
-            mwidth = busyfont.getsize(self.busytext)
-            draw.text(((64 - int(mwidth[0]/2)), 5), text=self.busytext, font=busyfont, fill="white") #sanduhr
+            mwidth,mheight = busyfont.getsize(self.busytext1)
+            draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, 2), text=self.busytext1, font=busyfont, fill=textcolor1)
 
-            mwidth = busyfaiconsbig.getsize(self.busysymbol)
-            draw.text(((64 - int(mwidth[0]/2)), 25), text=self.busysymbol, font=busyfaiconsbig, fill=settings.COLOR_RED) #sanduhr
+            mwidth,mheight = busyfaiconsbig.getsize(self.busysymbol)
+            draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, (settings.DISPLAY_HEIGHT - mheight) / 2), text=self.busysymbol, font=busyfaiconsbig, fill=symbolcolor) #sanduhr
 
-            self.windowmanager.activewindow.busy = False
-            self.windowmanager.activewindow.busytext = settings.PLEASE_WAIT
+            if (self.busytext2 != ""):
+                mwidth,mheight = busyfont.getsize(self.busytext2)
+                draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, settings.DISPLAY_HEIGHT - mheight - 2), text=self.busytext2, font=busyfont, fill=textcolor2) #sanduhr
+
+            self.windowmanager.activewindow.busytext2 = ""
+            self.windowmanager.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
 
 
     def activate(self):

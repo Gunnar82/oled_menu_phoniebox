@@ -1,5 +1,6 @@
 """Manages the currently shown activewindow on screen and passes callbacks for the rotary encoder"""
 import settings
+
 import asyncio
 
 from integrations.logging import *
@@ -25,7 +26,7 @@ class WindowManager():
         self.rfidwatcher = RfidWatcher()
         self.rfidwatcher.start()
 
-
+        self.rendered_busy = False
         log(lINFO,"Rendering task created")
 
     def add_window(self, windowid, window):
@@ -43,6 +44,7 @@ class WindowManager():
                 self.rendertime = self.activewindow._rendertime
                 self.activewindow.busy = False
                 self.activewindow.activate()
+                self.activewindow.windowtitle = windowid
             except (NotImplementedError, AttributeError):
                 pass
             log(lINFO,f"Activated {windowid}")
@@ -90,8 +92,6 @@ class WindowManager():
                     self.rendertime = self.activewindow._rendertime
                     self.looptime = self._looptime
 
-
-
             if self._lastcontrast != contrast:
                 self._lastcontrast = contrast
 
@@ -107,31 +107,38 @@ class WindowManager():
                     self.show_window()
                     self.lastrfidate = datetime.now()
 
-                if settings.screenpower and not settings.callback_active:
+                if settings.screenpower:
                     try:
-                        if not settings.callback_active:
-                            if (datetime.now() - self.lastrfidate).total_seconds() < 3:
-                                log(DEBUG,"render rfid symbol")
-                                self.activewindow.busysymbol = settings.SYMBOL_CARD_READ
-                                self.activewindow.render()
-                                self.activewindow.renderbusy()
-                                self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
-                            elif self.activewindow.busy:
-                                log(lDEBUG,"render busy symbol")
-                                self.rendertime = self.activewindow.busyrendertime
-                                self.activewindow.renderbusy()
-                                self.activewindow.render()
-                            else:
-                                self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
-                                self.activewindow.render()
+                        log(lDEBUG3,"busy State of %s:  %s" %(self.activewindow.windowtitle,self.activewindow.busy))
+                        if (datetime.now() - self.lastrfidate).total_seconds() < 3:
+                            log(DEBUG,"render rfid symbol")
+                            self.rendered_busy = True
+                            self.activewindow.busysymbol = settings.SYMBOL_CARD_READ
+                            self.activewindow.renderbusy()
+                            self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
+                        elif self.activewindow.busy or settings.callback_active:
+                            self.rendered_busy = True
+                            log(lDEBUG2,"rendering busy of window %s, busyrendertime: %d" %(self.activewindow.windowtitle,self.activewindow.busyrendertime))
+                            self.rendertime = self.activewindow.busyrendertime
+                            self.activewindow.renderbusy()
+                        else:
+                            log(lDEBUG3,"general rendering")
+                            self.rendered_busy = False
+                            self.activewindow.render()
                     except (NotImplementedError, AttributeError):
                         log(lERROR,"render error")
 
             iTimerCounter = 0 
-            while (((datetime.now() - settings.lastinput).total_seconds() < self.activewindow.busyrendertime) and (iTimerCounter < self.rendertime / self._RENDERTIME)):
-                log(lDEBUG2,"renderloop: %d"%(iTimerCounter+1))
+
+            while (iTimerCounter < self.rendertime / self._RENDERTIME or (self.activewindow.busy and self.rendered_busy)):
+                log(lDEBUG2,"renderloop: %d, %d "%(iTimerCounter+1, self.rendertime / self._RENDERTIME))
                 iTimerCounter += 1
                 await asyncio.sleep(self._RENDERTIME)
+                log(lDEBUG3, "self.busytext1: %s" %(self.activewindow.busytext1))
+
+                if (not settings.callback_active and self.rendered_busy):
+                    log(lDEBUG3,"render resetting %s.busy to False" %(self.activewindow.windowtitle))
+                    self.activewindow.busy = False
 
             await asyncio.sleep(self._RENDERTIME)
 
@@ -139,7 +146,9 @@ class WindowManager():
         settings.lastinput = datetime.now()
         settings.staywake = False
         if settings.screenpower:
+            settings.callback_active = True
             self.activewindow.busy = True
+            log(lDEBUG2,"push_callback: started")
 
             try:
                 self.device.contrast(settings.CONTRAST_FULL)
@@ -147,7 +156,8 @@ class WindowManager():
             except (NotImplementedError, AttributeError):
                 log(lERROR,"window_manager: push_callback error")
             finally:
-                self.activewindow.busy = False
+                settings.callback_active = False
+                log(lDEBUG2,"push_callback: ended")
                 self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
 
         else:
@@ -157,9 +167,11 @@ class WindowManager():
 
     def turn_callback(self, direction, key=None):
         try:
+            settings.callback_active = True
             self.activewindow.busy = True
+            log(lDEBUG2,"turn_callback: started")
+
             settings.screenpower = True
-            #self.device.show()
             settings.lastinput = datetime.now()
             self.device.contrast(settings.CONTRAST_FULL)
             if key == '#':
@@ -170,7 +182,8 @@ class WindowManager():
         except (NotImplementedError, AttributeError):
             log(lERROR,"window_manager: turn_callback error")
         finally:
-            self.activewindow.busy = False
+            settings.callback_active = False
+            log(lDEBUG2,"turn_callback: ended")
 
     def __del__(self):
         self.rfidwatcher.stop()

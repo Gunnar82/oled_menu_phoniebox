@@ -71,11 +71,11 @@ class Idle(WindowBase):
             ####setting idle text / Icon on Song Number Changed
             if (self.oldsong != self.nowplaying._song) and ((datetime.datetime.now() - settings.lastinput).total_seconds() >= 5):
                 if (self.oldsong != ""):
-                    self.busytext = " Titel %2.2d von %2.2d " % (int(self.nowplaying._song), int(self.nowplaying._playlistlength))
+                    log(lDEBUG,"Titelwechsel erkannt")
+                    self.busytext1 = " Titelwechsel"
+                    self.busytext2 = "%2.2d von %2.2d " % (int(self.nowplaying._song), int(self.nowplaying._playlistlength))
                     self.busysymbol = settings.SYMBOL_CHANGING_SONG
-                    self.changerendertimeonhint = True
                     self.busy = True
-
 
                 self.oldsong = self.nowplaying._song
 
@@ -229,14 +229,15 @@ class Idle(WindowBase):
         if key:
             if key == 'up' or key == '2':
                 self.busysymbol = settings.SYMBOL_VOL_UP
+                self.busytext1 = "lauter"
                 playout.pc_volup(3)
             elif key == 'down' or key == '8':
                 self.busysymbol = settings.SYMBOL_VOL_DN
-
+                self.busytext1 = "leiser"
                 playout.pc_voldown(3)
             elif key == 'left' or key =='4':
                 self.busysymbol = settings.SYMBOL_PREV
-
+                self.busytext1 = "zurück"
                 if self.nowplaying._playingalbum == "Livestream":
                     cfolder = get_folder_of_livestream(self.nowplaying._playingfile)
                     playout.pc_playfolder (get_folder(cfolder,-1))
@@ -244,6 +245,7 @@ class Idle(WindowBase):
                     playout.pc_prev()
             elif key == 'right' or key == '6':
                 self.busysymbol = settings.SYMBOL_NEXT
+                self.busytext1 = "weiter"
                 if self.nowplaying._playingalbum == "Livestream":
                     cfolder = get_folder_of_livestream(self.nowplaying._playingfile)
                     playout.pc_playfolder (get_folder(cfolder,1))

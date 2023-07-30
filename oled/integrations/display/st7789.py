@@ -24,6 +24,8 @@ def do_nothing(obj):
 def set_fonts():
     print("set fonts")
 
+
+    settings.FONT_SIZE_XXXL = 60
     settings.FONT_SIZE_XXL = 50
     settings.FONT_SIZE_XL = 30
     settings.FONT_SIZE_L = 20

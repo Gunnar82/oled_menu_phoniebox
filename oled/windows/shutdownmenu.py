@@ -77,11 +77,11 @@ class Shutdownmenu(MenuBase):
 
         if key:
             if key == 'A':
-                self.busytext = "Austimer 30 min"
+                self.busytext1 = "Austimer 30 min"
                 self.busysymbol = "\uf0a2"
                 os.system("%s -c=shutdownafter -v=30" % settings.PLAYOUT_CONTROLS)
             elif key == 'B':
-                self.busytext = "Austimer deaktiviert"
+                self.busytext1 = "Austimer deaktiviert"
                 self.busysymbol = "\uf1f7"
                 os.system("%s -c=shutdownafter -v=0" % settings.PLAYOUT_CONTROLS)
 

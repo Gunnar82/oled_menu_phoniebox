@@ -16,17 +16,10 @@ class Ende(WindowBase):
         self.startup = datetime.now()
 
     def activate(self):
-        with canvas(self.device) as draw:
-            line="wird"
-            (linex,liney) = Ende.font.getsize(line)
-            draw.text(((settings.DISPLAY_WIDTH - linex) / 2 , 3), text=line, font=Ende.font, fill="white")
-
-            line="\uf011"
-            (linex,liney) = Ende.fontawesome.getsize(line)
-            draw.text(( (settings.DISPLAY_WIDTH - linex) / 2, (settings.DISPLAY_HEIGHT - liney) / 2), text=line, font=Ende.fontawesome, fill="white")
-
-            (linex, liney) = Ende.font.getsize(settings.shutdown_reason)
-            draw.text(((settings.DISPLAY_WIDTH - linex) / 2 , settings.DISPLAY_HEIGHT - liney - 5), text=settings.shutdown_reason, font=Ende.font, fill="white")
+        self.busytext1 = "wird"
+        self.busytext2 = settings.shutdown_reason
+        self.busysymbol = "\uf011"
+        self.renderbusy()
 
     def push_callback(self,lp=False):
         pass

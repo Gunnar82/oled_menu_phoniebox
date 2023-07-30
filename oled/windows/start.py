@@ -2,12 +2,14 @@
 from ui.windowbase import WindowBase
 from luma.core.render import canvas
 from PIL import ImageFont
+from datetime import datetime
+
 import settings
 
 import integrations.bluetooth
 from integrations.functions import get_battload_color
+from integrations.logging import *
 
-from datetime import datetime
 
 class Start(WindowBase):
     font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_NORMAL)
@@ -19,30 +21,24 @@ class Start(WindowBase):
         self.timeout = False
         self.startup = datetime.now()
         self.conrasthandle = False
-        self.hinttext = "Wird gestartet..."
-        (self.hintwidth, self.hintheight) = Start.font.getsize(self.hinttext)
-        self.symbol1 = settings.SYMBOL_SANDCLOCK
-        (self.symbol1width,self.symbol1height) = Start.fontawesome.getsize(self.symbol1)
-
-        self.xmid = int(settings.DISPLAY_WIDTH / 2)
-        self.ymid = int (settings.DISPLAY_HEIGHT / 2)
+        self.busytext1 = "Wird gestartet..."
 
     def render(self):
-        with canvas(self.device) as draw:
+        if settings.X728_ENABLED:
+            color = get_battload_color()
+            self.busysymbol = settings.battsymbol
+            self.busytext2 = "%d%% geladen" % (settings.battcapacity)
+        else:
+            color = settings.COLOR_WHITE
+
+        self.renderbusy(symbolcolor=color, textcolor2=color)
 
 
-            if self.mopidyconnection.connected and ((datetime.now() - self.startup).total_seconds() >= settings.START_TIMEOUT):
-                #print ("init")
-                self.windowmanager.set_window("idle")
-            draw.text((self.xmid -int(self.hintwidth / 2), 3), text=self.hinttext, font=Start.font, fill="white")
+        if self.mopidyconnection.connected and ((datetime.now() - self.startup).total_seconds() >= settings.START_TIMEOUT):
+            log (lDEBUG,"start: init")
+            self.windowmanager.set_window("idle")
 
-            if settings.X728_ENABLED:
-                symbol = settings.battsymbol
 
-                draw.text((50, 20), text=symbol, font=Start.fontawesome, fill=get_battload_color())
-                draw.text((25, 50), text="%d%% geladen" % (settings.battcapacity), font=Start.font, fill=get_battload_color())
-            else:
-                draw.text((self.xmid - int(self.symbol1width / 2), self.ymid -int(self.symbol1height / 2)), text=self.symbol1, font=Start.fontawesome, fill="white")
 
 
     def push_callback(self,lp=False):
