@@ -64,10 +64,14 @@ class ListBase(WindowBase):
                 draw.text((settings.DISPLAY_WIDTH - settings.FONT_SIZE_NORMAL, 1), text="\uf106", font=self.faicons, fill="white")
 
             #Calculate title coordinate from text lenght
-            draw.text(((settings.DISPLAY_WIDTH-len(self.title)*5)/2, 1), text=self.title, font=self.font, fill="white")
+            linewidth,lineheight = self.font.getsize(self.title)
+            draw.text(((settings.DISPLAY_WIDTH-linewidth)/2, 1), text=self.title, font=self.font, fill="white")
 
             #Playlists
             menulen = self.displaylines if (len(self.menu) >= self.displaylines) else len(self.menu)
+
+            linewidth,lineheight = self.font.getsize(self.menu[0])
+
             startx = settings.FONT_HEIGHT_NORMAL
 
             for i in range(menulen):
@@ -80,10 +84,10 @@ class ListBase(WindowBase):
                         else:
                             self.drawtextx = 0
                     #Selection arrow
-                    draw.polygon(((1, 11+startx + i * settings.FONT_HEIGHT_NORMAL), (1, 15+startx + i * settings.FONT_HEIGHT_NORMAL),
-                                        (5, 13+startx + i * settings.FONT_HEIGHT_NORMAL)), fill=settings.COLOR_SELECTED)
+                    draw.polygon(((1, 11+startx + i * lineheight - lineheight / 2), (1, 15+startx + i * lineheight - lineheight / 2 ),
+                                        (5, 13+startx + i * lineheight - lineheight / 2)), fill=settings.COLOR_SELECTED)
 
-                    draw.text((startx, startx + i * settings.FONT_HEIGHT_SMALL), drawtext[self.drawtextx:], font=self.font, fill=settings.COLOR_SELECTED)
+                    draw.text((startx, startx + i * lineheight), drawtext[self.drawtextx:], font=self.font, fill=settings.COLOR_SELECTED)
 
                 else:
                     yoffsetright = 128
@@ -94,7 +98,7 @@ class ListBase(WindowBase):
                     except:
                         pass
 
-                    draw.text((startx, startx  + i * settings.FONT_HEIGHT_SMALL), self.menu[i+self.page][:yoffsetright], font=self.font, fill="white")
+                    draw.text((startx, startx  + i * lineheight), self.menu[i+self.page][:yoffsetright], font=self.font, fill="white")
                     #drawrectangle((90 , 17+i*12 , 128 , 34+i*12 ), outline="black", fill="black")
 
 
