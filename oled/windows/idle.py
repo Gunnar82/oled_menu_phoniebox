@@ -42,7 +42,7 @@ class Idle(WindowBase):
         self.LocalOutputEnabled = False
         self.BluetoothFound = False
         self.window_on_back = "playlistmenu"
-
+        self.changerender = True
 
         #self.loop.create_task(find_dev_bt())
 

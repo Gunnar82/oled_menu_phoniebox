@@ -4,6 +4,9 @@ import settings
 import os 
 import integrations.functions as functions
 import integrations.playout as playout
+
+from integrations.logging import *
+
 class Foldermenu(ListBase):
     folders = []
 
@@ -41,7 +44,7 @@ class Foldermenu(ListBase):
                     settings["RESUME"] = "off"
 
                     fn = os.path.join(d,"folder.conf")
-
+                    log(lDEBUG,"playlistfolder: %s" % (fn))
                     folder_conf = open(fn,"r")
                     lines = folder_conf.readlines()
                     folder_conf.close()
@@ -52,9 +55,10 @@ class Foldermenu(ListBase):
 
                     if (settings["SONG"] != "0") and (settings["PLAYLISTLENGTH"] != "0") and ((settings["RESUME"]).lower() == "on"):
                         prozent = float(int(settings["SONG"]) / int(settings["PLAYLISTLENGTH"]))
-                        self.progress[file] = prozent
+                        log(lDEBUG2,"progress: %d von %d ist %.2f" % (int(settings["SONG"]), int(settings["PLAYLISTLENGTH"]),prozent))
+                        self.progress[file] = prozent * 100
                 except:
-                    pass
+                    log(lDEBUG,"No folder.conf for %s" % (d))
 
                 self.folders.append(file)
 
@@ -65,8 +69,9 @@ class Foldermenu(ListBase):
         super().__init__(windowmanager, "Auswahl")
         #self.timeoutwindow="folderinfo"
         self.timeout = False
-        
+
     def generate_folders(self,folder):
+
         self.generate_folders_array(folder)
         self.menu = []
         self.menu = self.folders
@@ -123,7 +128,7 @@ class Foldermenu(ListBase):
             #folder = self.folders[self.position-1]
             #fullpath = os.path.join(settings.currentfolder,folder)
             #settings.currentfolder = fullpath
-            
+
             if lp:
                 self.windowmanager.set_window("folderinfo")
             else:
@@ -135,7 +140,7 @@ class Foldermenu(ListBase):
                 else:
                     print ("play %s " % (settings.current_selectedfolder))
                     self.playfolder(settings.current_selectedfolder)
-                    
+
 
             #self.mopidyconnection.loadplaylist(self.mopidyconnection.playlists[self.counter-1])
             #self.windowmanager.set_window("idle")

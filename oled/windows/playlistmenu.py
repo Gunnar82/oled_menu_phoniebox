@@ -12,7 +12,6 @@ class Playlistmenu(ListBase):
     def __init__(self, windowmanager, musicmanager):
         self.musicmanager = musicmanager
         super().__init__(windowmanager, "Playlist")
-        self.changerender = False
 
 
     async def eyed3_playlist(self):

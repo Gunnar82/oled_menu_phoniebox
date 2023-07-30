@@ -27,7 +27,7 @@ class Headphonemenu(MenuBase):
 
     def __init__(self, windowmanager,title):
         super().__init__(windowmanager,title)
-
+        self.changerender = True
         self.get_dev_status(first=True)
         self.descr.append(["Zurück","\uf0a8"])
         self.descr.append([settings.NAME_DEV_BT_1 + " " + self.bt1_status, "\uf0f57" if not settings.ENABLED_DEV_BT_1 else "\uf293" if self.bt1_status == "enabled" else "\uf294"])

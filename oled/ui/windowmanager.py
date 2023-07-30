@@ -7,6 +7,7 @@ from integrations.logging import *
 
 from datetime import datetime
 from integrations.rfidwatcher import RfidWatcher
+from integrations.latestplayed import LatestPlayed
 
 class WindowManager():
     def __init__(self, loop, device):
@@ -25,6 +26,9 @@ class WindowManager():
 
         self.rfidwatcher = RfidWatcher()
         self.rfidwatcher.start()
+
+        self.lastplayed = LatestPlayed()
+        self.lastplayed.start()
 
         self.rendered_busy = False
         log(lINFO,"Rendering task created")

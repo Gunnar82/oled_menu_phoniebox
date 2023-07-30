@@ -108,7 +108,10 @@ def get_folder_from_file(filename):
         with open (filename) as f:
             lines = f.readlines()
             f.close()
-            path = settings.AUDIO_BASEPATH_BASE + lines[0].rstrip()
+            if (lines[0].startswith("/")):
+                path = settings.AUDIO_BASEPATH_BASE + lines[0].rstrip()
+            else:
+                path = settings.AUDIO_BASEPATH_BASE + "/" + lines[0].rstrip()
             return (path)
     except:
         return settings.AUDIO_BASEPATH_BASE

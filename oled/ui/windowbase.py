@@ -28,7 +28,7 @@ class WindowBase():
         self.busytext1 = settings.PLEASE_WAIT
         self.busytext2 = ""
         self.busyrendertime = 3
-        self.changerender = True
+        self.changerender = False
         self._rendertime = 0.25
 
     def renderbusy(self,symbolcolor = settings.COLOR_RED, textcolor1=settings.COLOR_WHITE, textcolor2=settings.COLOR_WHITE):

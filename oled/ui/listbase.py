@@ -6,6 +6,9 @@ from datetime import datetime
 
 import settings
 
+
+from integrations.logging import *
+
 class ListBase(WindowBase):
     def __init__(self, windowmanager, title):
         super().__init__(windowmanager)
@@ -90,16 +93,17 @@ class ListBase(WindowBase):
                     draw.text((startx, startx + i * lineheight), drawtext[self.drawtextx:], font=self.font, fill=settings.COLOR_SELECTED)
 
                 else:
-                    yoffsetright = 128
-                    try:
-                        drawtext = self.progress[self.menu[i+self.page]]
-                        draw.text((100, 17+i*12), "%2.0d%%" % (drawtext*100), font=self.font, fill="white")
-                        yoffsetright = 16
-                    except:
-                        pass
+                    draw.text((startx, startx  + i * lineheight), self.menu[i+self.page], font=self.font, fill="white")
 
-                    draw.text((startx, startx  + i * lineheight), self.menu[i+self.page][:yoffsetright], font=self.font, fill="white")
-                    #drawrectangle((90 , 17+i*12 , 128 , 34+i*12 ), outline="black", fill="black")
+                    try:
+                        drawtext = "%2.0d%%" % (self.progress[self.menu[i+self.page]])
+                        linewidth1, lineheight1 = self.font.getsize(drawtext)
+                        log(lDEBUG,"listbase: percent:%s:" %(drawtext))
+                        draw.rectangle((settings.DISPLAY_WIDTH - linewidth1 - 15  , startx + i * lineheight , settings.DISPLAY_WIDTH , startx + (i + 1) * lineheight ), outline="black", fill="black")
+                        draw.text((settings.DISPLAY_WIDTH - linewidth1 - 5, startx + i * lineheight), drawtext, font=self.font, fill=settings.COLOR_GREEN)
+                    except:
+                        log(lDEBUG,"no percentage")
+#
 
 
 
