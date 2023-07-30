@@ -58,7 +58,7 @@ class Foldermenu(ListBase):
                         log(lDEBUG2,"progress: %d von %d ist %.2f" % (int(settings["SONG"]), int(settings["PLAYLISTLENGTH"]),prozent))
                         self.progress[file] = prozent * 100
                 except:
-                    log(lDEBUG,"No folder.conf for %s" % (d))
+                    log(lDEBUG2,"No folder.conf for %s" % (d))
 
                 self.folders.append(file)
 
