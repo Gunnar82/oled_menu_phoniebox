@@ -28,13 +28,11 @@ class WindowBase():
         self.busytext1 = settings.PLEASE_WAIT
         self.busytext2 = ""
         self.busyrendertime = 3
-        self.changerendertimeonhint = True
+        self.changerender = True
         self._rendertime = 0.25
 
     def renderbusy(self,symbolcolor = settings.COLOR_RED, textcolor1=settings.COLOR_WHITE, textcolor2=settings.COLOR_WHITE):
         with canvas(self.device) as draw:
-            if self.changerendertimeonhint:
-                self.changerendertimeonhint = False
 
             mwidth,mheight = busyfont.getsize(self.busytext1)
             draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, 2), text=self.busytext1, font=busyfont, fill=textcolor1)

@@ -116,11 +116,11 @@ class WindowManager():
                             self.activewindow.busysymbol = settings.SYMBOL_CARD_READ
                             self.activewindow.renderbusy()
                             self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
-                        elif self.activewindow.busy or settings.callback_active:
+                        elif (self.activewindow.busy or settings.callback_active) and self.activewindow.changerender:
                             self.rendered_busy = True
-                            log(lDEBUG2,"rendering busy of window %s, busyrendertime: %d" %(self.activewindow.windowtitle,self.activewindow.busyrendertime))
                             self.rendertime = self.activewindow.busyrendertime
                             self.activewindow.renderbusy()
+                            log(lDEBUG2,"rendering busy of window %s, busyrendertime: %d" %(self.activewindow.windowtitle,self.rendertime))
                         else:
                             log(lDEBUG3,"general rendering")
                             self.rendered_busy = False

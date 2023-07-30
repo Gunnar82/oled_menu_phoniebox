@@ -1,5 +1,5 @@
 """ Manages music status and control commands for Mopidy and AirPlay """
-import eyed3
+
 import settings
 
 class Musicmanager():
