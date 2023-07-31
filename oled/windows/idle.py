@@ -68,6 +68,29 @@ class Idle(WindowBase):
         with canvas(self.device) as draw:
             now = datetime.datetime.now()
 
+            if (settings.battcapacity >= 0 and settings.battcapacity <= settings.X728_BATT_EMERG and not settings.battloading):
+                self.busytext1 = "Batterie leer"
+                self.busytext2 = "AUS in %ds" % ((settings.lastinput - now).total_seconds() + 120)
+                self.busy = True
+                self.contrasthandle = False
+                self.rendertime = self._rendertime
+                self.keep_busy = True
+                self.busyrendertime = 0.5
+
+                if ((datetime.datetime.now() - settings.lastinput).total_seconds() > 120):
+                    log(lINFO,"X728: Shutting down: Low Battery (EMERG)")
+                    playout.savepos()
+                    playout.pc_shutdown()
+
+
+                return
+
+            else:
+                self.busyrendertime = 3
+                self.contrasthandle = True
+
+
+
             ####setting idle text / Icon on Song Number Changed
             if (self.oldsong != self.nowplaying._song) and ((datetime.datetime.now() - settings.lastinput).total_seconds() >= 5):
                 if (self.oldsong != ""):
@@ -104,7 +127,7 @@ class Idle(WindowBase):
                     pos = int(settings.battcapacity/100*settings.DISPLAY_WIDTH)
                     draw.rectangle((0,3,pos,3),outline=get_battload_color(),fill=get_battload_color())
                 except:
-                    print ("err")
+                    log(lERROR,"Battery Error")
 
             #volume
             draw.text((1, lineposy + 2 ), str(self.nowplaying._volume), font=Idle.fontsmall, fill="white")
@@ -144,11 +167,6 @@ class Idle(WindowBase):
             draw.text((_xpos, lineposy + 2 ),_spos , font=Idle.fontsmall, fill="white")
 
 
-            if (settings.battcapacity >= 0 and settings.battcapacity <= settings.X728_BATT_EMERG): 
-                playout.savepos()
-                playout.pc_shutdown()
-
-                return
 
             if ((self.nowplaying._state == "stop") or (settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (settings.battcapacity <= settings.X728_BATT_LOW) or (settings.DISPLAY_HEIGHT > 64)):
                 if (settings.battcapacity >= 0):

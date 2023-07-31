@@ -2,16 +2,19 @@
 
 ufw_services_allow = ["ssh","http"]
 
-
 LOGLEVEL=3
+
+
+use_eyed3 = False
 
 ###DISPLAY_SETTINGS i2c
 DISPLAY_TYPE = "spi" # or "i2c"
-DISPLAY_DRIVER = "ST7789"
+DISPLAY_DRIVER = "ssd1351"
+
 
 ####CONTROL
 
-MENU_TIMEOUT = 20
+MENU_TIMEOUT = 29
 START_TIMEOUT = 2
 
 CONTRAST_TIMEOUT = 30 #MENU_TIMEOUT
@@ -31,12 +34,18 @@ POWERCONTROLLER_ENABLED = False
 
 ###
 
+
+### Pirate Audio HAT ###
+GPIOControl = False
+PIN_A = 5
+PIN_B = 6
+PIN_X = 16
+PIN_Y = 24
+
+
+
 ### Power Controller
 ROTARYENCODER_ENABLED = False
-#Pins for rotary encoder
-PIN_CLK = 24
-PIN_DT = 1
-PIN_SW = 25
 
 ###
 
@@ -44,22 +53,15 @@ PIN_SW = 25
 KEYBOARD_ENABLED = False
 
 ### KEYPAD 4x4 I2C + MCP23017
-KEYPAD_ENABLED = False
+KEYPAD_ENABLED = True
 KEYPAD_INTPIN = 17
 KEYPAD_ADDR = 0x27
 
 ####
 
-### Pirate Audio HAT ###
-GPIOControl = True
-PIN_A = 5
-PIN_B = 6
-PIN_X = 16
-PIN_Y = 24
-
 
 ### X728 UPS support
-X728_ENABLED = False
+X728_ENABLED = True
 X728_BATT_LOW = 15
 X728_BATT_EMERG = 5 # Shutdown Battery Percentage
 
@@ -83,6 +85,10 @@ PLAYOUT_CONTROLS = "sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh"
 
 
 
+#Pins for rotary encoder
+PIN_CLK = 24
+PIN_DT = 1
+PIN_SW = 25
 
 #Settings for the connection to Mopidy
 MPD_IP = "localhost"
@@ -94,22 +100,22 @@ FONT_TEXT = "fonts/arial.ttf"
 FONT_CLOCK = "fonts/calibri.ttf"
 
 
-ALSA_DEV_LOCAL="hifiberry"
+ALSA_DEV_LOCAL="hifiberrydac"
 
 #BluetoothKopfhoerer
 ENABLED_DEV_BT_1 = True
-NAME_DEV_BT_1 = "Medion Box"
+NAME_DEV_BT_1 = "BT1"
 ALSA_DEV_BT_1 = "bt_dev_1"
-MAC_DEV_BT_1 = "FC:58:FA:FE:09:4C"
+MAC_DEV_BT_1 = "4A:F5:FF:38:28:D5"
 
-ENABLED_DEV_BT_2 = True
-NAME_DEV_BT_2 = "Skoda"
+ENABLED_DEV_BT_2 = False
+NAME_DEV_BT_2 = "BT2"
 ALSA_DEV_BT_2 = "bt_dev_2"
-MAC_DEV_BT_2 = "b4:ec:02:91:b3:4d"
+MAC_DEV_BT_2 = "FC:58:FA:FE:09:4C"
 
 INTPIN=2
 
-STATUS_LED_ENABLED=False
+STATUS_LED_ENABLED=True
 STATUS_LED_PIN=6
 STATUS_LED_ALWAYS_ON=False
 
@@ -123,7 +129,9 @@ AUDIO_BASEPATH_USB = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/usb"
 FILE_LAST_HOERBUCH="/home/pi/RPi-Jukebox-RFID/settings/Latest_Hörspiele_Folder_Played"
 FILE_LAST_RADIO="/home/pi/RPi-Jukebox-RFID/settings/Latest_Radio_Folder_Played"
 FILE_LAST_MUSIC="/home/pi/RPi-Jukebox-RFID/settings/Latest_Musik_Folder_Played"
+
 LATEST_RFID="/home/pi/RPi-Jukebox-RFID/settings/Latest_RFID"
+LATEST_PLAYED_FOLDER="/home/pi/RPi-Jukebox-RFID/settings/Latest_Folder_Played"
 
 SR1 = "beendet"
 SR2 = "heruntergefahren"
@@ -134,6 +142,7 @@ CARD_READ = "Karte gelesen!"
 
 
 ####COLOR DEFINITIONS FOR RGB OLED ####
+COLOR_WHITE	= "white"
 COLOR_RED	= "#ff0000"
 COLOR_YELLOW	= "#ffff00"
 COLOR_BLUE 	= "#000000"
@@ -142,9 +151,6 @@ COLOR_BLUE	= "BLUE"
 
 COLOR_SELECTED = COLOR_YELLOW
 COLOR_SELECTED_OUTLINE = "black"
-
-
-callback_active = False
 
 ######
 from datetime import datetime
@@ -162,3 +168,6 @@ battcapacity = -1
 battsymbol = "\uf240"
 battloading = False
 
+
+
+callback_active = False

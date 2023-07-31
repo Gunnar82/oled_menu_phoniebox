@@ -118,6 +118,7 @@ class WindowManager():
                             log(DEBUG,"render rfid symbol")
                             self.rendered_busy = True
                             self.activewindow.busysymbol = settings.SYMBOL_CARD_READ
+                            self.rendertime = self.activewindow.busyrendertime
                             self.activewindow.renderbusy()
                             self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
                         elif (self.activewindow.busy or settings.callback_active) and self.activewindow.changerender:

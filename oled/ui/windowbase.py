@@ -44,7 +44,6 @@ class WindowBase():
                 mwidth,mheight = busyfont.getsize(self.busytext2)
                 draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, settings.DISPLAY_HEIGHT - mheight - 2), text=self.busytext2, font=busyfont, fill=textcolor2) #sanduhr
 
-            self.windowmanager.activewindow.busytext2 = ""
             self.windowmanager.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
 
 
