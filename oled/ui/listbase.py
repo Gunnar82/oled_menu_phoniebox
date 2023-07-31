@@ -189,5 +189,7 @@ class ListBase(WindowBase):
         self.position = (self.counter + self.page -2 ) if (self.counter > 1) else -1
         self.selection_changed = True
 
+        log(lDEBUG,"self.position: %d, self.counter: %d, self.page: %d" % (self.position, self.counter, self.page))
+
 
 

@@ -18,12 +18,14 @@ class Foldermenu(ListBase):
 
     def on_key_left(self):
         self.counter = 2
+        log(lDEBUG,"settings.currentfolder:%s " %(settings.currentfolder))
         settings.current_selectedfolder = settings.currentfolder
         settings.currentfolder = functions.get_parent_folder(settings.currentfolder)
         if len(settings.currentfolder) < len(settings.audio_basepath):
             settings.currentfolder = settings.audio_basepath
         self.generate_folders(settings.currentfolder)
         self.basetitle = os.path.split(settings.currentfolder)[-1]
+        log(lDEBUG,"self.basetitle: %s" % (self.basetitle))
 
 
     def on_key_right(self):
@@ -55,7 +57,7 @@ class Foldermenu(ListBase):
 
                     if (settings["SONG"] != "0") and (settings["PLAYLISTLENGTH"] != "0") and ((settings["RESUME"]).lower() == "on"):
                         prozent = float(int(settings["SONG"]) / int(settings["PLAYLISTLENGTH"]))
-                        log(lDEBUG2,"progress: %d von %d ist %.2f" % (int(settings["SONG"]), int(settings["PLAYLISTLENGTH"]),prozent))
+                        log(lDEBUG2,"foldermenu: progress: %d von %d ist %.2f" % (int(settings["SONG"]), int(settings["PLAYLISTLENGTH"]),prozent))
                         self.progress[file] = prozent * 100
                 except:
                     log(lDEBUG2,"No folder.conf for %s" % (d))
@@ -78,13 +80,18 @@ class Foldermenu(ListBase):
 
         if settings.current_selectedfolder.rfind(settings.currentfolder) == 0:
             search = settings.current_selectedfolder[len(settings.currentfolder)+1:]
+            log(lDEBUG,"search: %s" % (search))
             try:
                 _pos = self.folders.index(search)
+    
+                log(lDEBUG,"foldermenu: generate_folders: position: %d, _pos: %d, self.displaylines: %d" % ( self.position, _pos, self.displaylines))
 
-                if _pos > self.displaylines - 1:
+                if _pos > self.displaylines - 1:                      # Anzahl menu > displaylines
+                    log(lDEBUG,"_pos > displaylines -1")
                     self.counter = self.displaylines + 1
-                    self.page = _pos - self.displaylines - 1
-                else:
+                    self.page = _pos - self.displaylines + 1
+
+                else:                                                 # Anzahl menu <= displaylines
                     self.counter = _pos + 2
                     self.page = 0
                     self.position= _pos + 1
