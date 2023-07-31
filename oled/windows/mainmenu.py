@@ -31,15 +31,15 @@ class Mainmenu(MenuBase):
                 self.windowmanager.set_window("idle")
             elif self.counter == 1:
                 settings.audio_basepath = settings.AUDIO_BASEPATH_MUSIC
-                settings.currentfolder = settings.AUDIO_BASEPATH_MUSIC
+                settings.currentfolder = get_folder_from_file(settings.FILE_LAST_MUSIC)
                 self.windowmanager.set_window("foldermenu")
             elif self.counter == 2:
                 settings.audio_basepath = settings.AUDIO_BASEPATH_HOERBUCH
-                settings.currentfolder = settings.AUDIO_BASEPATH_HOERBUCH
+                settings.currentfolder = get_folder_from_file(settings.FILE_LAST_HOERBUCH)
                 self.windowmanager.set_window("foldermenu")
             elif self.counter == 3:
                 settings.audio_basepath = settings.AUDIO_BASEPATH_RADIO
-                settings.currentfolder = settings.AUDIO_BASEPATH_RADIO
+                settings.currentfolder = get_folder_from_file(settings.FILE_LAST_RADIO)
                 self.windowmanager.set_window("foldermenu")
             elif self.counter == 4:
                 settings.audio_basepath = settings.AUDIO_BASEPATH_USB
