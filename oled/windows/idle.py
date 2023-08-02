@@ -248,11 +248,11 @@ class Idle(WindowBase):
             if key == 'up' or key == '2':
                 self.busysymbol = settings.SYMBOL_VOL_UP
                 self.busytext1 = "lauter"
-                playout.pc_volup(3)
+                playout.pc_volup(5)
             elif key == 'down' or key == '8':
                 self.busysymbol = settings.SYMBOL_VOL_DN
                 self.busytext1 = "leiser"
-                playout.pc_voldown(3)
+                playout.pc_voldown(5)
             elif key == 'left' or key =='4':
                 self.busysymbol = settings.SYMBOL_PREV
                 self.busytext1 = "zurück"
