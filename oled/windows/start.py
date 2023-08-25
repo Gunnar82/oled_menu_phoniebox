@@ -21,12 +21,38 @@ class Start(WindowBase):
         self.timeout = False
         self.startup = datetime.now()
         self.conrasthandle = False
-        self.busytext1 = "Wird gestartet..."
-        if (settings.AUTOCONNECT_DEV_BT_1 and settings.ENABLED_DEV_BT_1) : bluetooth.enable_dev_bt_1() 
-        if (settings.AUTOCONNECT_DEV_BT_2 and settings.ENABLED_DEV_BT_2) : bluetooth.enable_dev_bt_2() 
-        
+        self.check_bt = 0
+
+
+    def activate(self):
+
+        if (settings.AUTOCONNECT_DEV_BT_1 and settings.ENABLED_DEV_BT_1):
+            self.busysymbol = settings.SYMBOL_BLUETOOTH_OFF
+            self.busytext1 = "Verbinde..."
+            self.busyrendertime = 5
+            self.busy = True
+            self.busytext2 = settings.NAME_DEV_BT_1
+            self.renderbusy()
+
+            bluetooth.enable_dev_bt_1()
+
+
+        if (settings.AUTOCONNECT_DEV_BT_2 and settings.ENABLED_DEV_BT_2):
+            self.busysymbol = settings.SYMBOL_BLUETOOTH_OFF
+            self.busytext1 = "Verbinde..."
+            self.busytext2 = settings.NAME_DEV_BT_2
+            self.busyrendertime = 5
+            self.busy = True
+            self.renderbusy()
+
+            bluetooth.enable_dev_bt_2() 
+
 
     def render(self):
+
+        self.busytext1 = "Wird gestartet..."
+        self.busytext2 = ""
+
         if settings.X728_ENABLED:
             color = get_battload_color()
             self.busysymbol = settings.battsymbol

@@ -79,6 +79,10 @@ SYMBOL_USB = "\uf287"
 SYMBOL_CARD_READ= "\uf140 \uf001"
 SYMBOL_CHANGING_SONG = "\uf07e"
 
+SYMBOL_BLUETOOTH_OFF = "\uf294"
+SYMBOL_BLUETOOTH_ON = "\uf293"
+
+
 PLAYOUT_CONTROLS = "sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh"
 
 
