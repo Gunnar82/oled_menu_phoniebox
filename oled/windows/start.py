@@ -6,7 +6,7 @@ from datetime import datetime
 
 import settings
 
-import integrations.bluetooth
+import integrations.bluetooth as bluetooth
 from integrations.functions import get_battload_color
 from integrations.logging import *
 
@@ -22,6 +22,9 @@ class Start(WindowBase):
         self.startup = datetime.now()
         self.conrasthandle = False
         self.busytext1 = "Wird gestartet..."
+        if (settings.AUTOCONNECT_DEV_BT_1 and settings.ENABLED_DEV_BT_1) : bluetooth.enable_dev_bt_1() 
+        if (settings.AUTOCONNECT_DEV_BT_2 and settings.ENABLED_DEV_BT_2) : bluetooth.enable_dev_bt_2() 
+        
 
     def render(self):
         if settings.X728_ENABLED:

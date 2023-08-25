@@ -1,20 +1,17 @@
 """ Software settings """
 
 ufw_services_allow = ["ssh","http"]
+use_eyed3 = False
 
 LOGLEVEL=3
 
-
-use_eyed3 = False
-
 ###DISPLAY_SETTINGS i2c
 DISPLAY_TYPE = "spi" # or "i2c"
-DISPLAY_DRIVER = "ssd1351"
-
+DISPLAY_DRIVER = "ST7789"
 
 ####CONTROL
 
-MENU_TIMEOUT = 29
+MENU_TIMEOUT = 20
 START_TIMEOUT = 2
 
 CONTRAST_TIMEOUT = 30 #MENU_TIMEOUT
@@ -34,18 +31,12 @@ POWERCONTROLLER_ENABLED = False
 
 ###
 
-
-### Pirate Audio HAT ###
-GPIOControl = False
-PIN_A = 5
-PIN_B = 6
-PIN_X = 16
-PIN_Y = 24
-
-
-
 ### Power Controller
 ROTARYENCODER_ENABLED = False
+#Pins for rotary encoder
+PIN_CLK = 24
+PIN_DT = 1
+PIN_SW = 25
 
 ###
 
@@ -53,15 +44,22 @@ ROTARYENCODER_ENABLED = False
 KEYBOARD_ENABLED = False
 
 ### KEYPAD 4x4 I2C + MCP23017
-KEYPAD_ENABLED = True
+KEYPAD_ENABLED = False
 KEYPAD_INTPIN = 17
 KEYPAD_ADDR = 0x27
 
 ####
 
+### Pirate Audio HAT ###
+GPIOControl = True
+PIN_A = 5
+PIN_B = 6
+PIN_X = 16
+PIN_Y = 24
+
 
 ### X728 UPS support
-X728_ENABLED = True
+X728_ENABLED = False
 X728_BATT_LOW = 15
 X728_BATT_EMERG = 5 # Shutdown Battery Percentage
 
@@ -85,10 +83,6 @@ PLAYOUT_CONTROLS = "sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh"
 
 
 
-#Pins for rotary encoder
-PIN_CLK = 24
-PIN_DT = 1
-PIN_SW = 25
 
 #Settings for the connection to Mopidy
 MPD_IP = "localhost"
@@ -100,22 +94,24 @@ FONT_TEXT = "fonts/arial.ttf"
 FONT_CLOCK = "fonts/calibri.ttf"
 
 
-ALSA_DEV_LOCAL="hifiberrydac"
+ALSA_DEV_LOCAL="hifiberry"
 
 #BluetoothKopfhoerer
 ENABLED_DEV_BT_1 = True
-NAME_DEV_BT_1 = "BT1"
+AUTOCONNECT_DEV_BT_1 = True
+NAME_DEV_BT_1 = "braune Box"
 ALSA_DEV_BT_1 = "bt_dev_1"
-MAC_DEV_BT_1 = "4A:F5:FF:38:28:D5"
+MAC_DEV_BT_1 = "69:40:CF:81:94:75"
 
-ENABLED_DEV_BT_2 = False
-NAME_DEV_BT_2 = "BT2"
+ENABLED_DEV_BT_2 = True
+AUTOCONNECT_DEV_BT_2 = False
+NAME_DEV_BT_2 = "Soundflare"
 ALSA_DEV_BT_2 = "bt_dev_2"
-MAC_DEV_BT_2 = "FC:58:FA:FE:09:4C"
+MAC_DEV_BT_2 = "ED:10:16:06:1E:F4"
 
 INTPIN=2
 
-STATUS_LED_ENABLED=True
+STATUS_LED_ENABLED=False
 STATUS_LED_PIN=6
 STATUS_LED_ALWAYS_ON=False
 
@@ -142,6 +138,7 @@ CARD_READ = "Karte gelesen!"
 
 
 ####COLOR DEFINITIONS FOR RGB OLED ####
+
 COLOR_WHITE	= "white"
 COLOR_RED	= "#ff0000"
 COLOR_YELLOW	= "#ffff00"
@@ -151,6 +148,9 @@ COLOR_BLUE	= "BLUE"
 
 COLOR_SELECTED = COLOR_YELLOW
 COLOR_SELECTED_OUTLINE = "black"
+
+
+callback_active = False
 
 ######
 from datetime import datetime
@@ -168,6 +168,3 @@ battcapacity = -1
 battsymbol = "\uf240"
 battloading = False
 
-
-
-callback_active = False
