@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """Start file for Werkstattradio OLED controller"""
 import asyncio
 import signal
@@ -17,6 +18,9 @@ if settings.DISPLAY_DRIVER == "ST7789":
     import integrations.display.st7789 as idisplay
 elif settings.DISPLAY_DRIVER == "ssd1351":
     import integrations.display.ssd1351 as idisplay
+if settings.DISPLAY_DRIVER == "emulated":
+    import integrations.display.emulated as idisplay
+
 else:
     raise Exception("no DISPLAY")
 
@@ -117,6 +121,15 @@ def main():
         from integrations.inputs.keypad_4x4_i2c import keypad_4x4_i2c
 
         mKeypad = keypad_4x4_i2c(loop, settings.KEYPAD_ADDR, settings.KEYPAD_INTPIN, turn_callback, push_callback)
+
+
+    ###GPICase
+    if settings.GPICASE_ENABLED:
+        from integrations.inputs.pygame import pygameInput
+
+        print ("Using pyGameInput")
+        pygame = pygameInput(loop, turn_callback, push_callback)
+
 
     ###Rotaryencoder Setup
     if settings.ROTARYENCODER_ENABLED:
