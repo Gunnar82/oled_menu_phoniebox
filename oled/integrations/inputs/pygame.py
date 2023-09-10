@@ -41,9 +41,9 @@ class pygameInput():
                 elif (y == 1):
                     self.turn_callback(0,'2')
                 elif (x == -1):
-                    self.turn_callback(-1)
+                    self.turn_callback(0,'4')
                 elif (x == 1):
-                     self.turn_callback(1)
+                     self.turn_callback(0,'6')
 
             elif event.type == pygame.JOYBUTTONUP:
                 if int(event.button) == 0:
