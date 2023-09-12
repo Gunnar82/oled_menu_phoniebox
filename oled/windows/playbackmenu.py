@@ -140,9 +140,9 @@ class Playbackmenu(WindowBase):
 
     def push_callback(self,lp=False):
         if self.counter == 1:
-            os.system("/home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=playerstop")
+            playout.pc_stop()
         elif self.counter == 2:
-            os.system("/home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=playerpause")
+            playout.pc_toggle()
         elif self.counter == 3:
             self.windowmanager.set_window("mainmenu")
         elif self.counter == 4:

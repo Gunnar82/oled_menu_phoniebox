@@ -14,6 +14,10 @@ def pc_play(pos = 0):
 def pc_mute():
     os.system("%s -c=mute" % (settings.PLAYOUT_CONTROLS))
 
+def pc_toggle():
+    os.system("%s -c=playerpause" % (settings.PLAYOUT_CONTROLS))
+
+
 
 def checkfolder(playfile):
     try:

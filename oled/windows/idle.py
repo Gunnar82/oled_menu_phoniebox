@@ -290,6 +290,9 @@ class Idle(WindowBase):
             elif key == '0':
                 self.busysymbol = settings.SYMBOL_VOL_MUTE
                 playout.pc_mute()
+            elif key == 'START':
+                playout.pc_toggle()
+
             elif key in ['1', '3', '7']:
 
                 if key == '1':
@@ -304,8 +307,6 @@ class Idle(WindowBase):
                     time.sleep(5)
                 else:
                     playout.playlast_checked(what)
-
-
 
         else:
             if (direction > 0):

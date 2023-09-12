@@ -31,16 +31,6 @@ class pygameInput():
         joysticks = []
 
 
-        
-        #for i in range(0, pygame.joystick.get_count()):
-            # create an Joystick object in our list
-            #joysticks.append(pygame.joystick.Joystick(i))
-            # initialize the appended joystick (-1 means last array item)
-            #joysticks[-1].init()
-            # print a statement telling what the name of the controller is
-            #self.found_joystick = 1
-            #print ("Detected joystick: %s" % (joysticks[-1].get_name()))
-
         while self.loop.is_running():
             #self.clock.tick(60)
             for event in pygame.event.get():
@@ -50,20 +40,20 @@ class pygameInput():
                     joysticks.append(joy)
                 if event.type == pygame.JOYHATMOTION:
                     x,y = event.value
-                    if (y == -1):
+                    if (y == -1): # keypad down
                         self.turn_callback(0,'8')
-                    elif (y == 1):
+                    elif (y == 1): #keypad up
                         self.turn_callback(0,'2')
-                    elif (x == -1):
+                    elif (x == -1): # keypad left
                         self.turn_callback(0,'4')
-                    elif (x == 1):
+                    elif (x == 1): #keypas right
                          self.turn_callback(0,'6')
-
                 elif event.type == pygame.JOYBUTTONUP:
-                    if int(event.button) == 0:
+                    if int(event.button) == 0: # A
                         self.push_callback()
-                    elif int(event.button) == 1:
+                    elif int(event.button) == 1: #B
                         self.turn_callback(0,'#')
-
+                    elif int(event.button) == 7: # START
+                        self.turn_callback(0,'START')
 
             await asyncio.sleep(0.1)
