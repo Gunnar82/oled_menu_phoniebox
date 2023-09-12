@@ -9,7 +9,7 @@ import time
 from subprocess import call
 import integrations.bluetooth
 import integrations.functions as fn
-
+import integrations.playout as playout
 import settings
 
 from integrations.logging import *
@@ -194,11 +194,10 @@ def main():
                 pc.shutdown()
 
         print("Shutting down system")
-        os.system("%s -c=shutdown" % (settings.PLAYOUT_CONTROLS))
+        playout.pc_shutdown()
 
     if shutdownscreen.execreboot:
-        print("Reboot down system")
-        os.system("%s -c=reboot" % 	(settings.PLAYOUT_CONTROLS))
+        playout.pc_reboot()
 
 
 

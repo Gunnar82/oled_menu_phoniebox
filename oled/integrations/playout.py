@@ -17,6 +17,15 @@ def pc_mute():
 def pc_toggle():
     os.system("%s -c=playerpause" % (settings.PLAYOUT_CONTROLS))
 
+def pc_shutdown():
+    os.system("%s -c=shutdown" % (settings.PLAYOUT_CONTROLS))
+
+def pc_reboot():
+    print("Reboot down system")
+    os.system("%s -c=reboot" % (settings.PLAYOUT_CONTROLS))
+
+
+
 
 
 def checkfolder(playfile):
