@@ -191,7 +191,7 @@ class Idle(WindowBase):
 
             #Titel Scrollbar
             if self.nowplaying._playingtitle == self.oldtitle:
-                if Idle.font.getsize(self.nowplaying._playingtitle[self.titlex:])[0] > 127:
+                if Idle.font.getsize(self.nowplaying._playingtitle[self.titlex:])[0] > settings.DISPLAY_WIDTH:
                     self.titlex += 1
                 else:
                     self.titlex = 0
@@ -204,14 +204,14 @@ class Idle(WindowBase):
                      settings.lastinput = datetime.datetime.now() - datetime.timedelta(seconds=settings.CONTRAST_TIMEOUT)
 
            ###name Scrollbar
-            if self.nowplaying._playingname == self.oldname and Idle.font.getsize(self.nowplaying._playingname[self.namex:])[0] > 127:
+            if self.nowplaying._playingname == self.oldname and Idle.font.getsize(self.nowplaying._playingname[self.namex:])[0] > settings.DISPLAY_WIDTH:
                 self.namex += 1
             else:
                 self.namex = 0
                 self.oldname = self.nowplaying._playingname
 
             ####album scrollbar
-            if self.nowplaying._playingalbum == self.oldalbum and Idle.font.getsize(self.nowplaying._playingalbum[self.albumx:])[0] > 115:
+            if self.nowplaying._playingalbum == self.oldalbum and Idle.font.getsize(self.nowplaying._playingalbum[self.albumx:])[0] > settings.DISPLAY_WIDTH -14:
                 self.albumx += 1
             else:
                 self.albumx = 0

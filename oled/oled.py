@@ -4,6 +4,7 @@ import asyncio
 import signal
 import sys
 import os
+import time
 
 from subprocess import call
 import integrations.bluetooth
@@ -125,11 +126,10 @@ def main():
 
     ###GPICase
     if settings.GPICASE_ENABLED:
-        from integrations.inputs.pygame import pygameInput
+        from integrations.inputs.gpicase import pygameInput
 
         print ("Using pyGameInput")
-        pygame = pygameInput(loop, turn_callback, push_callback)
-
+        mpygame = pygameInput(loop, turn_callback, push_callback)
 
     ###Rotaryencoder Setup
     if settings.ROTARYENCODER_ENABLED:
