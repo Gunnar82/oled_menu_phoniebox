@@ -14,9 +14,6 @@ class Shutdownmenu(MenuBase):
         super().__init__(windowmanager,title)
 
         self.mopidyconnection = mopidyconnection
-        self.execshutdown = False
-        self.execreboot = False
-
         self.descr.append(["Neustart OLED", "\uf0e2"])
         self.descr.append(["AUS Sofort", "\uf011"])
         self.descr.append(["Zurück", "\uf0a8"])
@@ -37,7 +34,7 @@ class Shutdownmenu(MenuBase):
         elif self.counter == 1:
             playout.savepos()
             self.mopidyconnection.stop()
-            self.execshutdown = True
+            settings.shutdown_reason = settings.SR2
             print("Stopping event loop")
             self.loop.stop()
         elif self.counter == 2:
@@ -45,7 +42,7 @@ class Shutdownmenu(MenuBase):
         elif self.counter == 3:
             self.windowmanager.set_window("start")
             self.mopidyconnection.stop()
-            self.execreboot = True
+            settings.shutdown_reason = settings.SR3
             print("Stopping event loop")
             self.loop.stop()
         
@@ -88,7 +85,7 @@ class Shutdownmenu(MenuBase):
             elif key == 'C':
                 playout.savepos()
                 self.mopidyconnection.stop()
-                self.execshutdown = True
+                settings.shutdown_reason = settings.SR2
                 print("Stopping event loop")
                 self.loop.stop()
             elif key == 'D':

@@ -79,8 +79,14 @@ def get_folder(folder,direction = 1):
 
 
 def restart_oled():
-    print ("restarting oled service")
-    os.system("sudo service oled restart")
+    if settings.DISPLAY_DRIVER == "emulated":
+        print ("restarting lightdm service")
+
+        os.system("sudo systemctl restart lightdm")
+    else:
+        print ("restarting  service")
+
+        os.system("sudo systemctl restart oled")
 
 
 def get_usb_name():

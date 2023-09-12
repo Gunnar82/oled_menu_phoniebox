@@ -54,6 +54,9 @@ signal.signal(signal.SIGTERM, gracefulexit)
 def main():
     loop = asyncio.get_event_loop()
 
+    #shutdown reason default
+    settings.shutdown_reason = settings.SR1
+
     #Display = real hardware or emulator (depending on settings)
     display = idisplay.get_display()
 
@@ -179,16 +182,10 @@ def main():
     finally:
         loop.close()
 
-    if shutdownscreen.execshutdown:
-        settings.shutdown_reason=settings.SR2
-    elif shutdownscreen.execreboot:
-        settings.shutdown_reason=settings.SR3
-    else:
-        settings.shutdown_reason=settings.SR1
 
     windowmanager.set_window("ende")
 
-    if shutdownscreen.execshutdown:
+    if settings.shutdown_reason == settings.SR2:
         if haspowercontroller:
             if pc.ready:
                 pc.shutdown()
@@ -196,7 +193,7 @@ def main():
         print("Shutting down system")
         playout.pc_shutdown()
 
-    if shutdownscreen.execreboot:
+    if settings.shutdown_reason == settings.SR3:
         playout.pc_reboot()
 
 
