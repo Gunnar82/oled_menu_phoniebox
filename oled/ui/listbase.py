@@ -32,7 +32,6 @@ class ListBase(WindowBase):
             self.on_key_left()
             return
 
-
         if self.right_pressed:
             self.right_pressed = False
             self.on_key_right()
@@ -71,7 +70,7 @@ class ListBase(WindowBase):
             #Playlists
             menulen = len(self.menu)
 
-            linewidth,lineheight = self.font.getsize(self.menu[0])
+            linewidth,lineheight = self.font.getsize("000")
 
             startx = settings.FONT_HEIGHT_NORMAL
 
@@ -80,8 +79,6 @@ class ListBase(WindowBase):
             pos = self.position % self.displaylines 
 
             maxpos = (self.displaylines if (seite + 1) * self.displaylines <= menulen else (menulen % self.displaylines))
-
-            #print ("position: %s, seite: %s, pos: %s,  maxpos: %s" %(self.position, seite, pos, maxpos))
 
             for i in range(maxpos):
                 if self.position  == seite * self.displaylines+ i : #selected
@@ -101,7 +98,7 @@ class ListBase(WindowBase):
                     draw.text((startx, startx  + i * lineheight), self.menu[seite *self.displaylines + i], font=self.font, fill="white")
                 
                     try:
-                        drawtext = "%2.0d%%" % (self.progress[self.menu[i]])
+                        drawtext = "%2.0d%%" % (self.progress[self.menu[seite * self.displaylines + i]])
                         linewidth1, lineheight1 = self.font.getsize(drawtext)
                         log(lDEBUG2,"listbase: percent:%s:" %(drawtext))
                         draw.rectangle((settings.DISPLAY_WIDTH - linewidth1 - 15  , startx + i * lineheight , settings.DISPLAY_WIDTH , startx + (i + 1) * lineheight ), outline="black", fill="black")
@@ -123,7 +120,6 @@ class ListBase(WindowBase):
         raise NotImplementedError()
 
     def turn_callback(self, direction, key=None):
-        print (self.menu)
         if key:
             if key == 'left' or key == '4' or key == '0':
                 self.left_pressed = True
@@ -141,9 +137,9 @@ class ListBase(WindowBase):
             elif key == 'D':
                 direction = 0
                 self.position = len(self.menu)
-            elif key == 'B':
+            elif key == 'B' or key== 'HL':
                     direction = 0 - self.displaylines
-            elif key == 'C':
+            elif key == 'C' or key == 'HR':
                     direction = self.displaylines
 
         print ("Handling  Menu Items: %d, Lines: %d, direction: %s" % (len(self.menu), self.displaylines, direction))

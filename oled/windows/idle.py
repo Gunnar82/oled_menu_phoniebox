@@ -94,6 +94,7 @@ class Idle(WindowBase):
             ####setting idle text / Icon on Song Number Changed
             if (self.oldsong != self.nowplaying._song) and ((datetime.datetime.now() - settings.lastinput).total_seconds() >= 5):
                 if (self.oldsong != ""):
+                    playout.savepos()
                     log(lDEBUG,"Titelwechsel erkannt")
                     self.busytext1 = " Titelwechsel"
                     self.busytext2 = "%2.2d von %2.2d " % (int(self.nowplaying._song), int(self.nowplaying._playlistlength))
@@ -218,7 +219,7 @@ class Idle(WindowBase):
                 self.oldalbum = self.nowplaying._playingalbum
 
 
-            draw.text((1, settings.DISPLAY_HEIGHT - 3*settings.FONT_HEIGHT_NORMAL ), self.nowplaying._playingalbum[self.albumx:self.albumx+19], font=Idle.font, fill="white")
+            draw.text((1, settings.DISPLAY_HEIGHT - 3*settings.FONT_HEIGHT_NORMAL ), self.nowplaying._playingalbum[self.albumx:], font=Idle.font, fill="white")
             draw.text((1, settings.DISPLAY_HEIGHT - 4*settings.FONT_HEIGHT_NORMAL ), self.nowplaying._playingname[self.namex:], font=Idle.font, fill="white")
             draw.text((1, settings.DISPLAY_HEIGHT - 5*settings.FONT_HEIGHT_NORMAL ), self.nowplaying._playingtitle[self.titlex:], font=Idle.font, fill="white")
 

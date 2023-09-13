@@ -12,7 +12,6 @@ class Foldermenu(ListBase):
 
     def playfolder(self,folder):
         foldername = folder[len(settings.AUDIO_BASEPATH_BASE):]
-        print (folder)
         playout.pc_playfolder(foldername)
         self.windowmanager.set_window("playlistmenu")
 
@@ -39,32 +38,40 @@ class Foldermenu(ListBase):
             d = os.path.join(path, file)
             if os.path.isdir(d):
                 try:
-                    settings = {}
-                    settings["SONG"]="0"
-                    settings["PLAYLISTLENGTH"]="0"
-                    settings["RESUME"] = "off"
+                    folderconf = {}
+                    folderconf["RESUME"] = "off"
+                    folderconf["CURRENTFILENAME"] = ""
 
                     fn = os.path.join(d,"folder.conf")
                     log(lDEBUG,"playlistfolder: %s" % (fn))
-                    folder_conf = open(fn,"r")
-                    lines = folder_conf.readlines()
-                    folder_conf.close()
+                    folder_conf_file = open(fn,"r")
+                    lines = folder_conf_file.readlines()
+                    folder_conf_file.close()
 
                     for line in lines:
                         _key, _val = line.split('=',2)
-                        settings[_key] = _val.replace("\"","").strip()
+                        folderconf[_key] = _val.replace("\"","").strip()
 
-                    if (settings["SONG"] != "0") and (settings["PLAYLISTLENGTH"] != "0") and ((settings["RESUME"]).lower() == "on"):
-                        prozent = float(int(settings["SONG"]) / int(settings["PLAYLISTLENGTH"]))
-                        log(lDEBUG2,"foldermenu: progress: %d von %d ist %.2f" % (int(settings["SONG"]), int(settings["PLAYLISTLENGTH"]),prozent))
+                    if (folderconf["CURRENTFILENAME"] != "") and ((folderconf["RESUME"]).lower() == "on"):
+                        subfiles =[]
+                        for subfile in os.listdir(d):
+                            subfiles.append(subfile) # nur mp3
+                        subfiles = sorted(subfiles)
+                        lastplayedfile = folderconf["CURRENTFILENAME"]
+                        lastplayedfile = lastplayedfile[lastplayedfile.rfind('/')+1:]
+                        mpos = (subfiles.index(lastplayedfile))
+                        prozent = (mpos +1)  / len(subfiles)
+                        #print ("prozent: %s, lastplayedfile: %s, mpos: %s" %(prozent, lastplayedfile, mpos))
+
+                        log(lDEBUG2,"foldermenu: ptogress%.2f" % (prozent))
                         self.progress[file] = prozent * 100
                 except:
                     log(lDEBUG2,"No folder.conf for %s" % (d))
-
+                
                 self.folders.append(file)
 
         self.folders.sort()
-
+        print(self.progress)
 
     def __init__(self, windowmanager):
         super().__init__(windowmanager, "Auswahl")

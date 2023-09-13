@@ -24,6 +24,9 @@ def pc_reboot():
     print("Reboot down system")
     os.system("%s -c=reboot" % (settings.PLAYOUT_CONTROLS))
 
+def savepos():
+    os.system("%s -c=savepos" % (settings.RESUME_PLAY))
+
 
 
 
@@ -50,8 +53,8 @@ def pc_voldown(step=5):
     os.system("mpc vol -%d" % (step))
 #    os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumedown -v=%d" % (step))
 
-def savepos():
-    os.system("%s -c=savepos" % (settings.PLAYOUT_CONTROLS))
+#def savepos():
+#    os.system("%s -c=savepos" % (settings.PLAYOUT_CONTROLS))
 
 
 def pc_playfolder(folder=settings.AUDIO_BASEPATH_RADIO):
