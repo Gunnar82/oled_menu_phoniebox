@@ -52,19 +52,19 @@ class Playlistmenu(ListBase):
         self.loop.create_task(self.eyed3_playlist())
         self.song = -1
         cnt = 0 
+
         while self.song < 0 and cnt < 20:
             status = self.musicmanager.status()
             self.song = int(status['song']) + 1 if ("song" in status) else -1
             cnt += 1
             time.sleep(0.1)
+        print ("Song: %s POS: %s" %(self.song, self.position))
 
-        if self.song > self.displaylines:
-            self.counter = self.displaylines + 1
-            self.page = self.song - self.displaylines
 
-        else:
-            self.counter = self.song + 1
-
+        try:
+            self.position = self.song -1
+        except:
+            self.position = 0
 
 
     def turn_callback(self,direction,key=False):
@@ -76,7 +76,7 @@ class Playlistmenu(ListBase):
             self.title = "Playlist"
 
     def push_callback(self,lp=False):
-        if self.counter < 2 and self.page == 0:
+        if self.position == -1 or  self.position == -2 :
             self.windowmanager.set_window("mainmenu")
         else:
             playout.pc_play(self.position + 1) # 1 based

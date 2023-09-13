@@ -17,7 +17,6 @@ class Foldermenu(ListBase):
         self.windowmanager.set_window("playlistmenu")
 
     def on_key_left(self):
-        self.counter = 2
         log(lDEBUG,"settings.currentfolder:%s " %(settings.currentfolder))
         settings.current_selectedfolder = settings.currentfolder
         settings.currentfolder = functions.get_parent_folder(settings.currentfolder)
@@ -86,21 +85,12 @@ class Foldermenu(ListBase):
     
                 log(lDEBUG,"foldermenu: generate_folders: position: %d, _pos: %d, self.displaylines: %d" % ( self.position, _pos, self.displaylines))
 
-                if _pos > self.displaylines - 1:                      # Anzahl menu > displaylines
-                    log(lDEBUG,"_pos > displaylines -1")
-                    self.counter = self.displaylines + 1
-                    self.page = _pos - self.displaylines + 1
-
-                else:                                                 # Anzahl menu <= displaylines
-                    self.counter = _pos + 2
-                    self.page = 0
-                    self.position= _pos + 1
+                self.position= _pos
             except:
-                self.counter = 1
-                self.page = 0
+                self.position = 0
+
 
     def activate(self):
-        self.page = 0
         self.folders = []
 
         self.generate_folders(settings.currentfolder)
@@ -110,7 +100,7 @@ class Foldermenu(ListBase):
         super().turn_callback(direction,key=key)
         self.basetitle = os.path.split(settings.currentfolder)[-1]
 
-        if (self.counter > 1):
+        if (self.position > 0):
             self.timeout = True
         else:
             self.timeout = False
@@ -126,10 +116,10 @@ class Foldermenu(ListBase):
                 settings.current_selectedfolder = settings.currentfolder
 
     def push_callback(self,lp=False):
-        if self.counter == 0:
+        if self.position  == -2:
             settings.currentfolder = settings.audio_basepath
             self.windowmanager.set_window("mainmenu")
-        elif self.counter == 1:
+        elif self.position == -1:
             self.on_key_left()
         else:
             #folder = self.folders[self.position-1]
@@ -142,8 +132,7 @@ class Foldermenu(ListBase):
                 if (functions.has_subfolders(settings.current_selectedfolder)):
                     self.generate_folders(settings.current_selectedfolder)
                     settings.currentfolder = settings.current_selectedfolder
-                    self.page = 0
-                    self.counter = 1
+                    self.position = 0
                 else:
                     print ("play %s " % (settings.current_selectedfolder))
                     self.playfolder(settings.current_selectedfolder)
@@ -151,4 +140,4 @@ class Foldermenu(ListBase):
 
             #self.mopidyconnection.loadplaylist(self.mopidyconnection.playlists[self.counter-1])
             #self.windowmanager.set_window("idle")
-        self.lastcounter = self.counter
+
