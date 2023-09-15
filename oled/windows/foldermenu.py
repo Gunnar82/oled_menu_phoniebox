@@ -76,7 +76,6 @@ class Foldermenu(ListBase):
                 self.folders.append(file)
 
         self.folders.sort()
-        print(self.progress)
 
     def __init__(self, windowmanager):
         super().__init__(windowmanager, "Auswahl")

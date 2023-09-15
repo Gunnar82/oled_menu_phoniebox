@@ -74,9 +74,9 @@ class ListBase(WindowBase):
 
             startx = settings.FONT_HEIGHT_NORMAL
 
-            seite = self.position // self.displaylines
+            seite = 0 if self.position < 0 else self.position // self.displaylines
 
-            pos = self.position % self.displaylines 
+            pos = 0 if self.position < 0 else self.position % self.displaylines 
 
             maxpos = (self.displaylines if (seite + 1) * self.displaylines <= menulen else (menulen % self.displaylines))
 
@@ -145,12 +145,12 @@ class ListBase(WindowBase):
             elif key == 'C' or key == 'HR':
                     direction = self.displaylines
 
-        print ("Handling  Menu Items: %d, Lines: %d, direction: %s" % (len(self.menu), self.displaylines, direction))
+        log(lDEBUG,"Handling  Menu Items: %d, Lines: %d, direction: %s" % (len(self.menu), self.displaylines, direction))
 
         if self.position + direction  >= len(self.menu) : # zero based
             self.position = len(self.menu) -1
-        elif self.position + direction < 0: # base counter is 2
-            self.position = 0
+        elif self.position + direction < -2: # base counter is 2
+            self.position = -2
         else:
            self.position += direction
 
