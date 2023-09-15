@@ -67,7 +67,12 @@ class Foldermenu(ListBase):
                         self.progress[file] = prozent * 100
                 except:
                     log(lDEBUG2,"No folder.conf for %s" % (d))
-                
+
+                try:
+                    if (functions.has_subfolders(os.path.join(settings.currentfolder,file))):
+                        file = "> " + file
+                except:
+                    pass
                 self.folders.append(file)
 
         self.folders.sort()
@@ -116,7 +121,7 @@ class Foldermenu(ListBase):
             self.windowmanager.set_window("folderinfo")
         else:
             try:
-                folder = self.folders[self.position]
+                folder = (self.folders[self.position]).lstrip('>').lstrip()
                 fullpath = os.path.join(settings.currentfolder,folder)
                 settings.current_selectedfolder = fullpath
             except:
