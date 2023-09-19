@@ -12,6 +12,8 @@ class Ende(WindowBase):
         super().__init__(windowmanager)
         self.font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_L)
         self.fontawesome = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XXL)
+        self.timeout = False
+        self.window_on_back = "none"
 
         self.windowmanager = windowmanager
         self.timeout = False

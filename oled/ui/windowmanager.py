@@ -165,7 +165,7 @@ class WindowManager():
                 log(lDEBUG2,"push_callback: ended")
                 self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
 
-        else:
+        elif self.activewindow.windowtitle != "ende":
             settings.screenpower = True
             self.device.show()
             self.set_window("idle")

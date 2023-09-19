@@ -28,11 +28,14 @@ class pygameInput():
 
         self.powerbtn = -1
 
+        self.powerpressed = 0
+
         GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
         GPIO.setup(26, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(27, GPIO.OUT)
         GPIO.output(27, GPIO.HIGH)
-        GPIO.add_event_detect(26,GPIO.BOTH, callback=self._button_press, bouncetime=500)
+        GPIO.add_event_detect(26,GPIO.BOTH, callback=self._button_press, bouncetime=100)
 
         self.loop.create_task(self._poll_pygame_keys())
 
@@ -41,18 +44,22 @@ class pygameInput():
         try:
             gpio26 = GPIO.input(26)
 
-            
-            time.sleep (0.1)
             if settings.job_t >= 0:
                 #if self.powerbtn != gpio26:
                 self.powerbtn = gpio26
                 log (lDEBUG,"Shutdown Timer active - Waiting")
-                self.turn_callback(0,'GPI_PWR_OFF' if gpio26 == 0 else 'GPI_PWR_ON')
+                if gpio26 == 0:
+
+                    if self.powerpressed < 5:
+                        self.powerpressed += 1
+                        self.turn_callback(0, 'GPI_PWR_OFF')
+                else:
+                    self.powerpressed = 0
+                    self.turn_callback(0, 'GPI_PWR_ON')
             elif not settings.callback_active:
                 settings.callback_active = True
                 playout.savepos()
                 #self.mopidyconnection.stop()
-                #self.execshutdown = True
                 log(lINFO,"Stopping event loop")
                 self.loop.stop()
                 playout.pc_shutdown()
