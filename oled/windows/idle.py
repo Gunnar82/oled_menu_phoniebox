@@ -308,6 +308,8 @@ class Idle(WindowBase):
                     time.sleep(5)
                 else:
                     playout.playlast_checked(what)
+            elif key == 'GPI_PWR_OFF':
+                self.windowmanager.set_window("ende")
 
         else:
             if (direction > 0):

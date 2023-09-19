@@ -7,11 +7,13 @@ import integrations.bluetooth
 from datetime import datetime
 
 class Ende(WindowBase):
-    font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_L)
-    fontawesome = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XXL)
 
     def __init__(self, windowmanager):
         super().__init__(windowmanager)
+        self.font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_L)
+        self.fontawesome = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XXL)
+
+        self.windowmanager = windowmanager
         self.timeout = False
         self.startup = datetime.now()
 
@@ -21,8 +23,27 @@ class Ende(WindowBase):
         self.busysymbol = "\uf011"
         self.renderbusy()
 
+
+    def render(self):
+        with canvas(self.device) as draw:
+            mwidth,mheight = self.font.getsize(self.busytext1)
+            draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, 2), text=self.busytext1, font=self.font, fill='white')
+
+            mwidth,mheight = self.fontawesome.getsize(self.busysymbol)
+            draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, (settings.DISPLAY_HEIGHT - mheight) / 2), text=self.busysymbol, font=self.fontawesome, fill='red') #sanduhr
+
+            if (self.busytext2 != ""):
+                mwidth,mheight = self.font.getsize(self.busytext2)
+                draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, settings.DISPLAY_HEIGHT - mheight - 2), text=self.busytext2, font=self.font, fill='white') #    sanduhr
+
+
     def push_callback(self,lp=False):
         pass
 
-    def turn_callback(self, direction, ud=False):
-        pass
+    def turn_callback(self, direction, key=None):
+        if key =='GPI_PWR_OFF':
+            self.busytext1 = 'GPI Case Timer aktiv!'
+            self.busytext2 = 'AUS in %2.2d min ' % settings.job_t
+        elif key =='GPI_PWR_ON':
+            self.windowmanager.set_window("idle")
+
