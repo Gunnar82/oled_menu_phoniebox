@@ -46,6 +46,10 @@ def get_timeouts():
     settings.job_s = linux_job_remaining("s")
     settings.job_i = linux_job_remaining("i")
 
+def remove_folder_symbol(item):
+    return item.lstrip(settings.SYMBOL_FOLDER).lstrip()
+
+
 
 
 def get_folder_of_livestream(url):

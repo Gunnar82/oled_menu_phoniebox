@@ -16,6 +16,7 @@ class Foldermenu(ListBase):
         self.windowmanager.set_window("playlistmenu")
 
     def on_key_left(self):
+        print (settings.currentfolder)
         log(lDEBUG,"settings.currentfolder:%s " %(settings.currentfolder))
         settings.current_selectedfolder = settings.currentfolder
         settings.currentfolder = functions.get_parent_folder(settings.currentfolder)
@@ -70,7 +71,7 @@ class Foldermenu(ListBase):
 
                 try:
                     if (functions.has_subfolders(os.path.join(settings.currentfolder,file))):
-                        file = "> " + file
+                        file = settings.SYMBOL_FOLDER +" " + file
                 except:
                     pass
                 self.folders.append(file)
@@ -87,7 +88,6 @@ class Foldermenu(ListBase):
         self.generate_folders_array(folder)
         self.menu = []
         self.menu = self.folders
-
         if settings.current_selectedfolder.rfind(settings.currentfolder) == 0:
             search = settings.current_selectedfolder[len(settings.currentfolder)+1:]
             log(lDEBUG,"search: %s" % (search))
@@ -98,7 +98,14 @@ class Foldermenu(ListBase):
 
                 self.position= _pos
             except:
-                self.position = 0
+                try:
+                    _pos = self.folders.index(settings.SYMBOL_FOLDER + " " + search)
+    
+                    log(lDEBUG,"foldermenu: generate_folders: position: %d, _pos: %d, self.displaylines: %d" % ( self.position, _pos, self.displaylines))
+
+                    self.position= _pos
+                except:
+                    self.position = 0
 
 
     def activate(self):
@@ -120,7 +127,8 @@ class Foldermenu(ListBase):
             self.windowmanager.set_window("folderinfo")
         else:
             try:
-                folder = (self.folders[self.position]).lstrip('>').lstrip()
+                folder = functions.remove_folder_symbol(self.folders[self.position])
+                print (folder)
                 fullpath = os.path.join(settings.currentfolder,folder)
                 settings.current_selectedfolder = fullpath
             except:

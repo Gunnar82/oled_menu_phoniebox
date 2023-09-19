@@ -20,7 +20,6 @@ class ListBase(WindowBase):
         self.position = -2
         self.progress = {}
         self.displaylines = settings.DISPLAY_HEIGHT // 20
-        self.position =  -1
         self.font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_SMALL)
         self.faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_SMALL)
         self.selection_changed = True
