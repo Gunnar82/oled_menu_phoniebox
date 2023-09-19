@@ -5,7 +5,7 @@ import RPi.GPIO as GPIO   # Import the GPIO library.
 import time               # Import time library
 import settings
 import asyncio
-from  integrations.functions import linux_job_remaining
+from  integrations.functions import get_timeouts
 import datetime
 
 class nowplaying:
@@ -82,9 +82,7 @@ class nowplaying:
     async def _linuxjob(self):
 
         while self.loop.is_running():
-            settings.job_t = linux_job_remaining("t")
-            settings.job_s = linux_job_remaining("s")
-            settings.job_i = linux_job_remaining("i")
+            get_timeouts()
 
             if ((settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (settings.X728_ENABLED and settings.battcapacity <= settings.X728_BATT_LOW)):
                 if not settings.STATUS_LED_ENABLED:

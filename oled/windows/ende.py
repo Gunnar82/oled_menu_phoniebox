@@ -44,6 +44,7 @@ class Ende(WindowBase):
 
     def turn_callback(self, direction, key=None):
         if key =='GPI_PWR_OFF':
+            self.busysymbol = "\uf0a2"
             self.busytext1 = 'GPI Case Timer aktiv!'
             self.busytext2 = 'AUS in %2.2d min ' % settings.job_t
         elif key =='GPI_PWR_ON':

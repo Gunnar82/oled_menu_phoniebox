@@ -41,6 +41,13 @@ def linux_job_remaining(job_name):
             return -1
 
 
+def get_timeouts():
+    settings.job_t = linux_job_remaining("t")
+    settings.job_s = linux_job_remaining("s")
+    settings.job_i = linux_job_remaining("i")
+
+
+
 def get_folder_of_livestream(url):
     basefolder = settings.AUDIO_BASEPATH_RADIO
 

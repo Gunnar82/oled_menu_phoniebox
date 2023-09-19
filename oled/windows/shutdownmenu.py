@@ -6,7 +6,7 @@ import settings
 import os
 import integrations.playout as playout
 
-from integrations.functions import restart_oled
+from integrations.functions import restart_oled, get_timeouts
 
 class Shutdownmenu(MenuBase):
 
@@ -60,7 +60,9 @@ class Shutdownmenu(MenuBase):
             os.system("%s -c=setidletime -v=5" % settings.PLAYOUT_CONTROLS)
         elif self.counter == 10:
             os.system("%s -c=setidletime -v=20" % settings.PLAYOUT_CONTROLS)
-        
+
+        get_timeouts()
+
         self.windowmanager.set_window("idle")
             #self.mopidyconnection.stop()
             #self.execreboot = True
