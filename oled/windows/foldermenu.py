@@ -16,7 +16,6 @@ class Foldermenu(ListBase):
         self.windowmanager.set_window("playlistmenu")
 
     def on_key_left(self):
-        print (settings.currentfolder)
         log(lDEBUG,"settings.currentfolder:%s " %(settings.currentfolder))
         settings.current_selectedfolder = settings.currentfolder
         settings.currentfolder = functions.get_parent_folder(settings.currentfolder)
@@ -70,7 +69,7 @@ class Foldermenu(ListBase):
                     log(lDEBUG2,"No folder.conf for %s" % (d))
 
                 try:
-                    if (functions.has_subfolders(os.path.join(settings.currentfolder,file))):
+                    if (functions.has_subfolders(os.path.join(path,file))):
                         file = settings.SYMBOL_FOLDER +" " + file
                 except:
                     pass
@@ -128,9 +127,10 @@ class Foldermenu(ListBase):
         else:
             try:
                 folder = functions.remove_folder_symbol(self.folders[self.position])
-                print (folder)
+
                 fullpath = os.path.join(settings.currentfolder,folder)
                 settings.current_selectedfolder = fullpath
+
             except:
                 settings.current_selectedfolder = settings.currentfolder
 
