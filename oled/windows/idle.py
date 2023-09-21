@@ -41,6 +41,8 @@ class Idle(MainWindow):
 
     def render(self):
         with canvas(self.device) as draw:
+            super().render(draw)
+
             now = datetime.datetime.now()
 
             #####IDLE RENDER
@@ -137,7 +139,6 @@ class Idle(MainWindow):
             draw.text((1, settings.DISPLAY_HEIGHT - 4*settings.FONT_HEIGHT_NORMAL ), self.nowplaying._playingname[self.namex:], font=Idle.font, fill="white")
             draw.text((1, settings.DISPLAY_HEIGHT - 5*settings.FONT_HEIGHT_NORMAL ), self.nowplaying._playingtitle[self.titlex:], font=Idle.font, fill="white")
 
-            super().render(draw)
 
 
 
