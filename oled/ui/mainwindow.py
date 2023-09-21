@@ -120,6 +120,11 @@ class MainWindow(WindowBase):
 
         draw.text((_xpos, lineposy + 2 ),_spos , font=self.fontsmall, fill="white")
 
+        #shutdowntimer ? aktiv dann Zeit anzeigen
+        if settings.job_t >= 0:
+            draw.text((xpos3 + 2, lineposy + 2 ), "%2.2d" % (int(settings.job_t)), font=self.fontsmall, fill="BLUE")
+        elif settings.X728_ENABLED:
+            draw.text((xpos3 + 2, lineposy + 2), settings.battsymbol, font=self.faicons, fill=get_battload_color())
 
 
     async def _find_dev_bt(self):

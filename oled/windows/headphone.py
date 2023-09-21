@@ -26,10 +26,9 @@ class Headphonemenu(MenuBase):
 
 
     def __init__(self, windowmanager,loop,title):
-        super().__init__(windowmanager,title)
+        super().__init__(windowmanager,loop,title)
         self.loop = loop
         self.get_dev_status(first=True)
-        self.descr.append(["Zurück","\uf0a8"])
         self.descr.append([settings.NAME_DEV_BT_1 + " " + self.bt1_status, "\uf057" if not settings.ENABLED_DEV_BT_1 else "\uf293" if self.bt1_status == "enabled" else "\uf294"])
         self.descr.append([settings.NAME_DEV_BT_2 + " " + self.bt2_status, "\uf057" if not settings.ENABLED_DEV_BT_2 else "\uf293" if self.bt2_status == "enabled" else "\uf294"])
         self.descr.append([settings.ALSA_DEV_LOCAL + " " + self.local_status,"\uf028" if self.local_status == "enabled" else "\uf057"])
@@ -37,7 +36,7 @@ class Headphonemenu(MenuBase):
     def deactivate(self):
         print ("ende")
 
-    async def handle_push(self):
+    async def push_handler(self):
         await asyncio.sleep(1)
         if self.counter == 1:
             if settings.ENABLED_DEV_BT_1:
@@ -50,9 +49,3 @@ class Headphonemenu(MenuBase):
         time.sleep(2)
         self.get_dev_status()
 
-    def push_callback(self,lp=False):
-        if self.counter == 0:
-            self.windowmanager.set_window("mainmenu")
-        else:
-            self.set_busy("Verbinde",settings.SYMBOL_BLUETOOTH_OFF, self.descr[self.counter][0])
-            self.loop.create_task(self.handle_push())

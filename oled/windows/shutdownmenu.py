@@ -5,18 +5,18 @@ from PIL import ImageFont
 import settings
 import os
 import integrations.playout as playout
+import asyncio
 
 from integrations.functions import restart_oled, get_timeouts
 
 class Shutdownmenu(MenuBase):
 
-    def __init__(self, windowmanager, mopidyconnection,title):
-        super().__init__(windowmanager,title)
+    def __init__(self, windowmanager, loop, mopidyconnection,title):
+        super().__init__(windowmanager,loop,title)
 
         self.mopidyconnection = mopidyconnection
         self.descr.append(["Neustart OLED", "\uf0e2"])
         self.descr.append(["AUS Sofort", "\uf011"])
-        self.descr.append(["Zurück", "\uf0a8"])
         self.descr.append(["Reboot", "\uf0e2"])
         self.descr.append(["Timer AUS", "\uf1f7"])
         self.descr.append(["Timer 15min", "\uf0a2"])
@@ -27,18 +27,17 @@ class Shutdownmenu(MenuBase):
         self.descr.append(["Idle 15min", "\uf186"])
 
 
-    def push_callback(self,lp=False):
-        if self.counter == 0:
+    async def push_handler(self):
+        asyncio.sleep(1)
+        if self.counter == 1:
             restart_oled()
 
-        elif self.counter == 1:
+        elif self.counter == 2:
             playout.savepos()
             self.mopidyconnection.stop()
             settings.shutdown_reason = settings.SR2
             print("Stopping event loop")
             self.loop.stop()
-        elif self.counter == 2:
-            self.windowmanager.set_window("mainmenu")
         elif self.counter == 3:
             self.windowmanager.set_window("start")
             self.mopidyconnection.stop()

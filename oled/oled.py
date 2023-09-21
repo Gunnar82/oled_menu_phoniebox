@@ -79,10 +79,10 @@ def main():
     loadedwins = []
     idlescreen = windows.idle.Idle(windowmanager, _nowplaying)
     playbackm = windows.playbackmenu.Playbackmenu(windowmanager,_nowplaying)
-    shutdownscreen = windows.shutdownmenu.Shutdownmenu(windowmanager, mopidy,"Powermenü")
+    shutdownscreen = windows.shutdownmenu.Shutdownmenu(windowmanager, loop, mopidy,"Powermenü")
     loadedwins.append(idlescreen)
     loadedwins.append(playbackm)
-    loadedwins.append(windows.mainmenu.Mainmenu(windowmanager,"Hauptmenü"))
+    loadedwins.append(windows.mainmenu.Mainmenu(windowmanager,loop,"Hauptmenü"))
     loadedwins.append(windows.info.Infomenu(windowmanager))
     loadedwins.append(windows.headphone.Headphonemenu(windowmanager,loop,"Audioausgabe"))
     loadedwins.append(windows.playlistmenu.Playlistmenu(windowmanager, musicmanager))

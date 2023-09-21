@@ -4,13 +4,13 @@ from luma.core.render import canvas
 from PIL import ImageFont
 import settings
 from integrations.functions import mountusb, get_folder_from_file
+import asyncio
 
 class Mainmenu(MenuBase):
 
-    def __init__(self, windowmanager,title):
-        super().__init__(windowmanager,title)
+    def __init__(self, windowmanager,loop,title):
+        super().__init__(windowmanager,loop,title)
         self.counter = 0
-        self.descr.append([ "Zurück", "\uf0a8"])
         self.descr.append ([ "Musik", settings.SYMBOL_MUSIC])
         self.descr.append([ "Hörspiele", settings.SYMBOL_HOERSPIEL])
         self.descr.append([ "Internetradio", settings.SYMBOL_RADIO])
@@ -24,13 +24,11 @@ class Mainmenu(MenuBase):
 
         self.window_on_back = "idle"
 
-    def push_callback(self,lp=False):
-        if lp == True:
+    async def push_handler(self):
+        if False == True:
             self.counter = 6 if (self.counter < 5)  else 1
         else:
-            if self.counter == 0:
-                self.windowmanager.set_window("idle")
-            elif self.counter == 1:
+            if self.counter == 1:
                 settings.audio_basepath = settings.AUDIO_BASEPATH_MUSIC
                 settings.currentfolder = get_folder_from_file(settings.FILE_LAST_MUSIC)
                 self.windowmanager.set_window("foldermenu")

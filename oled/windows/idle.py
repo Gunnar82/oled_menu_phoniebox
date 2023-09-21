@@ -79,13 +79,6 @@ class Idle(MainWindow):
 
 
 
-            #shutdowntimer ? aktiv dann Zeit anzeigen
-            if settings.job_t >= 0:
-                draw.text((xpos3 + 2, lineposy + 2 ), "%2.2d" % (int(settings.job_t)), font=Idle.fontsmall, fill="BLUE")
-            elif settings.X728_ENABLED:
-                draw.text((xpos3 + 2, lineposy + 2), settings.battsymbol, font=Idle.faicons, fill=get_battload_color())
-
-
 
             if ((self.nowplaying._state == "stop") or (settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (settings.battcapacity <= settings.X728_BATT_LOW) or (settings.DISPLAY_HEIGHT > 64)):
                 if (settings.battcapacity >= 0):

@@ -3,15 +3,17 @@ from ui.windowbase import WindowBase
 from luma.core.render import canvas
 from PIL import ImageFont
 import settings
+import asyncio
 
 class MenuBase(WindowBase):
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XL)
     font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_NORMAL)
 
-    def __init__(self, windowmanager,title):
+    def __init__(self, windowmanager,loop,title):
         super().__init__(windowmanager)
         self.counter = 0
         self.descr = []
+        self.descr.append([ "Zurück", "\uf0a8"])
         self.basetitle = title
         self.lines_per_page = 4 if settings.DISPLAY_HEIGHT >= 128 else 2
         self.symbols_per_line = 4
@@ -60,8 +62,15 @@ class MenuBase(WindowBase):
     def activate(self):
         self.counter = 0
 
-    def push_callback(self,lp=False):
+    async def push_handler(self):
         raise NotImplementedError()
+
+    def push_callback(self,lp=False):
+        if self.counter == 0:
+            self.windowmanager.set_window(self.window_on_back)
+        else:
+            self.set_busy("Verarbeite...", self.descr[self.counter][1],self.descr[self.counter][0])
+            self.loop.create_task(self.push_handler())
 
     def turn_callback(self, direction, key=None):
         if key:
