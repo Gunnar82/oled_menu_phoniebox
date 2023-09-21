@@ -33,9 +33,6 @@ class Idle(WindowBase):
         active = False
         self.nowplaying = nowplaying
         self.timeout=False
-        self.oldtitle = ""
-        self.oldname = ""
-        self.oldalbum = ""
         self.namex = 0
         self.titlex = 0
         self.albumx = 0
@@ -52,9 +49,6 @@ class Idle(WindowBase):
         self.titlex = 0
         self.namex = 0
         self.albumx = 0
-        self.oldname = ""
-        self.oldtitle = ""
-        self.oldalbum = ""
         self.oldsong = ""
 
         active = True
@@ -190,32 +184,23 @@ class Idle(WindowBase):
                     return
 
             #Titel Scrollbar
-            if self.nowplaying._playingtitle == self.oldtitle:
-                if Idle.font.getsize(self.nowplaying._playingtitle[self.titlex:])[0] > settings.DISPLAY_WIDTH:
-                    self.titlex += 1
-                else:
-                    self.titlex = 0
-            else:
-                self.titlex = 0
+            if Idle.font.getsize(self.nowplaying._playingtitle)[0] > settings.DISPLAY_WIDTH:
+                self.titlex += 1
+                if self.titlex >= len (self.nowplaying._playingtitle): self.titlex = 0
 
-                self.oldtitle = self.nowplaying._playingtitle
 
-                if (datetime.datetime.now() - settings.lastinput).total_seconds() >= settings.DARK_TIMEOUT:
-                     settings.lastinput = datetime.datetime.now() - datetime.timedelta(seconds=settings.CONTRAST_TIMEOUT)
 
            ###name Scrollbar
-            if self.nowplaying._playingname == self.oldname and Idle.font.getsize(self.nowplaying._playingname[self.namex:])[0] > settings.DISPLAY_WIDTH:
+            if Idle.font.getsize(self.nowplaying._playingname)[0] > settings.DISPLAY_WIDTH:
                 self.namex += 1
-            else:
-                self.namex = 0
-                self.oldname = self.nowplaying._playingname
+                if namex >= len(self.nowplaying._playingname):
+                    self.namex = 0
 
             ####album scrollbar
-            if self.nowplaying._playingalbum == self.oldalbum and Idle.font.getsize(self.nowplaying._playingalbum[self.albumx:])[0] > settings.DISPLAY_WIDTH -14:
+            if Idle.font.getsize(self.nowplaying._playingalbum)[0] > settings.DISPLAY_WIDTH:
                 self.albumx += 1
-            else:
-                self.albumx = 0
-                self.oldalbum = self.nowplaying._playingalbum
+                if self.albumx >= len (self.nowplaying._playingalbum): self.albumx = 0
+
 
 
             draw.text((1, settings.DISPLAY_HEIGHT - 3*settings.FONT_HEIGHT_NORMAL ), self.nowplaying._playingalbum[self.albumx:], font=Idle.font, fill="white")
