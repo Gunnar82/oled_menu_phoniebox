@@ -263,6 +263,7 @@ class Idle(WindowBase):
                     cfolder = get_folder_of_livestream(self.nowplaying._playingfile)
                     playout.pc_playfolder (get_folder(cfolder,-1))
                 else:
+                    log (lDEBUG,"idle: prev")
                     playout.pc_prev()
             elif key == 'right' or key == '6':
                 self.busysymbol = settings.SYMBOL_NEXT
@@ -271,6 +272,7 @@ class Idle(WindowBase):
                     cfolder = get_folder_of_livestream(self.nowplaying._playingfile)
                     playout.pc_playfolder (get_folder(cfolder,1))
                 else:
+                    log (lDEBUG,"idle: next")
                     playout.pc_next()
             elif key == 'A':
                 settings.audio_basepath = settings.AUDIO_BASEPATH_MUSIC
