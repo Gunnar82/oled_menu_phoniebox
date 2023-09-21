@@ -36,108 +36,89 @@ class MainWindow(WindowBase):
         self.namex = 0
         self.titlex = 0
         self.albumx = 0
-        self.LocalOutputEnabled = False
-        self.BluetoothFound = False
-
-        #self.loop.create_task(find_dev_bt())
-
-
-
-    def activate(self):
-        self.titlex = 0
-        self.namex = 0
-        self.albumx = 0
-        self.oldsong = ""
-
-        active = True
-
-
-    def deactivate(self):
-
-        active = False
 
     def render(self,draw):
-        if 1==1: #with canvas(self.device) as draw:
-            now = datetime.datetime.now()
+        now = datetime.datetime.now()
 
 
-            #Trennleiste waagerecht
-            lineposy = settings.DISPLAY_HEIGHT - settings.FONT_HEIGHT_SMALL - 5
-            draw.rectangle((0,lineposy,settings.DISPLAY_WIDTH,lineposy),outline="white",fill="white")
-            #Trennleisten senkrecht3
-            xpos1 = int(settings.DISPLAY_WIDTH/6)
-            draw.rectangle((xpos1,lineposy,xpos1,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
-            xpos2 = int(3.5*settings.DISPLAY_WIDTH/6)
-            draw.rectangle((xpos2,lineposy,xpos2,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
-            xpos3 = int(5*settings.DISPLAY_WIDTH/6)
-            draw.rectangle((xpos3,lineposy,xpos3,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
+        #Trennleiste waagerecht
+        lineposy = settings.DISPLAY_HEIGHT - settings.FONT_HEIGHT_SMALL - 5
+        draw.rectangle((0,lineposy,settings.DISPLAY_WIDTH,lineposy),outline="white",fill="white")
 
-            #Zeitanzeige
-            try:
-                if self.nowplaying._state == "play":
-                    #elapsed
-                    _spos = to_min_sec(self.nowplaying._elapsed)
-                    _xpos = int((xpos1 + xpos2) / 2 ) - int(self.fontsmall.getsize(_spos)[0]/2)
+        #Trennleisten senkrecht3
+        xpos1 = int(settings.DISPLAY_WIDTH/6)
+        draw.rectangle((xpos1,lineposy,xpos1,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
+        xpos2 = int(3.5*settings.DISPLAY_WIDTH/6)
+        draw.rectangle((xpos2,lineposy,xpos2,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
+        xpos3 = int(5*settings.DISPLAY_WIDTH/6)
+        draw.rectangle((xpos3,lineposy,xpos3,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
 
-                    draw.text((_xpos, lineposy + 2 ),_spos, font=self.fontsmall, fill="white")
-                else:
-                    _spos = self.nowplaying._state
-                    _xpos = int((xpos1 + xpos2) / 2 ) - int(self.fontsmall.getsize(_spos)[0]/2)
+        #Zeitanzeige
+        try:
+            if self.nowplaying._state == "play":
+                #elapsed
+                _spos = to_min_sec(self.nowplaying._elapsed)
+                _xpos = int((xpos1 + xpos2) / 2 ) - int(self.fontsmall.getsize(_spos)[0]/2)
 
-                    draw.text((_xpos, lineposy + 2), _spos, font=self.fontsmall, fill="white") #other than play
-                    if self.nowplaying._statex != self.nowplaying._state:
-                        self.nowplaying._statex = self.nowplaying._state
-
-            except KeyError:
-                pass
-
-
-            #volume
-            draw.text((1, lineposy + 2 ), str(self.nowplaying._volume), font=self.fontsmall, fill="white")
-
-            #Zeitanzeige
-            try:
-                if self.nowplaying._state == "play":
-                    #elapsed
-                    _spos = to_min_sec(self.nowplaying._elapsed)
-                    _xpos = int((xpos1 + xpos2) / 2 ) - int(self.fontsmall.getsize(_spos)[0]/2)
-
-                    draw.text((_xpos, lineposy + 2 ),_spos, font=self.fontsmall, fill="white")
-                else:
-                    _spos = self.nowplaying._state
-                    _xpos = int((xpos1 + xpos2) / 2 ) - int(self.fontsmall.getsize(_spos)[0]/2)
-
-                    draw.text((_xpos, lineposy + 2), _spos, font=self.fontsmall, fill="white") #other than play
-                    if self.nowplaying._statex != self.nowplaying._state:
-                        self.nowplaying._statex = self.nowplaying._state
-
-            except KeyError:
-                pass
-
-
-
-            if settings.X728_ENABLED:
-                #battery load line
-                try:
-                    pos = int(settings.battcapacity/100*settings.DISPLAY_WIDTH)
-                    draw.rectangle((0,3,pos,3),outline=get_battload_color(),fill=get_battload_color())
-                except:
-                    log(lERROR,"Battery Error")
-
-            #Currently playing song
-
-            if float(self.nowplaying._duration) >= 0:
-                timelinepos = int(float(self.nowplaying._elapsed) / float(self.nowplaying._duration)  * settings.DISPLAY_WIDTH) # TODO Device.with
+                draw.text((_xpos, lineposy + 2 ),_spos, font=self.fontsmall, fill="white")
             else:
-                timelinepos = settings.DISPLAY_WIDTH # device.width
-            #Fortschritssleiste Wiedergabe
-            draw.rectangle((0,0,timelinepos,1),outline=settings.COLOR_BLUE, fill=settings.COLOR_BLUE)
+                _spos = self.nowplaying._state
+                _xpos = int((xpos1 + xpos2) / 2 ) - int(self.fontsmall.getsize(_spos)[0]/2)
 
-            #Position in Playlist
-            _spos = "%2.2d/%2.2d" % (int(self.nowplaying._song), int(self.nowplaying._playlistlength))
-            _xpos = int((xpos3 + xpos2) / 2) - int(self.fontsmall.getsize(_spos)[0]/2)
+                draw.text((_xpos, lineposy + 2), _spos, font=self.fontsmall, fill="white") #other than play
+                if self.nowplaying._statex != self.nowplaying._state:
+                    self.nowplaying._statex = self.nowplaying._state
 
-            draw.text((_xpos, lineposy + 2 ),_spos , font=self.fontsmall, fill="white")
+        except KeyError:
+            pass
+
+
+        #volume
+        draw.text((1, lineposy + 2 ), str(self.nowplaying._volume), font=self.fontsmall, fill="white")
+
+        #Zeitanzeige
+        try:
+            if self.nowplaying._state == "play":
+                #elapsed
+                _spos = to_min_sec(self.nowplaying._elapsed)
+                _xpos = int((xpos1 + xpos2) / 2 ) - int(self.fontsmall.getsize(_spos)[0]/2)
+
+                draw.text((_xpos, lineposy + 2 ),_spos, font=self.fontsmall, fill="white")
+            else:
+                _spos = self.nowplaying._state
+                _xpos = int((xpos1 + xpos2) / 2 ) - int(self.fontsmall.getsize(_spos)[0]/2)
+
+                draw.text((_xpos, lineposy + 2), _spos, font=self.fontsmall, fill="white") #other than play
+                if self.nowplaying._statex != self.nowplaying._state:
+                    self.nowplaying._statex = self.nowplaying._state
+
+        except KeyError:
+            pass
+
+
+
+        if settings.X728_ENABLED:
+            #battery load line
+            try:
+                pos = int(settings.battcapacity/100*settings.DISPLAY_WIDTH)
+                draw.rectangle((0,3,pos,3),outline=get_battload_color(),fill=get_battload_color())
+            except:
+                log(lERROR,"Battery Error")
+
+        #Currently playing song
+
+        if float(self.nowplaying._duration) >= 0:
+            timelinepos = int(float(self.nowplaying._elapsed) / float(self.nowplaying._duration)  * settings.DISPLAY_WIDTH) # TODO Device.with
+        else:
+            timelinepos = settings.DISPLAY_WIDTH # device.width
+        #Fortschritssleiste Wiedergabe
+        draw.rectangle((0,0,timelinepos,1),outline=settings.COLOR_BLUE, fill=settings.COLOR_BLUE)
+
+        #Position in Playlist
+        _spos = "%2.2d/%2.2d" % (int(self.nowplaying._song), int(self.nowplaying._playlistlength))
+        _xpos = int((xpos3 + xpos2) / 2) - int(self.fontsmall.getsize(_spos)[0]/2)
+
+        draw.text((_xpos, lineposy + 2 ),_spos , font=self.fontsmall, fill="white")
 
 
 
