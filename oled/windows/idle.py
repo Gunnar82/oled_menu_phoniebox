@@ -165,11 +165,11 @@ class Idle(MainWindow):
     def turn_callback(self, direction, key=None):
         if key:
             if key == 'up' or key == '2':
-                self.set_busy("lauter",settings.SYMBOL_VOL_UP)
                 playout.pc_volup(5)
+                self.set_busy("lauter",settings.SYMBOL_VOL_UP)
             elif key == 'down' or key == '8':
-                self.set_busy("leiser",settings.SYMBOL_VOL_DN)
                 playout.pc_voldown(5)
+                self.set_busy("leiser",settings.SYMBOL_VOL_DN)
             elif key == 'left' or key =='4':
                 self.set_busy("zurück",settings.SYMBOL_PREV)
                 if self.nowplaying._playingalbum == "Livestream":

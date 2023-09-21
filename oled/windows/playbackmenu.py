@@ -20,8 +20,6 @@ class Playbackmenu(MainWindow):
         super().__init__(windowmanager,nowplaying)
         self.nowplaying = nowplaying
         self._volume = -1
-        self._playingfile = ""
-        self._playingalbum = ""
         self._time = -1
         self._elapsed = -1
         self._playlistlength = -1
@@ -40,6 +38,7 @@ class Playbackmenu(MainWindow):
         self.descr.append([ "Wiedergabeliste", "\uf03c" ])
 
         self.symwidth,self.symheight = Playbackmenu.faiconsbig.getsize(self.descr[1][1])
+        self.window_on_back = "idle"
 
     def activate(self):
         self._activepbm = True
