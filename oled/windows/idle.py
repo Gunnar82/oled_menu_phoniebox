@@ -187,7 +187,8 @@ class Idle(WindowBase):
             if Idle.font.getsize(self.nowplaying._playingtitle)[0] > settings.DISPLAY_WIDTH:
                 self.titlex += 1
                 if self.titlex >= len (self.nowplaying._playingtitle): self.titlex = 0
-
+            else:
+                self.titlex = 0
 
 
            ###name Scrollbar
@@ -195,13 +196,16 @@ class Idle(WindowBase):
                 self.namex += 1
                 if namex >= len(self.nowplaying._playingname):
                     self.namex = 0
+            else:
+                self.namex = 0
 
             ####album scrollbar
             if Idle.font.getsize(self.nowplaying._playingalbum)[0] > settings.DISPLAY_WIDTH:
                 self.albumx += 1
                 if self.albumx >= len (self.nowplaying._playingalbum): self.albumx = 0
 
-
+            else:
+                self.albumx = 0
 
             draw.text((1, settings.DISPLAY_HEIGHT - 3*settings.FONT_HEIGHT_NORMAL ), self.nowplaying._playingalbum[self.albumx:], font=Idle.font, fill="white")
             draw.text((1, settings.DISPLAY_HEIGHT - 4*settings.FONT_HEIGHT_NORMAL ), self.nowplaying._playingname[self.namex:], font=Idle.font, fill="white")
