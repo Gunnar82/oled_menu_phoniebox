@@ -20,6 +20,7 @@ class Mainmenu(MenuBase):
         self.descr.append([ "Betriebsinfos", "\uf022"])
         self.descr.append([ "WLAN / Hotspot", "\uf09e"])
         self.descr.append([ "Firewall", "\uf1cb"])
+        self.descr.append([ "Download", "\uf1cb"])
 
         self.window_on_back = "idle"
 
@@ -56,4 +57,6 @@ class Mainmenu(MenuBase):
                 self.windowmanager.set_window("wlanmenu")
             elif self.counter == 9:
                 self.windowmanager.set_window("firewallmenu")
+            elif self.counter == 10:
+                self.windowmanager.set_window("downloadmenu")
 

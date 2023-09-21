@@ -83,13 +83,13 @@ class Wlanmenu(WindowBase):
             try:
                 subprocess_result = subprocess.Popen('hostname -I',shell=True,stdout=subprocess.PIPE)
                 subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
-                self._ip_addr = subprocess_output[0].decode('utf-8')
+                self._ip_addr = subprocess_output[0].decode()
             except:
                 self._ip_addr = "n/a"
             try:
                 subprocess_result = subprocess.Popen('iwgetid',shell=True,stdout=subprocess.PIPE)
                 subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
-                self.wifi_ssid = subprocess_output[0].decode('utf-8')
+                self.wifi_ssid = subprocess_output[0].decode()
                 self.wifi_ssid = self.wifi_ssid[self.wifi_ssid.rfind(":")+1:]
             except:
                 self.wifi_ssid = "n/a"
