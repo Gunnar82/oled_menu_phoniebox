@@ -38,7 +38,6 @@ class MainWindow(WindowBase):
         self.albumx = 0
         self.LocalOutputEnabled = False
         self.BluetoothFound = False
-        self.window_on_back = "playlistmenu"
 
         #self.loop.create_task(find_dev_bt())
 

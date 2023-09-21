@@ -24,6 +24,7 @@ class Idle(MainWindow):
     def __init__(self, windowmanager, nowplaying):
         super().__init__(windowmanager,nowplaying)
         self.changerender = True
+        self.window_on_back = "playlistmenu"
 
     def activate(self):
         self.titlex = 0
