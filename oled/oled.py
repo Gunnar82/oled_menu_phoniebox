@@ -14,9 +14,6 @@ import settings
 
 from integrations.logging import *
 
-os.system("whoami >> /tmp/whoami")
-
-
 if settings.DISPLAY_DRIVER == "ST7789":
     import integrations.display.st7789 as idisplay
 elif settings.DISPLAY_DRIVER == "ssd1351":
