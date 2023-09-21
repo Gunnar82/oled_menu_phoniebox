@@ -69,8 +69,7 @@ class Idle(WindowBase):
             now = datetime.datetime.now()
 
             if (settings.battcapacity >= 0 and settings.battcapacity <= settings.X728_BATT_EMERG and not settings.battloading):
-                self.busytext1 = "Batterie leer"
-                self.busytext2 = "AUS in %ds" % ((settings.lastinput - now).total_seconds() + 120)
+                self.set_busy("Batterie leer", busytext2 = "AUS in %ds" % ((settings.lastinput - now).total_seconds() + 120))
                 self.busy = True
                 self.contrasthandle = False
                 self.rendertime = self._rendertime
@@ -96,9 +95,7 @@ class Idle(WindowBase):
                 if (self.oldsong != ""):
                     playout.savepos()
                     log(lDEBUG,"Titelwechsel erkannt")
-                    self.busytext1 = " Titelwechsel"
-                    self.busytext2 = "%2.2d von %2.2d " % (int(self.nowplaying._song), int(self.nowplaying._playlistlength))
-                    self.busysymbol = settings.SYMBOL_CHANGING_SONG
+                    self.set_busy ("Titelwechsel", settings.SYMBOL_CHANGING_SONG, "%2.2d von %2.2d " % (int(self.nowplaying._song), int(self.nowplaying._playlistlength)))
                     self.busy = True
 
                 self.oldsong = self.nowplaying._song
@@ -249,16 +246,13 @@ class Idle(WindowBase):
     def turn_callback(self, direction, key=None):
         if key:
             if key == 'up' or key == '2':
-                self.busysymbol = settings.SYMBOL_VOL_UP
-                self.busytext1 = "lauter"
+                self.set_busy("lauter",settings.SYMBOL_VOL_UP)
                 playout.pc_volup(5)
             elif key == 'down' or key == '8':
-                self.busysymbol = settings.SYMBOL_VOL_DN
-                self.busytext1 = "leiser"
+                self.set_busy("leiser",settings.SYMBOL_VOL_DN)
                 playout.pc_voldown(5)
             elif key == 'left' or key =='4':
-                self.busysymbol = settings.SYMBOL_PREV
-                self.busytext1 = "zurück"
+                self.set_busy("zurück",settings.SYMBOL_PREV)
                 if self.nowplaying._playingalbum == "Livestream":
                     cfolder = get_folder_of_livestream(self.nowplaying._playingfile)
                     playout.pc_playfolder (get_folder(cfolder,-1))
@@ -266,8 +260,7 @@ class Idle(WindowBase):
                     log (lDEBUG,"idle: prev")
                     playout.pc_prev()
             elif key == 'right' or key == '6':
-                self.busysymbol = settings.SYMBOL_NEXT
-                self.busytext1 = "weiter"
+                self.set_busy("weiter",settings.SYMBOL_NEXT)
                 if self.nowplaying._playingalbum == "Livestream":
                     cfolder = get_folder_of_livestream(self.nowplaying._playingfile)
                     playout.pc_playfolder (get_folder(cfolder,1))
@@ -317,8 +310,8 @@ class Idle(WindowBase):
 
         else:
             if (direction > 0):
-                self.busysymbol = settings.SYMBOL_VOL_UP
+                self.set_busy("lauter",settings.SYMBOL_VOL_UP)
                 playout.pc_volup()
             else:
-                self.busysymbol = settings.SYMBOL_VOL_DN
+                self.set_busy("leiser",settings.SYMBOL_VOL_DN)
                 playout.pc_voldown()

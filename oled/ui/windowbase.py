@@ -31,6 +31,12 @@ class WindowBase():
         self.changerender = False
         self._rendertime = 0.25
 
+    def set_busy(self,busytext1,busysymbol=settings.SYMBOL_SANDCLOCK,busytext2="", busyrendertime=3):
+        self.busytext1 = busytext1
+        self.busysymbol = busysymbol
+        self.busytext2 = busytext2
+        self.busyrendertime = busyrendertime
+
     def renderbusy(self,symbolcolor = settings.COLOR_RED, textcolor1=settings.COLOR_WHITE, textcolor2=settings.COLOR_WHITE):
         with canvas(self.device) as draw:
 
