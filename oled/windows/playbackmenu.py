@@ -7,22 +7,17 @@ from PIL import ImageFont
 import settings
 import os
 
-from ui.windowbase import WindowBase
+from ui.mainwindow import MainWindow
 import integrations.playout as playout
 from integrations.functions import to_min_sec,get_folder_of_livestream, get_folder
 
 import RPi.GPIO as GPIO
 
-class Playbackmenu(WindowBase):
-    bigfont = ImageFont.truetype(settings.FONT_CLOCK, size=22)
-    font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_NORMAL)
-    fontsmall = ImageFont.truetype(settings.FONT_TEXT, size=10)
-    faicons = ImageFont.truetype(settings.FONT_ICONS, size=8)
+class Playbackmenu(MainWindow):
     faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XL)
 
     def __init__(self, windowmanager, nowplaying):
-        super().__init__(windowmanager)
-        self._activepbm = False
+        super().__init__(windowmanager,nowplaying)
         self.nowplaying = nowplaying
         self._volume = -1
         self._playingfile = ""
@@ -56,85 +51,21 @@ class Playbackmenu(WindowBase):
 
     def render(self):
         with canvas(self.device) as draw:
+            super().render(draw)
             now = datetime.datetime.now()
-            mwidth = Playbackmenu.font.getsize(self.descr[self.counter][0])
-            draw.text((int(settings.DISPLAY_WIDTH / 2) - int(mwidth[0]/2),1), text=self.descr[self.counter][0], font=Playbackmenu.font, fill="white")
 
+            drawtext = "Titelwechsel aktiv" if self.skipselected else self.descr[self.counter][0]
+            mwidth = Playbackmenu.font.getsize(drawtext)
 
-            #Trennleiste waagerecht
-            draw.rectangle((0,settings.DISPLAY_HEIGHT -15,128,settings.DISPLAY_HEIGHT - 15),outline="white",fill="white")
-            #Trennleisten senkrecht
-            draw.rectangle((16,settings.DISPLAY_HEIGHT -15,16,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
-            draw.rectangle((65,settings.DISPLAY_HEIGHT -15,65,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
-            draw.rectangle((105,settings.DISPLAY_HEIGHT -15,105,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
-
-            #volume
-            draw.text((1, settings.DISPLAY_HEIGHT -14 ), str(self.nowplaying._volume), font=Playbackmenu.fontsmall, fill="white")
-
-
-            #Buttons
-            try:
-                if self.nowplaying._state == "play":
-                    #elapsed
-                    _spos = to_min_sec(self.nowplaying._elapsed)
-                    _xpos = 41 - int(Playbackmenu.fontsmall.getsize(_spos)[0]/2)
-
-                    draw.text((_xpos, settings.DISPLAY_HEIGHT -14  ),_spos, font=Playbackmenu.fontsmall, fill="white")
-                else:
-                    _spos = self.nowplaying._state
-                    _xpos = 41 - int(Playbackmenu.fontsmall.getsize(_spos)[0]/2)
-
-                    draw.text((_xpos, settings.DISPLAY_HEIGHT -14 ), _spos, font=Playbackmenu.fontsmall, fill="white") #other than play
-
-
-            except KeyError:
-                pass
-
-            try:
-                if float(self.nowplaying._duration) >= 0:
-                    timelinepos = int(float(self.nowplaying._elapsed) / float(self.nowplaying._duration)  * settings.DISPLAY_WIDTH) # TODO Device.with
-                else:
-                    timelinepos = settings.DISPLAY_WIDTH # device.width
-            except:
-                timelinepos = 128
-
-            #Fortschritssleiste Wiedergabe
-            draw.rectangle((0,0,timelinepos,1),outline="white",fill="white")
-
-
-            #Currently playing song
-            #Line 1 2 3
-
-
-           #paylistpos
-            _spos = "%2.2d/%2.2d" % (int(self.nowplaying._song), int(self.nowplaying._playlistlength))
-            _xpos = 85 - int(Playbackmenu.fontsmall.getsize(_spos)[0]/2)
-            draw.text((_xpos, settings.DISPLAY_HEIGHT -14 ),_spos , font=Playbackmenu.fontsmall, fill="white")
-
-
-            #shutdowntimer ? aktiv dann Zeit anzeigen
-            if settings.job_t >= 0:
-                draw.text((108, settings.DISPLAY_HEIGHT -14 ), "%2.2d" % (int(settings.job_t)), font=Playbackmenu.fontsmall, fill="white")
-
-
-            #selection line
-
-            fillcolor = "white"
-            bgcolor = "black"
+            draw.text((int(settings.DISPLAY_WIDTH / 2) - int(mwidth[0]/2),settings.DISPLAY_HEIGHT - 4 * settings.FONT_HEIGHT_XL), text=drawtext, font=Playbackmenu.font, fill="white")
 
             i = 0
-
-            if (self.skipselected):
-                draw.line((8, 42, 20, 42), width=2, fill=settings.COLOR_SELECTED)
-
-
 
             startx = int(settings.DISPLAY_WIDTH/2) - int(len(self.descr) / 2 * (self.symwidth * 1.3))
 
             while (i < len(self.descr)):
                 xpos = startx + i * (self.symwidth*1.3)
-
-                draw.text((xpos, settings.FONT_HEIGHT_XL + 20 if (i == self.counter) else settings.FONT_HEIGHT_XL + 22 ), self.descr[i][1], font=Playbackmenu.faiconsbig, fill=settings.COLOR_SELECTED if (i == self.counter) else fillcolor ) #prev
+                draw.text((xpos, settings.DISPLAY_HEIGHT - 3 * settings.FONT_HEIGHT_XL - (2 if (i == self.counter) else 0) ), self.descr[i][1], font=Playbackmenu.faiconsbig, fill=settings.COLOR_SELECTED if (i == self.counter) else settings.COLOR_WHITE ) #prev
 
                 i += 1
 
