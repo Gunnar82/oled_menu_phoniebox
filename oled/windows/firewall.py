@@ -10,12 +10,13 @@ import asyncio
 import re
 
 class Firewallmenu(WindowBase):
-    font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_NORMAL)
+    font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_SMALL)
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XL)
 
     def __init__(self, windowmanager):
         super().__init__(windowmanager)
         self.counter = 0
+        self.changerender = True
         self._ufw_status = "n/a"
         self.descr = "Firewall"
         (self.mwidth, self.mheight) = Firewallmenu.font.getsize(self.descr)
@@ -23,10 +24,10 @@ class Firewallmenu(WindowBase):
 
     def render(self):
         with canvas(self.device) as draw:
-            draw.text(((settings.DISPLAY_HEIGHT - self.mwidth) / 2,1), text=self.descr, font=Firewallmenu.font, fill="white")
+            draw.text(((settings.DISPLAY_WIDTH - self.mwidth) / 2,1), text=self.descr, font=Firewallmenu.font, fill="white")
 
-            draw.text((20, 15), text=self._ufw_status, font=Firewallmenu.font, fill="white")
-            
+            draw.text((20, 20), text=self._ufw_status, font=Firewallmenu.font, fill="white")
+
 
 
     def push_callback(self,lp=False):
@@ -35,10 +36,12 @@ class Firewallmenu(WindowBase):
 
     def turn_callback(self, direction, key=None):
 
-        if key == 'A':
+        if key == 'A' or key == 'X':
+            self.set_busy("Firewall",busytext2="Dienste deaktivieren")
             for srv in settings.ufw_services_allow:
                 os.system("sudo ufw deny %s" % (srv))
-        elif key == 'B':
+        elif key == 'B' or key == 'Y':
+            self.set_busy("Firewall",busytext2="Dienste aktivieren")
             for srv in settings.ufw_services_allow:
                 os.system("sudo ufw allow %s" % (srv))
 
@@ -48,8 +51,6 @@ class Firewallmenu(WindowBase):
 
     def deactivate(self):
         self._active = False
-
-
 
 
     async def _get_firewallstatus(self):
