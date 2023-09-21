@@ -19,6 +19,9 @@ class Foldermenu(ListBase):
 
     def activate(self):
         self.folders = []
+        if not os.path.exists(settings.currentfolder):
+            settings.currentfolder = settings.audio_basepath
+            self.position = -1
 
         self.generate_folders(settings.currentfolder)
         self.on_key_left()
