@@ -84,7 +84,7 @@ def main():
     loadedwins.append(playbackm)
     loadedwins.append(windows.mainmenu.Mainmenu(windowmanager,"Hauptmenü"))
     loadedwins.append(windows.info.Infomenu(windowmanager))
-    loadedwins.append(windows.headphone.Headphonemenu(windowmanager,"Audioausgabe"))
+    loadedwins.append(windows.headphone.Headphonemenu(windowmanager,loop,"Audioausgabe"))
     loadedwins.append(windows.playlistmenu.Playlistmenu(windowmanager, musicmanager))
     loadedwins.append(windows.foldermenu.Foldermenu(windowmanager,loop))
     loadedwins.append(windows.folderinfo.FolderInfo(windowmanager))

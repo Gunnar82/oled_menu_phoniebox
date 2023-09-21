@@ -28,7 +28,6 @@ class WindowBase():
         self.busytext1 = settings.PLEASE_WAIT
         self.busytext2 = ""
         self.busyrendertime = 3
-        self.changerender = False
         self._rendertime = 0.25
 
     def set_busy(self,busytext1,busysymbol=settings.SYMBOL_SANDCLOCK,busytext2="", busyrendertime=3):
