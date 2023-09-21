@@ -4,17 +4,18 @@ import settings
 import os 
 import integrations.functions as functions
 import integrations.playout as playout
-
+import asyncio
 
 from integrations.logging import *
 
 class Foldermenu(ListBase):
     folders = []
 
-    def __init__(self, windowmanager):
+    def __init__(self, windowmanager,loop):
         super().__init__(windowmanager, "Auswahl")
         #self.timeoutwindow="folderinfo"
         self.timeout = False
+        self.loop = loop
 
 
     def activate(self):
@@ -26,8 +27,9 @@ class Foldermenu(ListBase):
         self.generate_folders(settings.currentfolder)
         self.on_key_left()
 
-    def playfolder(self,folder):
+    async def playfolder(self,folder):
         foldername = folder[len(settings.AUDIO_BASEPATH_BASE):]
+        await asyncio.sleep(1)
         playout.pc_playfolder(foldername)
         self.windowmanager.set_window("idle")
 
@@ -119,7 +121,6 @@ class Foldermenu(ListBase):
                     self.position = 0
 
 
-
     def turn_callback(self,direction,key=False):
         super().turn_callback(direction,key=key)
         self.basetitle = os.path.split(settings.currentfolder)[-1]
@@ -160,8 +161,8 @@ class Foldermenu(ListBase):
                     settings.currentfolder = settings.current_selectedfolder
                     self.position = 0
                 else:
-                    print ("play %s " % (settings.current_selectedfolder))
-                    self.playfolder(settings.current_selectedfolder)
+                    self.set_busy("Auswahl startet","\uf07C",self.menu[self.position])
+                    self.loop.create_task(self.playfolder(settings.current_selectedfolder))
 
 
             #self.mopidyconnection.loadplaylist(self.mopidyconnection.playlists[self.counter-1])

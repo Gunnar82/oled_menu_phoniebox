@@ -36,6 +36,7 @@ class WindowBase():
         self.busysymbol = busysymbol
         self.busytext2 = busytext2
         self.busyrendertime = busyrendertime
+        self.busy = True
 
     def renderbusy(self,symbolcolor = settings.COLOR_RED, textcolor1=settings.COLOR_WHITE, textcolor2=settings.COLOR_WHITE):
         with canvas(self.device) as draw:
@@ -50,7 +51,7 @@ class WindowBase():
                 mwidth,mheight = busyfont.getsize(self.busytext2)
                 draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, settings.DISPLAY_HEIGHT - mheight - 2), text=self.busytext2, font=busyfont, fill=textcolor2) #sanduhr
 
-            self.windowmanager.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
+
 
 
     def activate(self):

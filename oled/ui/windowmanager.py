@@ -125,7 +125,7 @@ class WindowManager():
                             self.rendertime = self.activewindow.busyrendertime
                             self.activewindow.renderbusy()
                             self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
-                        elif (self.activewindow.busy or settings.callback_active) and self.activewindow.changerender:
+                        elif self.activewindow.busy or (settings.callback_active and self.activewindow.changerender):
                             self.rendered_busy = True
                             self.rendertime = self.activewindow.busyrendertime
                             self.activewindow.renderbusy()
@@ -156,7 +156,6 @@ class WindowManager():
         settings.staywake = False
         if settings.screenpower:
             settings.callback_active = True
-            self.activewindow.busy = True
             log(lDEBUG2,"push_callback: started")
 
             try:
@@ -167,7 +166,6 @@ class WindowManager():
             finally:
                 settings.callback_active = False
                 log(lDEBUG2,"push_callback: ended")
-                self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
 
         elif self.activewindow.windowtitle != "ende":
             settings.screenpower = True
@@ -177,7 +175,6 @@ class WindowManager():
     def turn_callback(self, direction, key=None):
         try:
             settings.callback_active = True
-            self.activewindow.busy = True
             log(lDEBUG2,"turn_callback: started")
 
             settings.screenpower = True
