@@ -90,8 +90,9 @@ class ListBase(WindowBase):
                         else:
                             self.drawtextx = 0
                     #Selection arrow
-                    draw.polygon(((1, 11+startx + i * lineheight - lineheight / 2), (1, 15+startx + i * lineheight - lineheight / 2 ),
-                                        (5, 13+startx + i * lineheight - lineheight / 2)), fill=settings.COLOR_SELECTED)
+                    #draw.polygon(((1, 11+startx + i * lineheight - lineheight / 2), (1, 15+startx + i * lineheight - lineheight / 2 ),
+                    #                    (5, 13+startx + i * lineheight - lineheight / 2)), fill=settings.COLOR_SELECTED)
+                    draw.text((5, startx + i * lineheight), "\uf101", font=self.faicons, fill=settings.COLOR_SELECTED)
 
                     draw.text((startx, startx + i * lineheight), drawtext[self.drawtextx:], font=self.font, fill=settings.COLOR_SELECTED)
 

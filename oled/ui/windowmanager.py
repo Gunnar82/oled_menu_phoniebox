@@ -56,6 +56,7 @@ class WindowManager():
             log(lINFO,f"Window {windowid} not found!")
 
     def show_window(self):
+        settings.lastinput = datetime.now()
         settings.screenpower = True
         self.device.show()
 
@@ -108,14 +109,17 @@ class WindowManager():
                     await asyncio.sleep(0.25)
 
                 if self.rfidwatcher.get_state():
-                    self.show_window()
                     self.lastrfidate = datetime.now()
+                    self.show_window()
+
+                if self.activewindow.windowtitle in ['start','ende']:
+                    self.show_window()
 
                 if settings.screenpower:
                     try:
                         log(lDEBUG3,"busy State of %s:  %s" %(self.activewindow.windowtitle,self.activewindow.busy))
                         if (datetime.now() - self.lastrfidate).total_seconds() < 3:
-                            log(DEBUG,"render rfid symbol")
+                            log(lDEBUG,"render rfid symbol")
                             self.rendered_busy = True
                             self.activewindow.busysymbol = settings.SYMBOL_CARD_READ
                             self.rendertime = self.activewindow.busyrendertime

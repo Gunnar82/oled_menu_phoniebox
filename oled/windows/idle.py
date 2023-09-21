@@ -181,11 +181,13 @@ class Idle(WindowBase):
                         aus = settings.job_i
                     else:
                         aus = settings.job_t
-                    draw.text((20,30), "AUS in " +  str(aus) + "min", font=Idle.font, fill="white")
+
+                    text = "AUS in %2.2d min" %(aus)
                 else:
                     text = now.strftime("%a, %d.%m.%y %H:%M")
-                    mwidth = Idle.font.getsize(text)
-                    draw.text(((settings.DISPLAY_WIDTH/2) - (mwidth[0]/2),30), "%s" % (text), font=Idle.font, fill="white")
+
+                mwidth = Idle.font.getsize(text)
+                draw.text(((settings.DISPLAY_WIDTH/2) - (mwidth[0]/2),30), "%s" % (text), font=Idle.font, fill="white")
 
                 if settings.DISPLAY_HEIGHT <= 64:
                     return

@@ -5,15 +5,28 @@ import os
 import integrations.functions as functions
 import integrations.playout as playout
 
+
 from integrations.logging import *
 
 class Foldermenu(ListBase):
     folders = []
 
+    def __init__(self, windowmanager):
+        super().__init__(windowmanager, "Auswahl")
+        #self.timeoutwindow="folderinfo"
+        self.timeout = False
+
+
+    def activate(self):
+        self.folders = []
+
+        self.generate_folders(settings.currentfolder)
+        self.on_key_left()
+
     def playfolder(self,folder):
         foldername = folder[len(settings.AUDIO_BASEPATH_BASE):]
         playout.pc_playfolder(foldername)
-        self.windowmanager.set_window("playlistmenu")
+        self.windowmanager.set_window("idle")
 
     def on_key_left(self):
         log(lDEBUG,"settings.currentfolder:%s " %(settings.currentfolder))
@@ -77,10 +90,6 @@ class Foldermenu(ListBase):
 
         self.folders.sort()
 
-    def __init__(self, windowmanager):
-        super().__init__(windowmanager, "Auswahl")
-        #self.timeoutwindow="folderinfo"
-        self.timeout = False
 
     def generate_folders(self,folder):
 
@@ -107,11 +116,6 @@ class Foldermenu(ListBase):
                     self.position = 0
 
 
-    def activate(self):
-        self.folders = []
-
-        self.generate_folders(settings.currentfolder)
-        self.on_key_left()
 
     def turn_callback(self,direction,key=False):
         super().turn_callback(direction,key=key)
