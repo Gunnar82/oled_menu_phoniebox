@@ -18,24 +18,20 @@ class Firewallmenu(MenuBase):
         self.counter = 0
         self.changerender = True
         self._ufw_status = "n/a"
-        self.descr.append(["Firewall EIN","\uf1cb"])
-        self.descr.append(["Firewall AUS","\uf1cb"])
-    #def render(self):
-    #    with canvas(self.device) as draw:
-            #draw.text(((settings.DISPLAY_WIDTH - self.mwidth) / 2,1), text=self.descr, font=Firewallmenu.font, fill="white")
-
-    #        draw.text((20, 20), text=self._ufw_status, font=Firewallmenu.font, fill="white")
-
-
+        self._fw_status = "n/a"
+        self.descr.append(["Firewall STATUS","\uf058"])
+        self.descr.append(["Firewall EIN","\uf01b"])
+        self.descr.append(["Firewall AUS","\uf01a"])
 
     async def push_handler(self):
         await asyncio.sleep(1)
-        if self.counter == 1:
+        if self.counter == 2:
             for srv in settings.ufw_services_allow:
                 os.system("sudo ufw deny %s" % (srv))
-        elif self.counter == 2:
+        elif self.counter == 3:
             for srv in settings.ufw_services_allow:
                 os.system("sudo ufw allow %s" % (srv))
+        await asyncio.sleep(5)
 
 
     def activate(self):
@@ -57,11 +53,12 @@ class Firewallmenu(MenuBase):
                 self._ufw_status = self._ufw_status.replace("DENY IN"," deny")
 
                 self._ufw_status = self._ufw_status.replace("Anywhere","")
+                self.descr[1][0] = "Firewall ist " + ("AUS" if "deny" not in self._ufw_status else "EIN")
 
 
 
             except:
                 self._ufw_status = "n/a"
 
-            await asyncio.sleep(3)
+            await asyncio.sleep(1)
 
