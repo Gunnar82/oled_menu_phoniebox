@@ -91,7 +91,7 @@ def main():
     loadedwins.append(windows.ende.Ende(windowmanager))
     loadedwins.append(windows.wlan.Wlanmenu(windowmanager))
     loadedwins.append(shutdownscreen)
-    loadedwins.append(windows.firewall.Firewallmenu(windowmanager))
+    loadedwins.append(windows.firewall.Firewallmenu(windowmanager,loop))
     loadedwins.append(windows.start.Start(windowmanager, mopidy))
     loadedwins.append(windows.download.DownloadMenu(windowmanager))
 

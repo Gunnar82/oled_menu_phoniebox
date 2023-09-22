@@ -1,5 +1,5 @@
 """ Shutdown menu """
-from ui.windowbase import WindowBase
+from ui.menubase import MenuBase
 from luma.core.render import canvas
 from PIL import ImageFont
 import settings
@@ -9,41 +9,34 @@ import os
 import asyncio
 import re
 
-class Firewallmenu(WindowBase):
+class Firewallmenu(MenuBase):
     font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_SMALL)
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XL)
 
-    def __init__(self, windowmanager):
-        super().__init__(windowmanager)
+    def __init__(self, windowmanager,loop):
+        super().__init__(windowmanager,loop,"Firewall")
         self.counter = 0
         self.changerender = True
         self._ufw_status = "n/a"
-        self.descr = "Firewall"
-        (self.mwidth, self.mheight) = Firewallmenu.font.getsize(self.descr)
+        self.descr.append(["Firewall EIN","\uf1cb"])
+        self.descr.append(["Firewall AUS","\uf1cb"])
+    #def render(self):
+    #    with canvas(self.device) as draw:
+            #draw.text(((settings.DISPLAY_WIDTH - self.mwidth) / 2,1), text=self.descr, font=Firewallmenu.font, fill="white")
 
-
-    def render(self):
-        with canvas(self.device) as draw:
-            draw.text(((settings.DISPLAY_WIDTH - self.mwidth) / 2,1), text=self.descr, font=Firewallmenu.font, fill="white")
-
-            draw.text((20, 20), text=self._ufw_status, font=Firewallmenu.font, fill="white")
+    #        draw.text((20, 20), text=self._ufw_status, font=Firewallmenu.font, fill="white")
 
 
 
-    def push_callback(self,lp=False):
-        if self.counter == 0:
-            self.windowmanager.set_window("mainmenu")
-
-    def turn_callback(self, direction, key=None):
-
-        if key == 'A' or key == 'X':
-            self.set_busy("Firewall",busytext2="Dienste deaktivieren")
+    async def push_handler(self):
+        await asyncio.sleep(1)
+        if self.counter == 1:
             for srv in settings.ufw_services_allow:
                 os.system("sudo ufw deny %s" % (srv))
-        elif key == 'B' or key == 'Y':
-            self.set_busy("Firewall",busytext2="Dienste aktivieren")
+        elif self.counter == 2:
             for srv in settings.ufw_services_allow:
                 os.system("sudo ufw allow %s" % (srv))
+
 
     def activate(self):
         self._active = True
