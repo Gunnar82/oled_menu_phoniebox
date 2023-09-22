@@ -72,7 +72,6 @@ class WindowManager():
         while self.loop.is_running():
             if ((datetime.now() - settings.lastinput).total_seconds() >= settings.MENU_TIMEOUT) and self.activewindow.timeout:
                 self.set_window(self.activewindow.timeoutwindow)
-
             if self.activewindow.contrasthandle:
                 log(lDEBUG2,"contrasthandle")
                 if (datetime.now() - settings.lastinput).total_seconds() >= settings.DARK_TIMEOUT:
@@ -112,7 +111,7 @@ class WindowManager():
                     self.lastrfidate = datetime.now()
                     self.show_window()
 
-                if self.activewindow.windowtitle in ['start','ende']:
+                if self.activewindow.windowtitle in ['start']:
                     self.show_window()
 
                 if settings.screenpower:

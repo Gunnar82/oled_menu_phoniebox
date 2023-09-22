@@ -28,7 +28,7 @@ class Shutdownmenu(MenuBase):
 
 
     async def push_handler(self):
-        asyncio.sleep(1)
+        await asyncio.sleep(1)
         if self.counter == 1:
             restart_oled()
 

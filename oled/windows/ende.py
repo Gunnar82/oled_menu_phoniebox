@@ -14,6 +14,8 @@ class Ende(WindowBase):
         self.fontawesome = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XXL)
         self.timeout = False
         self.window_on_back = "none"
+        self.power_timer = False
+        self._rendertime = 5
 
         self.windowmanager = windowmanager
         self.timeout = False
@@ -28,15 +30,15 @@ class Ende(WindowBase):
 
     def render(self):
         with canvas(self.device) as draw:
+            if self.power_timer: self.busytext2 = "AUS in %2.2d min " % settings.job_t
             mwidth,mheight = self.font.getsize(self.busytext1)
             draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, 2), text=self.busytext1, font=self.font, fill='white')
 
             mwidth,mheight = self.fontawesome.getsize(self.busysymbol)
             draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, (settings.DISPLAY_HEIGHT - mheight) / 2), text=self.busysymbol, font=self.fontawesome, fill='red') #sanduhr
 
-            if (self.busytext2 != ""):
-                mwidth,mheight = self.font.getsize(self.busytext2)
-                draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, settings.DISPLAY_HEIGHT - mheight - 2), text=self.busytext2, font=self.font, fill='white') #    sanduhr
+            mwidth,mheight = self.font.getsize(self.busytext2)
+            draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, settings.DISPLAY_HEIGHT - mheight - 2), text=self.busytext2, font=self.font, fill='white') #    sanduhr
 
 
     def push_callback(self,lp=False):
@@ -44,9 +46,9 @@ class Ende(WindowBase):
 
     def turn_callback(self, direction, key=None):
         if key =='GPI_PWR_OFF':
-            self.busysymbol = "\uf0a2"
-            self.busytext1 = 'GPI Case Timer aktiv!'
-            self.busytext2 = 'AUS in %2.2d min ' % settings.job_t
+            self.power_timer = True
+            self.set_busy("GPI Case Timer aktiv!","\uf0a2", "AUS in %2.2d min " % settings.job_t)
         elif key =='GPI_PWR_ON':
+            self.power_timer = False
             self.windowmanager.set_window("idle")
 
