@@ -45,6 +45,7 @@ class Ende(WindowBase):
         pass
 
     def turn_callback(self, direction, key=None):
+        print ("ende_turn")
         if key =='GPI_PWR_OFF':
             self.power_timer = True
             self.set_busy("GPI Case Timer aktiv!","\uf0a2", "AUS in %2.2d min " % settings.job_t)

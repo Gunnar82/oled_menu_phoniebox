@@ -217,9 +217,6 @@ class Idle(MainWindow):
                     time.sleep(5)
                 else:
                     playout.playlast_checked(what)
-            elif key == 'GPI_PWR_OFF':
-                self.windowmanager.set_window("ende")
-
         else:
             if (direction > 0):
                 self.set_busy("lauter",settings.SYMBOL_VOL_UP)
