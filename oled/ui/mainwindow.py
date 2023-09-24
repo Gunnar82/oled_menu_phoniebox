@@ -23,7 +23,7 @@ class MainWindow(WindowBase):
     bigfont = ImageFont.truetype(settings.FONT_CLOCK, size=22)
     font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_NORMAL)
     fontsmall = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_SMALL)
-    faicons = ImageFont.truetype(settings.FONT_ICONS, size=8)
+    faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_SMALL)
     faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=12)
     faiconsxl = ImageFont.truetype(settings.FONT_ICONS, size=30)
 
@@ -119,12 +119,16 @@ class MainWindow(WindowBase):
         _xpos = int((xpos3 + xpos2) / 2) - int(self.fontsmall.getsize(_spos)[0]/2)
 
         draw.text((_xpos, lineposy + 2 ),_spos , font=self.fontsmall, fill="white")
-
         #shutdowntimer ? aktiv dann Zeit anzeigen
+        xpause = 0
+        if 'http://' in self.nowplaying.filename or 'https://' in self.nowplaying.filename:
+            draw.text((xpos3 + 5, lineposy + 2), settings.SYMBOL_CLOUD, font=self.faicons, fill="white")
+            xpause, ypause = self.faicons.getsize(settings.SYMBOL_CLOUD)
+
         if settings.job_t >= 0:
-            draw.text((xpos3 + 2, lineposy + 2 ), "%2.2d" % (int(settings.job_t)), font=self.fontsmall, fill="BLUE")
+            draw.text((xpos3 + 5 + 1.2 * xpause, lineposy + 2 ), "%2.2d" % (int(settings.job_t)), font=self.fontsmall, fill="white")
         elif settings.X728_ENABLED:
-            draw.text((xpos3 + 2, lineposy + 2), settings.battsymbol, font=self.faicons, fill=get_battload_color())
+            draw.text((xpos3 + 5 + 1.2 * xpause, lineposy + 2), settings.battsymbol, font=self.faicons, fill=get_battload_color())
 
 
     async def _find_dev_bt(self):

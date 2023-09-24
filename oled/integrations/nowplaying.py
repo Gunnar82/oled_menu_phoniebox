@@ -14,13 +14,13 @@ class nowplaying:
 
     async def _generatenowplaying(self):
         try:
-            filename = ""
+            self.filename = ""
             _playingtitle = ""
 
             while self.loop.is_running():
                 playing = self.musicmanager.nowplaying()
                 status = self.musicmanager.status()
-                filename = playing['file'] if ("file" in playing) else ""
+                self.filename = playing['file'] if ("file" in playing) else ""
 
                 try:
                     if "title" in playing:
@@ -50,7 +50,6 @@ class nowplaying:
                     name = "n/a"
 
                 self._playingname = name
-
                 try:
                     if "album" in playing:
                         album = playing['album']
