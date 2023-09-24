@@ -8,7 +8,10 @@ import os
 import asyncio
 
 from ui.listbase import ListBase
+import time
 import integrations.playout as playout
+
+
 
 
 class DownloadMenu(ListBase):
@@ -19,7 +22,20 @@ class DownloadMenu(ListBase):
         self.progress = {}
 
     def activate(self):
-        self.website ="http://192.168.8.21/website"
+        self.website = settings.ONLINEURL
+        self.set_busy("Verbinde Online",settings.SYMBOL_CLOUD,self.website,busyrendertime=5)
+        self.renderbusy()
+        time.sleep(3)
+        try:
+            r = requests.get(self.website)
+            if r.status_code != 200: raise "nicht 200"
+        except:
+            self.set_busy("Keine Verbindung möglich",settings.SYMBOL_NOCLOUD)
+            self.windowmanager.set_window("idle")
+            self.renderbusy()
+            time.sleep(3)
+
+            return
         self.baseurl = self.website[:self.website.rfind('/')]
         self.basecwd= self.website[self.website.rfind('/'):]
 
@@ -83,9 +99,9 @@ class DownloadMenu(ListBase):
 
 
                 except:
-                    print ("err")
+                    pass
         except:
-            print ("err")
+            pass
         finally:
             return hasfolder,liste
 

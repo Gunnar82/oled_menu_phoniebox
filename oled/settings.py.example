@@ -1,20 +1,22 @@
 """ Software settings """
 
-ufw_services_allow = ["ssh","http"]
+ufw_services_allow = ["ssh","http","microsoft-ds"]
 use_eyed3 = False
 
-LOGLEVEL=3
+LOGLEVEL=1
+
+ONLINEURL = "http://192.168.8.21/website"
 
 ###DISPLAY_SETTINGS i2c
 DISPLAY_TYPE = "spi" # or "i2c"
-DISPLAY_DRIVER = "ST7789"
+DISPLAY_DRIVER = "emulated"
 
 ####CONTROL
 
 MENU_TIMEOUT = 20
 START_TIMEOUT = 2
 
-CONTRAST_TIMEOUT = 30 #MENU_TIMEOUT
+CONTRAST_TIMEOUT = 50 #MENU_TIMEOUT
 CONTRAST_RENDERTIME = 3
 BUSY_RENDERTIME = 3
 DARK_TIMEOUT = 60
@@ -25,6 +27,11 @@ CONTRAST_DARK = 64
 CONTRAST_BLACK = 20
 
 DISABLE_DISPLAY = True
+
+
+###GYGAME gPICase
+GPICASE_ENABLED = True
+
 
 ### Power Controller
 POWERCONTROLLER_ENABLED = False
@@ -51,7 +58,7 @@ KEYPAD_ADDR = 0x27
 ####
 
 ### Pirate Audio HAT ###
-GPIOControl = True
+GPIOControl = False
 PIN_A = 5
 PIN_B = 6
 PIN_X = 16
@@ -83,7 +90,16 @@ SYMBOL_BLUETOOTH_OFF = "\uf294"
 SYMBOL_BLUETOOTH_ON = "\uf293"
 
 
+SYMBOL_CLOUD = "\uf0c2"
+SYMBOL_NOCLOUD = "\uf0ed"
+
+SYMBOL_FOLDER = "\u2c76"
+
+SYMBOL_FOLDER_SELECTED = "\uf07c"
+
 PLAYOUT_CONTROLS = "sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh"
+
+RESUME_PLAY = "sudo /home/pi/RPi-Jukebox-RFID/scripts/resume_play.sh"
 
 
 
@@ -98,7 +114,7 @@ FONT_TEXT = "fonts/arial.ttf"
 FONT_CLOCK = "fonts/calibri.ttf"
 
 
-ALSA_DEV_LOCAL="hifiberry"
+ALSA_DEV_LOCAL="speaker"
 
 #BluetoothKopfhoerer
 ENABLED_DEV_BT_1 = True
@@ -107,7 +123,7 @@ NAME_DEV_BT_1 = "braune Box"
 ALSA_DEV_BT_1 = "bt_dev_1"
 MAC_DEV_BT_1 = "69:40:CF:81:94:75"
 
-ENABLED_DEV_BT_2 = True
+ENABLED_DEV_BT_2 = False
 AUTOCONNECT_DEV_BT_2 = False
 NAME_DEV_BT_2 = "Soundflare"
 ALSA_DEV_BT_2 = "bt_dev_2"
@@ -124,6 +140,7 @@ AUDIO_BASEPATH_MUSIC = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/Musik"
 AUDIO_BASEPATH_HOERBUCH = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/Hörspiele"
 AUDIO_BASEPATH_RADIO = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/Radio"
 AUDIO_BASEPATH_USB = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/usb"
+AUDIO_BASEPATH_ONLINE = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/Online"
 
 
 FILE_LAST_HOERBUCH="/home/pi/RPi-Jukebox-RFID/settings/Latest_Hörspiele_Folder_Played"
