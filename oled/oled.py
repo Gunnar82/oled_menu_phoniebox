@@ -93,7 +93,7 @@ def main():
     loadedwins.append(shutdownscreen)
     loadedwins.append(windows.firewall.Firewallmenu(windowmanager,loop))
     loadedwins.append(windows.start.Start(windowmanager, mopidy))
-    loadedwins.append(windows.download.DownloadMenu(windowmanager))
+    loadedwins.append(windows.download.DownloadMenu(windowmanager,loop))
 
     for window in loadedwins:
         windowmanager.add_window(window.__class__.__name__.lower(), window)

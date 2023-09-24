@@ -20,7 +20,7 @@ class Mainmenu(MenuBase):
         self.descr.append([ "Betriebsinfos", "\uf022"])
         self.descr.append([ "WLAN / Hotspot", "\uf09e"])
         self.descr.append([ "Firewall", "\uf1cb"])
-        self.descr.append([ "Download", "\uf1cb"])
+        self.descr.append([ "Download", settings.SYMBOL_CLOUD])
 
         self.window_on_back = "idle"
 

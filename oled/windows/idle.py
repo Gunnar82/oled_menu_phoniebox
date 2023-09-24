@@ -115,7 +115,7 @@ class Idle(MainWindow):
            ###name Scrollbar
             if Idle.font.getsize(self.nowplaying._playingname)[0] > settings.DISPLAY_WIDTH:
                 self.namex += 1
-                if namex >= len(self.nowplaying._playingname):
+                if self.namex >= len(self.nowplaying._playingname):
                     self.namex = 0
             else:
                 self.namex = 0
