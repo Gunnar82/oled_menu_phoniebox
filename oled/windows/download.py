@@ -50,17 +50,18 @@ class DownloadMenu(ListBase):
         hasfolder = False
         try:
             if len(self.cwd) < len(self.basecwd): self.cwd = self.basecwd
-            self.cwd,listing = htmllistparse.fetch_listing(self.baseurl + self.cwd, timeout=30)
+            url = self.baseurl + requests.utils.quote(self.cwd)
+            self.cwd,listing = htmllistparse.fetch_listing(url, timeout=30)
             for listobj in listing:    #menu.append(entry)
                 if '/' in listobj.name and not hasfolder: hasfolder = True
 
                 liste.append(listobj.name.strip('/'))
 
-
                 current_folder = os.path.join(settings.AUDIO_BASEPATH_ONLINE,self.cwd)
                 current_folder = current_folder[len(self.basecwd):]
                 selected_folder = os.path.join(current_folder,listobj.name)
                 selected_folder = os.path.join(settings.AUDIO_BASEPATH_ONLINE,selected_folder[1:])
+
 
                 try:
                     fn = os.path.join(selected_folder,"folder.conf")
@@ -124,37 +125,39 @@ class DownloadMenu(ListBase):
         if self.position == -1 or  self.position == -2 :
             self.windowmanager.set_window("mainmenu")
         else:
-            try:
-                self.cwd += '/' + self.menu[self.position]
-                self.url = self.baseurl + self.cwd
-                hasfolder, items = self.get_content()
-                if hasfolder:
-                    self.menu = items
-                else:
-                    self._playlist = items
-                    self.set_busy("Auswahl startet",settings.SYMBOL_CLOUD,self.menu[self.position])
-                    self.loop.create_task(self.push_handler())
-            except:
-                pass
+            self.set_busy("Auswahl verarbeiten...",settings.SYMBOL_CLOUD,self.menu[self.position])
+            self.loop.create_task(self.push_handler())
 
     async def push_handler(self):
         await asyncio.sleep(1)
-        print ("todo")
-        directory = os.path.join(settings.AUDIO_BASEPATH_ONLINE,self.cwd[len(self.basecwd):][1:])
-
-        if not os.path.exists(directory): os.makedirs(directory)
-
         try:
-            filename = os.path.join(directory,"livestream.txt")
-            ofile = open(filename,"w")
-            for item in self._playlist: ofile.write(self.baseurl + requests.utils.quote(self.cwd + '/' + item) + '\n')
-        except:
-            print ("err")
-        finally:
-            ofile.close()
+            self.cwd += '/' + self.menu[self.position]
+            self.url = self.baseurl + self.cwd
 
-        foldername = directory[len(settings.AUDIO_BASEPATH_BASE):]
-        playout.pc_playfolder(foldername)
+            hasfolder, items = self.get_content()
+
+            if hasfolder:
+                self.menu = items
+            else:
+                directory = os.path.join(settings.AUDIO_BASEPATH_ONLINE,self.cwd[len(self.basecwd):][1:])
+
+                if not os.path.exists(directory): os.makedirs(directory)
+
+                try:
+                    filename = os.path.join(directory,"livestream.txt")
+                    ofile = open(filename,"w")
+
+                    for item in items: ofile.write(self.baseurl + requests.utils.quote(self.cwd + '/' + item) + '\n')
+                    ofile.close()
+                    foldername = directory[len(settings.AUDIO_BASEPATH_BASE):]
+                    playout.pc_playfolder(foldername)
+
+                except:
+                    pass
+        except:
+            pass
+
+
         #self.windowmanager.set_window("idle")
 
 
