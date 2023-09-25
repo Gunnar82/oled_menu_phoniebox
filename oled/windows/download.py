@@ -62,7 +62,6 @@ class DownloadMenu(ListBase):
                 selected_folder = os.path.join(current_folder,listobj.name)
                 selected_folder = os.path.join(settings.AUDIO_BASEPATH_ONLINE,selected_folder[1:])
 
-
                 try:
                     fn = os.path.join(selected_folder,"folder.conf")
 
@@ -156,6 +155,8 @@ class DownloadMenu(ListBase):
                     pass
         except:
             pass
+        finally:
+            self.position = -1
 
 
         #self.windowmanager.set_window("idle")
