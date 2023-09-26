@@ -20,6 +20,7 @@ class DownloadMenu(ListBase):
         self.loop = loop
         self.window_on_back = "idle"
         self.progress = {}
+        self.timeout = False
 
     def activate(self):
         self.website = settings.ONLINEURL
@@ -50,7 +51,7 @@ class DownloadMenu(ListBase):
         hasfolder = False
         try:
             if len(self.cwd) < len(self.basecwd): self.cwd = self.basecwd
-            url = self.baseurl + requests.utils.quote(self.cwd)
+            url = self.baseurl + requests.utils.quote(self.cwd)+ '/'
             self.cwd,listing = htmllistparse.fetch_listing(url, timeout=30)
             for listobj in listing:    #menu.append(entry)
                 if '/' in listobj.name and not hasfolder: hasfolder = True

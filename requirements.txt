@@ -1,7 +1,10 @@
 #Hardware and MPD Connection
 luma.oled==3.8.1
+luma.emulator
 luma-lcd
 python-musicpd==0.5.1
 RPi.GPIO==0.7.0
-Pillow
+Pillow==9.5.0
 qrcode
+pygame==2.5.1
+watchdog
