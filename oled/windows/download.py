@@ -158,6 +158,7 @@ class DownloadMenu(ListBase):
             pass
         finally:
             self.position = -1
+            self.windowmanager.set_window("idle")
 
 
         #self.windowmanager.set_window("idle")
