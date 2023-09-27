@@ -151,6 +151,7 @@ class DownloadMenu(ListBase):
                     ofile.close()
                     foldername = directory[len(settings.AUDIO_BASEPATH_BASE):]
                     playout.pc_playfolder(foldername)
+                    self.windowmanager.set_window("idle")
 
                 except:
                     pass
@@ -158,7 +159,6 @@ class DownloadMenu(ListBase):
             pass
         finally:
             self.position = -1
-            self.windowmanager.set_window("idle")
 
 
         #self.windowmanager.set_window("idle")
