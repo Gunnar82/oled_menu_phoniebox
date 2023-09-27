@@ -61,8 +61,9 @@ class pygameInput():
                 playout.savepos()
                 #self.mopidyconnection.stop()
                 log(lINFO,"Stopping event loop")
-                self.loop.stop()
                 playout.pc_shutdown()
+                time.sleep(1)
+                self.loop.stop()
 
         finally:
             log(lDEBUG,"gpicase power handling: ende")

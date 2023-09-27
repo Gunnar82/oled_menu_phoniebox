@@ -25,7 +25,7 @@ class Ende(WindowBase):
         self.busytext1 = "wird"
         self.busytext2 = settings.shutdown_reason
         self.busysymbol = "\uf011"
-        self.renderbusy()
+        #self.renderbusy()
 
 
     def render(self):
