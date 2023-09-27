@@ -130,7 +130,7 @@ def main():
         from integrations.inputs.gpicase import pygameInput
 
         print ("Using pyGameInput")
-        mpygame = pygameInput(loop, turn_callback, push_callback)
+        mpygame = pygameInput(loop, turn_callback, push_callback,windowmanager)
 
     ###Rotaryencoder Setup
     if settings.ROTARYENCODER_ENABLED:

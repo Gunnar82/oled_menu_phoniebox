@@ -182,6 +182,9 @@ class WindowManager():
             if key == '#':
                 log(lINFO,"activate window_on_back: %s" % (self.activewindow.window_on_back))
                 self.set_window(self.activewindow.window_on_back)
+            elif key == 'GPI_PWR_OFF' and self.activewindow.windowtitle != "ende":
+                print("off")
+                #self.set_window("ende")
             else:
                 self.activewindow.turn_callback(direction,key=key)
         except (NotImplementedError, AttributeError):

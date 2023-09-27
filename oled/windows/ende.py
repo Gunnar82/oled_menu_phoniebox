@@ -3,7 +3,7 @@ from ui.windowbase import WindowBase
 from luma.core.render import canvas
 from PIL import ImageFont
 import settings
-import integrations.bluetooth
+
 from datetime import datetime
 
 class Ende(WindowBase):
@@ -22,34 +22,19 @@ class Ende(WindowBase):
         self.startup = datetime.now()
 
     def activate(self):
-        self.busytext1 = "wird"
-        self.busytext2 = settings.shutdown_reason
-        self.busysymbol = "\uf011"
-        #self.renderbusy()
+        self.power_timer = settings.job_t >= 0
+        
+        self.set_busy("wird getestet","\uf011",settings.shutdown_reason)
+        self.renderbusy()
 
 
     def render(self):
-        with canvas(self.device) as draw:
-            if self.power_timer: self.busytext2 = "AUS in %2.2d min " % settings.job_t
-            mwidth,mheight = self.font.getsize(self.busytext1)
-            draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, 2), text=self.busytext1, font=self.font, fill='white')
-
-            mwidth,mheight = self.fontawesome.getsize(self.busysymbol)
-            draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, (settings.DISPLAY_HEIGHT - mheight) / 2), text=self.busysymbol, font=self.fontawesome, fill='red') #sanduhr
-
-            mwidth,mheight = self.font.getsize(self.busytext2)
-            draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, settings.DISPLAY_HEIGHT - mheight - 2), text=self.busytext2, font=self.font, fill='white') #    sanduhr
-
+        if self.power_timer:
+            self.set_busy("GPI Case Timer aktiv!","\uf0a2", "AUS in %2.2d min " % settings.job_t)
 
     def push_callback(self,lp=False):
         pass
 
-    def turn_callback(self, direction, key=None):
-        print ("ende_turn")
-        if key =='GPI_PWR_OFF':
-            self.power_timer = True
-            self.set_busy("GPI Case Timer aktiv!","\uf0a2", "AUS in %2.2d min " % settings.job_t)
-        elif key =='GPI_PWR_ON':
+    def deactivate(self):
             self.power_timer = False
-            self.windowmanager.set_window("idle")
 

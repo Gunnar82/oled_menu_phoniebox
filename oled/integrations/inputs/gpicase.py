@@ -16,10 +16,12 @@ except ImportError:
 
 class pygameInput():
 
-    def __init__(self, loop, turn_callback, push_callback):
+    def __init__(self, loop, turn_callback, push_callback,windowmanager):
         print("Polling PyGame keys")
         pygame.init()
         pygame.joystick.init()
+
+        self.windowmanager = windowmanager
         self.clock = pygame.time.Clock()
 
         self.loop = loop
@@ -43,19 +45,17 @@ class pygameInput():
     def _button_press(self, *args):
         try:
             gpio26 = GPIO.input(26)
-
+            self.powerbtn = gpio26
             if settings.job_t >= 0:
                 #if self.powerbtn != gpio26:
-                self.powerbtn = gpio26
                 log (lDEBUG,"Shutdown Timer active - Waiting")
                 if gpio26 == 0:
-
                     if self.powerpressed < 5:
                         self.powerpressed += 1
-                        self.turn_callback(0, 'GPI_PWR_OFF')
+                        self.windowmanager.set_window("ende")
                 else:
                     self.powerpressed = 0
-                    self.turn_callback(0, 'GPI_PWR_ON')
+                    self.windowmanager.set_window("idle")
             elif not settings.callback_active:
                 settings.callback_active = True
                 playout.savepos()
