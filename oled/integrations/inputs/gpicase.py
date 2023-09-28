@@ -21,6 +21,8 @@ class pygameInput():
         pygame.init()
         pygame.joystick.init()
 
+        pygame.mouse.set_visible(False)
+
         self.windowmanager = windowmanager
         self.clock = pygame.time.Clock()
 
