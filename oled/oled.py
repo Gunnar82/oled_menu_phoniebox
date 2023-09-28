@@ -74,6 +74,23 @@ def main():
 
     _nowplaying = nowplaying.nowplaying(loop,musicmanager,windowmanager)
 
+    #Rotary encoder setup
+    def turn_callback(direction,_key=False):
+        windowmanager.turn_callback(direction, key=_key)
+
+    def push_callback(_lp=False):
+        windowmanager.push_callback(lp=_lp)
+
+
+    ###GPICase
+    if settings.GPICASE_ENABLED:
+        from integrations.inputs.gpicase import pygameInput
+
+        print ("Using pyGameInput")
+        mpygame = pygameInput(loop, turn_callback, push_callback,windowmanager)
+
+
+
 
     #Import all window classes and generate objects of them
     loadedwins = []
@@ -102,12 +119,6 @@ def main():
 
     windowmanager.set_window("start")
 
-    #Rotary encoder setup
-    def turn_callback(direction,_key=False):
-        windowmanager.turn_callback(direction, key=_key)
-
-    def push_callback(_lp=False):
-        windowmanager.push_callback(lp=_lp)
 
     #init Inputs
 
@@ -124,13 +135,6 @@ def main():
 
         mKeypad = keypad_4x4_i2c(loop, settings.KEYPAD_ADDR, settings.KEYPAD_INTPIN, turn_callback, push_callback)
 
-
-    ###GPICase
-    if settings.GPICASE_ENABLED:
-        from integrations.inputs.gpicase import pygameInput
-
-        print ("Using pyGameInput")
-        mpygame = pygameInput(loop, turn_callback, push_callback,windowmanager)
 
     ###Rotaryencoder Setup
     if settings.ROTARYENCODER_ENABLED:
