@@ -37,9 +37,8 @@ class DownloadMenu(ListBase):
             time.sleep(3)
 
             return
-        self.baseurl = self.website[:self.website.rfind('/')]
-        self.basecwd= self.website[self.website.rfind('/'):]
-
+        self.baseurl = self.website[:self.website.find('/',9)]
+        self.basecwd= self.website[self.website.find('/',9):]
         self.cwd = self.basecwd
 
         test, self.menu = self.get_content()
