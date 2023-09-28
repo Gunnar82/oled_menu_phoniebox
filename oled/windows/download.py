@@ -20,9 +20,16 @@ class DownloadMenu(ListBase):
         self.loop = loop
         self.window_on_back = "idle"
         self.progress = {}
+        self.items = []
         self.timeout = False
+        self.contrasthandle = False
+        self.canceled = False
+        self.downloading = False
+
 
     def activate(self):
+        self.selector = False
+        self.download = False
         self.website = settings.ONLINEURL
         self.set_busy("Verbinde Online",settings.SYMBOL_CLOUD,self.website,busyrendertime=5)
         self.renderbusy()
@@ -121,39 +128,91 @@ class DownloadMenu(ListBase):
             self.title = "Online"
 
     def push_callback(self,lp=False):
-        if self.position == -1 or  self.position == -2 :
+        if self.downloading:
+            self.canceled = True
+        elif self.position == -1 or  self.position == -2 :
             self.windowmanager.set_window("mainmenu")
         else:
-            self.set_busy("Auswahl verarbeiten...",settings.SYMBOL_CLOUD,self.menu[self.position])
+            if not self.selector: self.set_busy("Auswahl verarbeiten...",settings.SYMBOL_CLOUD,self.menu[self.position],busyrendertime=2)
             self.loop.create_task(self.push_handler())
 
-    async def push_handler(self):
+    async def push_handler(self,button = '*'):
         await asyncio.sleep(1)
         try:
-            self.cwd += '/' + self.menu[self.position]
-            self.url = self.baseurl + self.cwd
+            if self.selector:
+                if self.position == 0:
+                    directory = os.path.join(settings.AUDIO_BASEPATH_ONLINE,self.cwd[len(self.basecwd):][1:])
 
-            hasfolder, items = self.get_content()
+                    if not os.path.exists(directory): os.makedirs(directory)
 
-            if hasfolder:
-                self.menu = items
+                    try:
+                        filename = os.path.join(directory,"livestream.txt")
+                        ofile = open(filename,"w")
+
+                        for item in self.items: ofile.write(self.baseurl + requests.utils.quote(self.cwd + '/' + item) + '\n')
+                        ofile.close()
+                        foldername = directory[len(settings.AUDIO_BASEPATH_BASE):]
+                        playout.pc_playfolder(foldername)
+                        self.windowmanager.set_window("idle")
+                    except:
+                        pass
+                elif self.position == 1:
+                    window_on_back = self.window_on_back
+                    self.window_on_back = ""
+                    try:
+                        self.downloading = True
+                        self.changerender = True
+                        self.busyrendertime = 0.1
+                        settings.callback_active = True
+
+                        destdir = settings.AUDIO_BASEPATH_BASE + self.url[len(self.website):]
+
+                        if not os.path.exists(destdir): os.makedirs(destdir)
+
+                        for item in self.items:
+
+                            if self.canceled: raise Exception("Abbruch")
+
+                            url = self.baseurl + requests.utils.quote(self.cwd + '/' + item)
+                            destination = destdir + '/' + item
+                            self.busyrendertime = 0.1
+                            self.busytext1="Download %2.2d von %2.2d" %(self.items.index(item) + 1,len(self.items) )
+                            self.busytext2=item
+                            r = requests.get(url)
+                            if r.status_code == 200:
+                                with open(destination,'wb') as f:
+                                    f.write(r.content)
+                            await asyncio.sleep(0.3)
+                    except Exception as error:
+                        self.busyrendertime = 5
+                        self.busytext1=error
+                        self.busytext2 = error
+                        self.busysymbol = settings.SYMBOL_CLOUD
+                        await asyncio.sleep(3)
+                    finally:
+                        print ("finally")
+                        self.window_on_back = window_on_back
+                        await asyncio.sleep(0.3)
+                        self.canceled = False
+                        self.downloading = False
+                        settings.callback_active = False
+                        self.changerender = False
+                        
+
             else:
-                directory = os.path.join(settings.AUDIO_BASEPATH_ONLINE,self.cwd[len(self.basecwd):][1:])
+                self.cwd += '/' + self.menu[self.position]
+                self.url = self.baseurl + self.cwd
 
-                if not os.path.exists(directory): os.makedirs(directory)
+                hasfolder, self.items = self.get_content()
 
-                try:
-                    filename = os.path.join(directory,"livestream.txt")
-                    ofile = open(filename,"w")
+                if hasfolder:
+                    self.menu = self.items
+                else:
+                    self.selector = True
+                    self.menu = ["Abspielen", "Herunterladen"]
 
-                    for item in items: ofile.write(self.baseurl + requests.utils.quote(self.cwd + '/' + item) + '\n')
-                    ofile.close()
-                    foldername = directory[len(settings.AUDIO_BASEPATH_BASE):]
-                    playout.pc_playfolder(foldername)
-                    self.windowmanager.set_window("idle")
+                    return
 
-                except:
-                    pass
         except:
             pass
         finally:

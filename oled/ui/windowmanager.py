@@ -72,6 +72,7 @@ class WindowManager():
         while self.loop.is_running():
             if ((datetime.now() - settings.lastinput).total_seconds() >= settings.MENU_TIMEOUT) and self.activewindow.timeout:
                 self.set_window(self.activewindow.timeoutwindow)
+
             if self.activewindow.contrasthandle:
                 log(lDEBUG2,"contrasthandle")
                 if (datetime.now() - settings.lastinput).total_seconds() >= settings.DARK_TIMEOUT:
@@ -95,6 +96,9 @@ class WindowManager():
                     contrast = settings.CONTRAST_FULL
                     self.rendertime = self.activewindow._rendertime
                     self.looptime = self._looptime
+
+            else:
+                self.rendertime = self.activewindow._rendertime
 
             if self._lastcontrast != contrast:
                 self._lastcontrast = contrast
@@ -124,8 +128,10 @@ class WindowManager():
                             self.rendertime = self.activewindow.busyrendertime
                             self.activewindow.renderbusy()
                             self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
+
                         elif self.activewindow.busy or (settings.callback_active and self.activewindow.changerender):
                             self.rendered_busy = True
+                            self.rendertime = self.activewindow.busyrendertime
                             self.rendertime = self.activewindow.busyrendertime
                             self.activewindow.renderbusy()
                             log(lDEBUG2,"rendering busy of window %s, busyrendertime: %d" %(self.activewindow.windowtitle,self.rendertime))
@@ -181,7 +187,7 @@ class WindowManager():
             self.device.contrast(settings.CONTRAST_FULL)
             if key == '#':
                 log(lINFO,"activate window_on_back: %s" % (self.activewindow.window_on_back))
-                self.set_window(self.activewindow.window_on_back)
+                if self.activewindow.window_on_back != "": self.set_window(self.activewindow.window_on_back)
             else:
                 self.activewindow.turn_callback(direction,key=key)
         except (NotImplementedError, AttributeError):
