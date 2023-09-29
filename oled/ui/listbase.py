@@ -102,7 +102,7 @@ class ListBase(WindowBase):
                     draw.text((startx, startx  + i * lineheight), self.menu[seite *self.displaylines + i], font=self.font, fill="white")
                 
                 try:
-                    drawtext = "%2.0d%%" % (self.progress[self.menu[seite * self.displaylines + i]])
+                    drawtext = self.progress[self.menu[seite * self.displaylines + i]]
                     linewidth1, lineheight1 = self.font.getsize(drawtext)
                     log(lDEBUG2,"listbase: percent:%s:" %(drawtext))
                     draw.rectangle((settings.DISPLAY_WIDTH - linewidth1 - 15  , startx + i * lineheight , settings.DISPLAY_WIDTH , startx + (i + 1) * lineheight ), outline="black", fill="black")

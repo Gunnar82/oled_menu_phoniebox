@@ -82,15 +82,15 @@ class Foldermenu(ListBase):
                         #print ("prozent: %s, lastplayedfile: %s, mpos: %s" %(prozent, lastplayedfile, mpos))
 
                         log(lDEBUG2,"foldermenu: ptogress%.2f" % (prozent))
-                        self.progress[file] = prozent * 100
-                except:
-                    log(lDEBUG2,"No folder.conf for %s" % (d))
+                        self.progress[file] = "%2.2d %%" % (prozent * 100)
+                except Exception as error:
+                    log(lDEBUG2,error)
 
                 try:
                     if (functions.has_subfolders(os.path.join(path,file))):
                         file = settings.SYMBOL_FOLDER +" " + file
-                except:
-                    pass
+                except Exception as error:
+                    log(lDEBUG2,error)
                 self.folders.append(file)
 
         self.folders.sort()

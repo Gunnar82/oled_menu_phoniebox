@@ -156,6 +156,7 @@ class WindowManager():
 
             await asyncio.sleep(self._RENDERTIME)
 
+
     def push_callback(self,lp=False):
         settings.lastinput = datetime.now()
         settings.staywake = False

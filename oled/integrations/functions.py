@@ -142,3 +142,13 @@ def get_battload_color():
     else:
         return settings.COLOR_RED
 
+
+
+def get_size(size):
+    mb = ['B','kB','MB','GB','TB','PB']
+    number = 0
+    while size > 1024:
+        number += 1
+        size = size / 1024
+
+    return "%d %s" % (size,mb[number])
