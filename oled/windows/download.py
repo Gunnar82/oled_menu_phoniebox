@@ -218,7 +218,7 @@ class DownloadMenu(ListBase):
         elif (self.position == -1 or  self.position == -2) and not self.selector:
             self.windowmanager.set_window("mainmenu")
         else:
-            if not self.selector: self.set_busy("Auswahl verarbeiten...",settings.SYMBOL_CLOUD,self.menu[self.position],busyrendertime=2)
+            if not self.selector or self.position == 0: self.set_busy("Auswahl verarbeiten...",settings.SYMBOL_CLOUD,self.menu[self.position],busyrendertime=2)
             self.loop.create_task(self.push_handler())
 
 
