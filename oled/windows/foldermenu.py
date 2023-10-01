@@ -44,10 +44,6 @@ class Foldermenu(ListBase):
         log(lDEBUG,"self.basetitle: %s" % (self.basetitle))
 
 
-    def on_key_right(self):
-        self.push_callback()
-
-
     def generate_folders_array(self,path):
         self.folders = []
         self.progress = {}

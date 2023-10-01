@@ -46,13 +46,19 @@ class DownloadMenu(ListBase):
 
             return
 
-        self.baseurl = self.website[:self.website.find('/',9)]
-        self.basecwd= self.website[self.website.find('/',9):]
-        self.cwd = self.basecwd
+        self.baseurl = self.website[:settings.ONLINEURL.find('/',9)]
+        self.basecwd= self.website[settings.ONLINEURL.find('/',9):]
 
-        test, self.menu = self.get_content()
+        try:
+            with open(settings.FILE_LAST_ONLINE,"r") as f:
+                self.website = f.read()
+                self.cwd = self.website[len(self.baseurl):]
+        except Exception as error:
+            self.position = -1
+            self.website = settings.ONLINEURL
+            self.cwd = self.basecwd
 
-        self.position = -1
+        self.on_key_left()
 
     def get_content(self):
         liste = []
@@ -158,7 +164,11 @@ class DownloadMenu(ListBase):
             if self.selector:
                 if self.position == 0:
                     directory = os.path.join(settings.AUDIO_BASEPATH_ONLINE,self.cwd[len(self.basecwd):][1:])
-
+                    try:
+                        with open(settings.FILE_LAST_ONLINE,"w") as f:
+                            f.write(self.url)
+                    except Exception as error:
+                        print (error)
                     if not os.path.exists(directory): os.makedirs(directory)
 
                     try:
@@ -178,6 +188,7 @@ class DownloadMenu(ListBase):
                     self.selector = False
 
             else:
+                self.basetitle = self.menu[self.position]
                 self.cwd += '/' + self.menu[self.position]
                 self.url = self.baseurl + self.cwd
 
@@ -205,11 +216,6 @@ class DownloadMenu(ListBase):
     def turn_callback(self,direction,key=False):
         super().turn_callback(direction,key=key)
 
-        if key == 'left':
-            pos = self.cwd.rfind("/")
-            self.cwd = self.cwd[:pos]
-            test, self.menu = self.get_content()
-
         if self.position >= 0:
             self.title = "%2.2d / %2.2d" %(self.position + 1,len(self.menu))
         else:
@@ -225,7 +231,21 @@ class DownloadMenu(ListBase):
             if not self.selector or self.position == 0: self.set_busy("Auswahl verarbeiten...",settings.SYMBOL_CLOUD,self.menu[self.position],busyrendertime=2)
             self.loop.create_task(self.push_handler())
 
+    def on_key_left(self):
+        pos = self.cwd.rfind("/")
+        last = self.cwd[pos+1:]
 
+        self.cwd = self.cwd[:pos]
+        self.url = self.baseurl + self.cwd
+
+        pos = self.cwd.rfind("/")
+        self.basetitle = self.cwd[pos:]
+    
+        test, self.menu = self.get_content()
+        try:
+            self.position = self.menu.index(last)
+        except:
+            self.position = -1
 
     def render(self):
         if self.canceled:

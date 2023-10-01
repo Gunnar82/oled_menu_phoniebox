@@ -117,7 +117,7 @@ class ListBase(WindowBase):
         raise NotImplementedError()
 
     def on_key_right(self):
-        raise NotImplementedError()
+        self.push_callback()
 
     def push_callback(self,lp=False):
         raise NotImplementedError()
