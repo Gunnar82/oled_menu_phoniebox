@@ -133,8 +133,12 @@ class DownloadMenu(ListBase):
                 self.busyrendertime = 1
                 self.busytext1="Download %2.2d von %2.2d" %(self.items.index(item) + 1,len(self.items) )
                 self.busytext2=item
+                self.busytext3="Abbruch mit beliebiger Taste"
+                self.busysymbol = "\uf0ed"
                 r = requests.get(url)
                 if r.status_code == 200:
+                    if self.canceled: break;
+
                     with open(destination,'wb') as f:
                         f.write(r.content)
         except Exception as error:
@@ -213,7 +217,7 @@ class DownloadMenu(ListBase):
 
     def push_callback(self,lp=False):
         if self.downloading:
-            self.set_busy("Abbruch")
+            self.set_busy("Abbruch",self.busysymbol = "\uf05e")
             self.canceled = True
         elif (self.position == -1 or  self.position == -2) and not self.selector:
             self.windowmanager.set_window("mainmenu")

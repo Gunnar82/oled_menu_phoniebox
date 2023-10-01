@@ -27,13 +27,15 @@ class WindowBase():
         self.busysymbol = settings.SYMBOL_SANDCLOCK
         self.busytext1 = settings.PLEASE_WAIT
         self.busytext2 = ""
+        self.busytext3 = ""
         self.busyrendertime = 3
         self._rendertime = 0.25
 
-    def set_busy(self,busytext1,busysymbol=settings.SYMBOL_SANDCLOCK,busytext2="", busyrendertime=3):
+    def set_busy(self,busytext1,busysymbol=settings.SYMBOL_SANDCLOCK,busytext2="", busyrendertime=3,busytext3=""):
         self.busytext1 = busytext1
         self.busysymbol = busysymbol
         self.busytext2 = busytext2
+        self.busytext3 = busytext3
         self.busyrendertime = busyrendertime
         self.busy = True
 
@@ -43,12 +45,18 @@ class WindowBase():
             mwidth,mheight = busyfont.getsize(self.busytext1)
             draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, 2), text=self.busytext1, font=busyfont, fill=textcolor1)
 
-            mwidth,mheight = busyfaiconsbig.getsize(self.busysymbol)
-            draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, (settings.DISPLAY_HEIGHT - mheight) / 2), text=self.busysymbol, font=busyfaiconsbig, fill=symbolcolor) #sanduhr
+            if (self.busytext3 != ""):
+                mwidth,mheight = busyfont.getsize(self.busytext3)
+                draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, mheight + 2), text=self.busytext3, font=busyfont, fill=textcolor2) #sanduhr
 
             if (self.busytext2 != ""):
                 mwidth,mheight = busyfont.getsize(self.busytext2)
                 draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, settings.DISPLAY_HEIGHT - mheight - 2), text=self.busytext2, font=busyfont, fill=textcolor2) #sanduhr
+
+            mwidth,mheight = busyfaiconsbig.getsize(self.busysymbol)
+            draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, (settings.DISPLAY_HEIGHT - mheight) / 2), text=self.busysymbol, font=busyfaiconsbig, fill=symbolcolor) #sanduhr
+
+    
 
 
 
