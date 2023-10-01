@@ -152,10 +152,14 @@ class Foldermenu(ListBase):
             if lp:
                 self.windowmanager.set_window("folderinfo")
             else:
+                thefile = os.listdir(settings.current_selectedfolder)
+                print (settings.current_selectedfolder)
                 if (functions.has_subfolders(settings.current_selectedfolder)):
                     self.generate_folders(settings.current_selectedfolder)
                     settings.currentfolder = settings.current_selectedfolder
                     self.position = 0
+                elif not os.listdir(settings.current_selectedfolder) == 1 and thefile[0] == "folder.conf":
+                    self.set_busy("Verzeichnis ist leer",busysymbol="\uf059")
                 else:
                     self.set_busy("Auswahl startet","\uf07C",self.menu[self.position])
                     self.loop.create_task(self.playfolder(settings.current_selectedfolder))
