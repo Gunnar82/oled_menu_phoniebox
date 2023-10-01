@@ -6,6 +6,7 @@ import requests
 import htmllistparse
 import os
 import asyncio
+import shutil
 
 from ui.listbase import ListBase
 import time
@@ -67,6 +68,7 @@ class DownloadMenu(ListBase):
             if len(self.cwd) < len(self.basecwd): self.cwd = self.basecwd
             url = self.baseurl + requests.utils.quote(self.cwd)+ '/'
             self.cwd,listing = htmllistparse.fetch_listing(url, timeout=30)
+
             self.totalsize = 0
             for listobj in listing:
                 if '/' in listobj.name and not hasfolder: hasfolder = True
@@ -124,7 +126,7 @@ class DownloadMenu(ListBase):
             self.downloading = True
             settings.callback_active = True
 
-            destdir = settings.AUDIO_BASEPATH_BASE + self.url[len(self.website):]
+            destdir = settings.AUDIO_BASEPATH_BASE + self.url[len(settings.ONLINEURL):]
 
             if not os.path.exists(destdir): os.makedirs(destdir)
 
@@ -183,7 +185,20 @@ class DownloadMenu(ListBase):
                     self.menu = self.items
                 elif self.position == -1 and self.selector:
                     self.selector = False
-
+                elif self.position == 3:
+                    destdir = settings.AUDIO_BASEPATH_BASE + self.url[len(settings.ONLINEURL):]
+                    if not os.path.exists(destdir):
+                        self.set_busy("lokal nicht gefunden",busysymbol="\uf059")
+                    else:
+                        try:
+                            shutil.rmtree(destdir)
+                            self.set_busy(destdir,busytext2="erfolgreich",busysymbol="\uf058")
+                        except FileNotFoundError:
+                            self.set_busy("nicht gefunden!",busyrendertime=5,busysymbol="\uf057")
+                        except PermissionError:
+                            self.set_busy("Fehlerhafte Berechrigung",busyrendertime=5,busysymbol="\uf057")
+                        except Exception as e:
+                            self.set_busy("Fehler!",busytext2=str(e),busyrendertime=5,busysymbol="\uf057")
             else:
                 self.basetitle = self.menu[self.position]
                 self.cwd += '/' + self.menu[self.position]
@@ -199,7 +214,7 @@ class DownloadMenu(ListBase):
                         current_title = "Fortschritt: %s" % (self.progress[self.menu[self.position]])
                     except:
                         current_title = ""
-                    self.menu = ["Abspielen", "Herunterladen","informationen","","Anzahl Titel :%2.2d " %  (len(self.items)),"Gesamtgröße %s" % (get_size(self.totalsize)),current_title]
+                    self.menu = ["Abspielen", "Herunterladen","informationen","Lokal löschen","","Anzahl Titel :%2.2d " %  (len(self.items)),"Gesamtgröße %s" % (get_size(self.totalsize)),current_title]
 
                     return
 
