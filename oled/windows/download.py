@@ -217,7 +217,7 @@ class DownloadMenu(ListBase):
 
     def push_callback(self,lp=False):
         if self.downloading:
-            self.set_busy("Abbruch",self.busysymbol = "\uf05e")
+            self.set_busy("Abbruch",busysymbol = "\uf05e")
             self.canceled = True
         elif (self.position == -1 or  self.position == -2) and not self.selector:
             self.windowmanager.set_window("mainmenu")
