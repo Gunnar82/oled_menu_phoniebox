@@ -122,8 +122,6 @@ class DownloadMenu(ListBase):
     def downloadfolder(self):
         try:
             self.downloading = True
-            self.changerender = True
-            self.busyrendertime = 0.25
             settings.callback_active = True
 
             destdir = settings.AUDIO_BASEPATH_BASE + self.url[len(self.website):]
@@ -155,7 +153,6 @@ class DownloadMenu(ListBase):
             self.canceled = False
             self.downloading = False
             settings.callback_active = False
-            self.changerender = False
 
 
     async def push_handler(self,button = '*'):
@@ -248,7 +245,7 @@ class DownloadMenu(ListBase):
             self.position = -1
 
     def render(self):
-        if self.canceled:
+        if self.canceled or self.downloading:
             self.renderbusy()
         else:
             super().render()

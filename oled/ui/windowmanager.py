@@ -139,8 +139,8 @@ class WindowManager():
                             log(lDEBUG3,"general rendering")
                             self.rendered_busy = False
                             self.activewindow.render()
-                    except (NotImplementedError, AttributeError):
-                        log(lERROR,"render error")
+                    except Exception as error:
+                        log(lERROR,error)
 
             iTimerCounter = 0 
 
