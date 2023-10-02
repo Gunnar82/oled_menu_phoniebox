@@ -76,8 +76,9 @@ class pygameInput():
     async def _poll_pygame_keys(self):
         # for al the connected joysticks
         joysticks = []
+        shutdown = False
 
-        while self.loop.is_running():
+        while self.loop.is_running() and not shutdown:
             #self.clock.tick(60)
             for event in pygame.event.get():
                 log(lDEBUG,"pygame: %s " % (event))
@@ -85,7 +86,7 @@ class pygameInput():
                     joy = pygame.joystick.Joystick(event.device_index)
                     joysticks.append(joy)
                 elif event.type == pygame.QUIT:
-                    pygame.quit()
+                    shutdown = True
                 elif event.type == pygame.JOYHATMOTION:
                     x,y = event.value
                     if (y == -1 and x == 0): # keypad down
@@ -122,4 +123,6 @@ class pygameInput():
 
     def quit(self):
         log(lERROR,"Shutting Down Pygame")
+        pygame.joystick.quit()
+        pygame.display.quit()
         pygame.quit()

@@ -71,8 +71,8 @@ class DownloadMenu(ListBase):
         liste = []
         hasfolder = False
         try:
-            if len(self.cwd) <= len(self.basecwd):
-                self.cwd = self.basecwd
+            if len(self.cwd) <= len(self.basecwd): self.cwd = self.basecwd
+            print (self.cwd)
             url = self.baseurl + requests.utils.quote(self.cwd)+ '/'
             self.cwd,listing = htmllistparse.fetch_listing(url, timeout=30)
 
@@ -207,7 +207,6 @@ class DownloadMenu(ListBase):
                         except Exception as e:
                             self.set_busy("Fehler!",busytext2=str(e),busyrendertime=5,busysymbol="\uf057")
             else:
-                self.basetitle = self.menu[self.position]
                 self.cwd += '/' + self.menu[self.position]
                 self.url = self.baseurl + self.cwd
 
@@ -253,14 +252,17 @@ class DownloadMenu(ListBase):
         test, self.menu = self.get_content()
 
         try:
-            self.basetitle = self.cwd[pos+1:]
-        except:
-            self.basetitle = self.windowname
-
-        try:
             self.position = self.menu.index(last)
         except:
             self.position = -1
+
+        try:
+            if len(self.cwd) > len (self.basecwd):
+                self.basetitle = self.cwd[pos+1:]
+            else:
+                self.basetitle = "Online"
+        except Exception as error:
+            self.basetitle = self.windowtitle
 
     def render(self):
         if self.canceled or self.downloading:
