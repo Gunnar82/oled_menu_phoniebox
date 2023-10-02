@@ -36,16 +36,6 @@ class DownloadMenu(ListBase):
         self.set_busy("Verbinde Online",settings.SYMBOL_CLOUD,self.website,busyrendertime=5)
         self.renderbusy()
         time.sleep(2)
-        try:
-            r = requests.get(self.website)
-            if r.status_code != 200: raise "nicht 200"
-        except:
-            self.set_busy("Keine Verbindung möglich",settings.SYMBOL_NOCLOUD)
-            self.windowmanager.set_window("idle")
-            self.renderbusy()
-            time.sleep(3)
-
-            return
 
         self.baseurl = self.website[:settings.ONLINEURL.find('/',9)]
         self.basecwd= self.website[settings.ONLINEURL.find('/',9):]
@@ -54,10 +44,26 @@ class DownloadMenu(ListBase):
             with open(settings.FILE_LAST_ONLINE,"r") as f:
                 self.website = f.read()
                 self.cwd = self.website[len(self.baseurl):]
+            if not self.website.startswith(settings.ONLINEURL): raise "Website geändert"
+
         except Exception as error:
+            self.set_busy(error,settings.SYMBOL_NOCLOUD)
+            time.sleep(3)
+
             self.position = -1
             self.website = settings.ONLINEURL
             self.cwd = self.basecwd
+
+        try:
+            r = requests.get(self.website)
+            if r.status_code != 200: raise "Keine Verbindung, Code: %d" %(r.status_code)
+        except Exception as error:
+            self.set_busy(error,settings.SYMBOL_NOCLOUD)
+            self.windowmanager.set_window("idle")
+            self.renderbusy()
+            time.sleep(3)
+
+            return
 
         self.on_key_left()
 
@@ -65,7 +71,8 @@ class DownloadMenu(ListBase):
         liste = []
         hasfolder = False
         try:
-            if len(self.cwd) < len(self.basecwd): self.cwd = self.basecwd
+            if len(self.cwd) <= len(self.basecwd):
+                self.cwd = self.basecwd
             url = self.baseurl + requests.utils.quote(self.cwd)+ '/'
             self.cwd,listing = htmllistparse.fetch_listing(url, timeout=30)
 
@@ -224,15 +231,6 @@ class DownloadMenu(ListBase):
         finally:
             self.position = -1
 
-
-    def turn_callback(self,direction,key=False):
-        super().turn_callback(direction,key=key)
-
-        if self.position >= 0:
-            self.title = "%2.2d / %2.2d" %(self.position + 1,len(self.menu))
-        else:
-            self.title = "Online"
-
     def push_callback(self,lp=False):
         if self.downloading:
             self.set_busy("Abbruch",busysymbol = "\uf05e")
@@ -251,9 +249,14 @@ class DownloadMenu(ListBase):
         self.url = self.baseurl + self.cwd
 
         pos = self.cwd.rfind("/")
-        self.basetitle = self.cwd[pos:]
-    
+
         test, self.menu = self.get_content()
+
+        try:
+            self.basetitle = self.cwd[pos+1:]
+        except:
+            self.basetitle = self.windowname
+
         try:
             self.position = self.menu.index(last)
         except:

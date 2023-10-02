@@ -87,7 +87,7 @@ def main():
         from integrations.inputs.gpicase import pygameInput
 
         print ("Using pyGameInput")
-        mpygame = pygameInput(loop, turn_callback, push_callback,windowmanager)
+        mypygame = pygameInput(loop, turn_callback, push_callback,windowmanager)
 
 
 
@@ -183,6 +183,10 @@ def main():
         log(lERROR,"Exiting")
     finally:
         loop.close()
+
+    ###GPICase
+    if settings.GPICASE_ENABLED:
+        mypygame.quit()
 
 
     windowmanager.set_window("ende")

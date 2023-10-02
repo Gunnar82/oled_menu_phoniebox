@@ -43,7 +43,6 @@ class pygameInput():
 
         self.loop.create_task(self._poll_pygame_keys())
 
-
     def _button_press(self, *args):
         try:
             gpio26 = GPIO.input(26)
@@ -78,7 +77,6 @@ class pygameInput():
         # for al the connected joysticks
         joysticks = []
 
-
         while self.loop.is_running():
             #self.clock.tick(60)
             for event in pygame.event.get():
@@ -86,7 +84,9 @@ class pygameInput():
                 if event.type == pygame.JOYDEVICEADDED:
                     joy = pygame.joystick.Joystick(event.device_index)
                     joysticks.append(joy)
-                if event.type == pygame.JOYHATMOTION:
+                elif event.type == pygame.QUIT:
+                    pygame.quit()
+                elif event.type == pygame.JOYHATMOTION:
                     x,y = event.value
                     if (y == -1 and x == 0): # keypad down
                         log (lDEBUG2, "pygame: down")
@@ -119,3 +119,7 @@ class pygameInput():
                         self.turn_callback(0,'START')
 
             await asyncio.sleep(0.1)
+
+    def quit(self):
+        log(lERROR,"Shutting Down Pygame")
+        pygame.quit()
