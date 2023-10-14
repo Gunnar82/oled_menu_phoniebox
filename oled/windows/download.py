@@ -261,9 +261,12 @@ class DownloadMenu(ListBase):
         test, self.menu = self.get_content()
 
         try:
-            self.position = self.menu.index(last)
+            self.position =  self.menu.index(last) 
         except:
-            self.position = -1
+            try:
+                self.position =  self.menu.index('%s \u2302'% (last))
+            except:
+                self.position = -1
 
         try:
             if len(self.cwd) > len (self.basecwd):
