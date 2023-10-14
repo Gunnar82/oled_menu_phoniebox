@@ -85,7 +85,7 @@ class ListBase(WindowBase):
                     progresscolor = settings.COLOR_SELECTED
                     drawtext = self.menu[seite * self.displaylines + i]
                     if (datetime.now()-settings.lastinput).total_seconds() > 2:
-                        if self.font.getsize(drawtext[self.drawtextx:])[0] > settings.DISPLAY_WIDTH -1:
+                        if self.font.getsize(drawtext[self.drawtextx:])[0] > settings.DISPLAY_WIDTH -1 - startx:
                             self.drawtextx += 1
                         else:
                             self.drawtextx = 0

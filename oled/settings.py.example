@@ -5,7 +5,7 @@ use_eyed3 = False
 
 LOGLEVEL=1
 
-ONLINEURL = "http://192.168.8.21/website"
+ONLINEURL = "http://localhost:8081/website"
 
 ###DISPLAY_SETTINGS i2c
 DISPLAY_TYPE = "spi" # or "i2c"
@@ -118,16 +118,17 @@ ALSA_DEV_LOCAL="speaker"
 
 #BluetoothKopfhoerer
 ENABLED_DEV_BT_1 = True
-AUTOCONNECT_DEV_BT_1 = True
-NAME_DEV_BT_1 = "braune Box"
+AUTOCONNECT_DEV_BT_1 = False
+NAME_DEV_BT_1 = "Jabra"
 ALSA_DEV_BT_1 = "bt_dev_1"
-MAC_DEV_BT_1 = "69:40:CF:81:94:75"
+MAC_DEV_BT_1 = "50:C2:ED:0D:4B:8D"
+#"69:40:CF:81:94:75"
 
 ENABLED_DEV_BT_2 = False
 AUTOCONNECT_DEV_BT_2 = False
-NAME_DEV_BT_2 = "Soundflare"
+NAME_DEV_BT_2 = "Jabra Evolve 65"
 ALSA_DEV_BT_2 = "bt_dev_2"
-MAC_DEV_BT_2 = "ED:10:16:06:1E:F4"
+MAC_DEV_BT_2 = "50:C2:ED:0D:4B:8D"
 
 INTPIN=2
 
@@ -146,6 +147,7 @@ AUDIO_BASEPATH_ONLINE = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/Online"
 FILE_LAST_HOERBUCH="/home/pi/RPi-Jukebox-RFID/settings/Latest_Hörspiele_Folder_Played"
 FILE_LAST_RADIO="/home/pi/RPi-Jukebox-RFID/settings/Latest_Radio_Folder_Played"
 FILE_LAST_MUSIC="/home/pi/RPi-Jukebox-RFID/settings/Latest_Musik_Folder_Played"
+FILE_LAST_ONLINE="/home/pi/RPi-Jukebox-RFID/settings/Latest_Online_Folder_Played"
 
 LATEST_RFID="/home/pi/RPi-Jukebox-RFID/settings/Latest_RFID"
 LATEST_PLAYED_FOLDER="/home/pi/RPi-Jukebox-RFID/settings/Latest_Folder_Played"
