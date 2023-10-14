@@ -21,6 +21,7 @@ class pygameInput():
         pygame.init()
         pygame.joystick.init()
         pygame.mixer.init(44100, -16,2,2048)
+        pygame.mixer.pause()
         pygame.mouse.set_visible(False)
 
         self.windowmanager = windowmanager
@@ -125,4 +126,4 @@ class pygameInput():
         log(lERROR,"Shutting Down Pygame")
         #pygame.joystick.quit()
         #pygame.display.quit()
-        pygame.quit()
+        #pygame.quit()

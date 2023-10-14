@@ -69,14 +69,16 @@ class DownloadMenu(ListBase):
 
     def get_content(self):
         liste = []
+        local_exists = []
         hasfolder = False
+
         try:
             if len(self.cwd) <= len(self.basecwd): self.cwd = self.basecwd
-            print (self.cwd)
             url = self.baseurl + requests.utils.quote(self.cwd)+ '/'
             self.cwd,listing = htmllistparse.fetch_listing(url, timeout=30)
 
             self.totalsize = 0
+
             for listobj in listing:
                 if '/' in listobj.name and not hasfolder: hasfolder = True
 
@@ -87,11 +89,17 @@ class DownloadMenu(ListBase):
                 except Exception as error:
                     pass
 
-                liste.append(listobj.name.strip('/'))
                 current_folder = os.path.join(settings.AUDIO_BASEPATH_ONLINE,self.cwd)
                 current_folder = current_folder[len(self.basecwd):]
                 selected_folder = os.path.join(current_folder,listobj.name)
+                local_folder = os.path.join(settings.AUDIO_BASEPATH_BASE,selected_folder[1:])
                 selected_folder = os.path.join(settings.AUDIO_BASEPATH_ONLINE,selected_folder[1:])
+                try:
+                    if (os.path.exists(local_folder)): liste.append('%s \u2302' % (listobj.name.strip('/')))
+                    else: liste.append(listobj.name.strip('/'))
+
+                except Exception as error:
+                    print (error)
 
                 try:
                     fn = os.path.join(selected_folder,"folder.conf")
@@ -207,7 +215,7 @@ class DownloadMenu(ListBase):
                         except Exception as e:
                             self.set_busy("Fehler!",busytext2=str(e),busyrendertime=5,busysymbol="\uf057")
             else:
-                self.cwd += '/' + self.menu[self.position]
+                self.cwd += '/' + self.menu[self.position].rstrip('\u2302').rstrip()
                 self.url = self.baseurl + self.cwd
 
                 hasfolder, self.items = self.get_content()
@@ -241,6 +249,7 @@ class DownloadMenu(ListBase):
             self.loop.create_task(self.push_handler())
 
     def on_key_left(self):
+        self.selector = False
         pos = self.cwd.rfind("/")
         last = self.cwd[pos+1:]
 

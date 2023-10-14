@@ -153,12 +153,12 @@ class Foldermenu(ListBase):
                 self.windowmanager.set_window("folderinfo")
             else:
                 thefile = os.listdir(settings.current_selectedfolder)
-                print (settings.current_selectedfolder)
+
                 if (functions.has_subfolders(settings.current_selectedfolder)):
                     self.generate_folders(settings.current_selectedfolder)
                     settings.currentfolder = settings.current_selectedfolder
                     self.position = 0
-                elif not os.listdir(settings.current_selectedfolder) == 1 and thefile[0] == "folder.conf":
+                elif len(thefile) <= 1 and not thefile.index('livestream.txt') >=0 :
                     self.set_busy("Verzeichnis ist leer",busysymbol="\uf059")
                 else:
                     self.set_busy("Auswahl startet","\uf07C",self.menu[self.position])
