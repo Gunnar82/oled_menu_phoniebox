@@ -102,8 +102,9 @@ class DownloadMenu(ListBase):
                 current_folder = os.path.join(settings.AUDIO_BASEPATH_ONLINE,self.cwd)
                 current_folder = current_folder[len(self.basecwd):]
                 selected_folder = os.path.join(current_folder,listobj.name)
-                local_folder = os.path.join(settings.AUDIO_BASEPATH_BASE,selected_folder[1:])
-                selected_folder = os.path.join(settings.AUDIO_BASEPATH_ONLINE,selected_folder[1:])
+                local_folder = os.path.join(settings.AUDIO_BASEPATH_BASE,selected_folder)
+                selected_folder = os.path.join(settings.AUDIO_BASEPATH_ONLINE,selected_folder)
+                print (selected_folder)
                 try:
                     if (os.path.exists(local_folder)): liste.append('%s \u2302' % (listobj.name.strip('/')))
                     else: liste.append(listobj.name.strip('/'))
