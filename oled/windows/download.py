@@ -213,7 +213,7 @@ class DownloadMenu(ListBase):
                 elif self.position == -1 and self.selector:
                     self.selector = False
                 elif self.position == 3:
-                    destdir = settings.AUDIO_BASEPATH_BASE + self.url[len(settings.ONLINEURL):]
+                    destdir = settings.AUDIO_BASEPATH_BASE + '/' + self.url[len(settings.ONLINEURL):]
                     if not os.path.exists(destdir):
                         self.set_busy("lokal nicht gefunden",busysymbol="\uf059")
                     else:
