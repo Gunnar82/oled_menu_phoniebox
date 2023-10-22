@@ -84,9 +84,8 @@ class DownloadMenu(ListBase):
         if not self.cwd.endswith('/'): self.cwd += '/'
 
         try:
-            if len(self.cwd) <= len(self.basecwd): self.cwd = self.basecwd
             url = self.baseurl + requests.utils.quote(self.cwd)
-            self.cwd,listing = htmllistparse.fetch_listing(url, timeout=30)
+            temp, listing = htmllistparse.fetch_listing(url, timeout=30)
 
             self.totalsize = 0
 
@@ -184,6 +183,7 @@ class DownloadMenu(ListBase):
 
 
     async def push_handler(self,button = '*'):
+        print ("current: %s" % (self.cwd))
         await asyncio.sleep(1)
         try:
             if self.selector:
@@ -227,6 +227,7 @@ class DownloadMenu(ListBase):
                             self.set_busy("Fehler!",busytext2=str(e),busyrendertime=5,busysymbol="\uf057")
             else:
                 self.cwd += self.menu[self.position].rstrip('\u2302').rstrip() + '/'
+
                 self.url = self.baseurl + self.cwd
 
                 hasfolder, self.items = self.get_content()
@@ -262,13 +263,20 @@ class DownloadMenu(ListBase):
     def on_key_left(self):
 
         self.selector = False
-        pos = self.cwd.rfind("/",0,len(self.cwd)-2)
-        last = self.cwd[pos+1:].rstrip('/')
+        self.cwd = self.cwd.rstrip('/')
+        pos = self.cwd.rfind('/')
+
+        last = self.cwd[pos+1:]
 
         self.cwd = self.cwd[:pos]
+
+        if len(self.cwd) <= len(self.basecwd):
+            self.cwd = self.basecwd
+            last = "_-__"
+
         self.url = self.baseurl + self.cwd
 
-        pos = self.cwd.rfind("/")
+        #pos = self.cwd.rfind("/")
 
         test, self.menu = self.get_content()
 
@@ -287,6 +295,7 @@ class DownloadMenu(ListBase):
                 self.basetitle = "Online"
         except Exception as error:
             self.basetitle = self.windowtitle
+
 
     def render(self):
         if self.canceled or self.downloading:
