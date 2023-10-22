@@ -56,8 +56,17 @@ class DownloadMenu(ListBase):
 
         try:
             r = requests.get(self.website)
-            if r.status_code != 200: raise "Keine Verbindung, Code: %d" %(r.status_code)
+            if r.status_code == 404:
+                print("URL nicht gefunden")
+                self.website = settings.ONLINEURL
+                self.cwd = self.basecwd
+                r = requests.get(self.website)
+                if r.status_code != 200:
+                    raise "Keine Verbindung, Code: %d" %(r.status_code)
+            elif r.status_code != 200:
+                raise "Keine Verbindung, Code: %d" %(r.status_code)
         except Exception as error:
+            print (error)
             self.set_busy(error,settings.SYMBOL_NOCLOUD)
             self.windowmanager.set_window("idle")
             self.renderbusy()
@@ -72,9 +81,11 @@ class DownloadMenu(ListBase):
         local_exists = []
         hasfolder = False
 
+        if not self.cwd.endswith('/'): self.cwd += '/'
+
         try:
             if len(self.cwd) <= len(self.basecwd): self.cwd = self.basecwd
-            url = self.baseurl + requests.utils.quote(self.cwd)+ '/'
+            url = self.baseurl + requests.utils.quote(self.cwd)
             self.cwd,listing = htmllistparse.fetch_listing(url, timeout=30)
 
             self.totalsize = 0
@@ -130,8 +141,8 @@ class DownloadMenu(ListBase):
                             self.progress[listobj.name.strip('/')] = "%2.2d %%"  % (prozent)
                 except Exception as error:
                     pass
-        except:
-            pass
+        except Exception as error:
+            print (error)
         finally:
             return hasfolder,liste
 
@@ -215,7 +226,7 @@ class DownloadMenu(ListBase):
                         except Exception as e:
                             self.set_busy("Fehler!",busytext2=str(e),busyrendertime=5,busysymbol="\uf057")
             else:
-                self.cwd += '/' + self.menu[self.position].rstrip('\u2302').rstrip()
+                self.cwd += self.menu[self.position].rstrip('\u2302').rstrip() + '/'
                 self.url = self.baseurl + self.cwd
 
                 hasfolder, self.items = self.get_content()
@@ -249,9 +260,10 @@ class DownloadMenu(ListBase):
             self.loop.create_task(self.push_handler())
 
     def on_key_left(self):
+
         self.selector = False
-        pos = self.cwd.rfind("/")
-        last = self.cwd[pos+1:]
+        pos = self.cwd.rfind("/",0,len(self.cwd)-2)
+        last = self.cwd[pos+1:].rstrip('/')
 
         self.cwd = self.cwd[:pos]
         self.url = self.baseurl + self.cwd
