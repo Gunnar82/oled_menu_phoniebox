@@ -151,8 +151,7 @@ class DownloadMenu(ListBase):
         try:
             self.downloading = True
             settings.callback_active = True
-            print (self.url)
-            destdir = settings.AUDIO_BASEPATH_BASE + self.url[len(settings.ONLINEURL):]
+            destdir = os.path.join(settings.AUDIO_BASEPATH_BASE,self.url[len(settings.ONLINEURL):])
 
             if not os.path.exists(destdir): os.makedirs(destdir)
 
@@ -160,8 +159,8 @@ class DownloadMenu(ListBase):
 
                 if self.canceled: break;
 
-                url = self.baseurl + requests.utils.quote(self.cwd + '/' + item)
-                destination = destdir + '/' + item
+                url = self.baseurl + requests.utils.quote(self.cwd + '/' + self.stripitem(item))
+                destination = os.path.join(destdir, self.stripitem(item))
                 self.busyrendertime = 1
                 self.busytext1="Download %2.2d von %2.2d" %(self.items.index(item) + 1,len(self.items) )
                 self.busytext2=item
@@ -184,13 +183,12 @@ class DownloadMenu(ListBase):
 
 
     async def push_handler(self,button = '*'):
-        print ("current: %s" % (self.cwd))
         await asyncio.sleep(1)
         try:
             if self.selector:
                 if self.position == 0:
                     directory = os.path.join(settings.AUDIO_BASEPATH_ONLINE,self.cwd[len(self.basecwd):])
-                    print (directory)
+
                     try:
                         with open(settings.FILE_LAST_ONLINE,"w") as f:
                             f.write(self.url)
@@ -203,7 +201,6 @@ class DownloadMenu(ListBase):
                         with open(filename,"w") as ofile:
                             for item in self.items:
                                 additem = self.baseurl + requests.utils.quote(self.cwd + self.stripitem(item)) + '\n'
-                                print ("add: %s" %(additem))
                                 ofile.write(additem)
                         foldername = directory[len(settings.AUDIO_BASEPATH_BASE):]
                         playout.pc_playfolder(foldername)
