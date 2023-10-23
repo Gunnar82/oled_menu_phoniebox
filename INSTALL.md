@@ -328,8 +328,8 @@ WantedBy=bluetooth.target
 _____
 
 
-powercontroller shutdown
-
+## powercontroller shutdown
+```
 /lib/systemd/system-shutdown/clean-shutdown << EOF
 
 #!/bin/bash
@@ -345,5 +345,8 @@ case "$1" in
         i2cset -y -f 1 0x77 0x09 30
         ;;
 
+```
+```
 sudo chmod +x clean-shutdown
 sudo systemctl daemon-reload
+```
