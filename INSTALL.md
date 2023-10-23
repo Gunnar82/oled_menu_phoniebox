@@ -99,19 +99,16 @@ logeintrag eintfernen oder hashen
 #server.errorlog
 
 
-
-
-
-
-RASPI OLED MENU
+## RASPI OLED MENU Based on
 https://github.com/techdiem/RasPi-OLED-Menu
 
-von Github aber geändert
---> kopiren nach /home/pi/oledctrl
-
+```
 sudo apt-get install python3-dev python3-pip libfreetype6-dev build-essential libopenjp2-7 libtiff5
 sudo apt-get install python3-smbus python3-musicpd eyed3
 
+cd
+
+git clone https://github.com/Gunnar82/oled_menu_phoniebox oledctrl
 cd oledctrl/
 
 sudo pip3 install -r requirements.txt
@@ -120,20 +117,21 @@ sudo systemctl daemon-reload
 
 test python3 oled.py
 sudo systemctl enable oled.service
+```
 
-
-___
-
-Bluetooth Ziel und Quelle
-
+## Bluetooth Ziel und Quelle
+```
 sudo apt-get install bluealsa
+```
 
 But add the following line to /etc/default/bluealsa:
 
+```
 LIBASOUND_THREAD_SAFE=0
-
+```
+```
 sudo mcediit /etc/systemd/system/bluealsa-aplay.service
-<<EOF
+
 [Unit]
 Description=Bluealsa-aplay daemon
 Documentation=https://github.com/Arkq/bluez-alsa/
@@ -148,16 +146,16 @@ ExecStart=/usr/bin/bluealsa-aplay 00:00:00:00:00:00
 
 [Install]
 WantedBy=multi-user.target
-EOF
-
+```
+```
 sudo systemctl daemon-reload
 sudo systemctl enable bluealsa-aplay.service
 sudo systemctl start bluealsa-aplay.service
-
+```
+```
 sudo mcedit /etc/bluetooth/main.conf
 
-
-add line "Enable=Source,Sink,Media,Socket" under [general]
+#add line "Enable=Source,Sink,Media,Socket" under [general]
 
 
 # Default device class. Only the major and minor device class bits are
@@ -173,8 +171,12 @@ DiscoverableTimeout = 180
 # The value is in seconds. Default is 0.
 # 0 = disable timer, i.e. stay pairable forever
 PairableTimeout = 120
+```
 
-sudo mcedit /etc/asound.conf >> append
+```
+sudo mcedit /etc/asound.conf
+
+# append
 set MAC OF BT PARTNER --> /home/pi/oledctrl/settings.py
 
 pcm.btheadphones {
@@ -192,11 +194,11 @@ pcm.btheadphones {
 
     }
 }
+```
 
-
-#####
-/etc/mpd.conf
-add-->
+```
+#/etc/mpd.conf
+#add-->
 
 #Headphones
 
@@ -211,9 +213,9 @@ audio_output {
 #       mixer_index     "0"             # optional
 }
 
+```
 
-
-
+```
 ###
 /etc/bluetooth $ cat main.conf
 [General]
@@ -222,9 +224,9 @@ DiscoverableTimeout = 120
 
 [Policy]
 AutoEnable=true
+```
 
-
-
+```
 ######:
 /etc/bluetooth $
 
@@ -240,9 +242,9 @@ OPTIONS="00:00:00:00:00:00"
 
 #######
 /etc/systemd/system/bluetooth.target.wants 
+```
 
-
-
+```
  cat bluetooth.service
 [Unit]
 Description=Bluetooth service
@@ -322,7 +324,7 @@ RestrictAddressFamilies=AF_UNIX AF_BLUETOOTH
 
 [Install]
 WantedBy=bluetooth.target
-
+```
 _____
 
 
