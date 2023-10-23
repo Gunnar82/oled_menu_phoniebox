@@ -1,18 +1,30 @@
-rspi buster lite installieren
-wlan einrichten
-ssh einrichten
-i2c aktivieren
+# Installation Basissystem 
+## raspi buster lite installieren
+### wlan einrichten
+### ssh einrichten
+### i2c aktivieren
 
+## config.txt anpassen
 dtoverlay= je nach dem
+```
 
+sudo mcedit /boot/config.txt
+```
+
+## BEnötigte Pakete
+
+```
 apt-get update
 apt-get upgrade
 
 sudo apt-get install mc
+```
 
-sudo mcedit /boot/config.txt
+## Konfiguration
 
+### alsa
 
+```
 sudo mcedit /etc/asound.conf
 hifiberry dac2/amp2
 pcm.!default {
@@ -22,11 +34,6 @@ pcm.!default {
 ctl.!default {
     type hw card 0
 }
-
-
-<<EOF
-
-
 
 pcm.hifiberry {
           type softvol
@@ -38,21 +45,22 @@ pcm.!default {
           type plug
           slave.pcm "hifiberry"
   }
-EOF
+```
+# Installation Phoniebox
 
-
-
+```
 cd; rm buster-install-*; wget https://raw.githubusercontent.com/MiczFlor/RPi-Jukebox-RFID/master/scripts/installscripts/buster-install-default.sh; chmod +x buster-install-default.sh; ./buster-install-default.sh 
+```
 
 Audiodevice --> AMP2; DAC2 PRO
 
 
 Radiosender --> GBRadio.m3u TODO
 
+```
+#/etc/mpd.conf
 
-/etc/mpd.conf
-
-hifiberry dac2 amp2
+#hifiberry dac2 amp2
 audio_output {
     enabled "True"
     device "hw:0"
@@ -61,35 +69,35 @@ audio_output {
     mixer_type "hardware"
     mixer_control "Digital"
 }
-____
-
-
-
-####
+```
+```
 audio_output
     type	"alsa"
     name	"hifiberrydac"
     mixer_control	master
-____
+```
 
+## Logging ausschalten  bzw tmpfs
 
-Logging ausschalten  bzw tmpfs
+```
 
 ### /etc/fstab
 tmpfs		/var/log	tmpfs	size=10%	0	0
 tmpfs		/tmp		tmpfs	size=5%		0	0
+```
 
+```
 ### /etc/samba/smb.conf
 
 log file = /var/log/samba_log.%m
+```
+
 
 ### /etc/lighttpd/lighttp.conf
-
 logeintrag eintfernen oder hashen
 
 #server.errorlog
 
-----
 
 
 
