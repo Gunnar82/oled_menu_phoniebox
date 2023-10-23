@@ -104,7 +104,7 @@ class DownloadMenu(ListBase):
                 selected_folder = os.path.join(current_folder,listobj.name)
                 local_folder = os.path.join(settings.AUDIO_BASEPATH_BASE,selected_folder)
                 selected_folder = os.path.join(settings.AUDIO_BASEPATH_ONLINE,selected_folder)
-                print (selected_folder)
+
                 try:
                     if (os.path.exists(local_folder)): liste.append('%s \u2302' % (listobj.name.strip('/')))
                     else: liste.append(listobj.name.strip('/'))
@@ -151,7 +151,7 @@ class DownloadMenu(ListBase):
         try:
             self.downloading = True
             settings.callback_active = True
-
+            print (self.url)
             destdir = settings.AUDIO_BASEPATH_BASE + self.url[len(settings.ONLINEURL):]
 
             if not os.path.exists(destdir): os.makedirs(destdir)
@@ -189,7 +189,8 @@ class DownloadMenu(ListBase):
         try:
             if self.selector:
                 if self.position == 0:
-                    directory = os.path.join(settings.AUDIO_BASEPATH_ONLINE,self.cwd[len(self.basecwd):][1:])
+                    directory = os.path.join(settings.AUDIO_BASEPATH_ONLINE,self.cwd[len(self.basecwd):])
+                    print (directory)
                     try:
                         with open(settings.FILE_LAST_ONLINE,"w") as f:
                             f.write(self.url)
@@ -200,12 +201,15 @@ class DownloadMenu(ListBase):
                     try:
                         filename = os.path.join(directory,"livestream.txt")
                         with open(filename,"w") as ofile:
-                            for item in self.items: ofile.write(self.baseurl + requests.utils.quote(self.cwd + '/' + item) + '\n')
+                            for item in self.items:
+                                additem = self.baseurl + requests.utils.quote(self.cwd + self.stripitem(item)) + '\n'
+                                print ("add: %s" %(additem))
+                                ofile.write(additem)
                         foldername = directory[len(settings.AUDIO_BASEPATH_BASE):]
                         playout.pc_playfolder(foldername)
                         self.windowmanager.set_window("idle")
-                    except:
-                        pass
+                    except Exception as error:
+                        print (error)
                 elif self.position == 1:
                     self.loop.run_in_executor(None, self.downloadfolder)
                 elif self.position == 2 and self.selector:
@@ -227,7 +231,7 @@ class DownloadMenu(ListBase):
                         except Exception as e:
                             self.set_busy("Fehler!",busytext2=str(e),busyrendertime=5,busysymbol="\uf057")
             else:
-                self.cwd += self.menu[self.position].rstrip('\u2302').rstrip() + '/'
+                self.cwd += self.stripitem(self.menu[self.position]) + '/'
 
                 self.url = self.baseurl + self.cwd
 
@@ -297,6 +301,8 @@ class DownloadMenu(ListBase):
         except Exception as error:
             self.basetitle = self.windowtitle
 
+    def stripitem(self, rawitem):
+        return rawitem.rstrip('\u2302').rstrip()
 
     def render(self):
         if self.canceled or self.downloading:
