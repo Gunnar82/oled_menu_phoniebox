@@ -18,9 +18,8 @@ if settings.DISPLAY_DRIVER == "ST7789":
     import integrations.display.st7789 as idisplay
 elif settings.DISPLAY_DRIVER == "ssd1351":
     import integrations.display.ssd1351 as idisplay
-if settings.DISPLAY_DRIVER == "emulated":
+elif settings.DISPLAY_DRIVER == "emulated":
     import integrations.display.emulated as idisplay
-
 else:
     raise Exception("no DISPLAY")
 
