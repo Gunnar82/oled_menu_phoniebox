@@ -8,7 +8,7 @@ def get_display():
     from luma.oled.device import ssd1351
 
     serial = spi(port=0, device=0, gpio_SCLK=10, gpio_DC=22, gpio_RST=27, gpio_CS=16, bus_speed_hz=16000000)
-    device = ssd1351(serial_interface=serial,rotate=1, bgr=True)
+    device = ssd1351(serial_interface=serial,rotate=3, bgr=True)
 
 
     device.contrast(settings.CONTRAST_FULL)

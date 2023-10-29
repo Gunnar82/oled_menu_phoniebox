@@ -45,7 +45,7 @@ class Start(WindowBase):
     def render(self):
         self.set_busy("Wird gestartet...")
 
-        if settings.X728_ENABLED:
+        if "x728" in settings.INPUTS:
             color = get_battload_color()
             self.busysymbol = settings.battsymbol
             self.busytext2 = "%d%% geladen" % (settings.battcapacity)

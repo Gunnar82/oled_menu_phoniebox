@@ -82,14 +82,11 @@ def main():
 
 
     ###GPICase
-    if settings.GPICASE_ENABLED:
+    if "gpicase" in settings.INPUTS:
         from integrations.inputs.gpicase import pygameInput
 
         print ("Using pyGameInput")
         mypygame = pygameInput(loop, turn_callback, push_callback,windowmanager)
-
-
-
 
     #Import all window classes and generate objects of them
     loadedwins = []
@@ -122,21 +119,21 @@ def main():
     #init Inputs
 
     ####keyboard control
-    if settings.KEYBOARD_ENABLED:
+    if "keyboard" in settings.INPUTS:
         from integrations.inputs.keyboard import KeyboardCtrl
 
         mKeyboard = KeyboardCtrl(loop, turn_callback, push_callback)
 
     ### KEYPAD 4x4 MCP23017 I2C
 
-    if settings.KEYPAD_ENABLED:
+    if "keypad4x4" in settings.INPUTS:
         from integrations.inputs.keypad_4x4_i2c import keypad_4x4_i2c
 
         mKeypad = keypad_4x4_i2c(loop, settings.KEYPAD_ADDR, settings.KEYPAD_INTPIN, turn_callback, push_callback)
 
 
     ###Rotaryencoder Setup
-    if settings.ROTARYENCODER_ENABLED:
+    if "rotaryenc" in settings.INPUTS:
         from integrations.inputs.rotaryencoder import RotaryEncoder
 
         print ("Rotaryconctroller")
@@ -145,7 +142,7 @@ def main():
 
     ####Powercontroller Init
     haspowercontroller = False
-    if settings.POWERCONTROLLER_ENABLED:
+    if "powercontroller" in settings.INPUTS:
         from integrations.inputs.powercontroller import PowerController
 
         haspowercontroller = True
@@ -158,19 +155,19 @@ def main():
 
 
     #### gpiocontrol init
-    if settings.GPIOControl:
+    if "pirateaudio" in settings.INPUTS:
         from integrations.inputs.gpiocontrol import GPIOControl
         gpioc = GPIOControl(loop, turn_callback, push_callback)
 
 # end init inputs
 
     ######Status LED
-    if settings.STATUS_LED_ENABLED:
+    if "statusled" in settings.INPUTS:
         import integrations.statusled as statusled
         led = statusled.statusled(loop,musicmanager)
 
     ####x728V2.1
-    if settings.X728_ENABLED:
+    if "x728" in settings.INPUTS:
         import integrations.x728v21 as x728v21
         x728 = x728v21.x728(loop)
 

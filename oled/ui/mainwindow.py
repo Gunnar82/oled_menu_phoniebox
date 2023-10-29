@@ -97,7 +97,7 @@ class MainWindow(WindowBase):
 
 
 
-        if settings.X728_ENABLED:
+        if "x728" in settings.INPUTS:
             #battery load line
             try:
                 pos = int(settings.battcapacity/100*settings.DISPLAY_WIDTH)
@@ -127,7 +127,7 @@ class MainWindow(WindowBase):
 
         if settings.job_t >= 0:
             draw.text((xpos3 + 5 + 1.2 * xpause, lineposy + 2 ), "%2.2d" % (int(settings.job_t)), font=self.fontsmall, fill="white")
-        elif settings.X728_ENABLED:
+        elif "x728" in settings.INPUTS:
             draw.text((xpos3 + 5 + 1.2 * xpause, lineposy + 2), settings.battsymbol, font=self.faicons, fill=get_battload_color())
 
 
