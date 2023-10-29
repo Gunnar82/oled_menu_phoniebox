@@ -1,6 +1,6 @@
 """ View class to inherit other views from """
 
-import settings
+import settings, colors
 
 from PIL import ImageFont
 from luma.core.render import canvas
@@ -40,7 +40,7 @@ class WindowBase():
         self.busyrendertime = busyrendertime
         self.busy = True
 
-    def renderbusy(self,symbolcolor = settings.COLOR_RED, textcolor1=settings.COLOR_WHITE, textcolor2=settings.COLOR_WHITE):
+    def renderbusy(self,symbolcolor = colors.COLOR_RED, textcolor1=colors.COLOR_WHITE, textcolor2=colors.COLOR_WHITE):
         with canvas(self.device) as draw:
 
             mwidth,mheight = busyfont.getsize(self.busytext1)

@@ -1,5 +1,5 @@
 """ Playlist menu """
-import settings
+import settings,colors
 
 import time
 import requests

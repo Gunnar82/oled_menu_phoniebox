@@ -2,7 +2,7 @@
 from ui.menubase import MenuBase
 from luma.core.render import canvas
 from PIL import ImageFont
-import settings
+import settings, colors
 import os
 import integrations.bluetooth as bt
 from integrations.logging import *

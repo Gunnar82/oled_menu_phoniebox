@@ -4,7 +4,7 @@ import asyncio
 from ui.windowbase import WindowBase
 from luma.core.render import canvas
 from PIL import ImageFont
-import settings
+import settings, colors
 import os
 
 from ui.mainwindow import MainWindow
@@ -64,7 +64,7 @@ class Playbackmenu(MainWindow):
 
             while (i < len(self.descr)):
                 xpos = startx + i * (self.symwidth*1.3)
-                draw.text((xpos, settings.DISPLAY_HEIGHT - 3 * settings.FONT_HEIGHT_XL - (2 if (i == self.counter) else 0) ), self.descr[i][1], font=Playbackmenu.faiconsbig, fill=settings.COLOR_SELECTED if (i == self.counter) else settings.COLOR_WHITE ) #prev
+                draw.text((xpos, settings.DISPLAY_HEIGHT - 3 * settings.FONT_HEIGHT_XL - (2 if (i == self.counter) else 0) ), self.descr[i][1], font=Playbackmenu.faiconsbig, fill=colors.COLOR_SELECTED if (i == self.counter) else settings.COLOR_WHITE ) #prev
 
                 i += 1
 

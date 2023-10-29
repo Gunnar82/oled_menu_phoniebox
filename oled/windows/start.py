@@ -4,7 +4,7 @@ from luma.core.render import canvas
 from PIL import ImageFont
 from datetime import datetime
 
-import settings
+import settings, colors
 
 import integrations.bluetooth as bluetooth
 from integrations.functions import get_battload_color
@@ -50,7 +50,7 @@ class Start(WindowBase):
             self.busysymbol = settings.battsymbol
             self.busytext2 = "%d%% geladen" % (settings.battcapacity)
         else:
-            color = settings.COLOR_WHITE
+            color = colors.COLOR_WHITE
 
         self.renderbusy(symbolcolor=color, textcolor2=color)
 

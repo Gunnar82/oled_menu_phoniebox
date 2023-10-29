@@ -2,7 +2,7 @@
 import datetime
 import asyncio
 from ui.windowbase import WindowBase
-import settings
+import settings, colors
 from luma.core.render import canvas
 from PIL import ImageFont
 import os
@@ -112,7 +112,7 @@ class MainWindow(WindowBase):
         else:
             timelinepos = settings.DISPLAY_WIDTH # device.width
         #Fortschritssleiste Wiedergabe
-        draw.rectangle((0,0,timelinepos,1),outline=settings.COLOR_BLUE, fill=settings.COLOR_BLUE)
+        draw.rectangle((0,0,timelinepos,1),outline=colors.COLOR_BLUE, fill=colors.COLOR_BLUE)
 
         #Position in Playlist
         _spos = "%2.2d/%2.2d" % (int(self.nowplaying._song), int(self.nowplaying._playlistlength))

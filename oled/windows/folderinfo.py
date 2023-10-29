@@ -2,7 +2,7 @@
 from ui.windowbase import WindowBase
 from luma.core.render import canvas
 from PIL import ImageFont
-import settings
+import settings, colors
 import socket
 import subprocess
 import os

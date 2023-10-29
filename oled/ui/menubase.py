@@ -2,7 +2,7 @@
 from ui.windowbase import WindowBase
 from luma.core.render import canvas
 from PIL import ImageFont
-import settings
+import settings, colors
 import asyncio
 
 class MenuBase(WindowBase):
@@ -40,8 +40,8 @@ class MenuBase(WindowBase):
                 y_coord = settings.FONT_HEIGHT_XXL + settings.FONT_HEIGHT_XXL * current_line
 
                 if (self.counter == i):
-                    fill = settings.COLOR_SELECTED
-                    outline = settings.COLOR_SELECTED_OUTLINE
+                    fill = colors.COLOR_SELECTED
+                    outline = colors.COLOR_SELECTED_OUTLINE
                 else:
                     fill = "white"
                     outline = "black"

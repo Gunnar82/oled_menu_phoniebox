@@ -1,5 +1,5 @@
 """ Playlist menu """
-import settings
+import settings, colors
 import integrations.playout as playout
 import time
 if settings.use_eyed3:

@@ -1,6 +1,6 @@
 """ Playlist menu """
 from ui.listbase import ListBase
-import settings
+import settings, colors
 import os 
 import integrations.functions as functions
 import integrations.playout as playout

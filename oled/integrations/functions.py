@@ -1,7 +1,7 @@
 import os
 import subprocess, re
 import datetime
-import settings
+import settings, colors
 
 def get_parent_folder(folder):
     return os.path.dirname(folder)
@@ -132,15 +132,15 @@ def get_folder_from_file(filename):
 
 def get_battload_color():
     if settings.battloading:
-        return settings.COLOR_BLUE
+        return colors.COLOR_BLUE
     elif settings.battcapacity == -1:
         return "WHITE"
     elif settings.battcapacity >= 70:
-        return settings.COLOR_GREEN
+        return colors.COLOR_GREEN
     elif settings.battcapacity >= 30:
-        return settings.COLOR_YELLOW
+        return colors.COLOR_YELLOW
     else:
-        return settings.COLOR_RED
+        return colors.COLOR_RED
 
 
 

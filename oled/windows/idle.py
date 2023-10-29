@@ -2,7 +2,7 @@
 import datetime
 import asyncio
 from ui.mainwindow import MainWindow
-import settings
+import settings, colors
 from luma.core.render import canvas
 from PIL import ImageFont
 import os

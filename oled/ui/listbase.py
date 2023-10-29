@@ -4,7 +4,7 @@ from luma.core.render import canvas
 from PIL import ImageFont
 from datetime import datetime
 
-import settings
+import settings, colors
 
 
 from integrations.logging import *
@@ -45,18 +45,18 @@ class ListBase(WindowBase):
             #progressbar
             try:
                 mypos = int((self.position + 1) / len(self.menu) * settings.DISPLAY_WIDTH)
-                draw.rectangle((0, settings.DISPLAY_HEIGHT - 1, settings.DISPLAY_WIDTH, settings.DISPLAY_HEIGHT - 1),outline=settings.COLOR_SELECTED, fill=settings.COLOR_SELECTED)
+                draw.rectangle((0, settings.DISPLAY_HEIGHT - 1, settings.DISPLAY_WIDTH, settings.DISPLAY_HEIGHT - 1),outline=colors.COLOR_SELECTED, fill=colors.COLOR_SELECTED)
                 draw.rectangle((mypos - 5, settings.DISPLAY_HEIGHT - 1, mypos + 5, settings.DISPLAY_HEIGHT - 1),outline="black", fill="black")
             except:
                 pass
 
             #Back button and selection arrow
             if self.position == -2:
-                draw.text((1, 1), text="\uf137", font=self.faicons, fill=settings.COLOR_SELECTED)
+                draw.text((1, 1), text="\uf137", font=self.faicons, fill=colors.COLOR_SELECTED)
                 draw.text((settings.DISPLAY_WIDTH - settings.FONT_SIZE_NORMAL, 1), text="\uf106", font=self.faicons, fill="white")
             elif self.position == -1:
                 draw.text((1, 1), text="\uf104", font=self.faicons, fill="white")
-                draw.text((settings.DISPLAY_WIDTH - settings.FONT_SIZE_NORMAL, 1), text="\uf139", font=self.faicons, fill=settings.COLOR_SELECTED)
+                draw.text((settings.DISPLAY_WIDTH - settings.FONT_SIZE_NORMAL, 1), text="\uf139", font=self.faicons, fill=colors.COLOR_SELECTED)
 
             else:
                 draw.text((1, 1), text="\uf104", font=self.faicons, fill="white")
@@ -82,7 +82,7 @@ class ListBase(WindowBase):
 
             for i in range(maxpos):
                 if self.position  == seite * self.displaylines+ i : #selected
-                    progresscolor = settings.COLOR_SELECTED
+                    progresscolor = colors.COLOR_SELECTED
                     drawtext = self.menu[seite * self.displaylines + i]
                     if (datetime.now()-settings.lastinput).total_seconds() > 2:
                         if self.font.getsize(drawtext[self.drawtextx:])[0] > settings.DISPLAY_WIDTH -1 - startx:
@@ -91,13 +91,13 @@ class ListBase(WindowBase):
                             self.drawtextx = 0
                     #Selection arrow
                     #draw.polygon(((1, 11+startx + i * lineheight - lineheight / 2), (1, 15+startx + i * lineheight - lineheight / 2 ),
-                    #                    (5, 13+startx + i * lineheight - lineheight / 2)), fill=settings.COLOR_SELECTED)
-                    draw.text((5, startx + i * lineheight), "\uf101", font=self.faicons, fill=settings.COLOR_SELECTED)
+                    #                    (5, 13+startx + i * lineheight - lineheight / 2)), fill=colors.COLOR_SELECTED)
+                    draw.text((5, startx + i * lineheight), "\uf101", font=self.faicons, fill=colors.COLOR_SELECTED)
 
-                    draw.text((startx, startx + i * lineheight), drawtext[self.drawtextx:], font=self.font, fill=settings.COLOR_SELECTED)
+                    draw.text((startx, startx + i * lineheight), drawtext[self.drawtextx:], font=self.font, fill=colors.COLOR_SELECTED)
 
                 else:
-                    progresscolor = settings.COLOR_GREEN
+                    progresscolor = colors.COLOR_GREEN
 
                     draw.text((startx, startx  + i * lineheight), self.menu[seite *self.displaylines + i], font=self.font, fill="white")
                 
