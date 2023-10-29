@@ -4,7 +4,7 @@ import sys
 import time
 import RPi.GPIO as GPIO
 #import integrations.playout as playout
-import settings
+import settings,symbols
 import asyncio
 from datetime import datetime
 
@@ -30,7 +30,7 @@ class x728:
                 self.readCapacity()
 
                 settings.battcapacity = self.capacity
-                settings.battsymbol = self.getSymbol()
+                symbols.SYMBOL_BATTERY = self.getSymbol()
                 if self.capacity > self.oldcapacity and self.oldcapacity > 0:
                     settings.battloading = True
                     self.loading = True

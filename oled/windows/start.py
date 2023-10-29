@@ -47,7 +47,7 @@ class Start(WindowBase):
 
         if "x728" in settings.INPUTS:
             color = get_battload_color()
-            self.busysymbol = settings.battsymbol
+            self.busysymbol = symbols.SYMBOL_BATTERY
             self.busytext2 = "%d%% geladen" % (settings.battcapacity)
         else:
             color = colors.COLOR_WHITE

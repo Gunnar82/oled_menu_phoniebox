@@ -26,4 +26,4 @@ SYMBOL_NOCLOUD = "\uf0ed"
 SYMBOL_FOLDER = "\u2c76"
 
 SYMBOL_FOLDER_SELECTED = "\uf07c"
-battsymbol = "\uf240"
+SYMBOL_BATTERY = "\uf240"

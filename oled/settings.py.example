@@ -66,33 +66,6 @@ KEYPAD_ADDR = 0x27
 X728_BATT_LOW = 15
 X728_BATT_EMERG = 5 # Shutdown Battery Percentage
 
-SYMBOL_SANDCLOCK = "\uf251"
-SYMBOL_VOL_UP = "\uf026 \uf067"
-SYMBOL_VOL_DN = "\uf026 \uf068"
-SYMBOL_VOL_MUTE = "\uf026 \uf057"
-SYMBOL_NEXT = "\uf051"
-SYMBOL_PREV = "\uf048"
-SYMBOL_ERROR = "\uf00d"
-
-SYMBOL_RADIO = "\uf1eb"
-SYMBOL_MUSIC = "\uf001"
-SYMBOL_HOERSPIEL = "\uf02d"
-SYMBOL_USB = "\uf287"
-
-SYMBOL_CARD_READ= "\uf140 \uf001"
-SYMBOL_CHANGING_SONG = "\uf07e"
-
-SYMBOL_BLUETOOTH_OFF = "\uf294"
-SYMBOL_BLUETOOTH_ON = "\uf293"
-
-
-SYMBOL_CLOUD = "\uf0c2"
-SYMBOL_NOCLOUD = "\uf0ed"
-
-SYMBOL_FOLDER = "\u2c76"
-
-SYMBOL_FOLDER_SELECTED = "\uf07c"
-
 PLAYOUT_CONTROLS = "sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh"
 
 RESUME_PLAY = "sudo /home/pi/RPi-Jukebox-RFID/scripts/resume_play.sh"
@@ -138,6 +111,3 @@ CARD_READ = "Karte gelesen!"
 
 
 callback_active = False
-
-battsymbol = "\uf240"
-
