@@ -64,7 +64,7 @@ class Playbackmenu(MainWindow):
 
             while (i < len(self.descr)):
                 xpos = startx + i * (self.symwidth*1.3)
-                draw.text((xpos, settings.DISPLAY_HEIGHT - 3 * settings.FONT_HEIGHT_XL - (2 if (i == self.counter) else 0) ), self.descr[i][1], font=Playbackmenu.faiconsbig, fill=colors.COLOR_SELECTED if (i == self.counter) else settings.COLOR_WHITE ) #prev
+                draw.text((xpos, settings.DISPLAY_HEIGHT - 3 * settings.FONT_HEIGHT_XL - (2 if (i == self.counter) else 0) ), self.descr[i][1], font=Playbackmenu.faiconsbig, fill=colors.COLOR_SELECTED if (i == self.counter) else colors.COLOR_WHITE ) #prev
 
                 i += 1
 
