@@ -181,7 +181,7 @@ def main():
         loop.close()
 
     ###GPICase
-    if settings.GPICASE_ENABLED:
+    if "gpicase " in settings.INPUTS:
         mypygame.quit()
 
 
@@ -202,6 +202,6 @@ def main():
 
 if __name__ == '__main__':
     main()
-    if settings.ROTARYENCODER_ENABLED:
+    if "rotaryenc" in settings.INPUTS:
         RotaryEncoder.cleanup()
     sys.exit(0)
