@@ -81,17 +81,18 @@ class ListBase(WindowBase):
 
 
             for i in range(maxpos):
+                scrolling = False
                 if self.position  == seite * self.displaylines+ i : #selected
                     progresscolor = colors.COLOR_SELECTED
                     drawtext = self.menu[seite * self.displaylines + i]
                     if (datetime.now()-settings.lastinput).total_seconds() > 2:
                         if self.font.getsize(drawtext[self.drawtextx:])[0] > settings.DISPLAY_WIDTH -1 - startx:
                             self.drawtextx += 1
+                            scrolling = True
                         else:
                             self.drawtextx = 0
-                    #Selection arrow
-                    #draw.polygon(((1, 11+startx + i * lineheight - lineheight / 2), (1, 15+startx + i * lineheight - lineheight / 2 ),
-                    #                    (5, 13+startx + i * lineheight - lineheight / 2)), fill=colors.COLOR_SELECTED)
+
+
                     draw.text((5, startx + i * lineheight), "\uf101", font=self.faicons, fill=colors.COLOR_SELECTED)
 
                     draw.text((startx, startx + i * lineheight), drawtext[self.drawtextx:], font=self.font, fill=colors.COLOR_SELECTED)
@@ -100,13 +101,14 @@ class ListBase(WindowBase):
                     progresscolor = colors.COLOR_GREEN
 
                     draw.text((startx, startx  + i * lineheight), self.menu[seite *self.displaylines + i], font=self.font, fill="white")
-                
+
                 try:
-                    drawtext = self.progress[self.menu[seite * self.displaylines + i]]
-                    linewidth1, lineheight1 = self.font.getsize(drawtext)
-                    log(lDEBUG2,"listbase: percent:%s:" %(drawtext))
-                    draw.rectangle((settings.DISPLAY_WIDTH - linewidth1 - 15  , startx + i * lineheight , settings.DISPLAY_WIDTH , startx + (i + 1) * lineheight ), outline="black", fill="black")
-                    draw.text((settings.DISPLAY_WIDTH - linewidth1 - 5, startx + i * lineheight), drawtext, font=self.font, fill=progresscolor)
+                    if not scrolling:
+                        drawtext = self.progress[self.menu[seite * self.displaylines + i]]
+                        linewidth1, lineheight1 = self.font.getsize(drawtext)
+                        log(lDEBUG2,"listbase: percent:%s:" %(drawtext))
+                        draw.rectangle((settings.DISPLAY_WIDTH - linewidth1 - 15  , startx + i * lineheight , settings.DISPLAY_WIDTH , startx + (i + 1) * lineheight ), outline="black", fill="black")
+                        draw.text((settings.DISPLAY_WIDTH - linewidth1 - 5, startx + i * lineheight), drawtext, font=self.font, fill=progresscolor)
                 except:
                     log(lDEBUG2,"no percentage")
 
