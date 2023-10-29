@@ -9,7 +9,9 @@
 # pirateaudio : Piratre Audio HAT
 # x728 : X728 V2.1
 # statusled : Status LED
-
+#
+# example:
+# INPUTS = ["keypad4x4", "statusled", "x728"]
 INPUTS=["keypad4x4", "statusled", "x728"]
 
 ufw_services_allow = ["ssh","http","microsoft-ds"]
