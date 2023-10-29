@@ -2,7 +2,7 @@
 from ui.menubase import MenuBase
 from luma.core.render import canvas
 from PIL import ImageFont
-import settings, colors, file_folder
+import settings, colors, file_folder, symbols
 
 from integrations.functions import mountusb, get_folder_from_file
 import asyncio
@@ -12,16 +12,16 @@ class Mainmenu(MenuBase):
     def __init__(self, windowmanager,loop,title):
         super().__init__(windowmanager,loop,title)
         self.counter = 0
-        self.descr.append ([ "Musik", settings.SYMBOL_MUSIC])
-        self.descr.append([ "Hörspiele", settings.SYMBOL_HOERSPIEL])
-        self.descr.append([ "Internetradio", settings.SYMBOL_RADIO])
-        self.descr.append([ "USB-Stick", settings.SYMBOL_USB] )
+        self.descr.append ([ "Musik", symbols.SYMBOL_MUSIC])
+        self.descr.append([ "Hörspiele", symbols.SYMBOL_HOERSPIEL])
+        self.descr.append([ "Internetradio", symbols.SYMBOL_RADIO])
+        self.descr.append([ "USB-Stick", symbols.SYMBOL_USB] )
         self.descr.append([ "Audioausgabe", "\uf025"])
         self.descr.append([ "Ausschaltmenü", "\uf011"])
         self.descr.append([ "Betriebsinfos", "\uf022"])
         self.descr.append([ "WLAN / Hotspot", "\uf09e"])
         self.descr.append([ "Firewall", "\uf1cb"])
-        self.descr.append([ "Download", settings.SYMBOL_CLOUD])
+        self.descr.append([ "Download", symbols.SYMBOL_CLOUD])
 
         self.window_on_back = "idle"
 

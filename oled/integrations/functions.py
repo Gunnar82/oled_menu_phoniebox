@@ -1,7 +1,7 @@
 import os
 import subprocess, re
 import datetime
-import settings, colors, file_folder
+import settings, colors, file_folder, symbols
 
 def get_parent_folder(folder):
     return os.path.dirname(folder)
@@ -47,7 +47,7 @@ def get_timeouts():
     settings.job_i = linux_job_remaining("i")
 
 def remove_folder_symbol(item):
-    return item.lstrip(settings.SYMBOL_FOLDER).lstrip()
+    return item.lstrip(symbols.SYMBOL_FOLDER).lstrip()
 
 
 

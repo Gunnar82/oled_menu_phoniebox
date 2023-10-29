@@ -4,7 +4,7 @@ from luma.core.render import canvas
 from PIL import ImageFont
 from datetime import datetime
 
-import settings, colors
+import settings, colors, symbols
 
 import integrations.bluetooth as bluetooth
 from integrations.functions import get_battload_color
@@ -27,7 +27,7 @@ class Start(WindowBase):
     def activate(self):
 
         if (settings.AUTOCONNECT_DEV_BT_1 and settings.ENABLED_DEV_BT_1):
-            self.set_busy("Verbinde...",settings.SYMBOL_BLUETOOTH_OFF,settings.NAME_DEV_BT_1, busyrendertime = 5)
+            self.set_busy("Verbinde...",symbols.SYMBOL_BLUETOOTH_OFF,settings.NAME_DEV_BT_1, busyrendertime = 5)
             self.busy = True
             self.renderbusy()
 
@@ -35,7 +35,7 @@ class Start(WindowBase):
 
 
         if (settings.AUTOCONNECT_DEV_BT_2 and settings.ENABLED_DEV_BT_2):
-            self.set_busy("Verbinde...",settings.SYMBOL_BLUETOOTH_OFF,settings.NAME_DEV_BT_2, busyrendertime = 5)
+            self.set_busy("Verbinde...",symbols.SYMBOL_BLUETOOTH_OFF,settings.NAME_DEV_BT_2, busyrendertime = 5)
             self.busy = True
             self.renderbusy()
 

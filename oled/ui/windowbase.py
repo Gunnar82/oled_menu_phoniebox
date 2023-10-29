@@ -1,6 +1,6 @@
 """ View class to inherit other views from """
 
-import settings, colors
+import settings, colors, symbols
 
 from PIL import ImageFont
 from luma.core.render import canvas
@@ -25,14 +25,14 @@ class WindowBase():
         self.timeoutwindow="idle"
         self.window_on_back = "mainmenu"
         self.busy = False
-        self.busysymbol = settings.SYMBOL_SANDCLOCK
+        self.busysymbol = symbols.SYMBOL_SANDCLOCK
         self.busytext1 = settings.PLEASE_WAIT
         self.busytext2 = ""
         self.busytext3 = ""
         self.busyrendertime = 3
         self._rendertime = 0.25
 
-    def set_busy(self,busytext1,busysymbol=settings.SYMBOL_SANDCLOCK,busytext2="", busyrendertime=3,busytext3=""):
+    def set_busy(self,busytext1,busysymbol=symbols.SYMBOL_SANDCLOCK,busytext2="", busyrendertime=3,busytext3=""):
         self.busytext1 = busytext1
         self.busysymbol = busysymbol
         self.busytext2 = busytext2

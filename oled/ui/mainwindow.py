@@ -2,7 +2,7 @@
 import datetime
 import asyncio
 from ui.windowbase import WindowBase
-import settings, colors
+import settings, colors, symbols
 from luma.core.render import canvas
 from PIL import ImageFont
 import os
@@ -122,8 +122,8 @@ class MainWindow(WindowBase):
         #shutdowntimer ? aktiv dann Zeit anzeigen
         xpause = 0
         if 'http://' in self.nowplaying.filename or 'https://' in self.nowplaying.filename:
-            draw.text((xpos3 + 5, lineposy + 2), settings.SYMBOL_CLOUD, font=self.faicons, fill="white")
-            xpause, ypause = self.faicons.getsize(settings.SYMBOL_CLOUD)
+            draw.text((xpos3 + 5, lineposy + 2), symbols.SYMBOL_CLOUD, font=self.faicons, fill="white")
+            xpause, ypause = self.faicons.getsize(symbols.SYMBOL_CLOUD)
 
         if settings.job_t >= 0:
             draw.text((xpos3 + 5 + 1.2 * xpause, lineposy + 2 ), "%2.2d" % (int(settings.job_t)), font=self.fontsmall, fill="white")

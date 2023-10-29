@@ -1,5 +1,5 @@
 """Manages the currently shown activewindow on screen and passes callbacks for the rotary encoder"""
-import settings
+import settings, symbols
 
 import asyncio
 
@@ -124,10 +124,10 @@ class WindowManager():
                         if (datetime.now() - self.lastrfidate).total_seconds() < 3:
                             log(lDEBUG,"render rfid symbol")
                             self.rendered_busy = True
-                            self.activewindow.busysymbol = settings.SYMBOL_CARD_READ
+                            self.activewindow.busysymbol = symbols.SYMBOL_CARD_READ
                             self.rendertime = self.activewindow.busyrendertime
                             self.activewindow.renderbusy()
-                            self.activewindow.busysymbol = settings.SYMBOL_SANDCLOCK
+                            self.activewindow.busysymbol = symbols.SYMBOL_SANDCLOCK
 
                         elif self.activewindow.busy or (settings.callback_active and self.activewindow.changerender):
                             self.rendered_busy = True

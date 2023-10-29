@@ -1,6 +1,6 @@
 """ Playlist menu """
 from ui.listbase import ListBase
-import settings, colors, file_folder
+import settings, colors, file_folder, symbols
 import os 
 import integrations.functions as functions
 import integrations.playout as playout
@@ -84,7 +84,7 @@ class Foldermenu(ListBase):
 
                 try:
                     if (functions.has_subfolders(os.path.join(path,file))):
-                        file = settings.SYMBOL_FOLDER +" " + file
+                        file = symbols.SYMBOL_FOLDER +" " + file
                 except Exception as error:
                     log(lDEBUG2,error)
                 self.folders.append(file)
@@ -108,7 +108,7 @@ class Foldermenu(ListBase):
                 self.position= _pos
             except:
                 try:
-                    _pos = self.folders.index(settings.SYMBOL_FOLDER + " " + search)
+                    _pos = self.folders.index(symbols.SYMBOL_FOLDER + " " + search)
     
                     log(lDEBUG,"foldermenu: generate_folders: position: %d, _pos: %d, self.displaylines: %d" % ( self.position, _pos, self.displaylines))
 

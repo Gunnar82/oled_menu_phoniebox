@@ -2,7 +2,7 @@
 import datetime
 import asyncio
 from ui.mainwindow import MainWindow
-import settings, colors, file_folder
+import settings, colors, file_folder, symbols
 
 from luma.core.render import canvas
 from PIL import ImageFont
@@ -73,7 +73,7 @@ class Idle(MainWindow):
                 if (self.oldsong != ""):
                     playout.savepos()
                     log(lDEBUG,"Titelwechsel erkannt")
-                    self.set_busy ("Titelwechsel", settings.SYMBOL_CHANGING_SONG, "%2.2d von %2.2d " % (int(self.nowplaying._song), int(self.nowplaying._playlistlength)))
+                    self.set_busy ("Titelwechsel", symbols.SYMBOL_CHANGING_SONG, "%2.2d von %2.2d " % (int(self.nowplaying._song), int(self.nowplaying._playlistlength)))
                     self.busy = True
 
                 self.oldsong = self.nowplaying._song
@@ -160,12 +160,12 @@ class Idle(MainWindow):
         if key:
             if key == 'up' or key == '2':
                 playout.pc_volup(5)
-                self.set_busy("lauter",settings.SYMBOL_VOL_UP)
+                self.set_busy("lauter",symbols.SYMBOL_VOL_UP)
             elif key == 'down' or key == '8':
                 playout.pc_voldown(5)
-                self.set_busy("leiser",settings.SYMBOL_VOL_DN)
+                self.set_busy("leiser",symbols.SYMBOL_VOL_DN)
             elif key == 'left' or key =='4':
-                self.set_busy("zurück",settings.SYMBOL_PREV)
+                self.set_busy("zurück",symbols.SYMBOL_PREV)
                 if self.nowplaying._playingalbum == "Livestream":
                     cfolder = get_folder_of_livestream(self.nowplaying._playingfile)
                     playout.pc_playfolder (get_folder(cfolder,-1))
@@ -173,7 +173,7 @@ class Idle(MainWindow):
                     log (lDEBUG,"idle: prev")
                     playout.pc_prev()
             elif key == 'right' or key == '6':
-                self.set_busy("weiter",settings.SYMBOL_NEXT)
+                self.set_busy("weiter",symbols.SYMBOL_NEXT)
                 if self.nowplaying._playingalbum == "Livestream":
                     cfolder = get_folder_of_livestream(self.nowplaying._playingfile)
                     playout.pc_playfolder (get_folder(cfolder,1))
@@ -199,7 +199,7 @@ class Idle(MainWindow):
             elif key == '5':
                  self.windowmanager.clear_window()
             elif key == '0':
-                self.busysymbol = settings.SYMBOL_VOL_MUTE
+                self.busysymbol = symbols.SYMBOL_VOL_MUTE
                 playout.pc_mute()
             elif key == 'START':
                 playout.pc_toggle()
@@ -214,14 +214,14 @@ class Idle(MainWindow):
                     what = file_folder.FILE_LAST_MUSIC
 
                 if playout.checkfolder(what) != 0:
-                    self.busysymbol = settings.SYMBOL_ERROR
+                    self.busysymbol = symbols.SYMBOL_ERROR
                     time.sleep(5)
                 else:
                     playout.playlast_checked(what)
         else:
             if (direction > 0):
-                self.set_busy("lauter",settings.SYMBOL_VOL_UP)
+                self.set_busy("lauter",symbols.SYMBOL_VOL_UP)
                 playout.pc_volup()
             else:
-                self.set_busy("leiser",settings.SYMBOL_VOL_DN)
+                self.set_busy("leiser",symbols.SYMBOL_VOL_DN)
                 playout.pc_voldown()

@@ -1,5 +1,5 @@
 """ Playlist menu """
-import settings,colors,file_folder
+import settings,colors,file_folder,symbols
 
 import time
 import requests
@@ -33,7 +33,7 @@ class DownloadMenu(ListBase):
         self.selector = False
         self.download = False
         self.website = settings.ONLINEURL
-        self.set_busy("Verbinde Online",settings.SYMBOL_CLOUD,self.website,busyrendertime=5)
+        self.set_busy("Verbinde Online",symbols.SYMBOL_CLOUD,self.website,busyrendertime=5)
         self.renderbusy()
         time.sleep(2)
 
@@ -47,7 +47,7 @@ class DownloadMenu(ListBase):
             if not self.website.startswith(settings.ONLINEURL): raise "Website geändert"
 
         except Exception as error:
-            self.set_busy(error,settings.SYMBOL_NOCLOUD)
+            self.set_busy(error,symbols.SYMBOL_NOCLOUD)
             time.sleep(3)
 
             self.position = -1
@@ -67,7 +67,7 @@ class DownloadMenu(ListBase):
                 raise "Keine Verbindung, Code: %d" %(r.status_code)
         except Exception as error:
             print (error)
-            self.set_busy(error,settings.SYMBOL_NOCLOUD)
+            self.set_busy(error,symbols.SYMBOL_NOCLOUD)
             self.windowmanager.set_window("idle")
             self.renderbusy()
             time.sleep(3)
@@ -259,7 +259,7 @@ class DownloadMenu(ListBase):
         elif (self.position == -1 or  self.position == -2) and not self.selector:
             self.windowmanager.set_window("mainmenu")
         else:
-            if not self.selector or self.position == 0: self.set_busy("Auswahl verarbeiten...",settings.SYMBOL_CLOUD,self.menu[self.position],busyrendertime=2)
+            if not self.selector or self.position == 0: self.set_busy("Auswahl verarbeiten...",symbols.SYMBOL_CLOUD,self.menu[self.position],busyrendertime=2)
             self.loop.create_task(self.push_handler())
 
     def on_key_left(self):
