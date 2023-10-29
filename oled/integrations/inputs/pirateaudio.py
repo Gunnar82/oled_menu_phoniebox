@@ -14,6 +14,11 @@ except ImportError:
     pass
 
 class PirateAudio():
+    PIN_A = 5
+    PIN_B = 6
+    PIN_X = 16
+    PIN_Y = 24
+
     def __init__(self, loop, turn_callback, push_callback):
         self.loop = loop
         self.turn_callback = turn_callback
@@ -23,10 +28,10 @@ class PirateAudio():
 
         #Config for pins!
         self.lockrotary = threading.Lock() #create lock for rotary switch
-        self._setup_gpio(settings.PIN_A)
-        self._setup_gpio(settings.PIN_B)
-        self._setup_gpio(settings.PIN_X)
-        self._setup_gpio(settings.PIN_Y)
+        self._setup_gpio(self.PIN_A)
+        self._setup_gpio(self.PIN_B)
+        self._setup_gpio(self.PIN_X)
+        self._setup_gpio(self.PIN_Y)
         log(lINFO,"using gpiocontrol")
 
     def _button_press(self, *args):
@@ -37,13 +42,13 @@ class PirateAudio():
                 key = args[0]
                 log(lDEBUG,"gpiocontrol args %s"%(format(args)))
 
-                if key == settings.PIN_A:
+                if key == self.PIN_A:
                     self.turn_callback(0,'#')
-                elif key == settings.PIN_B:
+                elif key == self.PIN_B:
                     self.turn_callback(-1)
-                elif key == settings.PIN_X:
+                elif key == self.PIN_X:
                     self.push_callback()
-                elif key == settings.PIN_Y:
+                elif key == self.PIN_Y:
                     self.turn_callback(1)
         finally:
             log(lDEBUG,"gpiocontrol: ende")
