@@ -1,15 +1,27 @@
 """ Software settings """
 
+# INPUT: possible value
+# gpicase : GPI Case 1 
+# keyboard : Keyboard # BETA
+# powercontroller : Hifiberry Powercontroller
+# keypad4x4 : KEYPAD 4x4 I2C + MCP23017
+# rotaryenc : Rotary ecoder
+# pirateaudio : Piratre Audio HAT
+# x728 : X728 V2.1
+# statusled : Status LED
+
+INPUTS=["keypad4x4", "statusled", "x728"]
+
 ufw_services_allow = ["ssh","http","microsoft-ds"]
 use_eyed3 = False
 
 LOGLEVEL=1
 
-ONLINEURL = "http://localhost:8081/website"
+ONLINEURL = "http://192.168.8.21/website"
 
 ###DISPLAY_SETTINGS i2c
 DISPLAY_TYPE = "spi" # or "i2c"
-DISPLAY_DRIVER = "emulated"
+DISPLAY_DRIVER = "ssd1351"
 
 ####CONTROL
 
@@ -29,17 +41,12 @@ CONTRAST_BLACK = 20
 DISABLE_DISPLAY = True
 
 
-###GYGAME gPICase
-GPICASE_ENABLED = True
-
-
-### Power Controller
-POWERCONTROLLER_ENABLED = False
+###
+STATUS_LED_PIN=6
+STATUS_LED_ALWAYS_ON=False
 
 ###
 
-### Power Controller
-ROTARYENCODER_ENABLED = False
 #Pins for rotary encoder
 PIN_CLK = 24
 PIN_DT = 1
@@ -47,18 +54,13 @@ PIN_SW = 25
 
 ###
 
-### KEYBOARD support
-KEYBOARD_ENABLED = False
-
 ### KEYPAD 4x4 I2C + MCP23017
-KEYPAD_ENABLED = False
 KEYPAD_INTPIN = 17
 KEYPAD_ADDR = 0x27
 
 ####
 
 ### Pirate Audio HAT ###
-GPIOControl = False
 PIN_A = 5
 PIN_B = 6
 PIN_X = 16
@@ -66,7 +68,6 @@ PIN_Y = 24
 
 
 ### X728 UPS support
-X728_ENABLED = False
 X728_BATT_LOW = 15
 X728_BATT_EMERG = 5 # Shutdown Battery Percentage
 
@@ -114,7 +115,7 @@ FONT_TEXT = "fonts/arial.ttf"
 FONT_CLOCK = "fonts/calibri.ttf"
 
 
-ALSA_DEV_LOCAL="speaker"
+ALSA_DEV_LOCAL="hifiberrydac"
 
 #BluetoothKopfhoerer
 ENABLED_DEV_BT_1 = True
@@ -132,9 +133,6 @@ MAC_DEV_BT_2 = "50:C2:ED:0D:4B:8D"
 
 INTPIN=2
 
-STATUS_LED_ENABLED=False
-STATUS_LED_PIN=6
-STATUS_LED_ALWAYS_ON=False
 
 AUDIO_BASEPATH_BASE = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders"
 AUDIO_BASEPATH_MUSIC = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/Musik"
