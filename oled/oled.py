@@ -154,10 +154,10 @@ def main():
             haspowercontroller = False
 
 
-    #### gpiocontrol init
+    #### pirateaudio init
     if "pirateaudio" in settings.INPUTS:
-        from integrations.inputs.gpiocontrol import GPIOControl
-        gpioc = GPIOControl(loop, turn_callback, push_callback)
+        from integrations.inputs.pirateaudio import PirateAudio
+        pirateaudio = PirateAudio(loop, turn_callback, push_callback)
 
 # end init inputs
 

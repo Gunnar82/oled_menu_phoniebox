@@ -13,7 +13,7 @@ try:
 except ImportError:
     pass
 
-class GPIOControl():
+class PirateAudio():
     def __init__(self, loop, turn_callback, push_callback):
         self.loop = loop
         self.turn_callback = turn_callback
