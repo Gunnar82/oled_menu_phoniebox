@@ -2,7 +2,8 @@
 from ui.menubase import MenuBase
 from luma.core.render import canvas
 from PIL import ImageFont
-import settings, colors
+import settings, colors, file_folder
+
 from integrations.functions import mountusb, get_folder_from_file
 import asyncio
 
@@ -29,20 +30,20 @@ class Mainmenu(MenuBase):
             self.counter = 6 if (self.counter < 5)  else 1
         else:
             if self.counter == 1:
-                settings.audio_basepath = settings.AUDIO_BASEPATH_MUSIC
+                settings.audio_basepath = file_folder.AUDIO_BASEPATH_MUSIC
                 settings.currentfolder = get_folder_from_file(settings.FILE_LAST_MUSIC)
                 self.windowmanager.set_window("foldermenu")
             elif self.counter == 2:
-                settings.audio_basepath = settings.AUDIO_BASEPATH_HOERBUCH
+                settings.audio_basepath = file_folder.AUDIO_BASEPATH_HOERBUCH
                 settings.currentfolder = get_folder_from_file(settings.FILE_LAST_HOERBUCH)
                 self.windowmanager.set_window("foldermenu")
             elif self.counter == 3:
-                settings.audio_basepath = settings.AUDIO_BASEPATH_RADIO
+                settings.audio_basepath = file_folder.AUDIO_BASEPATH_RADIO
                 settings.currentfolder = get_folder_from_file(settings.FILE_LAST_RADIO)
                 self.windowmanager.set_window("foldermenu")
             elif self.counter == 4:
-                settings.audio_basepath = settings.AUDIO_BASEPATH_USB
-                settings.currentfolder = settings.AUDIO_BASEPATH_USB
+                settings.audio_basepath = file_folder.AUDIO_BASEPATH_USB
+                settings.currentfolder = file_folder.AUDIO_BASEPATH_USB
                 mountusb()
                 self.windowmanager.set_window("foldermenu")
             elif self.counter == 5:

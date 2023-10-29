@@ -1,0 +1,16 @@
+#files and folders
+AUDIO_BASEPATH_BASE = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders"
+AUDIO_BASEPATH_MUSIC = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/Musik"
+AUDIO_BASEPATH_HOERBUCH = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/Hörspiele"
+AUDIO_BASEPATH_RADIO = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/Radio"
+AUDIO_BASEPATH_USB = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/usb"
+AUDIO_BASEPATH_ONLINE = "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/Online"
+
+
+FILE_LAST_HOERBUCH="/home/pi/RPi-Jukebox-RFID/settings/Latest_Hörspiele_Folder_Played"
+FILE_LAST_RADIO="/home/pi/RPi-Jukebox-RFID/settings/Latest_Radio_Folder_Played"
+FILE_LAST_MUSIC="/home/pi/RPi-Jukebox-RFID/settings/Latest_Musik_Folder_Played"
+FILE_LAST_ONLINE="/home/pi/RPi-Jukebox-RFID/settings/Latest_Online_Folder_Played"
+
+LATEST_RFID="/home/pi/RPi-Jukebox-RFID/settings/Latest_RFID"
+LATEST_PLAYED_FOLDER="/home/pi/RPi-Jukebox-RFID/settings/Latest_Folder_Played"

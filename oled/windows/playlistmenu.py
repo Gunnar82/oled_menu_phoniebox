@@ -1,5 +1,6 @@
 """ Playlist menu """
-import settings, colors
+import settings, colors, file_folder
+
 import integrations.playout as playout
 import time
 if settings.use_eyed3:
@@ -20,7 +21,7 @@ class Playlistmenu(ListBase):
                 a = a[a.find(":")+1:]
 
             a = a.strip()
-            fullpath = settings.AUDIO_BASEPATH_BASE + "/" + a
+            fullpath = file_folder.AUDIO_BASEPATH_BASE + "/" + a
 
             if not (a.startswith("http")): #no stream
                 try:

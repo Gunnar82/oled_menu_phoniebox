@@ -10,7 +10,25 @@ from subprocess import call
 import integrations.bluetooth
 import integrations.functions as fn
 import integrations.playout as playout
-import settings
+
+import settings, file_folder
+
+######
+from datetime import datetime
+###########################
+settings.screenpower = True
+settings.shutdown_reason = "changeme"
+settings.lastinput = datetime.now()
+settings.job_t = -1
+settings.job_i = -1
+settings.job_s = -1
+settings.audio_basepath = file_folder.AUDIO_BASEPATH_MUSIC
+settings.currentfolder = settings.audio_basepath
+settings.current_selectedfolder=settings.currentfolder
+settings.battcapacity = -1
+settings.battloading = False
+
+
 
 from integrations.logging import *
 

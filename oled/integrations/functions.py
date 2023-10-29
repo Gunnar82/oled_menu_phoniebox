@@ -1,7 +1,7 @@
 import os
 import subprocess, re
 import datetime
-import settings, colors
+import settings, colors, file_folder
 
 def get_parent_folder(folder):
     return os.path.dirname(folder)
@@ -53,7 +53,7 @@ def remove_folder_symbol(item):
 
 
 def get_folder_of_livestream(url):
-    basefolder = settings.AUDIO_BASEPATH_RADIO
+    basefolder = file_folder.AUDIO_BASEPATH_RADIO
 
     for folder in os.listdir(basefolder):
         d = os.path.join(basefolder, folder)
@@ -85,7 +85,7 @@ def get_folder(folder,direction = 1):
         pos = 0
     if pos > len(entrys) -1:
         pos = len(entrys) -1
-    rel_path = os.path.relpath(entrys[pos],settings.AUDIO_BASEPATH_BASE)
+    rel_path = os.path.relpath(entrys[pos],file_folder.AUDIO_BASEPATH_BASE)
     return rel_path
 
 
@@ -106,9 +106,9 @@ def mountusb():
     if (usbdev == "n/a"):
         return -1
 
-    if not os.path.ismount(settings.AUDIO_BASEPATH_USB):
+    if not os.path.ismount(file_folder.AUDIO_BASEPATH_USB):
         print (usbdev)
-        os.system("unionfs-fuse -orw,cow,allow_other /media/pb_import/tmpfs/=rw:/media/pb_import/%s=ro %s" % (usbdev, settings.AUDIO_BASEPATH_USB))
+        os.system("unionfs-fuse -orw,cow,allow_other /media/pb_import/tmpfs/=rw:/media/pb_import/%s=ro %s" % (usbdev, file_folder.AUDIO_BASEPATH_USB))
         os.system("mpc update")
     else:
         print ("already mounted")
@@ -122,12 +122,12 @@ def get_folder_from_file(filename):
             lines = f.readlines()
             f.close()
             if (lines[0].startswith("/")):
-                path = settings.AUDIO_BASEPATH_BASE + lines[0].rstrip()
+                path = file_folder.AUDIO_BASEPATH_BASE + lines[0].rstrip()
             else:
-                path = settings.AUDIO_BASEPATH_BASE + "/" + lines[0].rstrip()
+                path = file_folder.AUDIO_BASEPATH_BASE + "/" + lines[0].rstrip()
             return (path)
     except:
-        return settings.AUDIO_BASEPATH_BASE
+        return file_folder.AUDIO_BASEPATH_BASE
 
 
 def get_battload_color():

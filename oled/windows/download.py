@@ -1,5 +1,5 @@
 """ Playlist menu """
-import settings,colors
+import settings,colors,file_folder
 
 import time
 import requests
@@ -99,11 +99,11 @@ class DownloadMenu(ListBase):
                 except Exception as error:
                     pass
 
-                current_folder = os.path.join(settings.AUDIO_BASEPATH_ONLINE,self.cwd)
+                current_folder = os.path.join(file_folder.AUDIO_BASEPATH_ONLINE,self.cwd)
                 current_folder = current_folder[len(self.basecwd):]
                 selected_folder = os.path.join(current_folder,listobj.name)
-                local_folder = os.path.join(settings.AUDIO_BASEPATH_BASE,selected_folder)
-                selected_folder = os.path.join(settings.AUDIO_BASEPATH_ONLINE,selected_folder)
+                local_folder = os.path.join(file_folder.AUDIO_BASEPATH_BASE,selected_folder)
+                selected_folder = os.path.join(file_folder.AUDIO_BASEPATH_ONLINE,selected_folder)
 
                 try:
                     if (os.path.exists(local_folder)): liste.append('%s \u2302' % (listobj.name.strip('/')))
@@ -151,7 +151,7 @@ class DownloadMenu(ListBase):
         try:
             self.downloading = True
             settings.callback_active = True
-            destdir = os.path.join(settings.AUDIO_BASEPATH_BASE,self.url[len(settings.ONLINEURL):])
+            destdir = os.path.join(file_folder.AUDIO_BASEPATH_BASE,self.url[len(settings.ONLINEURL):])
 
             if not os.path.exists(destdir): os.makedirs(destdir)
 
@@ -187,7 +187,7 @@ class DownloadMenu(ListBase):
         try:
             if self.selector:
                 if self.position == 0:
-                    directory = os.path.join(settings.AUDIO_BASEPATH_ONLINE,self.cwd[len(self.basecwd):])
+                    directory = os.path.join(file_folder.AUDIO_BASEPATH_ONLINE,self.cwd[len(self.basecwd):])
 
                     try:
                         with open(settings.FILE_LAST_ONLINE,"w") as f:
@@ -202,7 +202,7 @@ class DownloadMenu(ListBase):
                             for item in self.items:
                                 additem = self.baseurl + requests.utils.quote(self.cwd + self.stripitem(item)) + '\n'
                                 ofile.write(additem)
-                        foldername = directory[len(settings.AUDIO_BASEPATH_BASE):]
+                        foldername = directory[len(file_folder.AUDIO_BASEPATH_BASE):]
                         playout.pc_playfolder(foldername)
                         self.windowmanager.set_window("idle")
                     except Exception as error:
@@ -214,7 +214,7 @@ class DownloadMenu(ListBase):
                 elif self.position == -1 and self.selector:
                     self.selector = False
                 elif self.position == 3:
-                    destdir = settings.AUDIO_BASEPATH_BASE + '/' + self.url[len(settings.ONLINEURL):]
+                    destdir = file_folder.AUDIO_BASEPATH_BASE + '/' + self.url[len(settings.ONLINEURL):]
                     if not os.path.exists(destdir):
                         self.set_busy("lokal nicht gefunden",busysymbol="\uf059")
                     else:

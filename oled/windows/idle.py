@@ -2,7 +2,8 @@
 import datetime
 import asyncio
 from ui.mainwindow import MainWindow
-import settings, colors
+import settings, colors, file_folder
+
 from luma.core.render import canvas
 from PIL import ImageFont
 import os
@@ -180,15 +181,15 @@ class Idle(MainWindow):
                     log (lDEBUG,"idle: next")
                     playout.pc_next()
             elif key == 'A':
-                settings.audio_basepath = settings.AUDIO_BASEPATH_MUSIC
+                settings.audio_basepath = file_folder.AUDIO_BASEPATH_MUSIC
                 settings.currentfolder = get_folder_from_file(settings.FILE_LAST_MUSIC)
                 self.windowmanager.set_window("foldermenu")
             elif key == 'B':
-                settings.audio_basepath = settings.AUDIO_BASEPATH_HOERBUCH 
+                settings.audio_basepath = file_folder.AUDIO_BASEPATH_HOERBUCH 
                 settings.currentfolder = get_folder_from_file(settings.FILE_LAST_HOERBUCH)
                 self.windowmanager.set_window("foldermenu")
             elif key == 'C':
-                settings.audio_basepath = settings.AUDIO_BASEPATH_RADIO
+                settings.audio_basepath = file_folder.AUDIO_BASEPATH_RADIO
                 settings.currentfolder = get_folder_from_file(settings.FILE_LAST_RADIO)
                 self.windowmanager.set_window("foldermenu")
             elif key =='D':

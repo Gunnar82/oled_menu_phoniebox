@@ -1,5 +1,5 @@
 import os
-import settings
+import settings, file_folder
 
 def pc_prev():
     os.system("%s -c=playerprev" % (settings.PLAYOUT_CONTROLS))
@@ -34,7 +34,7 @@ def savepos():
 def checkfolder(playfile):
     try:
         lastfile=open(playfile).read().replace("\n","")
-        if not os.path.isdir(settings.AUDIO_BASEPATH_BASE + lastfile):
+        if not os.path.isdir(file_folder.AUDIO_BASEPATH_BASE + lastfile):
             return 2
         return 0
     except:
@@ -54,7 +54,7 @@ def pc_voldown(step=5):
 #    os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumedown -v=%d" % (step))
 
 
-def pc_playfolder(folder=settings.AUDIO_BASEPATH_RADIO):
+def pc_playfolder(folder=file_folder.AUDIO_BASEPATH_RADIO):
     os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/rfid_trigger_play.sh -d=\"%s\"" % (folder))
 
 def pc_shutdown():
