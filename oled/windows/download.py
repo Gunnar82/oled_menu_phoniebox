@@ -41,7 +41,7 @@ class DownloadMenu(ListBase):
         self.basecwd= self.website[settings.ONLINEURL.find('/',9):]
 
         try:
-            with open(settings.FILE_LAST_ONLINE,"r") as f:
+            with open(file_folder.FILE_LAST_ONLINE,"r") as f:
                 self.website = f.read()
                 self.cwd = self.website[len(self.baseurl):]
             if not self.website.startswith(settings.ONLINEURL): raise "Website geändert"
@@ -190,7 +190,7 @@ class DownloadMenu(ListBase):
                     directory = os.path.join(file_folder.AUDIO_BASEPATH_ONLINE,self.cwd[len(self.basecwd):])
 
                     try:
-                        with open(settings.FILE_LAST_ONLINE,"w") as f:
+                        with open(file_folder.FILE_LAST_ONLINE,"w") as f:
                             f.write(self.url)
                     except Exception as error:
                         print (error)

@@ -182,15 +182,15 @@ class Idle(MainWindow):
                     playout.pc_next()
             elif key == 'A':
                 settings.audio_basepath = file_folder.AUDIO_BASEPATH_MUSIC
-                settings.currentfolder = get_folder_from_file(settings.FILE_LAST_MUSIC)
+                settings.currentfolder = get_folder_from_file(file_folder.FILE_LAST_MUSIC)
                 self.windowmanager.set_window("foldermenu")
             elif key == 'B':
                 settings.audio_basepath = file_folder.AUDIO_BASEPATH_HOERBUCH 
-                settings.currentfolder = get_folder_from_file(settings.FILE_LAST_HOERBUCH)
+                settings.currentfolder = get_folder_from_file(file_folder.FILE_LAST_HOERBUCH)
                 self.windowmanager.set_window("foldermenu")
             elif key == 'C':
                 settings.audio_basepath = file_folder.AUDIO_BASEPATH_RADIO
-                settings.currentfolder = get_folder_from_file(settings.FILE_LAST_RADIO)
+                settings.currentfolder = get_folder_from_file(file_folder.FILE_LAST_RADIO)
                 self.windowmanager.set_window("foldermenu")
             elif key =='D':
                 self.windowmanager.set_window("shutdownmenu")
@@ -207,11 +207,11 @@ class Idle(MainWindow):
             elif key in ['1', '3', '7']:
 
                 if key == '1':
-                    what = settings.FILE_LAST_HOERBUCH
+                    what = file_folder.FILE_LAST_HOERBUCH
                 elif key == '3':
-                    what = settings.FILE_LAST_RADIO
+                    what = file_folder.FILE_LAST_RADIO
                 elif key == '7':
-                    what = settings.FILE_LAST_MUSIC
+                    what = file_folder.FILE_LAST_MUSIC
 
                 if playout.checkfolder(what) != 0:
                     self.busysymbol = settings.SYMBOL_ERROR
