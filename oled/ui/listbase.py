@@ -27,7 +27,8 @@ class ListBase(WindowBase):
         self.entrylinewidth,self.entrylineheight = self.font.getsize("000")
         self.displaylines = (settings.DISPLAY_HEIGHT // self.entrylineheight) - 1 # - title (height)
 
-        self.startleft = self.faicons.getsize(symbols.SYMBOL_LIST_SELECTED)[0] + 5
+        self.startleft, self.selected_symbol_height = self.faicons.getsize(symbols.SYMBOL_LIST_SELECTED)
+        self.startleft += 5
 
     def render(self):
 
@@ -98,7 +99,7 @@ class ListBase(WindowBase):
                             self.drawtextx = 0
 
 
-                    draw.text((2, current_y), symbols.SYMBOL_LIST_SELECTED, font=self.faicons, fill=colors.COLOR_SELECTED)
+                    draw.text((2, current_y + 2), symbols.SYMBOL_LIST_SELECTED, font=self.faicons, fill=colors.COLOR_SELECTED)
 
                     draw.text((self.startleft , current_y), drawtext[self.drawtextx:], font=self.font, fill=colors.COLOR_SELECTED)
 
@@ -112,9 +113,9 @@ class ListBase(WindowBase):
                         drawtext = self.progress[self.menu[seite * self.displaylines + i]]
                         linewidth1, lineheight1 = self.font.getsize(drawtext)
                         log(lDEBUG2,"listbase: percent:%s:" %(drawtext))
-                        draw.rectangle((settings.DISPLAY_WIDTH - linewidth1 - 15  , current_y , settings.DISPLAY_WIDTH , startx + (i + 1) * lineheight ), outline="black", fill="black")
-                        draw.text((settings.DISPLAY_WIDTH - linewidth1 - 5, current_y), drawtext, font=self.font, fill=progresscolor)
-                except:
+                        draw.rectangle((settings.DISPLAY_WIDTH - linewidth1 - 15  , current_y , settings.DISPLAY_WIDTH , current_y + self.entrylineheight ), outline="black", fill="black")
+                        draw.text((settings.DISPLAY_WIDTH - linewidth1 - self.startleft, current_y), drawtext, font=self.font, fill=progresscolor)
+                except Exception as error:
                     log(lDEBUG2,"no percentage")
 
 

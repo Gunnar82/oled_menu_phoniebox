@@ -1,7 +1,7 @@
 import time
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-import settings
+import settings, file_folder
 from datetime import datetime
 
 rfid_watcher_changed = False
