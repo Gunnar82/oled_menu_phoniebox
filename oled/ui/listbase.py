@@ -25,7 +25,7 @@ class ListBase(WindowBase):
         self.titlelineheight = self.font.getsize(self.basetitle)[1] + 3
 
         self.entrylinewidth,self.entrylineheight = self.font.getsize("000")
-        self.displaylines = (settings.DISPLAY_HEIGHT // self.entrylineheight) - 1 # - title (height)
+        self.displaylines = (settings.DISPLAY_HEIGHT - self.titlelineheight) // self.entrylineheight # - title (height)
 
         self.startleft, self.selected_symbol_height = self.faicons.getsize(symbols.SYMBOL_LIST_SELECTED)
         self.startleft += 5
