@@ -1,7 +1,7 @@
 import time
 from datetime import datetime
 
-import settings
+import settings, file_folder
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
