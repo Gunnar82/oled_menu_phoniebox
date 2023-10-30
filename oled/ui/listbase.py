@@ -4,7 +4,7 @@ from luma.core.render import canvas
 from PIL import ImageFont
 from datetime import datetime
 
-import settings, colors
+import settings, colors, symbols
 
 
 from integrations.logging import *
@@ -19,10 +19,15 @@ class ListBase(WindowBase):
         self.drawtextx = 0
         self.position = -2
         self.progress = {}
-        self.displaylines = settings.DISPLAY_HEIGHT // 20
         self.font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_SMALL)
         self.faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_SMALL)
         self.selection_changed = True
+        self.titlelineheight = self.font.getsize(self.basetitle)[1] + 3
+
+        self.entrylinewidth,self.entrylineheight = self.font.getsize("000")
+        self.displaylines = (settings.DISPLAY_HEIGHT // self.entrylineheight) - 1 # - title (height)
+
+        self.startleft = self.faicons.getsize(symbols.SYMBOL_LIST_SELECTED)[0] + 5
 
     def render(self):
 
@@ -63,56 +68,54 @@ class ListBase(WindowBase):
                 draw.text((settings.DISPLAY_WIDTH - settings.FONT_SIZE_NORMAL, 1), text="\uf106", font=self.faicons, fill="white")
 
             #Calculate title coordinate from text lenght
-            linewidth,lineheight = self.font.getsize(self.title)
-            draw.text(((settings.DISPLAY_WIDTH-linewidth)/2, 1), text=self.title, font=self.font, fill="white")
+
+            titlelinewidth = self.font.getsize(self.title)[0]
+            draw.text(((settings.DISPLAY_WIDTH-titlelinewidth)/2, 1), text=self.title, font=self.font, fill="white")
 
             #Playlists
             menulen = len(self.menu)
-
-            linewidth,lineheight = self.font.getsize("000")
-
-            startx = settings.FONT_HEIGHT_NORMAL
 
             seite = 0 if self.position < 0 else self.position // self.displaylines
 
             pos = 0 if self.position < 0 else self.position % self.displaylines 
 
             maxpos = (self.displaylines if (seite + 1) * self.displaylines <= menulen else (menulen % self.displaylines))
-
+ 
 
             for i in range(maxpos):
                 scrolling = False
+
+                current_y = self.titlelineheight + i * self.entrylineheight
+
                 if self.position  == seite * self.displaylines+ i : #selected
                     progresscolor = colors.COLOR_SELECTED
                     drawtext = self.menu[seite * self.displaylines + i]
                     if (datetime.now()-settings.lastinput).total_seconds() > 2:
-                        if self.font.getsize(drawtext[self.drawtextx:])[0] > settings.DISPLAY_WIDTH -1 - startx:
+                        if self.font.getsize(drawtext[self.drawtextx:])[0] > settings.DISPLAY_WIDTH -1 - self.startleft:
                             self.drawtextx += 1
                             scrolling = True
                         else:
                             self.drawtextx = 0
 
 
-                    draw.text((5, startx + i * lineheight), "\uf101", font=self.faicons, fill=colors.COLOR_SELECTED)
+                    draw.text((2, current_y), symbols.SYMBOL_LIST_SELECTED, font=self.faicons, fill=colors.COLOR_SELECTED)
 
-                    draw.text((startx, startx + i * lineheight), drawtext[self.drawtextx:], font=self.font, fill=colors.COLOR_SELECTED)
+                    draw.text((self.startleft , current_y), drawtext[self.drawtextx:], font=self.font, fill=colors.COLOR_SELECTED)
 
                 else:
                     progresscolor = colors.COLOR_GREEN
 
-                    draw.text((startx, startx  + i * lineheight), self.menu[seite *self.displaylines + i], font=self.font, fill="white")
+                    draw.text((self.startleft, current_y), self.menu[seite *self.displaylines + i], font=self.font, fill="white")
 
                 try:
                     if not scrolling:
                         drawtext = self.progress[self.menu[seite * self.displaylines + i]]
                         linewidth1, lineheight1 = self.font.getsize(drawtext)
                         log(lDEBUG2,"listbase: percent:%s:" %(drawtext))
-                        draw.rectangle((settings.DISPLAY_WIDTH - linewidth1 - 15  , startx + i * lineheight , settings.DISPLAY_WIDTH , startx + (i + 1) * lineheight ), outline="black", fill="black")
-                        draw.text((settings.DISPLAY_WIDTH - linewidth1 - 5, startx + i * lineheight), drawtext, font=self.font, fill=progresscolor)
+                        draw.rectangle((settings.DISPLAY_WIDTH - linewidth1 - 15  , current_y , settings.DISPLAY_WIDTH , startx + (i + 1) * lineheight ), outline="black", fill="black")
+                        draw.text((settings.DISPLAY_WIDTH - linewidth1 - 5, current_y), drawtext, font=self.font, fill=progresscolor)
                 except:
                     log(lDEBUG2,"no percentage")
-
-
 
 
     def on_key_left(self):
