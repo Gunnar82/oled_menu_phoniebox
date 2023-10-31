@@ -5,6 +5,7 @@ import signal
 import sys
 import os
 import time
+import importlib
 
 from subprocess import call
 import integrations.bluetooth
@@ -32,16 +33,18 @@ settings.battloading = False
 
 from integrations.logging import *
 
-if settings.DISPLAY_DRIVER == "ST7789":
-    import integrations.display.st7789 as idisplay
-elif settings.DISPLAY_DRIVER == "ssd1351":
-    import integrations.display.ssd1351 as idisplay
-elif settings.DISPLAY_DRIVER == "emulated":
-    import integrations.display.emulated as idisplay
-else:
+displays = ["st7789", "ssd1351", "sh1106", "emulated"]
+
+if not settings.DISPLAY_DRIVER in displays:
     raise Exception("no DISPLAY")
 
-idisplay.set_fonts()
+try:
+    lib = "integrations.display.%s" % (settings.DISPLAY_DRIVER)
+    print (lib)
+    idisplay = importlib.import_module(lib)
+    idisplay.set_fonts()
+except Exception as error:
+   raise ("DISPLAY init FAILED: %s" % (error))
 
 
 from integrations.mopidy import MopidyControl
