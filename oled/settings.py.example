@@ -12,18 +12,18 @@
 #
 # example:
 # INPUTS = ["keypad4x4", "statusled", "x728"]
-INPUTS=["keypad4x4", "statusled", "x728"]
+INPUTS=["gpicase"]
 
 ufw_services_allow = ["ssh","http","microsoft-ds"]
 use_eyed3 = False
 
 LOGLEVEL=1
 
-ONLINEURL = "http://192.168.8.21/website"
+ONLINEURL = "http://localhost:8081/website/"
 
 ###DISPLAY_SETTINGS i2c
 DISPLAY_TYPE = "spi" # or "i2c"
-DISPLAY_DRIVER = "ssd1351"
+DISPLAY_DRIVER = "emulated"
 
 ####CONTROL
 
@@ -71,8 +71,6 @@ PLAYOUT_CONTROLS = "sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh"
 RESUME_PLAY = "sudo /home/pi/RPi-Jukebox-RFID/scripts/resume_play.sh"
 
 
-
-
 #Settings for the connection to Mopidy
 MPD_IP = "localhost"
 MPD_PORT = 6600
@@ -82,8 +80,7 @@ FONT_ICONS = "fonts/fontawesome.otf"
 FONT_TEXT = "fonts/arial.ttf"
 FONT_CLOCK = "fonts/calibri.ttf"
 
-
-ALSA_DEV_LOCAL="hifiberrydac"
+ALSA_DEV_LOCAL="speaker"
 
 #BluetoothKopfhoerer
 ENABLED_DEV_BT_1 = True
@@ -108,6 +105,3 @@ SR3 = "neugestartet"
 
 PLEASE_WAIT = "Bitte Warten..."
 CARD_READ = "Karte gelesen!"
-
-
-callback_active = False

@@ -28,6 +28,7 @@ settings.currentfolder = settings.audio_basepath
 settings.current_selectedfolder=settings.currentfolder
 settings.battcapacity = -1
 settings.battloading = False
+settings.callback_active = False
 
 
 
