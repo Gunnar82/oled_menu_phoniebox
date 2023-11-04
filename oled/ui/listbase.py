@@ -131,6 +131,7 @@ class ListBase(WindowBase):
     def turn_callback(self, direction, key=None):
         if key:
             if key == 'left' or key == '4' or key == '0':
+                self.set_busy("übergeordneter Ordner",busyrendertime=1)
                 self.left_pressed = True
                 return
             elif key == 'right' or key == '6' or key == '*':
