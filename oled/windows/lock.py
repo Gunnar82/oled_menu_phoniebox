@@ -43,6 +43,10 @@ class Lock(WindowBase):
         pass
 
     def turn_callback(self,direction, key=None):
+        if key = '6': key = 'right'
+        elif key = '2': key = 'up'
+        elif key = '8': key = 'down'
+        elif key = '4': key = 'left'
 
         if key == self.unlockcode[self.currentkey].lower():
             self.busysymbol = symbols.SYMBOL_PASS
