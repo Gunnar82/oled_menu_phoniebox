@@ -29,6 +29,7 @@ class WindowBase():
         self.busytext1 = settings.PLEASE_WAIT
         self.busytext2 = ""
         self.busytext3 = ""
+        self.busytext4 = ""
         self.busyrendertime = 3
         self._rendertime = 0.25
 
