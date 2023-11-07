@@ -3,7 +3,7 @@ from ui.windowbase import WindowBase
 from luma.core.render import canvas
 from PIL import ImageFont
 import settings, colors, symbols
-import time
+import time,random
 
 from datetime import datetime
 
@@ -19,11 +19,30 @@ class Lock(WindowBase):
 
         self.windowmanager = windowmanager
         self.timeout = False
-        self.unlockcode = ['up','left','left','right']
+        self.unlockcodes = []
+
+        self.unlockcodes.append( ['up','left','left','right'])
+        self.unlockcodes.append( ['1','2','3','4','5','6','7','8','9'] )
+        self.unlockindex = -1
+
         self.currentkey = 0
 
 
     def activate(self):
+        self.unlockcode = []
+
+        if "gpicase" in settings.INPUTS: self.unlockindex = 0
+        elif "keypad4x4" in settings.INPUTS: self.unlockindex = 1
+
+        if self.unlockindex == -1:
+            self.windowmanager.set_window("idle")
+        else:
+            for r in range(0,4):
+                length = len(self.unlockcodes[self.unlockindex])
+                pos = random.randint(0,length-1)
+                char = self.unlockcodes[ self.unlockindex ][pos]
+
+                self.unlockcode.append(char)
         self.currentkey = 0
         self.busytext1 = "Tastensperre"
         self.busytext3 = "System entsperren mit"
