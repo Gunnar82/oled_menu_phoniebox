@@ -15,7 +15,7 @@ class Lock(WindowBase):
         super().__init__(windowmanager)
         self.timeout = False
         self.window_on_back = "none"
-        self._rendertime = 0.5
+        self.busyrendertime = 0.25
 
         self.windowmanager = windowmanager
         self.timeout = False
@@ -25,28 +25,23 @@ class Lock(WindowBase):
 
     def activate(self):
         self.currentkey = 0
-        self.hint = "System entsperren mit"
+        self.busytext1 = "Tastensperre"
+        self.busytext3 = "System entsperren mit"
 
         self.busysymbol=symbols.SYMBOL_LOCK
+        self.genhint()
 
     def render(self):
-
-        for r in range(len(self.unlockcode)):
-            if r == self.currentkey:
-                self.unlockcode[r] = self.unlockcode[r].upper()
-            else:
-                self.unlockcode[r] = self.unlockcode[r].lower()
-        self.set_busy("Tastensperre",self.busysymbol,busyrendertime=0.4, busytext3 = self.hint, busytext2 = ' '.join(self.unlockcode))
-
+        self.renderbusy()
 
     def push_callback(self,lp=False):
         pass
 
     def turn_callback(self,direction, key=None):
-        if key = '6': key = 'right'
-        elif key = '2': key = 'up'
-        elif key = '8': key = 'down'
-        elif key = '4': key = 'left'
+        if key == '6': key = 'right'
+        elif key == '2': key = 'up'
+        elif key == '8': key = 'down'
+        elif key == '4': key = 'left'
 
         if key == self.unlockcode[self.currentkey].lower():
             self.busysymbol = symbols.SYMBOL_PASS
@@ -59,6 +54,17 @@ class Lock(WindowBase):
              self.currentkey = 0 
 
              self.windowmanager.set_window("idle")
+
+        self.genhint()
+
+    def genhint(self):
+        for r in range(len(self.unlockcode)):
+            if r == self.currentkey:
+                self.unlockcode[r] = self.unlockcode[r].upper()
+            else:
+                self.unlockcode[r] = self.unlockcode[r].lower()
+        self.busytext2 = ' '.join(self.unlockcode)
+
 
 
     def deactivate(self):

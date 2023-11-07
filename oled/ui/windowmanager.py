@@ -132,7 +132,6 @@ class WindowManager():
                         elif self.activewindow.busy or (settings.callback_active and self.activewindow.changerender):
                             self.rendered_busy = True
                             self.rendertime = self.activewindow.busyrendertime
-                            self.rendertime = self.activewindow.busyrendertime
                             self.activewindow.renderbusy()
                             log(lDEBUG2,"rendering busy of window %s, busyrendertime: %d" %(self.activewindow.windowtitle,self.rendertime))
                         else:
@@ -173,24 +172,34 @@ class WindowManager():
                 settings.callback_active = False
                 log(lDEBUG2,"push_callback: ended")
 
-        elif self.activewindow.windowtitle != "ende":
+        else: 
             settings.screenpower = True
             self.device.show()
-            self.set_window("idle")
+            if self.activewindow.windowtitle not in ["ende", "lock"]:
+                self.set_window("idle")
 
     def turn_callback(self, direction, key=None):
         try:
-            settings.callback_active = True
-            log(lDEBUG2,"turn_callback: started")
+            if settings.screenpower:
 
-            settings.screenpower = True
-            settings.lastinput = datetime.now()
-            self.device.contrast(settings.CONTRAST_FULL)
-            if key == '#':
-                log(lINFO,"activate window_on_back: %s" % (self.activewindow.window_on_back))
-                if self.activewindow.window_on_back != "": self.set_window(self.activewindow.window_on_back)
+                settings.callback_active = True
+                log(lDEBUG2,"turn_callback: started")
+
+                settings.screenpower = True
+                settings.lastinput = datetime.now()
+                self.device.contrast(settings.CONTRAST_FULL)
+                if key == '#':
+                    log(lINFO,"activate window_on_back: %s" % (self.activewindow.window_on_back))
+                    if self.activewindow.window_on_back != "": self.set_window(self.activewindow.window_on_back)
+                else:
+                    self.activewindow.turn_callback(direction,key=key)
+
             else:
-                self.activewindow.turn_callback(direction,key=key)
+                settings.screenpower = True
+                self.device.show()
+                if self.activewindow.windowtitle not in ["ende", "lock"]:
+                     self.set_window("idle")
+
         except (NotImplementedError, AttributeError):
             log(lERROR,"window_manager: turn_callback error")
         finally:
