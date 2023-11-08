@@ -2,6 +2,8 @@
 
 import settings, colors, symbols
 
+import asyncio
+
 from PIL import ImageFont
 from luma.core.render import canvas
 
@@ -80,7 +82,6 @@ class WindowBase():
     async def set_window(self,windowid):
         await asyncio.sleep(3)
         self.windowmanager.set_window(windowid)
-
 
     def activate(self):
         raise NotImplementedError()

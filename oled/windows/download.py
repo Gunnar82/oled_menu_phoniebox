@@ -19,7 +19,6 @@ from integrations.functions import get_size
 class DownloadMenu(ListBase):
     def __init__(self, windowmanager,loop):
         super().__init__(windowmanager, loop, "Download")
-        self.loop = loop
         self.window_on_back = "idle"
         self.timeout = False
         self.contrasthandle = False
@@ -47,7 +46,7 @@ class DownloadMenu(ListBase):
             if not self.website.startswith(settings.ONLINEURL): raise "Website geändert"
 
         except Exception as error:
-            self.set_busy(error,symbols.SYMBOL_NOCLOUD)
+            self.set_busy("Dateifehler",symbols.SYMBOL_NOCLOUD,str(error))
             time.sleep(3)
 
             self.position = -1
@@ -65,13 +64,11 @@ class DownloadMenu(ListBase):
                     raise "Keine Verbindung, Code: %d" %(r.status_code)
             elif r.status_code != 200:
                 raise "Keine Verbindung, Code: %d" %(r.status_code)
-        except Exception as error:
-            print (error)
-            self.set_busy(error,symbols.SYMBOL_NOCLOUD)
-            self.windowmanager.set_window("idle")
-            self.renderbusy()
-            time.sleep(3)
-
+        except requests.exceptions.RequestException as error:
+            self.set_busy("Verbindungsfehler",symbols.SYMBOL_NOCLOUD,self.website,set_window_to="idle")
+            return
+        except requests.exceptions.HTTPError as error:
+            self.set_busy("HTTP-Fehler",symbols.SYMBOL_NOCLOUD,str(error),set_window_to="idle")
             return
 
         self.on_key_left()

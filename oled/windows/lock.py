@@ -19,7 +19,6 @@ class Lock(WindowBase):
         self.window_on_back = "none"
         self.busyrendertime = 0.25
 
-        self.windowmanager = windowmanager
         self.timeout = False
         self.unlockcodes = []
 
@@ -36,7 +35,7 @@ class Lock(WindowBase):
         elif "keypad4x4" in settings.INPUTS: self.unlockindex = 1
 
         if self.unlockindex == -1:
-            self.windowmanager.set_window("idle")
+            self.set_busy("Kein kompatibler INPUT",symbols.SYMBOL_ERROR,set_window_to="idle")
         else:
             for r in range(0,4):
                 length = len(self.unlockcodes[self.unlockindex])
@@ -48,13 +47,13 @@ class Lock(WindowBase):
                     self.unlockcodes[ self.unlockindex ].remove(char)
                 except:
                     pass
-        print (self.unlockcodes[self.unlockindex])
-        self.currentkey = 0
-        self.busytext1 = "Tastensperre"
-        self.busytext3 = "System entsperren mit"
 
-        self.busysymbol=symbols.SYMBOL_LOCKED
-        self.genhint()
+            self.currentkey = 0
+            self.busytext1 = "Tastensperre"
+            self.busytext3 = "System entsperren mit"
+
+            self.busysymbol=symbols.SYMBOL_LOCKED
+            self.genhint()
 
     def render(self):
         self.renderbusy()
