@@ -14,3 +14,7 @@ FILE_LAST_ONLINE="/home/pi/RPi-Jukebox-RFID/settings/Latest_Online_Folder_Played
 
 LATEST_RFID="/home/pi/RPi-Jukebox-RFID/settings/Latest_RFID"
 LATEST_PLAYED_FOLDER="/home/pi/RPi-Jukebox-RFID/settings/Latest_Folder_Played"
+
+
+PLAYOUT_CONTROLS = "sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh"
+RESUME_PLAY = "sudo /home/pi/RPi-Jukebox-RFID/scripts/resume_play.sh"

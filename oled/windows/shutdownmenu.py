@@ -2,7 +2,7 @@
 from ui.menubase import MenuBase
 from luma.core.render import canvas
 from PIL import ImageFont
-import settings, colors
+import settings, colors, file_folders
 import os
 import integrations.playout as playout
 import asyncio
@@ -46,19 +46,19 @@ class Shutdownmenu(MenuBase):
             self.loop.stop()
         
         elif self.counter == 4:
-            os.system("%s -c=shutdownafter -v=0" % settings.PLAYOUT_CONTROLS)
+            os.system("%s -c=shutdownafter -v=0" % file_folder.PLAYOUT_CONTROLS)
         elif self.counter == 5:
-            os.system("%s -c=shutdownafter -v=15" % settings.PLAYOUT_CONTROLS)
+            os.system("%s -c=shutdownafter -v=15" % file_folder.PLAYOUT_CONTROLS)
         elif self.counter == 6:
-            os.system("%s -c=shutdownafter -v=30" % settings.PLAYOUT_CONTROLS)
+            os.system("%s -c=shutdownafter -v=30" % file_folder.PLAYOUT_CONTROLS)
         elif self.counter == 7:
-            os.system("%s -c=shutdownafter -v=60" % settings.PLAYOUT_CONTROLS)
+            os.system("%s -c=shutdownafter -v=60" % file_folder.PLAYOUT_CONTROLS)
         elif self.counter == 8:
-            os.system("%s -c=setidletime -v=0" % settings.PLAYOUT_CONTROLS)
+            os.system("%s -c=setidletime -v=0" % file_folder.PLAYOUT_CONTROLS)
         elif self.counter == 9:
-            os.system("%s -c=setidletime -v=5" % settings.PLAYOUT_CONTROLS)
+            os.system("%s -c=setidletime -v=5" % file_folder.PLAYOUT_CONTROLS)
         elif self.counter == 10:
-            os.system("%s -c=setidletime -v=20" % settings.PLAYOUT_CONTROLS)
+            os.system("%s -c=setidletime -v=20" % file_folder.PLAYOUT_CONTROLS)
 
         get_timeouts()
 
@@ -76,10 +76,10 @@ class Shutdownmenu(MenuBase):
         if key:
             if key == 'A':
                 self.set_busy("Austimer 30 min","\uf0a2")
-                os.system("%s -c=shutdownafter -v=30" % settings.PLAYOUT_CONTROLS)
+                os.system("%s -c=shutdownafter -v=30" % file_folder.PLAYOUT_CONTROLS)
             elif key == 'B':
                 self.set_busy("Austimer deaktiviert","\uf1f7")
-                os.system("%s -c=shutdownafter -v=0" % settings.PLAYOUT_CONTROLS)
+                os.system("%s -c=shutdownafter -v=0" % file_folder.PLAYOUT_CONTROLS)
 
             elif key == 'C':
                 playout.savepos()

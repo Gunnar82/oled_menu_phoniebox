@@ -2,30 +2,30 @@ import os
 import settings, file_folder
 
 def pc_prev():
-    os.system("%s -c=playerprev" % (settings.PLAYOUT_CONTROLS))
+    os.system("%s -c=playerprev" % (file_folder.PLAYOUT_CONTROLS))
 def pc_next():
-    os.system("%s -c=playernext" % (settings.PLAYOUT_CONTROLS))
+    os.system("%s -c=playernext" % (file_folder.PLAYOUT_CONTROLS))
 def pc_stop():
-    os.system("%s -c=playerstop" % (settings.PLAYOUT_CONTROLS))
+    os.system("%s -c=playerstop" % (file_folder.PLAYOUT_CONTROLS))
 
 def pc_play(pos = 0):
-    os.system("%s -c=playerplay -v=%d" % (settings.PLAYOUT_CONTROLS, pos))
+    os.system("%s -c=playerplay -v=%d" % (file_folder.PLAYOUT_CONTROLS, pos))
 
 def pc_mute():
-    os.system("%s -c=mute" % (settings.PLAYOUT_CONTROLS))
+    os.system("%s -c=mute" % (file_folder.PLAYOUT_CONTROLS))
 
 def pc_toggle():
-    os.system("%s -c=playerpause" % (settings.PLAYOUT_CONTROLS))
+    os.system("%s -c=playerpause" % (file_folder.PLAYOUT_CONTROLS))
 
 def pc_shutdown():
-    os.system("%s -c=shutdown" % (settings.PLAYOUT_CONTROLS))
+    os.system("%s -c=shutdown" % (file_folder.PLAYOUT_CONTROLS))
 
 def pc_reboot():
     print("Reboot down system")
-    os.system("%s -c=reboot" % (settings.PLAYOUT_CONTROLS))
+    os.system("%s -c=reboot" % (file_folder.PLAYOUT_CONTROLS))
 
 def savepos():
-    os.system("%s -c=savepos" % (settings.RESUME_PLAY))
+    os.system("%s -c=savepos" % (file_folder.RESUME_PLAY))
 
 
 
