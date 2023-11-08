@@ -181,32 +181,31 @@ class WindowManager():
                 self.set_window("idle")
 
     def turn_callback(self, direction, key=None):
-        try:
-            if settings.screenpower:
+        settings.lastinput = datetime.now()
+        settings.staywake = False
+        if settings.screenpower:
+            settings.callback_active = True
+            log(lDEBUG2,"turn_callback: started")
 
-                settings.callback_active = True
-                log(lDEBUG2,"turn_callback: started")
-
-                settings.screenpower = True
-                settings.lastinput = datetime.now()
+            try:
                 self.device.contrast(settings.CONTRAST_FULL)
                 if key == '#':
                     log(lINFO,"activate window_on_back: %s" % (self.activewindow.window_on_back))
                     if self.activewindow.window_on_back != "": self.set_window(self.activewindow.window_on_back)
                 else:
                     self.activewindow.turn_callback(direction,key=key)
+            except (NotImplementedError, AttributeError):
+                log(lERROR,"window_manager: turn_callback error")
+            finally:
+                settings.callback_active = False
+                log(lDEBUG2,"turn_callback: ended")
 
-            else:
-                settings.screenpower = True
-                self.device.show()
-                if self.activewindow.windowtitle not in ["ende", "lock"]:
-                     self.set_window("idle")
+        else:
+            settings.screenpower = True
+            self.device.show()
+            if self.activewindow.windowtitle not in ["ende", "lock"]:
+                 self.set_window("idle")
 
-        except (NotImplementedError, AttributeError):
-            log(lERROR,"window_manager: turn_callback error")
-        finally:
-            settings.callback_active = False
-            log(lDEBUG2,"turn_callback: ended")
 
     def __del__(self):
         self.rfidwatcher.stop()
