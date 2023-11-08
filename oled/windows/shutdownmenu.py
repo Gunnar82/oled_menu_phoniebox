@@ -2,7 +2,7 @@
 from ui.menubase import MenuBase
 from luma.core.render import canvas
 from PIL import ImageFont
-import settings, colors, file_folders
+import settings, colors, file_folder
 import os
 import integrations.playout as playout
 import asyncio
