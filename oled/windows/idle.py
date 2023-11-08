@@ -201,7 +201,7 @@ class Idle(MainWindow):
             elif key == '0':
                 self.busysymbol = symbols.SYMBOL_VOL_MUTE
                 playout.pc_mute()
-            elif key == 'START':
+            elif key == 'start':
                 playout.pc_toggle()
 
             elif key in ['1', '3', '7']:

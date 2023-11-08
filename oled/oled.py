@@ -130,7 +130,7 @@ def main():
     loadedwins.append(windows.firewall.Firewallmenu(windowmanager,loop))
     loadedwins.append(windows.start.Start(windowmanager, mopidy))
     loadedwins.append(wdownload.DownloadMenu(windowmanager,loop))
-    loadedwins.append(wlock.Lock(windowmanager))
+    loadedwins.append(wlock.Lock(windowmanager,loop))
 
     for window in loadedwins:
         windowmanager.add_window(window.__class__.__name__.lower(), window)

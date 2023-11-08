@@ -44,16 +44,18 @@ class WindowManager():
             except (NotImplementedError, AttributeError):
                 pass
             self.activewindow = self.windows[windowid]
-            try:
-                self.rendertime = self.activewindow._rendertime
-                self.activewindow.busy = False
-                self.activewindow.activate()
-                self.activewindow.windowtitle = windowid
-            except (NotImplementedError, AttributeError):
-                pass
             log(lINFO,f"Activated {windowid}")
         else:
             log(lINFO,f"Window {windowid} not found!")
+
+        try:
+            self.rendertime = self.activewindow._rendertime
+            self.activewindow.busy = False
+            self.activewindow.activate()
+            self.activewindow.windowtitle = windowid
+        except (NotImplementedError, AttributeError):
+            pass
+
 
     def show_window(self):
         settings.lastinput = datetime.now()
@@ -143,7 +145,7 @@ class WindowManager():
 
             iTimerCounter = 0 
 
-            while (iTimerCounter < self.rendertime / self._RENDERTIME or (self.activewindow.busy and self.rendered_busy)):
+            while (iTimerCounter < self.rendertime / self._RENDERTIME or (self.activewindow.busy and self.rendered_busy) and settings.screenpower):
                 log(lDEBUG2,"renderloop: %d, %d "%(iTimerCounter+1, self.rendertime / self._RENDERTIME))
                 iTimerCounter += 1
                 await asyncio.sleep(self._RENDERTIME)

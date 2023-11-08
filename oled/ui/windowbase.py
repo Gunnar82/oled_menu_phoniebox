@@ -33,6 +33,9 @@ class WindowBase():
         self.busyrendertime = 3
         self._rendertime = 0.25
 
+    def get_busy_state(self):
+        return busy
+
     def set_busy(self,busytext1,busysymbol=symbols.SYMBOL_SANDCLOCK,busytext2="", busyrendertime=3,busytext3=""):
         self.busytext1 = busytext1
         self.busysymbol = busysymbol

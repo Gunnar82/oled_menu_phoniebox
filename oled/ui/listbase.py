@@ -147,9 +147,9 @@ class ListBase(WindowBase):
             elif key == 'D':
                 direction = 0
                 self.position = len(self.menu)
-            elif key == 'B' or key== 'HL':
+            elif key == 'B' or key== 'hl':
                     direction = 0 - self.displaylines
-            elif key == 'C' or key == 'HR':
+            elif key == 'C' or key == 'hr':
                     direction = self.displaylines
 
         log(lDEBUG,"Handling  Menu Items: %d, Lines: %d, direction: %s" % (len(self.menu), self.displaylines, direction))

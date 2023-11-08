@@ -112,13 +112,13 @@ class pygameInput():
                     elif int(event.button) == 3: # Y
                         self.turn_callback(0,'Y')
                     elif int(event.button) == 4: # HL
-                        self.turn_callback(0,'HL')
+                        self.turn_callback(0,'hl')
                     elif int(event.button) == 5: # HR
-                        self.turn_callback(0,'HR')
+                        self.turn_callback(0,'hr')
                     elif int(event.button) == 6: # START
-                        self.turn_callback(0,'SELECT')
+                        self.turn_callback(0,'select')
                     elif int(event.button) == 7: # START
-                        self.turn_callback(0,'START')
+                        self.turn_callback(0,'start')
 
             await asyncio.sleep(0.1)
 

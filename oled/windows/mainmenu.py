@@ -22,7 +22,7 @@ class Mainmenu(MenuBase):
         self.descr.append([ "WLAN / Hotspot", "\uf09e", "wlanmenu" ])
         self.descr.append([ "Firewall", "\uf1cb", "firewallmenu" ])
         self.descr.append([ "Download", symbols.SYMBOL_CLOUD, "downloadmenu"])
-        self.descr.append([ "Tastensperre", symbols.SYMBOL_LOCK, "lock" ])
+        self.descr.append([ "Tastensperre", symbols.SYMBOL_LOCKED, "lock" ])
 
         self.window_on_back = "idle"
 
