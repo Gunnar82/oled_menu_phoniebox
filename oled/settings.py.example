@@ -19,7 +19,7 @@ use_eyed3 = False
 
 LOGLEVEL=1
 
-ONLINEURL = "http://localhost:8081/website/"
+ONLINEURL = "http://localhost:8081/gunnar/"
 
 ###DISPLAY_SETTINGS i2c
 DISPLAY_TYPE = "spi" # or "i2c"
@@ -66,10 +66,6 @@ KEYPAD_ADDR = 0x27
 X728_BATT_LOW = 15
 X728_BATT_EMERG = 5 # Shutdown Battery Percentage
 
-PLAYOUT_CONTROLS = "sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh"
-
-RESUME_PLAY = "sudo /home/pi/RPi-Jukebox-RFID/scripts/resume_play.sh"
-
 
 #Settings for the connection to Mopidy
 MPD_IP = "localhost"
@@ -85,9 +81,9 @@ ALSA_DEV_LOCAL="speaker"
 #BluetoothKopfhoerer
 ENABLED_DEV_BT_1 = True
 AUTOCONNECT_DEV_BT_1 = False
-NAME_DEV_BT_1 = "Jabra"
+NAME_DEV_BT_1 = "braune box"
 ALSA_DEV_BT_1 = "bt_dev_1"
-MAC_DEV_BT_1 = "50:C2:ED:0D:4B:8D"
+MAC_DEV_BT_1 = "69:40:CF:81:94:75"
 #"69:40:CF:81:94:75"
 
 ENABLED_DEV_BT_2 = False
