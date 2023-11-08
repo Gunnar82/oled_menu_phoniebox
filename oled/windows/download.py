@@ -18,7 +18,7 @@ from integrations.functions import get_size
 
 class DownloadMenu(ListBase):
     def __init__(self, windowmanager,loop):
-        super().__init__(windowmanager, "Download")
+        super().__init__(windowmanager, loop, "Download")
         self.loop = loop
         self.window_on_back = "idle"
         self.timeout = False

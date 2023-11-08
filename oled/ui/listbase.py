@@ -10,8 +10,8 @@ import settings, colors, symbols
 from integrations.logging import *
 
 class ListBase(WindowBase):
-    def __init__(self, windowmanager, title):
-        super().__init__(windowmanager)
+    def __init__(self, windowmanager, loop, title):
+        super().__init__(windowmanager, loop)
         self.menu = []
         self.basetitle = title
         self.left_pressed = False

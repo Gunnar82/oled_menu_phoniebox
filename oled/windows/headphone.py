@@ -27,7 +27,6 @@ class Headphonemenu(MenuBase):
 
     def __init__(self, windowmanager,loop,title):
         super().__init__(windowmanager,loop,title)
-        self.loop = loop
         self.get_dev_status(first=True)
         self.descr.append([settings.NAME_DEV_BT_1 + " " + self.bt1_status, "\uf057" if not settings.ENABLED_DEV_BT_1 else "\uf293" if self.bt1_status == "enabled" else "\uf294"])
         self.descr.append([settings.NAME_DEV_BT_2 + " " + self.bt2_status, "\uf057" if not settings.ENABLED_DEV_BT_2 else "\uf293" if self.bt2_status == "enabled" else "\uf294"])

@@ -16,8 +16,8 @@ import RPi.GPIO as GPIO
 class Playbackmenu(MainWindow):
     faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XL)
 
-    def __init__(self, windowmanager, nowplaying):
-        super().__init__(windowmanager,nowplaying)
+    def __init__(self, windowmanager, loop, nowplaying):
+        super().__init__(windowmanager, loop, nowplaying)
         self.nowplaying = nowplaying
         self._volume = -1
         self._time = -1

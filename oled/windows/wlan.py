@@ -12,8 +12,8 @@ class Wlanmenu(WindowBase):
     font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_SMALL)
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XL)
 
-    def __init__(self, windowmanager):
-        super().__init__(windowmanager)
+    def __init__(self, windowmanager,loop):
+        super().__init__(windowmanager,loop)
         self._active = False
         self._hostapd = False
         self.counter = 0

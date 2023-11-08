@@ -22,8 +22,8 @@ from integrations.logging import *
 
 class Idle(MainWindow):
 
-    def __init__(self, windowmanager, nowplaying):
-        super().__init__(windowmanager,nowplaying)
+    def __init__(self, windowmanager, loop, nowplaying):
+        super().__init__(windowmanager, loop, nowplaying)
         self.changerender = True
         self.window_on_back = "playlistmenu"
 

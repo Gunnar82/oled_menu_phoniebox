@@ -27,9 +27,9 @@ class MainWindow(WindowBase):
     faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=12)
     faiconsxl = ImageFont.truetype(settings.FONT_ICONS, size=30)
 
-    def __init__(self, windowmanager, nowplaying):
+    def __init__(self, windowmanager, loop, nowplaying):
         locale.setlocale(locale.LC_TIME, "de_DE.UTF-8")
-        super().__init__(windowmanager)
+        super().__init__(windowmanager, loop)
         active = False
         self.nowplaying = nowplaying
         self.timeout=False

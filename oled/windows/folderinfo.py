@@ -16,8 +16,8 @@ class FolderInfo(WindowBase):
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=18)
     
 
-    def __init__(self, windowmanager):
-        super().__init__(windowmanager)
+    def __init__(self, windowmanager, loop):
+        super().__init__(windowmanager, loop)
         self.counter = 0
         self.settings = {}
         self.settings["RESUME"] = "n/a"

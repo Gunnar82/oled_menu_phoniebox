@@ -10,9 +10,9 @@ import asyncio
 from ui.listbase import ListBase
 
 class Playlistmenu(ListBase):
-    def __init__(self, windowmanager, musicmanager):
+    def __init__(self, windowmanager, loop,  musicmanager):
         self.musicmanager = musicmanager
-        super().__init__(windowmanager, "Playlist")
+        super().__init__(windowmanager, loop, "Playlist")
 
 
     async def eyed3_playlist(self):

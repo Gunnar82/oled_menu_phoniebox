@@ -12,7 +12,7 @@ class Foldermenu(ListBase):
     folders = []
 
     def __init__(self, windowmanager,loop):
-        super().__init__(windowmanager, "Auswahl")
+        super().__init__(windowmanager, loop, "Auswahl")
         #self.timeoutwindow="folderinfo"
         self.timeout = False
         self.loop = loop

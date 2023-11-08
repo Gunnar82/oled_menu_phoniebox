@@ -16,8 +16,8 @@ class Infomenu(WindowBase):
     temp = "n/a"
     window_on_back = "mainmenu"
 
-    def __init__(self, windowmanager):
-        super().__init__(windowmanager)
+    def __init__(self, windowmanager, loop):
+        super().__init__(windowmanager, loop)
         self.counter = 0
 
 

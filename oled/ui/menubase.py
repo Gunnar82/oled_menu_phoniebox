@@ -10,7 +10,7 @@ class MenuBase(WindowBase):
     font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_NORMAL)
 
     def __init__(self, windowmanager,loop,title):
-        super().__init__(windowmanager)
+        super().__init__(windowmanager,loop)
         self.counter = 0
         self.descr = []
         self.descr.append([ "Zurück", "\uf0a8"])

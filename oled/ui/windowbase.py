@@ -13,7 +13,8 @@ busyfaiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE
 
 class WindowBase():
     changerender = False
-    def __init__(self, windowmanager):
+    def __init__(self, windowmanager,loop):
+        self.loop = loop
         self.windowtitle = "untitled"
         self.windowmanager = windowmanager
         self.counter = 0
@@ -33,13 +34,11 @@ class WindowBase():
         self.busyrendertime = 3
         self._rendertime = 0.25
 
-    def get_busy_state(self):
-        return busy
 
-    def set_busy(self,busytext1,busysymbol=symbols.SYMBOL_SANDCLOCK,busytext2="", busyrendertime=3,busytext3=""):
+    def set_busy(self,busytext1,busysymbol=symbols.SYMBOL_SANDCLOCK,busytext2="", busyrendertime=3,busytext3="",set_window_to="none"):
         self.busytext1 = busytext1
         self.busysymbol = busysymbol
-        
+
         self.busytext3 = busytext3
         if busyfont.getsize(busytext2)[0] > settings.DISPLAY_WIDTH:
             pos = len(busytext2) // 2
@@ -52,6 +51,10 @@ class WindowBase():
 
         self.busyrendertime = busyrendertime
         self.busy = True
+
+        if set_window_to != "none":
+            self.loop.create_task(self.set_window(set_window_to))
+
 
     def renderbusy(self,symbolcolor = colors.COLOR_RED, textcolor1=colors.COLOR_WHITE, textcolor2=colors.COLOR_WHITE):
         with canvas(self.device) as draw:
@@ -74,9 +77,9 @@ class WindowBase():
             mwidth,mheight = busyfaiconsbig.getsize(self.busysymbol)
             draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, (settings.DISPLAY_HEIGHT - mheight) / 2), text=self.busysymbol, font=busyfaiconsbig, fill=symbolcolor) #sanduhr
 
-    
-
-
+    async def set_window(self,windowid):
+        await asyncio.sleep(3)
+        self.windowmanager.set_window(windowid)
 
 
     def activate(self):

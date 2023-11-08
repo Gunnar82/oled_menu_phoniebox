@@ -13,13 +13,12 @@ class Lock(WindowBase):
     fontawesome = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XXL)
 
     def __init__(self, windowmanager,loop):
-        super().__init__(windowmanager)
+        super().__init__(windowmanager, loop)
 
         self.timeout = False
         self.window_on_back = "none"
         self.busyrendertime = 0.25
 
-        self.loop = loop
         self.windowmanager = windowmanager
         self.timeout = False
         self.unlockcodes = []
@@ -29,10 +28,6 @@ class Lock(WindowBase):
         self.unlockindex = -1
 
         self.currentkey = 0
-
-    async def set_idle(self):
-        await asyncio.sleep(3)
-        self.windowmanager.set_window("idle")
 
     def activate(self):
         self.unlockcode = []
@@ -68,10 +63,6 @@ class Lock(WindowBase):
         pass
 
     def turn_callback(self,direction, key=None):
-        if key == '6': key = 'right'
-        elif key == '2': key = 'up'
-        elif key == '8': key = 'down'
-        elif key == '4': key = 'left'
 
         if key.lower() == self.unlockcode[self.currentkey].lower():
             self.busysymbol = symbols.SYMBOL_PASS
@@ -82,9 +73,8 @@ class Lock(WindowBase):
 
         if self.currentkey >= len(self.unlockcode):
              self.currentkey = 0 
-             self.set_busy("Gerät entsperrt",symbols.SYMBOL_UNLOCKED)
+             self.set_busy("Gerät entsperrt",symbols.SYMBOL_UNLOCKED,set_window_to="idle")
 
-             self.loop.create_task(self.set_idle())
 
         else:
             self.genhint()

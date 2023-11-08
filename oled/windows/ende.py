@@ -8,8 +8,8 @@ from datetime import datetime
 
 class Ende(WindowBase):
 
-    def __init__(self, windowmanager):
-        super().__init__(windowmanager)
+    def __init__(self, windowmanager, loop):
+        super().__init__(windowmanager, loop)
         self.font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_L)
         self.fontawesome = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XXL)
         self.timeout = False
