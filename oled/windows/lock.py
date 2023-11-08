@@ -79,13 +79,14 @@ class Lock(WindowBase):
             self.genhint()
 
     def genhint(self):
+        self.busytext2 = ""
         for r in range(len(self.unlockcode)):
             if r == self.currentkey:
                 self.unlockcode[r] = self.unlockcode[r].upper()
+                self.busytext2 += ">%s< " % (self.unlockcode[r])
             else:
                 self.unlockcode[r] = self.unlockcode[r].lower()
-        self.busytext2 = ' '.join(self.unlockcode)
-
+                self.busytext2 += self.unlockcode[r] + ' '
 
 
     def deactivate(self):
