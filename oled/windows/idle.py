@@ -194,8 +194,8 @@ class Idle(MainWindow):
                 self.windowmanager.set_window("foldermenu")
             elif key =='D':
                 self.windowmanager.set_window("shutdownmenu")
-            elif key =='9':
-                self.windowmanager.set_window("pinmenu")
+            elif key =='9' or key == 'select':
+                self.windowmanager.set_window("lock")
             elif key == '5':
                  self.windowmanager.clear_window()
             elif key == '0':
