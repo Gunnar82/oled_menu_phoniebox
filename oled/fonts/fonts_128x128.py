@@ -34,4 +34,5 @@ settings.LISTBASE_ENTRY_SIZE = 12
 ### menubase
 
 settings.MENUBASE_ICON_SIZE = 18
+settings.MENUBASE_START_Y = 25
 

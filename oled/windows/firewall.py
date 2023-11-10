@@ -10,8 +10,6 @@ import asyncio
 import re
 
 class Firewallmenu(MenuBase):
-    font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_SMALL)
-    faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XL)
 
     def __init__(self, windowmanager,loop):
         super().__init__(windowmanager,loop,"Firewall")
