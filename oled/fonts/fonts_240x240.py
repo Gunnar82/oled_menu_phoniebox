@@ -15,3 +15,6 @@ settings.FONT_HEIGHT_SMALL = 20
 settings.DISPLAY_WIDTH = 240
 settings.DISPLAY_HEIGHT = 240 # or 64
 settings.DISPLAY_RGB = True
+
+
+settings.LISTBASE_FONT_SIZE = 24

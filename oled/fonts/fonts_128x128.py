@@ -15,3 +15,8 @@ settings.FONT_HEIGHT_SMALL = 12
 settings.DISPLAY_WIDTH = 128
 settings.DISPLAY_HEIGHT = 128 # or 64
 settings.DISPLAY_RGB = True
+
+
+### listbase.py
+
+settings.LISTBASE_FONT_SIZE = 24

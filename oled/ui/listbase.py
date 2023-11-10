@@ -10,6 +10,9 @@ import settings, colors, symbols
 from integrations.logging import *
 
 class ListBase(WindowBase):
+    font = ImageFont.truetype(settings.FONT_TEXT, size=settings.LISTBASE_FONT_SIZE)
+    faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.LISTBASE_FONT_SIZE)
+
     def __init__(self, windowmanager, loop, title):
         super().__init__(windowmanager, loop)
         self.menu = []
@@ -19,8 +22,6 @@ class ListBase(WindowBase):
         self.drawtextx = 0
         self.position = -2
         self.progress = {}
-        self.font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_SMALL)
-        self.faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_SMALL)
         self.selection_changed = True
         self.titlelineheight = self.font.getsize(self.basetitle)[1] + 3
 
