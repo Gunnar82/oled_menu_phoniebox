@@ -34,7 +34,7 @@ settings.MENUBASE_START_Y = 25
 
 ### playbackmenu
 
-settings.PLAYBACKMENU_DESCR_Y = 54
+settings.PLAYBACKMENU_DESCR_Y = 35
 
 ### idle
 
