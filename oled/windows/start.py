@@ -12,8 +12,6 @@ from integrations.logging import *
 
 
 class Start(WindowBase):
-    font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_NORMAL)
-    fontawesome = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XXL)
 
     def __init__(self, windowmanager,loop, mopidyconnection):
         super().__init__(windowmanager, loop)
