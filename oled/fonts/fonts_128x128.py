@@ -42,4 +42,4 @@ settings.IDLE_LINE_HEIGHT = 12
 
 ### mainwindow
 
-settings.MAINWINDOW_LINEPOS_Y = 215
+settings.MAINWINDOW_LINEPOS_Y = 108
