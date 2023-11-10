@@ -39,3 +39,7 @@ settings.PLAYBACKMENU_DESCR_Y = 54
 ### idle
 
 settings.IDLE_LINE_HEIGHT = 12
+
+### mainwindow
+
+settings.MAINWINDOW_LINEPOS_Y = 215

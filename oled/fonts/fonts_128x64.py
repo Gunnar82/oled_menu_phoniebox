@@ -37,3 +37,7 @@ settings.MENUBASE_START_Y = 25
 ### idle
 
 settings.IDLE_LINE_HEIGHT = 12
+
+### mainwindow
+
+settings.MAINWINDOW_LINEPOS_Y = 50
