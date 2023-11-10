@@ -10,8 +10,8 @@ import settings, colors, symbols
 from integrations.logging import *
 
 class ListBase(WindowBase):
-    font = ImageFont.truetype(settings.FONT_TEXT, size=settings.LISTBASE_FONT_SIZE)
-    faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.LISTBASE_FONT_SIZE)
+    font = ImageFont.truetype(settings.FONT_TEXT, size=settings.LISTBASE_ENTRY_SIZE)
+    faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.LISTBASE_ENTRY_SIZE)
 
     def __init__(self, windowmanager, loop, title):
         super().__init__(windowmanager, loop)
@@ -72,7 +72,7 @@ class ListBase(WindowBase):
             #Calculate title coordinate from text lenght
 
             titlelinewidth = self.font.getsize(self.title)[0]
-            draw.text(((settings.DISPLAY_WIDTH-titlelinewidth)/2, 1), text=self.title, font=self.font, fill="white")
+            draw.text(((settings.DISPLAY_WIDTH-titlelinewidth)/2, 1), text=self.title, font=self.fontheading, fill="white")
 
             #Playlists
             menulen = len(self.menu)

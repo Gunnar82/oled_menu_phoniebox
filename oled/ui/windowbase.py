@@ -15,6 +15,8 @@ busyfaiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE
 
 class WindowBase():
     changerender = False
+    fontheading = ImageFont.truetype(settings.FONT_TEXT, size=settings.WINDOWBASE_HEADING_SIZE)
+
     def __init__(self, windowmanager,loop):
         self.loop = loop
         self.windowtitle = "untitled"

@@ -17,6 +17,13 @@ settings.DISPLAY_HEIGHT = 128 # or 64
 settings.DISPLAY_RGB = True
 
 
+###windowbase
+
+settings.WINDOWBASE_HEADING_SIZE = 11
+
+
+
 ### listbase.py
 
-settings.LISTBASE_FONT_SIZE = 24
+settings.LISTBASE_ENTRY_SIZE = 12
+
