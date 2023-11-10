@@ -37,3 +37,7 @@ settings.MENUBASE_ICON_SIZE = 18
 settings.MENUBASE_START_Y = 25
 
 
+### playbackmenu
+
+settings.PLAYBACKMENU_DESCR_Y = 54
+

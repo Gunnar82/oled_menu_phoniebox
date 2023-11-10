@@ -37,8 +37,9 @@ class Playbackmenu(MainWindow):
         self.descr.append([ "Zurück", "\uf0a8" ])
         self.descr.append([ "Wiedergabeliste", "\uf03c" ])
 
-        self.symwidth,self.symheight = Playbackmenu.faiconsbig.getsize(self.descr[1][1])
+        self.symwidth,self.symheight = self.faiconsbig.getsize(self.descr[1][1])
         self.window_on_back = "idle"
+        temp,self.descrheight = self.font.getsize("000")
 
     def activate(self):
         self._activepbm = True
@@ -54,9 +55,9 @@ class Playbackmenu(MainWindow):
             now = datetime.datetime.now()
 
             drawtext = "Titelwechsel aktiv" if self.skipselected else self.descr[self.counter][0]
-            mwidth = Playbackmenu.font.getsize(drawtext)
+            descrwidth, temp = self.font.getsize(drawtext)
 
-            draw.text((int(settings.DISPLAY_WIDTH / 2) - int(mwidth[0]/2),settings.DISPLAY_HEIGHT - 4 * settings.FONT_HEIGHT_XL), text=drawtext, font=Playbackmenu.font, fill="white")
+            draw.text((int(settings.DISPLAY_WIDTH / 2) - int(descrwidth/2),settings.PLAYBACKMENU_DESCR_Y), text=drawtext, font=Playbackmenu.font, fill="white")
 
             i = 0
 
@@ -64,7 +65,7 @@ class Playbackmenu(MainWindow):
 
             while (i < len(self.descr)):
                 xpos = startx + i * (self.symwidth*1.3)
-                draw.text((xpos, settings.DISPLAY_HEIGHT - 3 * settings.FONT_HEIGHT_XL - (2 if (i == self.counter) else 0) ), self.descr[i][1], font=Playbackmenu.faiconsbig, fill=colors.COLOR_SELECTED if (i == self.counter) else colors.COLOR_WHITE ) #prev
+                draw.text((xpos, settings.PLAYBACKMENU_DESCR_Y + self.descrheight * 1.5  - (2 if (i == self.counter) else 0) ), self.descr[i][1], font=Playbackmenu.faiconsbig, fill=colors.COLOR_SELECTED if (i == self.counter) else colors.COLOR_WHITE ) #prev
 
                 i += 1
 
