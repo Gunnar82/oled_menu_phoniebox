@@ -39,3 +39,6 @@ settings.LISTBASE_ENTRY_SIZE = 12
 settings.MENUBASE_ICON_SIZE = 18
 settings.MENUBASE_START_Y = 25
 
+### idle
+
+settings.IDLE_LINE_HEIGHT = 12

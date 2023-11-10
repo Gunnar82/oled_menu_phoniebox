@@ -42,13 +42,13 @@ class MainWindow(WindowBase):
 
 
         #Trennleiste waagerecht
-        lineposy = settings.DISPLAY_HEIGHT - settings.FONT_HEIGHT_SMALL - 5
+        lineposy = settings.MAINWINDOW_LINEPOS_Y
         draw.rectangle((0,lineposy,settings.DISPLAY_WIDTH,lineposy),outline="white",fill="white")
 
         #Trennleisten senkrecht3
         xpos1 = int(settings.DISPLAY_WIDTH/6)
         draw.rectangle((xpos1,lineposy,xpos1,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
-        xpos2 = int(3.5*settings.DISPLAY_WIDTH/6)
+        xpos2 = int(3*settings.DISPLAY_WIDTH/6)
         draw.rectangle((xpos2,lineposy,xpos2,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
         xpos3 = int(5*settings.DISPLAY_WIDTH/6)
         draw.rectangle((xpos3,lineposy,xpos3,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")

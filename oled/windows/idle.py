@@ -129,9 +129,9 @@ class Idle(MainWindow):
             else:
                 self.albumx = 0
 
-            draw.text((1, settings.DISPLAY_HEIGHT - 3*settings.FONT_HEIGHT_NORMAL ), self.nowplaying._playingalbum[self.albumx:], font=Idle.font, fill="white")
-            draw.text((1, settings.DISPLAY_HEIGHT - 4*settings.FONT_HEIGHT_NORMAL ), self.nowplaying._playingname[self.namex:], font=Idle.font, fill="white")
-            draw.text((1, settings.DISPLAY_HEIGHT - 5*settings.FONT_HEIGHT_NORMAL ), self.nowplaying._playingtitle[self.titlex:], font=Idle.font, fill="white")
+            draw.text((1, settings.DISPLAY_HEIGHT - 3*settings.IDLE_LINE_HEIGHT ), self.nowplaying._playingalbum[self.albumx:], font=Idle.font, fill="white")
+            draw.text((1, settings.DISPLAY_HEIGHT - 4*settings.IDLE_LINE_HEIGHT ), self.nowplaying._playingname[self.namex:], font=Idle.font, fill="white")
+            draw.text((1, settings.DISPLAY_HEIGHT - 5*settings.IDLE_LINE_HEIGHT ), self.nowplaying._playingtitle[self.titlex:], font=Idle.font, fill="white")
 
 
 
