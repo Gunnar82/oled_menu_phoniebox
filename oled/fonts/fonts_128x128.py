@@ -20,10 +20,18 @@ settings.DISPLAY_RGB = True
 ###windowbase
 
 settings.WINDOWBASE_HEADING_SIZE = 11
-
+settings.WINDOWBASE_BUSYFONT = 12
+settings.WINDOWBASE_BUSYFAICONS = 16
+settings.WINDOWBASE_BUSYFAICONSBIG = 40
 
 
 ### listbase.py
 
 settings.LISTBASE_ENTRY_SIZE = 12
+
+
+
+### menubase
+
+settings.MENUBASE_ICON_SIZE = 18
 

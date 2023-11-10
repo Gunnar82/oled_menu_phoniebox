@@ -8,9 +8,9 @@ from PIL import ImageFont
 from luma.core.render import canvas
 
 
-busyfont = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_NORMAL)
-busyfaicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_L)
-busyfaiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XXXL)
+busyfont = ImageFont.truetype(settings.FONT_TEXT, size=settings.WINDOWBASE_BUSYFONT)
+busyfaicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.WINDOWBASE_BUSYFAICONS)
+busyfaiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=settings.WINDOWBASE_BUSYFAICONSBIG)
 
 
 class WindowBase():

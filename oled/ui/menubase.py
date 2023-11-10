@@ -6,8 +6,7 @@ import settings, colors
 import asyncio
 
 class MenuBase(WindowBase):
-    faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XL)
-    font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_NORMAL)
+    faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.MENUBASE_ICON_SIZE)
 
     def __init__(self, windowmanager,loop,title):
         super().__init__(windowmanager,loop)
@@ -20,8 +19,8 @@ class MenuBase(WindowBase):
 
     def render(self):
         with canvas(self.device) as draw:
-            mwidth = MenuBase.font.getsize(self.descr[self.counter][0])
-            draw.text((int(settings.DISPLAY_WIDTH / 2) - int(mwidth[0]/2),1), text=self.descr[self.counter][0], font=MenuBase.font, fill="white")
+            mwidth = MenuBase.fontheading.getsize(self.descr[self.counter][0])
+            draw.text((int(settings.DISPLAY_WIDTH / 2) - int(mwidth[0]/2),1), text=self.descr[self.counter][0], font=self.fontheading, fill="white")
 
             #icons as menu buttons
             symbols_per_page = self.lines_per_page * self.symbols_per_line
@@ -49,7 +48,7 @@ class MenuBase(WindowBase):
                 if (i == self.counter):
                     y_coord -= 2
 
-                draw.text((x_coord, y_coord) , text=self.descr[i][1], font=MenuBase.faicons, outline=outline, fill=fill)
+                draw.text((x_coord, y_coord) , text=self.descr[i][1], font=self.faicons, outline=outline, fill=fill)
 
                 current_symbol += 1
 
