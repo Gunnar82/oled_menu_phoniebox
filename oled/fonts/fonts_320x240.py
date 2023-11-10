@@ -37,3 +37,8 @@ settings.LISTBASE_ENTRY_SIZE = 20
 settings.MENUBASE_ICON_SIZE = 40
 settings.MENUBASE_START_Y = 40
 
+
+### playbackmenu
+
+settings.PLAYBACKMENU_DESCR_Y = 64
+
