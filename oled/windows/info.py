@@ -19,6 +19,7 @@ class Infomenu(WindowBase):
     def __init__(self, windowmanager, loop):
         super().__init__(windowmanager, loop)
         self.counter = 0
+        self.linewidth, self.lineheight = self.font.getsize("000")
 
 
     def render(self):
@@ -51,10 +52,10 @@ class Infomenu(WindowBase):
             except:
                 pass
 
-            draw.text((1, settings.FONT_HEIGHT_NORMAL), text="IP: " + self.ipaddr, font=Infomenu.font, fill="white")
-            draw.text((1, 2 * settings.FONT_HEIGHT_NORMAL), text="WiFi: " + self.wifi_ssid, font=Infomenu.font, fill="white")
-            draw.text((1, 3 * settings.FONT_HEIGHT_NORMAL), text="hostapdi: " + str(self.hostapd), font=Infomenu.font, fill="white")
-            draw.text((1, 4 * settings.FONT_HEIGHT_NORMAL), text=self.temp, font=Infomenu.font, fill="white")
+            draw.text((1, self.lineheight*1.2), text="IP: " + self.ipaddr, font=self.font, fill="white")
+            draw.text((1, 2 * self.lineheight*1.2), text="WiFi: " + self.wifi_ssid, font=self.font, fill="white")
+            draw.text((1, 3 * self.lineheight*1.2), text="hostapdi: " + str(self.hostapd), font=self.font, fill="white")
+            draw.text((1, 4 * self.lineheight*1.2), text=self.temp, font=self.font, fill="white")
 
 
     def push_callback(self,lp=False):
