@@ -1,7 +1,7 @@
 """ Main menu """
 from ui.menubase import MenuBase
 from luma.core.render import canvas
-from PIL import ImageFont
+
 import settings, colors, file_folder, symbols
 
 from integrations.functions import mountusb, get_folder_from_file

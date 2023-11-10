@@ -1,7 +1,7 @@
 """ Start screen """
 from ui.windowbase import WindowBase
 from luma.core.render import canvas
-from PIL import ImageFont
+
 from datetime import datetime
 
 import settings, colors, symbols
