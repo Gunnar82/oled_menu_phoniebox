@@ -79,18 +79,8 @@ FONT_CLOCK = "fonts/calibri.ttf"
 ALSA_DEV_LOCAL="speaker"
 
 #BluetoothKopfhoerer
-ENABLED_DEV_BT_1 = True
-AUTOCONNECT_DEV_BT_1 = False
-NAME_DEV_BT_1 = "braune box"
-ALSA_DEV_BT_1 = "bt_dev_1"
-MAC_DEV_BT_1 = "69:40:CF:81:94:75"
-#"69:40:CF:81:94:75"
-
-ENABLED_DEV_BT_2 = False
-AUTOCONNECT_DEV_BT_2 = False
-NAME_DEV_BT_2 = "Jabra Evolve 65"
-ALSA_DEV_BT_2 = "bt_dev_2"
-MAC_DEV_BT_2 = "50:C2:ED:0D:4B:8D"
+BLUETOOTH_ENABLED = True
+BLUETOOTH_AUTOCONNECT = False
 
 INTPIN=2
 
