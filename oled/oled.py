@@ -66,6 +66,7 @@ import windows.ende
 import windows.firewall
 import windows.download as wdownload
 import windows.lock as wlock
+import integrations.bluetooth as bluetooth
 
 #Systemd exit
 def gracefulexit(signum, frame):
@@ -111,6 +112,8 @@ def main():
         print ("Using pyGameInput")
         mypygame = pygameInput(loop, turn_callback, push_callback,windowmanager)
 
+    objbluetooth = bluetooth.BluetoothOutput()
+
     #Import all window classes and generate objects of them
     loadedwins = []
     idlescreen = windows.idle.Idle(windowmanager, loop, _nowplaying)
@@ -120,7 +123,7 @@ def main():
     loadedwins.append(playbackm)
     loadedwins.append(windows.mainmenu.Mainmenu(windowmanager,loop,"Hauptmenü"))
     loadedwins.append(windows.info.Infomenu(windowmanager,loop))
-    loadedwins.append(windows.headphone.Headphonemenu(windowmanager,loop,"Audioausgabe"))
+    loadedwins.append(windows.headphone.Headphonemenu(windowmanager,loop,objbluetooth,"Audioausgabe"))
     loadedwins.append(windows.playlistmenu.Playlistmenu(windowmanager, loop, musicmanager))
     loadedwins.append(windows.foldermenu.Foldermenu(windowmanager,loop))
     loadedwins.append(windows.folderinfo.FolderInfo(windowmanager, loop))
@@ -128,7 +131,7 @@ def main():
     loadedwins.append(windows.wlan.Wlanmenu(windowmanager, loop))
     loadedwins.append(shutdownscreen)
     loadedwins.append(windows.firewall.Firewallmenu(windowmanager,loop))
-    loadedwins.append(windows.start.Start(windowmanager, loop, mopidy))
+    loadedwins.append(windows.start.Start(windowmanager, loop, mopidy,objbluetooth))
     loadedwins.append(wdownload.DownloadMenu(windowmanager,loop))
     loadedwins.append(wlock.Lock(windowmanager,loop))
 

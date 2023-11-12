@@ -5,16 +5,15 @@ from luma.core.render import canvas
 from datetime import datetime
 
 import settings, colors, symbols
-
-import integrations.bluetooth as bluetooth
 from integrations.functions import get_battload_color
 from integrations.logging import *
 
 
 class Start(WindowBase):
 
-    def __init__(self, windowmanager,loop, mopidyconnection):
+    def __init__(self, windowmanager,loop, mopidyconnection,bluetooth):
         super().__init__(windowmanager, loop)
+        self.bluetooth = bluetooth
         self.mopidyconnection = mopidyconnection
         self.timeout = False
         self.startup = datetime.now()
@@ -23,22 +22,14 @@ class Start(WindowBase):
 
 
     def activate(self):
+        self.bluetooth.enable_dev_local()
 
-        if (settings.AUTOCONNECT_DEV_BT_1 and settings.ENABLED_DEV_BT_1):
-            self.set_busy("Verbinde...",symbols.SYMBOL_BLUETOOTH_OFF,settings.NAME_DEV_BT_1, busyrendertime = 5)
+        if (settings.BLUETOOTH_AUTOCONNECT):
+            self.set_busy("Verbinde...",symbols.SYMBOL_BLUETOOTH_OFF,self.bluetooth.selected_bt_name, busyrendertime = 5)
             self.busy = True
             self.renderbusy()
 
-            bluetooth.enable_dev_bt_1()
-
-
-        if (settings.AUTOCONNECT_DEV_BT_2 and settings.ENABLED_DEV_BT_2):
-            self.set_busy("Verbinde...",symbols.SYMBOL_BLUETOOTH_OFF,settings.NAME_DEV_BT_2, busyrendertime = 5)
-            self.busy = True
-            self.renderbusy()
-
-            bluetooth.enable_dev_bt_2() 
-
+            bluetooth.enable_dev_bt()
 
     def render(self):
         self.set_busy("Wird gestartet...")

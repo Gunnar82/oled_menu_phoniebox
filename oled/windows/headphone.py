@@ -2,9 +2,8 @@
 from ui.menubase import MenuBase
 from luma.core.render import canvas
 
-import settings, colors
+import settings, colors,symbols
 import os
-import integrations.bluetooth as bt
 from integrations.logging import *
 import time
 import asyncio
@@ -12,39 +11,48 @@ import asyncio
  
 class Headphonemenu(MenuBase):
 
-    def get_dev_status(self, first=False):
-        print ("updating device status")
-        self.bt1_status = bt.output_status(settings.ALSA_DEV_BT_1)
-        self.bt2_status = bt.output_status(settings.ALSA_DEV_BT_2)
-        self.local_status = bt.output_status(settings.ALSA_DEV_LOCAL)
 
-        if not first:
-            print (lDEBUG3,"bt1_status: %s"%(self.bt1_status))
-            self.descr[1] = [settings.NAME_DEV_BT_1 + " " + self.bt1_status, "\uf057" if not settings.ENABLED_DEV_BT_1 else "\uf293" if self.bt1_status == "enabled" else "\uf294"]
-            self.descr[2] = [settings.NAME_DEV_BT_2 + " " + self.bt2_status, "\uf057" if not settings.ENABLED_DEV_BT_2 else "\uf293" if self.bt2_status == "enabled" else "\uf294"]
-            self.descr[3] = [settings.ALSA_DEV_LOCAL + " " + self.local_status,"\uf028" if self.local_status == "enabled" else "\uf026"]
-
-
-    def __init__(self, windowmanager,loop,title):
+    def __init__(self, windowmanager,loop,bluetooth,title):
         super().__init__(windowmanager,loop,title)
-        self.get_dev_status(first=True)
-        self.descr.append([settings.NAME_DEV_BT_1 + " " + self.bt1_status, "\uf057" if not settings.ENABLED_DEV_BT_1 else "\uf293" if self.bt1_status == "enabled" else "\uf294"])
-        self.descr.append([settings.NAME_DEV_BT_2 + " " + self.bt2_status, "\uf057" if not settings.ENABLED_DEV_BT_2 else "\uf293" if self.bt2_status == "enabled" else "\uf294"])
-        self.descr.append([settings.ALSA_DEV_LOCAL + " " + self.local_status,"\uf028" if self.local_status == "enabled" else "\uf057"])
+        self.bluetooth = bluetooth
+        self.descr.append([settings.ALSA_DEV_LOCAL,"\uf028"])
+        self.descr.append(["BT: %s" %(self.bluetooth.selected_bt_name),symbols.SYMBOL_BLUETOOTH_ON  if self.bluetooth.output_status_bt() == "enabled" else symbols.SYMBOL_BLUETOOTH_OFF])
+        self.descr.append(["",""])
+
+
+        for device in self.bluetooth.all_bt_dev:
+            self.descr.append([device[1],symbols.SYMBOL_BLUETOOTH_OFF,device[0]])
+
+    def set_current_bt_name(self):
+        self.descr[2]=["BT: %s" %(self.bluetooth.selected_bt_name),symbols.SYMBOL_BLUETOOTH_ON  if self.bluetooth.output_status_bt() == "enabled" else symbols.SYMBOL_BLUETOOTH_OFF]
+
 
     def deactivate(self):
         print ("ende")
 
+    def activate (self):
+        self.set_current_bt_name()
+
+    def turn_callback(self,direction, key = None):
+        super().turn_callback(direction,key)
+        if self.counter == 3:
+            if direction > 0 or key in ['right','up','2', '4'] :
+                self.counter = 4
+            elif  direction < 0 or key in ['left','down','6','8']:
+                self.counter = 2
+
     async def push_handler(self):
         await asyncio.sleep(1)
         if self.counter == 1:
-            if settings.ENABLED_DEV_BT_1:
-                bt.enable_dev_bt_1()
+            self.bluetooth.enable_dev_local()
         elif self.counter == 2:
-            if settings.ENABLED_DEV_BT_2:
-                bt.enable_dev_bt_2()
+            if self.bluetooth.enable_dev_bt() != 0:
+                self.set_busy("Verbindungsfehler",symbols.SYMBOL_ERROR,self.bluetooth.selected_bt_name)
         elif self.counter == 3:
-            bt.enable_dev_local()
+            pass
+        else:
+            self.bluetooth.set_alsa_bluetooth_mac(self.descr[self.counter][2],self.descr[self.counter][0])
+            self.set_current_bt_name()
         time.sleep(2)
-        self.get_dev_status()
+
 
