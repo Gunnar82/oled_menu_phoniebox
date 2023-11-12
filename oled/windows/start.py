@@ -29,7 +29,7 @@ class Start(WindowBase):
             self.busy = True
             self.renderbusy()
 
-            bluetooth.enable_dev_bt()
+            self.bluetooth.enable_dev_bt()
 
     def render(self):
         self.set_busy("Wird gestartet...")
