@@ -47,7 +47,10 @@ class Headphonemenu(MenuBase):
             self.bluetooth.enable_dev_local()
         elif self.counter == 2:
             if self.bluetooth.enable_dev_bt() != 0:
-                self.set_busy("Verbindungsfehler",symbols.SYMBOL_ERROR,self.bluetooth.selected_bt_name)
+                self.busy = False
+                await asyncio.sleep(1)
+                self.set_busy ("Verbindungsfehler")
+                await asyncio.sleep(1)
         elif self.counter == 3:
             pass
         else:
