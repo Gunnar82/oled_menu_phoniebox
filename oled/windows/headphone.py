@@ -16,7 +16,7 @@ class Headphonemenu(MenuBase):
         super().__init__(windowmanager,loop,title)
         self.bluetooth = bluetooth
         self.descr.append([settings.ALSA_DEV_LOCAL,"\uf028"])
-        self.descr.append(["BT: %s" %(self.bluetooth.selected_bt_name),symbols.SYMBOL_BLUETOOTH_ON  if self.bluetooth.output_status_bt() == "enabled" else symbols.SYMBOL_BLUETOOTH_OFF])
+        self.descr.append(["",symbols.SYMBOL_HEADPHONE])
         self.descr.append(["",""])
 
 
@@ -24,7 +24,7 @@ class Headphonemenu(MenuBase):
             self.descr.append([device[1],symbols.SYMBOL_BLUETOOTH_OFF,device[0]])
 
     def set_current_bt_name(self):
-        self.descr[2]=["BT: %s" %(self.bluetooth.selected_bt_name),symbols.SYMBOL_BLUETOOTH_ON  if self.bluetooth.output_status_bt() == "enabled" else symbols.SYMBOL_BLUETOOTH_OFF]
+        self.descr[2][0]="BT: %s" %(self.bluetooth.selected_bt_name)
 
 
     def deactivate(self):
@@ -41,21 +41,20 @@ class Headphonemenu(MenuBase):
             elif  direction < 0 or key in ['left','down','6','8']:
                 self.counter = 2
 
+    #def push_callback(self,lp=False):
     async def push_handler(self):
         await asyncio.sleep(1)
         if self.counter == 1:
             self.bluetooth.enable_dev_local()
         elif self.counter == 2:
             if self.bluetooth.enable_dev_bt() != 0:
-                self.busy = False
-                await asyncio.sleep(1)
-                self.set_busy ("Verbindungsfehler")
+                self.set_busy ("Keine Verbindung!",symbols.SYMBOL_ERROR,self.bluetooth.selected_bt_name)
                 await asyncio.sleep(1)
         elif self.counter == 3:
             pass
         else:
             self.bluetooth.set_alsa_bluetooth_mac(self.descr[self.counter][2],self.descr[self.counter][0])
             self.set_current_bt_name()
-        time.sleep(2)
+        await asyncio.sleep(1)
 
 

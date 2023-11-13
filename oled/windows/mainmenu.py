@@ -16,7 +16,7 @@ class Mainmenu(MenuBase):
         self.descr.append([ "Hörspiele", symbols.SYMBOL_HOERSPIEL, "foldermenu" ])
         self.descr.append([ "Internetradio", symbols.SYMBOL_RADIO, "foldermenu" ])
         self.descr.append([ "USB-Stick", symbols.SYMBOL_USB,"foldermenu" ])
-        self.descr.append([ "Audioausgabe", "\uf025", "headphonemenu" ])
+        self.descr.append([ "Audioausgabe", symbols.SYMBOL_HEADPHONE, "headphonemenu" ])
         self.descr.append([ "Ausschaltmenü", "\uf011", "shutdownmenu"])
         self.descr.append([ "Betriebsinfos", "\uf022", "infomenu" ])
         self.descr.append([ "WLAN / Hotspot", "\uf09e", "wlanmenu" ])

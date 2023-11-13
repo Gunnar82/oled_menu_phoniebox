@@ -61,9 +61,9 @@ class DownloadMenu(ListBase):
                 self.cwd = self.basecwd
                 r = requests.get(self.website)
                 if r.status_code != 200:
-                    raise "Keine Verbindung, Code: %d" %(r.status_code)
+                    raise Exception( "Keine Verbindung, Code: %d" % (r.status_code))
             elif r.status_code != 200:
-                raise "Keine Verbindung, Code: %d" %(r.status_code)
+                raise Exception("Keine Verbindung, Code: %d" % (r.status_code))
         except requests.exceptions.RequestException as error:
             self.set_busy("Verbindungsfehler",symbols.SYMBOL_NOCLOUD,self.website,set_window_to="idle")
             return

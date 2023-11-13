@@ -7,6 +7,7 @@ import asyncio
 from PIL import ImageFont
 from luma.core.render import canvas
 
+from datetime import datetime
 
 busyfont = ImageFont.truetype(settings.FONT_TEXT, size=settings.WINDOWBASE_BUSYFONT)
 busyfaicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.WINDOWBASE_BUSYFAICONS)
@@ -18,6 +19,7 @@ class WindowBase():
     fontheading = ImageFont.truetype(settings.FONT_TEXT, size=settings.WINDOWBASE_HEADING_SIZE)
 
     def __init__(self, windowmanager,loop):
+        self.start_busyrendertime = datetime.now()
         self.loop = loop
         self.windowtitle = "untitled"
         self.windowmanager = windowmanager
@@ -29,7 +31,6 @@ class WindowBase():
         self.contrasthandle = True
         self.timeoutwindow="idle"
         self.window_on_back = "mainmenu"
-        self.busy = False
         self.busysymbol = symbols.SYMBOL_SANDCLOCK
         self.busytext1 = settings.PLEASE_WAIT
         self.busytext2 = ""
@@ -40,6 +41,7 @@ class WindowBase():
 
 
     def set_busy(self,busytext1,busysymbol=symbols.SYMBOL_SANDCLOCK,busytext2="", busyrendertime=3,busytext3="",set_window_to="none"):
+
         self.busytext1 = busytext1
         self.busysymbol = busysymbol
 
@@ -54,6 +56,8 @@ class WindowBase():
             self.busytext2 = busytext2
 
         self.busyrendertime = busyrendertime
+
+        self.start_busyrendertime = datetime.now()
         self.busy = True
 
         if set_window_to != "none":

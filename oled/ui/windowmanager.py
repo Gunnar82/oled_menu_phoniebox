@@ -71,7 +71,10 @@ class WindowManager():
         self.device.hide()
 
     async def _render(self):
+
         while self.loop.is_running():
+
+
             if ((datetime.now() - settings.lastinput).total_seconds() >= settings.MENU_TIMEOUT) and self.activewindow.timeout:
                 self.set_window(self.activewindow.timeoutwindow)
 
@@ -125,27 +128,25 @@ class WindowManager():
                         log(lDEBUG3,"busy State of %s:  %s" %(self.activewindow.windowtitle,self.activewindow.busy))
                         if (datetime.now() - self.lastrfidate).total_seconds() < 3:
                             log(lDEBUG,"render rfid symbol")
-                            self.rendered_busy = True
                             self.activewindow.busysymbol = symbols.SYMBOL_CARD_READ
-                            self.rendertime = self.activewindow.busyrendertime
+                            #self.rendertime = self.activewindow.busyrendertime
                             self.activewindow.renderbusy()
                             self.activewindow.busysymbol = symbols.SYMBOL_SANDCLOCK
 
-                        elif self.activewindow.busy or (settings.callback_active and self.activewindow.changerender):
-                            self.rendered_busy = True
-                            self.rendertime = self.activewindow.busyrendertime
-                            self.activewindow.renderbusy()
-                            log(lDEBUG2,"rendering busy of window %s, busyrendertime: %d" %(self.activewindow.windowtitle,self.rendertime))
+                        elif ((datetime.now() - self.activewindow.start_busyrendertime).total_seconds() < self.activewindow.busyrendertime and self.activewindow.busy) or (settings.callback_active and self.activewindow.changerender):
+
+                                self.activewindow.renderbusy()
+                                log(lDEBUG2,"rendering busy of window %s, busyrendertime: %d" %(self.activewindow.windowtitle,self.rendertime))
+                                await asyncio.sleep(self._RENDERTIME)
                         else:
                             log(lDEBUG3,"general rendering")
-                            self.rendered_busy = False
                             self.activewindow.render()
                     except Exception as error:
                         log(lERROR,error)
 
             iTimerCounter = 0 
 
-            while (iTimerCounter < self.rendertime / self._RENDERTIME or (self.activewindow.busy and self.rendered_busy) and settings.screenpower):
+            while (iTimerCounter < self.rendertime / self._RENDERTIME  and settings.screenpower):
                 log(lDEBUG2,"renderloop: %d, %d "%(iTimerCounter+1, self.rendertime / self._RENDERTIME))
                 iTimerCounter += 1
                 await asyncio.sleep(self._RENDERTIME)
