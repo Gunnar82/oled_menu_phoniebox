@@ -70,7 +70,7 @@ class BluetoothOutput():
         os.system ("sudo chown root /etc/asound.conf")
 
         os.system ("sudo systemctl restart mpd")
-
+        os.system ("sudo systemctl restart phoniebox-bt-buttons.service")
         self.selected_bt_mac, self.selected_bt_name = self.read_dev_bt_from_file()
 
 
