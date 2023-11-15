@@ -15,7 +15,7 @@ from integrations.functions import get_size
 
 import config.online as cfg_online
 import config.file_folder as cfg_file_folder
-
+import config.services as cfg_services
 
 class UpdateMenu(MenuBase):
     def __init__(self, windowmanager,loop,title):
@@ -26,8 +26,8 @@ class UpdateMenu(MenuBase):
         self.processing = False
         self.totalsize = 0
         self.descr.append(["Update Radio","\uf019"])
-        self.descr.append(["Restart nginx","\uf01e","nginx"])
-        self.descr.append(["Restart lighttpd","\uf01e","lighhttpd"])
+        for srv in cfg_services.RESTART_LIST:
+            self.descr.append(["Restart %s" % (srv),"\uf01e",srv])
 
     def activate(self):
         self.cmd = ""

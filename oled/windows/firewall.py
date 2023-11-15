@@ -9,6 +9,9 @@ import os
 import asyncio
 import re
 
+import config.services as cfg_services
+
+
 class Firewallmenu(MenuBase):
 
     def __init__(self, windowmanager,loop):
@@ -24,10 +27,10 @@ class Firewallmenu(MenuBase):
     async def push_handler(self):
         await asyncio.sleep(1)
         if self.counter == 2:
-            for srv in settings.ufw_services_allow:
+            for srv in cfg_services.ufw_services_allow:
                 os.system("sudo ufw deny %s" % (srv))
         elif self.counter == 3:
-            for srv in settings.ufw_services_allow:
+            for srv in cfg_services.ufw_services_allow:
                 os.system("sudo ufw allow %s" % (srv))
         await asyncio.sleep(5)
 
