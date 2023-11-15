@@ -67,7 +67,7 @@ import windows.ende
 import windows.firewall
 import windows.download as wdownload
 import windows.lock as wlock
-import windows.update as wupdate
+import windows.system as wsystem
 import integrations.bluetooth as bluetooth
 
 #Systemd exit
@@ -136,7 +136,7 @@ def main():
     loadedwins.append(windows.start.Start(windowmanager, loop, mopidy,objbluetooth))
     loadedwins.append(wdownload.DownloadMenu(windowmanager,loop))
     loadedwins.append(wlock.Lock(windowmanager,loop))
-    loadedwins.append(wupdate.UpdateMenu(windowmanager,loop,"Systemeinstellungen"))
+    loadedwins.append(wsystem.SystemMenu(windowmanager,loop,"Systemeinstellungen"))
     for window in loadedwins:
         windowmanager.add_window(window.__class__.__name__.lower(), window)
 

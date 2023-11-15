@@ -25,7 +25,7 @@ class Mainmenu(MenuBase):
         self.descr.append([ "Firewall", "\uf1cb", "firewallmenu" ])
         self.descr.append([ "Download", symbols.SYMBOL_CLOUD, "downloadmenu"])
         self.descr.append([ "Tastensperre", symbols.SYMBOL_LOCKED, "lock" ])
-        self.descr.append([ "Systemmenu", "\uf013", "updatemenu" ])
+        self.descr.append([ "Systemmenu", "\uf013", "systemmenu" ])
 
         self.window_on_back = "idle"
 

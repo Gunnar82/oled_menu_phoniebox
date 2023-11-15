@@ -17,7 +17,7 @@ import config.online as cfg_online
 import config.file_folder as cfg_file_folder
 import config.services as cfg_services
 
-class UpdateMenu(MenuBase):
+class SystemMenu(MenuBase):
     def __init__(self, windowmanager,loop,title):
         super().__init__(windowmanager, loop, title)
         self.loop = loop
@@ -25,7 +25,7 @@ class UpdateMenu(MenuBase):
         self.timeout = False
         self.processing = False
         self.totalsize = 0
-        self.descr.append(["Update Radio","\uf019"])
+        self.descr.append(["Update Radiosender","\uf019"])
         for srv in cfg_services.RESTART_LIST:
             self.descr.append(["Restart %s" % (srv),"\uf01e",srv])
 
