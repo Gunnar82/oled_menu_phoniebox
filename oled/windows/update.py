@@ -50,13 +50,13 @@ class UpdateMenu(MenuBase):
         if self.counter == 1:
             if cfg_online.UPDATE_RADIO:
                 self.cmd = "wget  --no-verbose --no-check-certificate  -r %s  --no-parent -A txt -nH -P %s/" %(cfg_online.ONLINE_RADIO_URL,cfg_file_folder.AUDIO_BASEPATH_BASE)
-                self.set_busy("Aktualisiere Radiostationen",self.descr[self.counter][1],busyrendertime=10)
+                self.set_busy("Aktualisiere Radiostationen",self.descr[self.counter][1],busyrendertime=5)
                 self.loop.run_in_executor(None,self.exec_command)
             else:
                 self.set_busy("Online Updates deaktiviert")
         else:
             self.cmd = "sudo systemctl restart %s" % (self.descr[self.counter][2])
-            self.set_busy(self.descr[self.counter][0],self.descr[self.counter][1],busyrendertime=10)
+            self.set_busy(self.descr[self.counter][0],self.descr[self.counter][1],busyrendertime=5)
             self.loop.run_in_executor(None,self.exec_command)
 
 

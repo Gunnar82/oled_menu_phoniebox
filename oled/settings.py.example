@@ -14,15 +14,10 @@
 # INPUTS = ["keypad4x4", "statusled", "x728"]
 INPUTS=["gpicase"]
 
-ufw_services_allow = ["ssh","http","microsoft-ds"]
 use_eyed3 = False
 
 LOGLEVEL=1
 
-ONLINEURL = "http://localhost:8081/gunnar/"
-
-ONLINE_RADIO_URL = "http://localhost:8081/Radio/"
-UPDATE_RADIO = True
 ###DISPLAY_SETTINGS i2c
 DISPLAY_TYPE = "spi" # or "i2c"
 DISPLAY_DRIVER = "emulated"
