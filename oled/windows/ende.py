@@ -24,7 +24,7 @@ class Ende(WindowBase):
     def activate(self):
         self.power_timer = settings.job_t >= 0
         
-        self.set_busy("wird getestet","\uf011",settings.shutdown_reason)
+        self.set_busy("System wird","\uf011",settings.shutdown_reason)
         self.renderbusy()
 
 
