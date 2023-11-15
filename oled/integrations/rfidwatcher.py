@@ -1,7 +1,10 @@
 import time
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-import settings, file_folder
+import settings
+
+import config.file_folder as cfg_file_folder
+
 from datetime import datetime
 
 rfid_watcher_changed = False
@@ -10,7 +13,7 @@ class MyHandler(FileSystemEventHandler):
 
     def on_modified(self, event):
         global rfid_watcher_changed
-        if event.src_path == file_folder.LATEST_RFID:
+        if event.src_path == cfg_file_folder.LATEST_RFID:
             rfid_watcher_changed = True
         settings.lastinput = datetime.now()
 

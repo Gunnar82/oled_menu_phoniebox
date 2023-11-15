@@ -12,7 +12,8 @@ import integrations.bluetooth
 import integrations.functions as fn
 import integrations.playout as playout
 
-import settings, file_folder
+import settings
+import config.file_folder as cfg_file_folder
 
 ######
 from datetime import datetime
@@ -23,7 +24,7 @@ settings.lastinput = datetime.now()
 settings.job_t = -1
 settings.job_i = -1
 settings.job_s = -1
-settings.audio_basepath = file_folder.AUDIO_BASEPATH_MUSIC
+settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_MUSIC
 settings.currentfolder = settings.audio_basepath
 settings.current_selectedfolder=settings.currentfolder
 settings.battcapacity = -1
@@ -66,6 +67,7 @@ import windows.ende
 import windows.firewall
 import windows.download as wdownload
 import windows.lock as wlock
+import windows.update as wupdate
 import integrations.bluetooth as bluetooth
 
 #Systemd exit
@@ -134,7 +136,7 @@ def main():
     loadedwins.append(windows.start.Start(windowmanager, loop, mopidy,objbluetooth))
     loadedwins.append(wdownload.DownloadMenu(windowmanager,loop))
     loadedwins.append(wlock.Lock(windowmanager,loop))
-
+    loadedwins.append(wupdate.UpdateMenu(windowmanager,loop,"Update"))
     for window in loadedwins:
         windowmanager.add_window(window.__class__.__name__.lower(), window)
 

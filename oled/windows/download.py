@@ -1,5 +1,5 @@
 """ Playlist menu """
-import settings,colors,file_folder,symbols
+import settings,colors,symbols
 
 import time
 import requests
@@ -13,7 +13,8 @@ import time
 import integrations.playout as playout
 from integrations.functions import get_size
 
-
+import config.online as cfg_online
+import config.file_folder as cfg_file_folder
 
 
 class DownloadMenu(ListBase):
@@ -31,33 +32,33 @@ class DownloadMenu(ListBase):
         self.items = []
         self.selector = False
         self.download = False
-        self.website = settings.ONLINEURL
+        self.website = cfg_online.ONLINEURL
         self.set_busy("Verbinde Online",symbols.SYMBOL_CLOUD,self.website,busyrendertime=5)
         self.renderbusy()
         time.sleep(2)
 
-        self.baseurl = self.website[:settings.ONLINEURL.find('/',9)]
-        self.basecwd= self.website[settings.ONLINEURL.find('/',9):]
+        self.baseurl = self.website[:cfg_online.ONLINEURL.find('/',9)]
+        self.basecwd= self.website[cfg_online.ONLINEURL.find('/',9):]
 
         try:
-            with open(file_folder.FILE_LAST_ONLINE,"r") as f:
+            with open(cfg_file_folder.FILE_LAST_ONLINE,"r") as f:
                 self.website = f.read()
                 self.cwd = self.website[len(self.baseurl):]
-            if not self.website.startswith(settings.ONLINEURL): raise "Website geändert"
+            if not self.website.startswith(cfg_online.ONLINEURL): raise "Website geändert"
 
         except Exception as error:
             self.set_busy("Dateifehler",symbols.SYMBOL_NOCLOUD,str(error))
             time.sleep(3)
 
             self.position = -1
-            self.website = settings.ONLINEURL
+            self.website = cfg_online.ONLINEURL
             self.cwd = self.basecwd
 
         try:
             r = requests.get(self.website)
             if r.status_code == 404:
                 print("URL nicht gefunden")
-                self.website = settings.ONLINEURL
+                self.website = cfg_online.ONLINEURL
                 self.cwd = self.basecwd
                 r = requests.get(self.website)
                 if r.status_code != 200:
@@ -96,11 +97,11 @@ class DownloadMenu(ListBase):
                 except Exception as error:
                     pass
 
-                current_folder = os.path.join(file_folder.AUDIO_BASEPATH_ONLINE,self.cwd)
+                current_folder = os.path.join(cfg_file_folder.AUDIO_BASEPATH_ONLINE,self.cwd)
                 current_folder = current_folder[len(self.basecwd):]
                 selected_folder = os.path.join(current_folder,listobj.name)
-                local_folder = os.path.join(file_folder.AUDIO_BASEPATH_BASE,selected_folder)
-                selected_folder = os.path.join(file_folder.AUDIO_BASEPATH_ONLINE,selected_folder)
+                local_folder = os.path.join(cfg_file_folder.AUDIO_BASEPATH_BASE,selected_folder)
+                selected_folder = os.path.join(cfg_file_folder.AUDIO_BASEPATH_ONLINE,selected_folder)
 
                 try:
                     if (os.path.exists(local_folder)): liste.append('%s \u2302' % (listobj.name.strip('/')))
@@ -148,7 +149,7 @@ class DownloadMenu(ListBase):
         try:
             self.downloading = True
             settings.callback_active = True
-            destdir = os.path.join(file_folder.AUDIO_BASEPATH_BASE,self.url[len(settings.ONLINEURL):])
+            destdir = os.path.join(cfg_file_folder.AUDIO_BASEPATH_BASE,self.url[len(cfg_online.ONLINEURL):])
 
             if not os.path.exists(destdir): os.makedirs(destdir)
 
@@ -184,10 +185,10 @@ class DownloadMenu(ListBase):
         try:
             if self.selector:
                 if self.position == 0:
-                    directory = os.path.join(file_folder.AUDIO_BASEPATH_ONLINE,self.cwd[len(self.basecwd):])
+                    directory = os.path.join(cfg_file_folder.AUDIO_BASEPATH_ONLINE,self.cwd[len(self.basecwd):])
 
                     try:
-                        with open(file_folder.FILE_LAST_ONLINE,"w") as f:
+                        with open(cfg_file_folder.FILE_LAST_ONLINE,"w") as f:
                             f.write(self.url)
                     except Exception as error:
                         print (error)
@@ -199,7 +200,7 @@ class DownloadMenu(ListBase):
                             for item in self.items:
                                 additem = self.baseurl + requests.utils.quote(self.cwd + self.stripitem(item)) + '\n'
                                 ofile.write(additem)
-                        foldername = directory[len(file_folder.AUDIO_BASEPATH_BASE):]
+                        foldername = directory[len(cfg_file_folder.AUDIO_BASEPATH_BASE):]
                         playout.pc_playfolder(foldername)
                         self.windowmanager.set_window("idle")
                     except Exception as error:
@@ -211,7 +212,7 @@ class DownloadMenu(ListBase):
                 elif self.position == -1 and self.selector:
                     self.selector = False
                 elif self.position == 3:
-                    destdir = file_folder.AUDIO_BASEPATH_BASE + '/' + self.url[len(settings.ONLINEURL):]
+                    destdir = cfg_file_folder.AUDIO_BASEPATH_BASE + '/' + self.url[len(cfg_online.ONLINEURL):]
                     if not os.path.exists(destdir):
                         self.set_busy("lokal nicht gefunden",busysymbol="\uf059")
                     else:

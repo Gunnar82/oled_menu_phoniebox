@@ -1,7 +1,9 @@
 import time
 from datetime import datetime
 
-import settings, file_folder
+import settings
+
+import config.file_folder as cfg_file_folder
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -14,7 +16,7 @@ class MyHandler(FileSystemEventHandler):
 
     def on_modified(self, event):
         log(lDEBUG2,"event on: %s" %(event.src_path))
-        if event.src_path == file_folder.LATEST_PLAYED_FOLDER:
+        if event.src_path == cfg_file_folder.LATEST_PLAYED_FOLDER:
             log(lDEBUG,"event on LatestPlayed")
             try:
                 played = open(event.src_path, 'r')
@@ -23,11 +25,11 @@ class MyHandler(FileSystemEventHandler):
                 log(lDEBUG,"LastPlayed: %s" %(line))
 
                 if line.startswith("/Musik") or line.startswith("Musik"):
-                    outfile = file_folder.FILE_LAST_MUSIC
+                    outfile = cfg_file_folder.FILE_LAST_MUSIC
                 elif line.startswith("/Radio" or line.startswith("Radio")):
-                    outfile = file_folder.FILE_LAST_RADIO
+                    outfile = cfg_file_folder.FILE_LAST_RADIO
                 elif line.startswith("/Hörspiel")or line.startswith("Hörspiel"):
-                    outfile = file_folder.FILE_LAST_HOERBUCH
+                    outfile = cfg_file_folder.FILE_LAST_HOERBUCH
 
                 log(lDEBUG,"LastPlayed: outfile: %s" % (outfile))
 

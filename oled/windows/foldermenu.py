@@ -1,10 +1,12 @@
 """ Playlist menu """
 from ui.listbase import ListBase
-import settings, colors, file_folder, symbols
+import settings, colors, symbols
 import os 
 import integrations.functions as functions
 import integrations.playout as playout
 import asyncio
+
+import config.file_folder as cfg_file_folder
 
 from integrations.logging import *
 
@@ -28,7 +30,7 @@ class Foldermenu(ListBase):
         self.on_key_left()
 
     async def playfolder(self,folder):
-        foldername = folder[len(file_folder.AUDIO_BASEPATH_BASE):]
+        foldername = folder[len(cfg_file_folder.AUDIO_BASEPATH_BASE):]
         await asyncio.sleep(1)
         playout.pc_playfolder(foldername)
         self.windowmanager.set_window("idle")

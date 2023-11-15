@@ -2,8 +2,9 @@
 import datetime
 import asyncio
 from ui.mainwindow import MainWindow
-import settings, colors, file_folder, symbols
+import settings, colors, symbols
 
+import config.file_folder as cfg_file_folder
 from luma.core.render import canvas
 from PIL import ImageFont
 import os
@@ -181,16 +182,16 @@ class Idle(MainWindow):
                     log (lDEBUG,"idle: next")
                     playout.pc_next()
             elif key == 'A':
-                settings.audio_basepath = file_folder.AUDIO_BASEPATH_MUSIC
-                settings.currentfolder = get_folder_from_file(file_folder.FILE_LAST_MUSIC)
+                settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_MUSIC
+                settings.currentfolder = get_folder_from_file(cfg_file_folder.FILE_LAST_MUSIC)
                 self.windowmanager.set_window("foldermenu")
             elif key == 'B':
-                settings.audio_basepath = file_folder.AUDIO_BASEPATH_HOERBUCH 
-                settings.currentfolder = get_folder_from_file(file_folder.FILE_LAST_HOERBUCH)
+                settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_HOERBUCH 
+                settings.currentfolder = get_folder_from_file(cfg_file_folder.FILE_LAST_HOERBUCH)
                 self.windowmanager.set_window("foldermenu")
             elif key == 'C':
-                settings.audio_basepath = file_folder.AUDIO_BASEPATH_RADIO
-                settings.currentfolder = get_folder_from_file(file_folder.FILE_LAST_RADIO)
+                settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_RADIO
+                settings.currentfolder = get_folder_from_file(cfg_file_folder.FILE_LAST_RADIO)
                 self.windowmanager.set_window("foldermenu")
             elif key =='D':
                 self.windowmanager.set_window("shutdownmenu")
@@ -207,11 +208,11 @@ class Idle(MainWindow):
             elif key in ['1', '3', '7']:
 
                 if key == '1':
-                    what = file_folder.FILE_LAST_HOERBUCH
+                    what = cfg_file_folder.FILE_LAST_HOERBUCH
                 elif key == '3':
-                    what = file_folder.FILE_LAST_RADIO
+                    what = cfg_file_folder.FILE_LAST_RADIO
                 elif key == '7':
-                    what = file_folder.FILE_LAST_MUSIC
+                    what = cfg_file_folder.FILE_LAST_MUSIC
 
                 if playout.checkfolder(what) != 0:
                     self.busysymbol = symbols.SYMBOL_ERROR
