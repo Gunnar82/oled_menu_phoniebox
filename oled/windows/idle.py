@@ -204,10 +204,12 @@ class Idle(MainWindow):
                 playout.pc_mute()
             elif key == 'start':
                 playout.pc_toggle()
+            elif key == 'hl':
+                self.windowmanager.windows["downloadmenu"].direct_play_last_folder = True
+                self.windowmanager.set_window("downloadmenu")
 
-            elif key in ['1', '3', '7']:
-
-                if key == '1':
+            elif key in ['1', '3', '7','hr']:
+                if key == '1' or key == 'hr':
                     what = cfg_file_folder.FILE_LAST_HOERBUCH
                 elif key == '3':
                     what = cfg_file_folder.FILE_LAST_RADIO
@@ -215,9 +217,9 @@ class Idle(MainWindow):
                     what = cfg_file_folder.FILE_LAST_MUSIC
 
                 if playout.checkfolder(what) != 0:
-                    self.busysymbol = symbols.SYMBOL_ERROR
-                    time.sleep(5)
+                    self.set_busy("Fehler",symbols.SYMBOL_ERROR,what)
                 else:
+                    self.set_busy("Starte",symbols.SYMBOL_PASS,what)
                     playout.playlast_checked(what)
         else:
             if (direction > 0):

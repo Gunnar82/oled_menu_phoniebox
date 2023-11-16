@@ -20,6 +20,8 @@ import config.file_folder as cfg_file_folder
 class DownloadMenu(ListBase):
     def __init__(self, windowmanager,loop):
         super().__init__(windowmanager, loop, "Download")
+        self.direct_play_last_folder = False
+
         self.window_on_back = "idle"
         self.timeout = False
         self.contrasthandle = False
@@ -72,7 +74,14 @@ class DownloadMenu(ListBase):
             self.set_busy("HTTP-Fehler",symbols.SYMBOL_NOCLOUD,str(error),set_window_to="idle")
             return
 
-        self.on_key_left()
+        if self.direct_play_last_folder:
+            self.direct_play_last_folder = False
+            self.url = self.baseurl + self.cwd
+            folders, self.items = self.get_content()
+            if not folders:
+                self.playfolder()
+        else:
+            self.on_key_left()
 
     def get_content(self):
         liste = []
@@ -83,8 +92,8 @@ class DownloadMenu(ListBase):
 
         try:
             url = self.baseurl + requests.utils.quote(self.cwd)
-            temp, listing = htmllistparse.fetch_listing(url, timeout=30)
 
+            temp, listing = htmllistparse.fetch_listing(url, timeout=30)
             self.totalsize = 0
 
             for listobj in listing:
@@ -180,31 +189,36 @@ class DownloadMenu(ListBase):
             settings.callback_active = False
 
 
+    def playfolder(self):
+
+        directory = os.path.join(cfg_file_folder.AUDIO_BASEPATH_ONLINE,self.cwd[len(self.basecwd):])
+
+        try:
+            with open(cfg_file_folder.FILE_LAST_ONLINE,"w") as f:
+                f.write(self.url)
+        except Exception as error:
+            print (error)
+        if not os.path.exists(directory): os.makedirs(directory)
+
+        try:
+            filename = os.path.join(directory,"livestream.txt")
+            with open(filename,"w") as ofile:
+                for item in self.items:
+                    additem = self.baseurl + requests.utils.quote(self.cwd + self.stripitem(item)) + '\n'
+                    ofile.write(additem)
+            foldername = directory[len(cfg_file_folder.AUDIO_BASEPATH_BASE):]
+            playout.pc_playfolder(foldername)
+            self.windowmanager.set_window("idle")
+        except Exception as error:
+            print (error)
+
+
     async def push_handler(self,button = '*'):
         await asyncio.sleep(1)
         try:
             if self.selector:
                 if self.position == 0:
-                    directory = os.path.join(cfg_file_folder.AUDIO_BASEPATH_ONLINE,self.cwd[len(self.basecwd):])
-
-                    try:
-                        with open(cfg_file_folder.FILE_LAST_ONLINE,"w") as f:
-                            f.write(self.url)
-                    except Exception as error:
-                        print (error)
-                    if not os.path.exists(directory): os.makedirs(directory)
-
-                    try:
-                        filename = os.path.join(directory,"livestream.txt")
-                        with open(filename,"w") as ofile:
-                            for item in self.items:
-                                additem = self.baseurl + requests.utils.quote(self.cwd + self.stripitem(item)) + '\n'
-                                ofile.write(additem)
-                        foldername = directory[len(cfg_file_folder.AUDIO_BASEPATH_BASE):]
-                        playout.pc_playfolder(foldername)
-                        self.windowmanager.set_window("idle")
-                    except Exception as error:
-                        print (error)
+                    self.playfolder()
                 elif self.position == 1:
                     self.loop.run_in_executor(None, self.downloadfolder)
                 elif self.position == 2 and self.selector:
