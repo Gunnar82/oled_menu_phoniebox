@@ -44,3 +44,4 @@ settings.IDLE_LINE_HEIGHT = 24
 ### mainwindow
 
 settings.MAINWINDOW_LINEPOS_Y = 215
+settings.MAINWINDOW_OUTPUTSYMBOL_X = 25

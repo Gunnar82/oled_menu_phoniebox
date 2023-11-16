@@ -8,9 +8,12 @@ import asyncio
 from  integrations.functions import get_timeouts
 import datetime
 
+import symbols
+
 class nowplaying:
     filename = ""
     oldtitle = ""
+    output_symbol = symbols.SYMBOL_SPEAKER
 
     async def _generatenowplaying(self):
         try:
@@ -88,12 +91,22 @@ class nowplaying:
 
             await asyncio.sleep(20)
 
-    def __init__(self,loop,musicmanager,windowmanager):
+
+    async def _output(self):
+
+        while self.loop.is_running():
+            self.output_symbol = symbols.SYMBOL_SPEAKER if  self.bluetooth.output_status(settings.ALSA_DEV_LOCAL) == "enabled" else symbols.SYMBOL_HEADPHONE
+            await asyncio.sleep(5)
+
+
+    def __init__(self,loop,musicmanager,windowmanager,bluetooth):
+        self.bluetooth = bluetooth
         self.loop = loop
         self.musicmanager = musicmanager
         self.windowmanager = windowmanager
         self.loop.create_task(self._generatenowplaying())
         self.loop.create_task(self._linuxjob())
+        self.loop.create_task(self._output())
         self._playingname = ""
         self._playingtitle = ""
         self._playingalbum = ""

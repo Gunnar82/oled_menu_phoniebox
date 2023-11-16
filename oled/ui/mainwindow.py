@@ -46,7 +46,7 @@ class MainWindow(WindowBase):
         draw.rectangle((0,lineposy,settings.DISPLAY_WIDTH,lineposy),outline="white",fill="white")
 
         #Trennleisten senkrecht3
-        xpos1 = int(settings.DISPLAY_WIDTH/6)
+        xpos1 = int(1.2*settings.DISPLAY_WIDTH/6)
         draw.rectangle((xpos1,lineposy,xpos1,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
         xpos2 = int(3*settings.DISPLAY_WIDTH/6)
         draw.rectangle((xpos2,lineposy,xpos2,settings.DISPLAY_HEIGHT -4),outline="white",fill="white")
@@ -75,6 +75,7 @@ class MainWindow(WindowBase):
 
         #volume
         draw.text((1, lineposy + 2 ), str(self.nowplaying._volume), font=self.fontsmall, fill="white")
+        draw.text((settings.MAINWINDOW_OUTPUTSYMBOL_X, lineposy + 2 ), str(self.nowplaying.output_symbol), font=self.faicons, fill="white")
 
         #Zeitanzeige
         try:

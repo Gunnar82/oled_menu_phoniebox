@@ -78,6 +78,10 @@ signal.signal(signal.SIGTERM, gracefulexit)
 def main():
     loop = asyncio.get_event_loop()
 
+
+    objbluetooth = bluetooth.BluetoothOutput()
+
+
     #shutdown reason default
     settings.shutdown_reason = settings.SR1
 
@@ -97,7 +101,7 @@ def main():
     ###processing nowplaying
     import integrations.nowplaying as nowplaying
 
-    _nowplaying = nowplaying.nowplaying(loop,musicmanager,windowmanager)
+    _nowplaying = nowplaying.nowplaying(loop,musicmanager,windowmanager,objbluetooth)
 
     #Rotary encoder setup
     def turn_callback(direction,_key=False):
@@ -113,8 +117,6 @@ def main():
 
         print ("Using pyGameInput")
         mypygame = pygameInput(loop, turn_callback, push_callback,windowmanager)
-
-    objbluetooth = bluetooth.BluetoothOutput()
 
     #Import all window classes and generate objects of them
     loadedwins = []
