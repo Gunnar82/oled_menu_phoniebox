@@ -4,8 +4,9 @@ from luma.core.render import canvas
 from PIL import ImageFont
 from datetime import datetime
 
-import settings, colors
+import settings
 
+import config.colors as colors
 import config.symbols as symbols
 
 

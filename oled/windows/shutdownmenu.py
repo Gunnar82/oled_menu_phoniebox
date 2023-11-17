@@ -2,8 +2,11 @@
 from ui.menubase import MenuBase
 from luma.core.render import canvas
 
-import settings, colors
+import settings
+
+import config.colors as colors
 import config.file_folder as cfg_file_folder
+
 import os
 import integrations.playout as playout
 import asyncio

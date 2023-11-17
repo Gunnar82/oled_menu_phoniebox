@@ -1,5 +1,7 @@
 """ Playlist menu """
-import settings, colors
+import settings
+
+import config.colors as colors
 import config.file_folder as cfg_file_folder
 
 import integrations.playout as playout

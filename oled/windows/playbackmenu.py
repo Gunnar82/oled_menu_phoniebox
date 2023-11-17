@@ -4,7 +4,10 @@ import asyncio
 from ui.windowbase import WindowBase
 from luma.core.render import canvas
 from PIL import ImageFont
-import settings, colors
+import settings
+
+import config.colors as colors
+
 import os
 
 from ui.mainwindow import MainWindow

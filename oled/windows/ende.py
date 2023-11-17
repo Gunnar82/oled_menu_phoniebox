@@ -2,7 +2,9 @@
 from ui.windowbase import WindowBase
 from luma.core.render import canvas
 from PIL import ImageFont
-import settings, colors
+import settings
+
+import config.colors as colors
 
 from datetime import datetime
 

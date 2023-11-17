@@ -2,8 +2,9 @@
 from ui.menubase import MenuBase
 from luma.core.render import canvas
 
-import settings, colors
+import settings
 
+import config.colors as colors
 import config.symbols as symbols
 
 import os

@@ -2,7 +2,10 @@
 from ui.menubase import MenuBase
 from luma.core.render import canvas
 
-import settings, colors
+import settings
+
+import config.colors as colors
+
 import socket
 import subprocess
 import os

@@ -1,7 +1,8 @@
 """ Playlist menu """
 from ui.listbase import ListBase
-import settings, colors
+import settings
 
+import config.colors as colors
 import config.symbols as symbols
 
 import os 

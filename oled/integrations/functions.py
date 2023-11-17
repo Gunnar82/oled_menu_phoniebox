@@ -1,8 +1,9 @@
 import os
 import subprocess, re
 import datetime
-import settings, colors
+import settings
 
+import config.colors as colors
 import config.symbols as symbols
 import config.file_folder as cfg_file_folder
 
