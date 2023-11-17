@@ -77,8 +77,6 @@ class Lock(WindowBase):
         if self.currentkey >= len(self.unlockcode):
              self.currentkey = 0 
              self.set_busy("Gerät entsperrt",symbols.SYMBOL_UNLOCKED,set_window_to="idle")
-
-
         else:
             self.genhint()
 

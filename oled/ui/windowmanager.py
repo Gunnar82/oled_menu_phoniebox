@@ -194,7 +194,7 @@ class WindowManager():
                 self.device.contrast(settings.CONTRAST_FULL)
                 if key == '#':
                     log(lINFO,"activate window_on_back: %s" % (self.activewindow.window_on_back))
-                    if self.activewindow.window_on_back != "": self.set_window(self.activewindow.window_on_back)
+                    if self.activewindow.window_on_back not in ["","none","n/a"]: self.set_window(self.activewindow.window_on_back)
                 else:
                     self.activewindow.turn_callback(direction,key=key)
             except (NotImplementedError, AttributeError):
