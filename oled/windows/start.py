@@ -58,5 +58,5 @@ class Start(WindowBase):
     def push_callback(self,lp=False):
         pass
 
-    def turn_callback(self, direction, ud=False):
+    def turn_callback(self, direction, key=None):
         pass

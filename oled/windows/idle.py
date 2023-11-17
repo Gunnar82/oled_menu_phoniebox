@@ -225,8 +225,8 @@ class Idle(MainWindow):
                 if playout.checkfolder(what) != 0:
                     self.set_busy("Fehler",symbols.SYMBOL_ERROR,what)
                 else:
-                    self.set_busy("Starte",symbols.SYMBOL_PASS,what)
-                    playout.playlast_checked(what)
+                    self.set_busy("Starte",symbols.SYMBOL_PASS,what,busyrendertime=5)
+                    self.loop.create_task(self.playlast(what))
         else:
             if (direction > 0):
                 self.set_busy("lauter",symbols.SYMBOL_VOL_UP)
@@ -234,3 +234,7 @@ class Idle(MainWindow):
             else:
                 self.set_busy("leiser",symbols.SYMBOL_VOL_DN)
                 playout.pc_voldown()
+
+    async def playlast(self,what):
+        await asyncio.sleep(1)
+        playout.playlast_checked(what)
