@@ -88,6 +88,6 @@ class Shutdownmenu(MenuBase):
                 settings.shutdown_reason = settings.SR2
                 print("Stopping event loop")
                 self.loop.stop()
-            elif key == 'D':
+            elif key == '0':
                 restart_oled()
 

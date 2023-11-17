@@ -193,15 +193,18 @@ class Idle(MainWindow):
                 settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_RADIO
                 settings.currentfolder = get_folder_from_file(cfg_file_folder.FILE_LAST_RADIO)
                 self.windowmanager.set_window("foldermenu")
-            elif key =='D':
+            elif key == 'D'
+                self.windowmanager.set_window("downloadmenu")
+
+            elif key =='0':
                 self.windowmanager.set_window("shutdownmenu")
             elif key =='9' or key == 'select':
                 self.windowmanager.set_window("lock")
             elif key == '5':
                  self.windowmanager.clear_window()
-            elif key == '0':
-                self.busysymbol = symbols.SYMBOL_VOL_MUTE
-                playout.pc_mute()
+            #elif key == '0':
+            #    self.busysymbol = symbols.SYMBOL_VOL_MUTE
+            #    playout.pc_mute()
             elif key == 'start':
                 playout.pc_toggle()
             elif key == 'hl':
