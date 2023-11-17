@@ -195,7 +195,7 @@ class Idle(MainWindow):
                 settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_RADIO
                 settings.currentfolder = get_folder_from_file(cfg_file_folder.FILE_LAST_RADIO)
                 self.windowmanager.set_window("foldermenu")
-            elif key == 'D'
+            elif key == 'D':
                 self.windowmanager.set_window("downloadmenu")
 
             elif key =='0':

@@ -1,5 +1,5 @@
 """ Playlist menu """
-import settings,color
+import settings,colors
 
 import config.symbols as symbols
 

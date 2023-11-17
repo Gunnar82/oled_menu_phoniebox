@@ -8,7 +8,7 @@ import asyncio
 from  integrations.functions import get_timeouts
 import datetime
 
-import symbols
+import config.symbols as symbols
 
 class nowplaying:
     filename = ""
