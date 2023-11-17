@@ -2,7 +2,10 @@
 from ui.windowbase import WindowBase
 from luma.core.render import canvas
 from PIL import ImageFont
-import settings, colors, symbols
+import settings, colors
+
+import config.symbols as symbols
+
 import asyncio
 
 class MenuBase(WindowBase):

@@ -2,8 +2,9 @@
 from ui.menubase import MenuBase
 from luma.core.render import canvas
 
-import settings, colors,  symbols
+import settings, colors
 
+import config.symbols as symbols
 import config.file_folder as cfg_file_folder
 
 from integrations.functions import mountusb, get_folder_from_file

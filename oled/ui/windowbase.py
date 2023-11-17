@@ -1,6 +1,8 @@
 """ View class to inherit other views from """
 
-import settings, colors, symbols
+import settings, colors
+
+import config.symbols as symbols
 
 import asyncio
 

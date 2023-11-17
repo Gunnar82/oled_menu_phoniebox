@@ -2,7 +2,10 @@
 import datetime
 import asyncio
 from ui.windowbase import WindowBase
-import settings, colors, symbols
+import settings, colors
+
+import config.symbols as symbols
+
 from luma.core.render import canvas
 from PIL import ImageFont
 import os

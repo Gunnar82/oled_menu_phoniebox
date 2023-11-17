@@ -4,7 +4,10 @@ from luma.core.render import canvas
 
 from datetime import datetime
 
-import settings, colors, symbols
+import settings, colors
+
+import config.symbols as symbols
+
 from integrations.functions import get_battload_color
 from integrations.logging import *
 

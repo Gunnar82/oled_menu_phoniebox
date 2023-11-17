@@ -2,7 +2,9 @@
 import datetime
 import asyncio
 from ui.mainwindow import MainWindow
-import settings, colors, symbols
+import settings, colors
+
+import config.symbols as symbols
 
 import config.file_folder as cfg_file_folder
 from luma.core.render import canvas

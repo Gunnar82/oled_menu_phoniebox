@@ -1,5 +1,7 @@
 """Manages the currently shown activewindow on screen and passes callbacks for the rotary encoder"""
-import settings, symbols
+import settings
+
+import config.symbols as symbols
 
 import asyncio
 

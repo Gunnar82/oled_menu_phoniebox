@@ -1,5 +1,7 @@
 """ Playlist menu """
-import settings,colors,symbols
+import settings,color
+
+import config.symbols as symbols
 
 import time
 import requests
