@@ -19,15 +19,15 @@ class Mainmenu(MenuBase):
         self.descr.append ([ "Musik", symbols.SYMBOL_MUSIC,"foldermenu" ])
         self.descr.append([ "Hörspiele", symbols.SYMBOL_HOERSPIEL, "foldermenu" ])
         self.descr.append([ "Internetradio", symbols.SYMBOL_RADIO, "foldermenu" ])
+        self.descr.append([ "Download", symbols.SYMBOL_CLOUD, "downloadmenu"])
         self.descr.append([ "USB-Stick", symbols.SYMBOL_USB,"foldermenu" ])
-        self.descr.append([ "Audioausgabe", symbols.SYMBOL_HEADPHONE, "headphonemenu" ])
-        self.descr.append([ "Ausschaltmenü", "\uf011", "shutdownmenu"])
         self.descr.append([ "Betriebsinfos", "\uf022", "infomenu" ])
         self.descr.append([ "WLAN / Hotspot", "\uf09e", "wlanmenu" ])
         self.descr.append([ "Firewall", "\uf1cb", "firewallmenu" ])
-        self.descr.append([ "Download", symbols.SYMBOL_CLOUD, "downloadmenu"])
-        self.descr.append([ "Tastensperre", symbols.SYMBOL_LOCKED, "lock" ])
+        self.descr.append([ "Audioausgabe", symbols.SYMBOL_HEADPHONE, "headphonemenu" ])
         self.descr.append([ "Systemmenu", "\uf013", "systemmenu" ])
+        self.descr.append([ "Tastensperre", symbols.SYMBOL_LOCKED, "lock" ])
+        self.descr.append([ "Ausschaltmenü", "\uf011", "shutdownmenu"])
 
         self.window_on_back = "idle"
 
