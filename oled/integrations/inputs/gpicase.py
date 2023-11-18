@@ -53,7 +53,7 @@ class pygameInput():
                 #if self.powerbtn != gpio26:
                 log (lDEBUG,"Shutdown Timer active - Waiting")
                 if gpio26 == 0:
-                    if self.powerpressed < 5:
+                    if self.powerpressed < 1:
                         self.powerpressed += 1
                         self.windowmanager.set_window("ende")
                 else:
