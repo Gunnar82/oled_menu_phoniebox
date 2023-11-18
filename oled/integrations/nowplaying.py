@@ -14,6 +14,7 @@ class nowplaying:
     filename = ""
     oldtitle = ""
     output_symbol = symbols.SYMBOL_SPEAKER
+    input_is_stream = False
 
     async def _generatenowplaying(self):
         try:
@@ -67,7 +68,17 @@ class nowplaying:
 
                 self._playingalbum = album
 
-                self._playingfile = playing['file'] if ("file" in playing) else ""
+                try:
+                    if ("file" in playing):
+                        self._playingfile = playing['file']
+                        if self._playingfile.startswith(('https:','http:')):
+                            self.input_is_stream = True
+                    else:
+                        self._playingfile = ""
+                        self.input_is_stream = False
+                except:
+                    self.input_is_stream = False
+
                 self._volume = status['volume'] if ("volume" in status) else -1
                 self._elapsed = status['elapsed'] if ("elapsed" in status) else -1
                 self._time = status['time'] if ("time" in status) else -1
@@ -75,7 +86,6 @@ class nowplaying:
                 self._song = str(int(status['song']) + 1) if ("song" in status) else -1
                 self._duration = status['duration'] if ("duration" in status) else -1
                 self._state = status['state'] if ("state" in status) else "unknown"
-
                 await asyncio.sleep(self.windowmanager.looptime)
         except:
             pass
