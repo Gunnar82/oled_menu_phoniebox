@@ -159,6 +159,12 @@ class Idle(MainWindow):
         else:
             self.windowmanager.set_window("playbackmenu")
 
+    async def change_folder(self,direction):
+        await asyncio.sleep(1)
+        pfolder = get_folder_of_livestream(self.nowplaying._playingfile)
+        playout.pc_playfolder (get_folder(pfolder,direction))
+
+
 
     def turn_callback(self, direction, key=None):
         if key:
@@ -169,21 +175,29 @@ class Idle(MainWindow):
                 playout.pc_voldown(5)
                 self.set_busy("leiser",symbols.SYMBOL_VOL_DN)
             elif key in ['left','4']:
-                self.set_busy("zurück",symbols.SYMBOL_PREV)
-                if self.nowplaying.input_is_stream and self.nowplaying._song >= self.nowplaying._playlistlength:
-                    cfolder = get_folder_of_livestream(self.nowplaying._playingfile)
-                    playout.pc_playfolder (get_folder(cfolder,-1))
+                if self.nowplaying.input_is_stream and not self.nowplaying.input_is_online and self.nowplaying._song >= self.nowplaying._playlistlength:
+                    self.set_busy("Vorheriger Sender",symbols.SYMBOL_PREV)
+                    self.loop.create_task(self.change_folder(-1))
                 else:
-                    log (lDEBUG,"idle: prev")
-                    playout.pc_prev()
+                    if int(self.nowplaying._song) > 1:
+                        self.set_busy("Zurück",symbols.SYMBOL_PREV)
+                        log (lDEBUG,"idle: prev")
+                        playout.pc_prev()
+                    else:
+                        self.set_busy("Erster Titel",symbols.SYMBOL_FAIL)
+
             elif key in ['right', '6']:
-                self.set_busy("weiter",symbols.SYMBOL_NEXT)
-                if self.nowplaying.input_is_stream and self.nowplaying._song <= self.nowplaying._playlistlength:
-                    cfolder = get_folder_of_livestream(self.nowplaying._playingfile)
-                    playout.pc_playfolder (get_folder(cfolder,1))
+                if self.nowplaying.input_is_stream and not self.nowplaying.input_is_online and self.nowplaying._song <= self.nowplaying._playlistlength:
+                    self.set_busy("Nächster Sender",symbols.SYMBOL_PREV)
+                    self.loop.create_task(self.change_folder(1))
                 else:
-                    log (lDEBUG,"idle: next")
-                    playout.pc_next()
+                    if int(self.nowplaying._song) < int(self.nowplaying._playlistlength):
+                        self.set_busy("Weiter",symbols.SYMBOL_NEXT)
+                        log (lDEBUG,"idle: next")
+                        playout.pc_next()
+                    else:
+                        self.set_busy("Letzter Titel",symbols.SYMBOL_FAIL)
+
             elif key == 'A':
                 settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_MUSIC
                 settings.currentfolder = get_folder_from_file(cfg_file_folder.FILE_LAST_MUSIC)

@@ -37,33 +37,33 @@ class DownloadMenu(ListBase):
         self.items = []
         self.selector = False
         self.download = False
-        self.website = cfg_online.ONLINEURL
+        self.website = cfg_online.ONLINE_URL
         self.set_busy("Verbinde Online",symbols.SYMBOL_CLOUD,self.website,busyrendertime=5)
         self.renderbusy()
         time.sleep(2)
 
-        self.baseurl = self.website[:cfg_online.ONLINEURL.find('/',9)]
-        self.basecwd= self.website[cfg_online.ONLINEURL.find('/',9):]
+        self.baseurl = self.website[:cfg_online.ONLINE_URL.find('/',9)]
+        self.basecwd= self.website[cfg_online.ONLINE_URL.find('/',9):]
 
         try:
             with open(cfg_file_folder.FILE_LAST_ONLINE,"r") as f:
                 self.website = f.read()
                 self.cwd = self.website[len(self.baseurl):]
-            if not self.website.startswith(cfg_online.ONLINEURL): raise "Website geändert"
+            if not self.website.startswith(cfg_online.ONLINE_URL): raise "Website geändert"
 
         except Exception as error:
             self.set_busy("Dateifehler",symbols.SYMBOL_NOCLOUD,str(error))
             time.sleep(3)
 
             self.position = -1
-            self.website = cfg_online.ONLINEURL
+            self.website = cfg_online.ONLINE_URL
             self.cwd = self.basecwd
 
         try:
             r = requests.get(self.website)
             if r.status_code == 404:
                 print("URL nicht gefunden")
-                self.website = cfg_online.ONLINEURL
+                self.website = cfg_online.ONLINE_URL
                 self.cwd = self.basecwd
                 r = requests.get(self.website)
                 if r.status_code != 200:
@@ -161,7 +161,7 @@ class DownloadMenu(ListBase):
         try:
             self.downloading = True
             settings.callback_active = True
-            destdir = os.path.join(cfg_file_folder.AUDIO_BASEPATH_BASE,self.url[len(cfg_online.ONLINEURL):])
+            destdir = os.path.join(cfg_file_folder.AUDIO_BASEPATH_BASE,self.url[len(cfg_online.ONLINE_URL):])
 
             if not os.path.exists(destdir): os.makedirs(destdir)
 
@@ -229,7 +229,7 @@ class DownloadMenu(ListBase):
                 elif self.position == -1 and self.selector:
                     self.selector = False
                 elif self.position == 3:
-                    destdir = cfg_file_folder.AUDIO_BASEPATH_BASE + '/' + self.url[len(cfg_online.ONLINEURL):]
+                    destdir = cfg_file_folder.AUDIO_BASEPATH_BASE + '/' + self.url[len(cfg_online.ONLINE_URL):]
                     if not os.path.exists(destdir):
                         self.set_busy("lokal nicht gefunden",busysymbol="\uf059")
                     else:

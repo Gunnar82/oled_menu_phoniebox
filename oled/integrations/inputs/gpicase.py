@@ -20,8 +20,9 @@ class pygameInput():
         print("Polling PyGame keys")
         pygame.init()
         pygame.joystick.init()
-        pygame.mixer.init(44100, -16,2,2048)
+        pygame.mixer.init(44100, -16,2,512)
         pygame.mixer.pause()
+        pygame.mixer.quit()
         pygame.mouse.set_visible(False)
 
         self.windowmanager = windowmanager

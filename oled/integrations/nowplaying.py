@@ -88,7 +88,7 @@ class nowplaying:
                         self.input_is_online = True
                     else:
                         self.input_is_online = False
-                except:
+                except Exception as error:
                     self.input_is_online = False
 
                 self._volume = status['volume'] if ("volume" in status) else -1
