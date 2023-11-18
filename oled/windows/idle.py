@@ -168,17 +168,17 @@ class Idle(MainWindow):
             elif key == 'down' or key == '8':
                 playout.pc_voldown(5)
                 self.set_busy("leiser",symbols.SYMBOL_VOL_DN)
-            elif key == 'left' or key =='4':
+            elif key in ['left','4']:
                 self.set_busy("zurück",symbols.SYMBOL_PREV)
-                if self.nowplaying._playingalbum == "Livestream":
+                if self.nowplaying.input_is_stream and self.nowplaying._song >= self.nowplaying._playlistlength:
                     cfolder = get_folder_of_livestream(self.nowplaying._playingfile)
                     playout.pc_playfolder (get_folder(cfolder,-1))
                 else:
                     log (lDEBUG,"idle: prev")
                     playout.pc_prev()
-            elif key == 'right' or key == '6':
+            elif key in ['right', '6']:
                 self.set_busy("weiter",symbols.SYMBOL_NEXT)
-                if self.nowplaying._playingalbum == "Livestream":
+                if self.nowplaying.input_is_stream and self.nowplaying._song <= self.nowplaying._playlistlength:
                     cfolder = get_folder_of_livestream(self.nowplaying._playingfile)
                     playout.pc_playfolder (get_folder(cfolder,1))
                 else:

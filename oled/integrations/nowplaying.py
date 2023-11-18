@@ -9,12 +9,15 @@ from  integrations.functions import get_timeouts
 import datetime
 
 import config.symbols as symbols
+import config.file_folder as cfg_file_folder
+import config.online as cfg_online
 
 class nowplaying:
     filename = ""
     oldtitle = ""
     output_symbol = symbols.SYMBOL_SPEAKER
     input_is_stream = False
+    input_is_online = False
 
     async def _generatenowplaying(self):
         try:
@@ -78,6 +81,15 @@ class nowplaying:
                         self.input_is_stream = False
                 except:
                     self.input_is_stream = False
+
+
+                try:
+                    if self._playingfile.startswith(cfg_online.ONLINE_URL):
+                        self.input_is_online = True
+                    else:
+                        self.input_is_online = False
+                except:
+                    self.input_is_online = False
 
                 self._volume = status['volume'] if ("volume" in status) else -1
                 self._elapsed = status['elapsed'] if ("elapsed" in status) else -1
