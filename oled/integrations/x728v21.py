@@ -4,7 +4,10 @@ import sys
 import time
 import RPi.GPIO as GPIO
 #import integrations.playout as playout
-import settings,symbols
+import settings
+
+import config.symbols as symbols
+
 import asyncio
 from datetime import datetime
 
