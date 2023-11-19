@@ -1,5 +1,5 @@
 """ Start screen """
-from ui.windowbase import WindowBase
+from ui.mainwindow import MainWindow
 from luma.core.render import canvas
 from PIL import ImageFont
 import settings
@@ -12,12 +12,12 @@ import asyncio
 
 from datetime import datetime
 
-class Lock(WindowBase):
+class Lock(MainWindow):
     font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_L)
     fontawesome = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XXL)
 
-    def __init__(self, windowmanager,loop):
-        super().__init__(windowmanager, loop)
+    def __init__(self, windowmanager,loop,nowplaying):
+        super().__init__(windowmanager, loop,nowplaying)
 
         self.timeout = False
         self.window_on_back = "none"
@@ -53,14 +53,14 @@ class Lock(WindowBase):
                     pass
 
             self.currentkey = 0
-            self.busytext1 = "Tastensperre"
-            self.busytext3 = "System entsperren mit"
 
             self.busysymbol=symbols.SYMBOL_LOCKED
             self.genhint()
 
     def render(self):
-        self.renderbusy()
+        with canvas(self.device) as draw:
+            super().render(draw)
+            self.renderbusydraw(draw)
 
     def push_callback(self,lp=False):
         pass
@@ -81,14 +81,14 @@ class Lock(WindowBase):
             self.genhint()
 
     def genhint(self):
-        self.busytext2 = ""
+        self.busytext1 = ""
         for r in range(len(self.unlockcode)):
             if r == self.currentkey:
                 self.unlockcode[r] = self.unlockcode[r].upper()
-                self.busytext2 += ">%s< " % (self.unlockcode[r])
+                self.busytext1 += ">%s< " % (self.unlockcode[r])
             else:
                 self.unlockcode[r] = self.unlockcode[r].lower()
-                self.busytext2 += self.unlockcode[r] + ' '
+                self.busytext1 += self.unlockcode[r] + ' '
 
 
     def deactivate(self):

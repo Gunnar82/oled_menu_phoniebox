@@ -66,27 +66,28 @@ class WindowBase():
         if set_window_to != "none":
             self.loop.create_task(self.set_window(set_window_to))
 
-
     def renderbusy(self,symbolcolor = colors.COLOR_RED, textcolor1=colors.COLOR_WHITE, textcolor2=colors.COLOR_WHITE):
         with canvas(self.device) as draw:
+            self.renderbusydraw(draw,symbolcolor,textcolor1,textcolor2)
 
-            mwidth,mheight = busyfont.getsize(self.busytext1)
-            draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, 2), text=self.busytext1, font=busyfont, fill=textcolor1)
+    def renderbusydraw(self, draw, symbolcolor = colors.COLOR_RED, textcolor1=colors.COLOR_WHITE, textcolor2=colors.COLOR_WHITE):
+        mwidth,mheight = busyfont.getsize(self.busytext1)
+        draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, 5), text=self.busytext1, font=busyfont, fill=textcolor1)
 
-            if (self.busytext3 != ""):
-                mwidth,mheight = busyfont.getsize(self.busytext3)
-                draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, mheight + 2), text=self.busytext3, font=busyfont, fill=textcolor2) #sanduhr
+        if (self.busytext3 != ""):
+            mwidth,mheight = busyfont.getsize(self.busytext3)
+            draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, mheight + 2), text=self.busytext3, font=busyfont, fill=textcolor2) #sanduhr
 
-            if (self.busytext2 != ""):
-                mwidth,mheight = busyfont.getsize(self.busytext2)
-                draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, settings.DISPLAY_HEIGHT - mheight - 2), text=self.busytext2, font=busyfont, fill=textcolor2) #sanduhr
+        if (self.busytext2 != ""):
+            mwidth,mheight = busyfont.getsize(self.busytext2)
+            draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, settings.DISPLAY_HEIGHT - mheight - 2), text=self.busytext2, font=busyfont, fill=textcolor2) #sanduhr
 
-            if (self.busytext4 != ""):
-                mwidth,mheight = busyfont.getsize(self.busytext4)
-                draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, settings.DISPLAY_HEIGHT - 2 * (mheight + 2)), text=self.busytext4, font=busyfont, fill=textcolor2) #sanduhr
+        if (self.busytext4 != ""):
+            mwidth,mheight = busyfont.getsize(self.busytext4)
+            draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, settings.DISPLAY_HEIGHT - 2 * (mheight + 2)), text=self.busytext4, font=busyfont, fill=textcolor2) #sanduhr
 
-            mwidth,mheight = busyfaiconsbig.getsize(self.busysymbol)
-            draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, (settings.DISPLAY_HEIGHT - mheight) / 2), text=self.busysymbol, font=busyfaiconsbig, fill=symbolcolor) #sanduhr
+        mwidth,mheight = busyfaiconsbig.getsize(self.busysymbol)
+        draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, (settings.DISPLAY_HEIGHT - mheight) / 2), text=self.busysymbol, font=busyfaiconsbig, fill=symbolcolor) #sanduhr
 
     async def set_window(self,windowid):
         await asyncio.sleep(3)

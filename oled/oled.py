@@ -137,7 +137,7 @@ def main():
     loadedwins.append(windows.firewall.Firewallmenu(windowmanager,loop))
     loadedwins.append(windows.start.Start(windowmanager, loop, mopidy,objbluetooth))
     loadedwins.append(wdownload.DownloadMenu(windowmanager,loop))
-    loadedwins.append(wlock.Lock(windowmanager,loop))
+    loadedwins.append(wlock.Lock(windowmanager,loop,_nowplaying))
     loadedwins.append(wsystem.SystemMenu(windowmanager,loop,"Systemeinstellungen"))
     for window in loadedwins:
         windowmanager.add_window(window.__class__.__name__.lower(), window)
