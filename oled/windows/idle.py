@@ -161,9 +161,12 @@ class Idle(MainWindow):
 
     async def change_folder(self,direction):
         await asyncio.sleep(1)
-        pfolder = get_folder_of_livestream(self.nowplaying._playingfile)
-        dfolder = get_folder(pfolder,direction)
-        playout.pc_playfolder (dfolder)
+        cfolder = get_folder_of_livestream(self.nowplaying._playingfile)
+        dfolder = get_folder(cfolder,direction)
+
+        if not cfolder.endswith(dfolder):
+            playout.pc_playfolder (dfolder)
+
         self.set_busy(dfolder[dfolder.rindex("/")+1:])
 
 
