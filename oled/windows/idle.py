@@ -162,8 +162,9 @@ class Idle(MainWindow):
     async def change_folder(self,direction):
         await asyncio.sleep(1)
         pfolder = get_folder_of_livestream(self.nowplaying._playingfile)
-        playout.pc_playfolder (get_folder(pfolder,direction))
-
+        dfolder = get_folder(pfolder,direction)
+        playout.pc_playfolder (dfolder)
+        self.set_busy(dfolder[dfolder.rindex("/")+1:])
 
 
     def turn_callback(self, direction, key=None):
@@ -174,6 +175,7 @@ class Idle(MainWindow):
             elif key == 'down' or key == '8':
                 playout.pc_voldown(5)
                 self.set_busy("leiser",symbols.SYMBOL_VOL_DN)
+
             elif key in ['left','4']:
                 if self.nowplaying.input_is_stream and not self.nowplaying.input_is_online and self.nowplaying._song >= self.nowplaying._playlistlength:
                     self.set_busy("Vorheriger Sender",symbols.SYMBOL_PREV)
@@ -211,8 +213,8 @@ class Idle(MainWindow):
                 settings.currentfolder = get_folder_from_file(cfg_file_folder.FILE_LAST_RADIO)
                 self.windowmanager.set_window("foldermenu")
             elif key == 'D':
-                self.windowmanager.set_window("downloadmenu")
 
+                self.windowmanager.set_window("downloadmenu")
             elif key =='0':
                 self.windowmanager.set_window("shutdownmenu")
             elif key =='9' or key == 'select':
