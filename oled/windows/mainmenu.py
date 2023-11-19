@@ -41,7 +41,7 @@ class Mainmenu(MenuBase):
         elif self.counter == 3:
             settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_RADIO
             settings.currentfolder = get_folder_from_file(cfg_file_folder.FILE_LAST_RADIO)
-        elif self.counter == 4:
+        elif self.counter == 5:
             settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_USB
             settings.currentfolder = cfg_file_folder.AUDIO_BASEPATH_USB
             mountusb()
