@@ -205,15 +205,6 @@ class DownloadMenu(ListBase):
         folderconf["SINGLE"] = "OFF"
 
         try:
-            with open(filename,"r") as folder_conf_file:
-                lines = folder_conf_file.readlines()
-            for line in lines:
-                _key, _val = line.split('=',2)
-                folderconf[_key] = _val.replace("\"","").strip()
-        except Exception as error:
-            print (error)
-
-        try:
             folder_conf_file = open(filename,"r")
             lines = folder_conf_file.readlines()
             for line in lines:
