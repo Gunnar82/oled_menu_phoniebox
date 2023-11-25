@@ -1,8 +1,10 @@
 import os
 import settings
+import requests
+import urllib.parse
 
 import config.file_folder as cfg_file_folder
-
+import config.online as cfg_online
 
 def pc_prev():
     os.system("%s -c=playerprev" % (cfg_file_folder.PLAYOUT_CONTROLS))
@@ -30,8 +32,24 @@ def pc_reboot():
 def savepos():
     os.system("%s -c=savepos" % (cfg_file_folder.RESUME_PLAY))
 
+def savepos_online(url,posi):
+    data = {'url' : url, 'pos' : str(posi)}
+    try:
+        r = requests.post(cfg_online.ONLINE_SAVEPOS,data=data)
+        print (r.status_code)
 
+    except Exception as error:
+        print (error)
 
+def getpos_online(baseurl,cwd):
+    data = {'url' : baseurl+urllib.parse.quote(cwd)}
+    try:
+        r = requests.post("%sgetpos.php" % (cfg_online.ONLINE_SAVEPOS),data=data)
+        response = r.content.decode()
+        return response
+
+    except Exception as error:
+        return "ERREXP|"
 
 
 def checkfolder(playfile):

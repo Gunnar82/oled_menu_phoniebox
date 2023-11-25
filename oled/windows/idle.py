@@ -76,6 +76,8 @@ class Idle(MainWindow):
             if (self.oldsong != self.nowplaying._song) and ((datetime.datetime.now() - settings.lastinput).total_seconds() >= 5):
                 if (self.oldsong != ""):
                     playout.savepos()
+                    if self.nowplaying.input_is_online:
+                        playout.savepos_online(self.nowplaying.filename,self.nowplaying._elapsed)
                     log(lDEBUG,"Titelwechsel erkannt")
                     self.set_busy ("Titelwechsel", symbols.SYMBOL_CHANGING_SONG, "%2.2d von %2.2d " % (int(self.nowplaying._song), int(self.nowplaying._playlistlength)))
                     self.busy = True
@@ -229,6 +231,11 @@ class Idle(MainWindow):
             #    playout.pc_mute()
             elif key == 'start':
                 playout.pc_toggle()
+                playout.savepos()
+                print (self.nowplaying.input_is_online)
+                if self.nowplaying.input_is_online:
+                    playout.savepos_online(self.nowplaying.filename,self.nowplaying._elapsed)
+
             elif key == 'hl':
                 self.windowmanager.windows["downloadmenu"].direct_play_last_folder = True
                 self.windowmanager.set_window("downloadmenu")

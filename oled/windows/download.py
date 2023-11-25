@@ -31,6 +31,7 @@ class DownloadMenu(ListBase):
         self.canceled = False
         self.downloading = False
         self.totalsize = 0
+        self.lastplayedfile = ""
 
     def activate(self):
         self.progress = {}
@@ -143,10 +144,10 @@ class DownloadMenu(ListBase):
 
                         subfiles2 = [s.strip() for s in subfiles]
 
-                        lastplayedfile =  folderconf["CURRENTFILENAME"]
+                        self.lastplayedfile =  folderconf["CURRENTFILENAME"]
 
-                        if lastplayedfile in subfiles2:
-                            pos = subfiles2.index(lastplayedfile)
+                        if self.lastplayedfile in subfiles2:
+                            pos = subfiles2.index(self.lastplayedfile)
                             prozent = (pos + 1) / len (subfiles2) * 100
                             self.progress[listobj.name.strip('/')] = "%2.2d %%"  % (prozent)
                 except Exception as error:
@@ -254,10 +255,44 @@ class DownloadMenu(ListBase):
                 else:
                     self.selector = True
                     try:
-                        current_title = "Fortschritt: %s" % (self.progress[self.menu[self.position]])
+                        posstring = playout.getpos_online(self.baseurl,self.cwd).split('|')
+                        if posstring[0] == "POS":
+                            online_file = "Datei: %s" % (posstring[1])
+                            online_pos = "Pos:  %s " % (posstring[2])
+
+                        else:
+                            online_file = ""
+                            online_pos = ""
                     except:
-                        current_title = ""
-                    self.menu = ["Abspielen", "Herunterladen","informationen","Lokal löschen","","Anzahl Titel :%2.2d " %  (len(self.items)),"Gesamtgröße %s" % (get_size(self.totalsize)),current_title]
+                        online_file = ""
+                        online_pos = ""
+
+                    try:
+                        current_pos = "Fortschritt: %s" % (self.progress[self.menu[self.position]])
+                    except:
+                        current_pos = "Fortschritt nicht verfügbar"
+
+                    self.menu = []
+                    self.menu.append("Abspielen")
+                    self.menu.append("Herunterladen")
+                    self.menu.append("informationen")
+                    self.menu.append("Lokal löschen")
+                    self.menu.append("")
+                    self.menu.append("Anzahl Titel :%2.2d " %  (len(self.items)))
+                    self.menu.append("Gesamtgröße %s" % (get_size(self.totalsize)))
+                    self.menu.append(current_pos)
+                    self.menu.append("")
+
+                    try:
+                        self.menu.append("Aktueller Titel:")
+                        self.menu.append(" " % (self.lastplayedfile[self.lastplayedfile.rfind('/')+1:]))
+                        self.menu.append("")
+                    except:
+                        pass
+
+                    self.menu.append("Onlineinformationen:")
+                    self.menu.append(online_file)
+                    self.menu.append(online_pos)
 
                     return
 
