@@ -27,6 +27,7 @@ class pygameInput():
 
         self.windowmanager = windowmanager
         self.clock = pygame.time.Clock()
+        self.nowplaying = nowplaying
 
         self.loop = loop
         self.turn_callback = turn_callback

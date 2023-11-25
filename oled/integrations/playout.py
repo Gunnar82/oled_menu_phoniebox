@@ -37,7 +37,6 @@ def savepos_online(url,posi):
     print (data)
     try:
         r = requests.post(cfg_online.ONLINE_SAVEPOS,data=data)
-        print (r.status_code)
 
     except Exception as error:
         print (error)

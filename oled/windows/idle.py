@@ -35,7 +35,6 @@ class Idle(MainWindow):
         self.titlex = 0
         self.namex = 0
         self.albumx = 0
-        self.oldsong = ""
 
         active = True
 
@@ -75,21 +74,13 @@ class Idle(MainWindow):
                 self.contrasthandle = True
 
             ####setting idle text / Icon on Song Number Changed
-            if (self.oldsong != self.nowplaying._song) and ((datetime.datetime.now() - settings.lastinput).total_seconds() >= 5):
-                if (self.oldsong != ""):
+            try:
+                if ((now - self.nowplaying.lasttitlechange ).total_seconds() < 3):
                     log(lDEBUG,"Titelwechsel erkannt")
                     self.set_busy ("Titelwechsel", symbols.SYMBOL_CHANGING_SONG, "%2.2d von %2.2d " % (int(self.nowplaying._song), int(self.nowplaying._playlistlength)))
                     self.busy = True
-
-                    if self.nowplaying.input_is_online:
-                        playout.savepos_online(self.nowplaying.filename,self.nowplaying._elapsed)
-
-                    playout.savepos()
-
-                self.oldsong = self.nowplaying._song
-
-
-
+            except Exception as error:
+                print (error)
 
             if ((self.nowplaying._state == "stop") or (settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (settings.battcapacity <= settings.X728_BATT_LOW) or (settings.DISPLAY_HEIGHT > 64)):
                 if (settings.battcapacity >= 0):
@@ -235,11 +226,6 @@ class Idle(MainWindow):
             #    playout.pc_mute()
             elif key == 'start':
                 playout.pc_toggle()
-                playout.savepos()
-                print (self.nowplaying.input_is_online)
-                if self.nowplaying.input_is_online:
-                    playout.savepos_online(self.nowplaying.filename,self.nowplaying._elapsed)
-
             elif key == 'hl':
                 self.windowmanager.windows["downloadmenu"].direct_play_last_folder = True
                 self.windowmanager.set_window("downloadmenu")

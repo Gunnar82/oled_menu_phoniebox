@@ -6,6 +6,7 @@ import time               # Import time library
 import settings
 import asyncio
 from  integrations.functions import get_timeouts
+import integrations.playout as playout
 import datetime
 
 import config.symbols as symbols
@@ -18,6 +19,7 @@ class nowplaying:
     output_symbol = symbols.SYMBOL_SPEAKER
     input_is_stream = False
     input_is_online = False
+    lasttitlechange = datetime.datetime.now()
 
     async def _generatenowplaying(self):
         try:
@@ -114,6 +116,29 @@ class nowplaying:
             await asyncio.sleep(20)
 
 
+    async def _savepos(self):
+        oldfilename = ""
+        oldstate = ""
+        oldstate = "none"
+
+        while self.loop.is_running():
+            try:
+                if not (self.input_is_stream and not self.input_is_online):
+                    if (oldfilename != self.filename and self.filename != "") or (oldstate != self._state and self._state in ["pause", "play"]):
+                        playout.savepos()
+                        if self.input_is_online:
+                            playout.savepos_online(self.filename,self._elapsed)
+                        oldfilename = self.filename
+                        oldstate = self._state
+
+                        self.lasttitlechange = datetime.datetime.now()
+            except Exception as error:
+                print (error)
+
+            await asyncio.sleep(1)
+
+
+
     async def _output(self):
 
         while self.loop.is_running():
@@ -129,6 +154,7 @@ class nowplaying:
         self.loop.create_task(self._generatenowplaying())
         self.loop.create_task(self._linuxjob())
         self.loop.create_task(self._output())
+        self.loop.create_task(self._savepos())
         self._playingname = ""
         self._playingtitle = ""
         self._playingalbum = ""

@@ -80,9 +80,6 @@ class Playbackmenu(MainWindow):
                 playout.savepos_online(self.nowplaying.filename,self.nowplaying._elapsed)
         elif self.counter == 2:
             playout.pc_toggle()
-            playout.savepos()
-            if self.nowplaying.input_is_online:
-                playout.savepos_online(self.nowplaying.filename,self.nowplaying._elapsed)
         elif self.counter == 3:
             self.windowmanager.set_window("mainmenu")
         elif self.counter == 4:
