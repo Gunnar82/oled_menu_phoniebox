@@ -103,12 +103,6 @@ class DownloadMenu(ListBase):
             for listobj in listing:
                 if '/' in listobj.name and not hasfolder: hasfolder = True
 
-                try:
-                    size = listobj.size
-                    self.progress[listobj.name] = get_size(size)
-                    self.totalsize += size
-                except Exception as error:
-                    pass
 
                 current_folder = os.path.join(cfg_file_folder.AUDIO_BASEPATH_ONLINE,self.cwd)
                 current_folder = current_folder[len(self.basecwd):]
@@ -116,12 +110,16 @@ class DownloadMenu(ListBase):
                 local_folder = os.path.join(cfg_file_folder.AUDIO_BASEPATH_BASE,selected_folder)
                 selected_folder = os.path.join(cfg_file_folder.AUDIO_BASEPATH_ONLINE,selected_folder)
 
-                try:
-                    if (os.path.exists(local_folder)): liste.append('%s \u2302' % (listobj.name.strip('/')))
-                    else: liste.append(listobj.name.strip('/'))
+                liste.append(listobj.name.strip('/'))
 
+                progress = ' \u2302' if os.path.exists(local_folder) else ''
+
+                try:
+                    size = listobj.size
+                    self.totalsize += size
+                    self.progress[listobj.name] = get_size(size)
                 except Exception as error:
-                    print (error)
+                    pass
 
                 try:
                     fn = os.path.join(selected_folder,"folder.conf")
@@ -136,6 +134,8 @@ class DownloadMenu(ListBase):
                     for line in lines:
                         _key, _val = line.split('=',2)
                         folderconf[_key] = _val.replace("\"","").strip()
+                    self.lastplayedfile =  folderconf["CURRENTFILENAME"]
+
                     if (folderconf["CURRENTFILENAME"] != "") and ((folderconf["RESUME"]).lower() == "on"):
                         fn = os.path.join(selected_folder,"livestream.txt")
                         livestream = open(fn, "r")
@@ -144,17 +144,19 @@ class DownloadMenu(ListBase):
 
                         subfiles2 = [s.strip() for s in subfiles]
 
-                        self.lastplayedfile =  folderconf["CURRENTFILENAME"]
-
                         if self.lastplayedfile in subfiles2:
                             pos = subfiles2.index(self.lastplayedfile)
                             prozent = (pos + 1) / len (subfiles2) * 100
-                            self.progress[listobj.name.strip('/')] = "%2.2d %%"  % (prozent)
+
+                            progress = "%2.2d%%%s"  % (prozent,progress)
+
                 except Exception as error:
                     pass
+                self.progress[listobj.name.strip('/')] = progress
         except Exception as error:
             print (error)
         finally:
+            print(self.progress)
             return hasfolder,liste
 
 
