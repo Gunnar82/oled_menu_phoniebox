@@ -34,6 +34,7 @@ def savepos():
 
 def savepos_online(url,posi):
     data = {'url' : url, 'pos' : str(posi)}
+    print (data)
     try:
         r = requests.post(cfg_online.ONLINE_SAVEPOS,data=data)
         print (r.status_code)
@@ -42,14 +43,17 @@ def savepos_online(url,posi):
         print (error)
 
 def getpos_online(baseurl,cwd):
-    data = {'url' : baseurl+urllib.parse.quote(cwd)}
+    url = baseurl+urllib.parse.quote(cwd)
+    data = {'url' : url}
     try:
         r = requests.post("%sgetpos.php" % (cfg_online.ONLINE_SAVEPOS),data=data)
         response = r.content.decode()
-        return response
+        vals = response.split("|")
+        vals.append(url)
+        return vals
 
-    except Exception as error:
-        return "ERREXP|"
+    except:
+        return ["ERREXP"]
 
 
 def checkfolder(playfile):

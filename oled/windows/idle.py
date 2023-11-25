@@ -62,6 +62,8 @@ class Idle(MainWindow):
 
                 if ((datetime.datetime.now() - settings.lastinput).total_seconds() > 120):
                     log(lINFO,"X728: Shutting down: Low Battery (EMERG)")
+                    if self.nowplaying.input_is_online:
+                        playout.savepos_online(self.nowplaying.filename,self.nowplaying._elapsed)
                     playout.savepos()
                     playout.pc_shutdown()
 
@@ -75,12 +77,14 @@ class Idle(MainWindow):
             ####setting idle text / Icon on Song Number Changed
             if (self.oldsong != self.nowplaying._song) and ((datetime.datetime.now() - settings.lastinput).total_seconds() >= 5):
                 if (self.oldsong != ""):
-                    playout.savepos()
-                    if self.nowplaying.input_is_online:
-                        playout.savepos_online(self.nowplaying.filename,self.nowplaying._elapsed)
                     log(lDEBUG,"Titelwechsel erkannt")
                     self.set_busy ("Titelwechsel", symbols.SYMBOL_CHANGING_SONG, "%2.2d von %2.2d " % (int(self.nowplaying._song), int(self.nowplaying._playlistlength)))
                     self.busy = True
+
+                    if self.nowplaying.input_is_online:
+                        playout.savepos_online(self.nowplaying.filename,self.nowplaying._elapsed)
+
+                    playout.savepos()
 
                 self.oldsong = self.nowplaying._song
 

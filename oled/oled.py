@@ -116,7 +116,7 @@ def main():
         from integrations.inputs.gpicase import pygameInput
 
         print ("Using pyGameInput")
-        mypygame = pygameInput(loop, turn_callback, push_callback,windowmanager)
+        mypygame = pygameInput(loop, turn_callback, push_callback,windowmanager,_nowplaying)
 
     #Import all window classes and generate objects of them
     loadedwins = []

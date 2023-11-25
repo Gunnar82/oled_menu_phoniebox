@@ -16,7 +16,7 @@ except ImportError:
 
 class pygameInput():
 
-    def __init__(self, loop, turn_callback, push_callback,windowmanager):
+    def __init__(self, loop, turn_callback, push_callback,windowmanager,nowplaying):
         print("Polling PyGame keys")
         pygame.init()
         pygame.joystick.init()
@@ -61,6 +61,8 @@ class pygameInput():
                     self.windowmanager.set_window("idle")
             elif not settings.callback_active:
                 settings.callback_active = True
+                if self.nowplaying.input_is_online:
+                    playout.savepos_online(self.nowplaying.filename,self.nowplaying._elapsed)
                 playout.savepos()
                 #self.mopidyconnection.stop()
                 log(lINFO,"Stopping event loop")

@@ -156,7 +156,6 @@ class DownloadMenu(ListBase):
         except Exception as error:
             print (error)
         finally:
-            print(self.progress)
             return hasfolder,liste
 
 
@@ -194,10 +193,57 @@ class DownloadMenu(ListBase):
             self.downloading = False
             settings.callback_active = False
 
+    def create_or_modify_folder_conf(self,directory,latestplayed):
+        filename = os.path.join(directory,"folder.conf")
+        folderconf = {}
+        folderconf["CURRENTFILENAME"] = ""
+        folderconf["ELAPSED"] = "ON"
+        folderconf["PLAYSTATUS"] = "Playing"
+        folderconf["SHUFFLE"] = "OFF"
+        folderconf["RESUME"] = "ON"
+        folderconf["LOOP"] = "OFF"
+        folderconf["SINGLE"] = "OFF"
+
+        try:
+            with open(filename,"r") as folder_conf_file:
+                lines = folder_conf_file.readlines()
+            for line in lines:
+                _key, _val = line.split('=',2)
+                folderconf[_key] = _val.replace("\"","").strip()
+        except Exception as error:
+            print (error)
+
+        try:
+            folder_conf_file = open(filename,"r")
+            lines = folder_conf_file.readlines()
+            for line in lines:
+                _key, _val = line.split('=',2)
+                folderconf[_key] = _val.replace("\"","").strip()
+        except Exception as error:
+            print (error)
+
+        if latestplayed[0] == "POS":
+            folderconf["CURRENTFILENAME"] = "%s%s" % (latestplayed[3],latestplayed[1])
+            folderconf["ELAPSED"] = latestplayed[2]
+
+        try:
+            with open(filename,"w") as folder_conf_file:
+
+                for key in folderconf:
+                    folder_conf_file.write ("%s=\"%s\"\n" % (key,folderconf[key]))
+        except Exception as error:
+            print (error)
+
+
 
     def playfolder(self):
 
         directory = os.path.join(cfg_file_folder.AUDIO_BASEPATH_ONLINE,self.cwd[len(self.basecwd):])
+
+        try:
+            self.create_or_modify_folder_conf(directory,playout.getpos_online(self.baseurl,self.cwd))
+        except Exception as error:
+            print (error)
 
         try:
             with open(cfg_file_folder.FILE_LAST_ONLINE,"w") as f:
@@ -257,7 +303,7 @@ class DownloadMenu(ListBase):
                 else:
                     self.selector = True
                     try:
-                        posstring = playout.getpos_online(self.baseurl,self.cwd).split('|')
+                        posstring = playout.getpos_online(self.baseurl,self.cwd)
                         if posstring[0] == "POS":
                             online_file = "Datei: %s" % (posstring[1])
                             online_pos = "Pos:  %s " % (posstring[2])
@@ -284,13 +330,6 @@ class DownloadMenu(ListBase):
                     self.menu.append("Gesamtgröße %s" % (get_size(self.totalsize)))
                     self.menu.append(current_pos)
                     self.menu.append("")
-
-                    try:
-                        self.menu.append("Aktueller Titel:")
-                        self.menu.append(" " % (self.lastplayedfile[self.lastplayedfile.rfind('/')+1:]))
-                        self.menu.append("")
-                    except:
-                        pass
 
                     self.menu.append("Onlineinformationen:")
                     self.menu.append(online_file)
