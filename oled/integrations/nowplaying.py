@@ -124,10 +124,9 @@ class nowplaying:
         while self.loop.is_running():
             try:
                 if not (self.input_is_stream and not self.input_is_online):
-                    if ((oldfilename != self.filename and self.filename != "") or (oldstate != self._state and self._state in ["pause", "play"])) and self._elapsed != -1:
+                    if ((oldfilename != self.filename and self.filename != "" and self._state != "stop") or (oldstate != self._state and self._state in ["pause", "play"])):
                         playout.savepos()
-                        if self.input_is_online:
-                            playout.savepos_online(self.filename,self._elapsed)
+                        playout.savepos_online(self.filename,self._elapsed)
                         oldfilename = self.filename
                         oldstate = self._state
 
