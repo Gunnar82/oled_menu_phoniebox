@@ -32,9 +32,8 @@ def pc_reboot():
 def savepos():
     os.system("%s -c=savepos" % (cfg_file_folder.RESUME_PLAY))
 
-def savepos_online(url,posi):
-    data = {'url' : url, 'pos' : str(posi)}
-    print (data)
+def savepos_online(nowplaying):
+    data = {'url' : nowplaying.filename, 'pos' : str(nowplaying._elapsed), 'song' : str(nowplaying._song), 'length' : str(nowplaying._playlistlength)}
     try:
         r = requests.post(cfg_online.ONLINE_SAVEPOS,data=data,timeout=8)
 

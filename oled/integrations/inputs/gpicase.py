@@ -63,7 +63,7 @@ class pygameInput():
             elif not settings.callback_active:
                 settings.callback_active = True
                 if self.nowplaying.input_is_online:
-                    playout.savepos_online(self.nowplaying.filename,self.nowplaying._elapsed)
+                    playout.savepos_online(self.nowplaying)
                 playout.savepos()
                 #self.mopidyconnection.stop()
                 log(lINFO,"Stopping event loop")

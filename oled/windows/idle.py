@@ -61,7 +61,7 @@ class Idle(MainWindow):
 
                 if ((datetime.datetime.now() - settings.lastinput).total_seconds() > 120):
                     log(lINFO,"X728: Shutting down: Low Battery (EMERG)")
-                    playout.savepos_online(self.nowplaying.filename,self.nowplaying._elapsed)
+                    playout.savepos_online(self.nowplaying)
                     playout.savepos()
                     playout.pc_shutdown()
 

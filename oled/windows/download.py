@@ -1,4 +1,4 @@
-""" Playlist menu """
+""" Playlist menu """	
 import settings
 
 import config.colors as colors
@@ -122,36 +122,19 @@ class DownloadMenu(ListBase):
                     pass
 
                 try:
-                    fn = os.path.join(selected_folder,"folder.conf")
-
-                    folder_conf_file = open(fn,"r")
-                    lines = folder_conf_file.readlines()
-                    folder_conf_file.close()
-
-                    folderconf = {}
-                    folderconf["RESUME"] = "off"
-                    folderconf["CURRENTFILENAME"] = ""
-                    for line in lines:
-                        _key, _val = line.split('=',2)
-                        folderconf[_key] = _val.replace("\"","").strip()
-                    self.lastplayedfile =  folderconf["CURRENTFILENAME"]
-
-                    if (folderconf["CURRENTFILENAME"] != "") and ((folderconf["RESUME"]).lower() == "on"):
-                        fn = os.path.join(selected_folder,"livestream.txt")
-                        livestream = open(fn, "r")
-                        subfiles = livestream.readlines()
-                        livestream.close()
-
-                        subfiles2 = [s.strip() for s in subfiles]
-
-                        if self.lastplayedfile in subfiles2:
-                            pos = subfiles2.index(self.lastplayedfile)
-                            prozent = (pos + 1) / len (subfiles2) * 100
-
+                    onlinepath = os.path.join(self.cwd,listobj.name)
+                    if onlinepath.endswith('/'):
+                        folderinfo = playout.getpos_online(self.baseurl,onlinepath)
+                        if len(folderinfo) >= 6 and folderinfo[0] == "POS":
+                            song = int(float(folderinfo[3]))
+                            length = int(float(folderinfo[4]))
+                            prozent = (song - 1) / length * 100
                             progress = "%2.2d%%%s"  % (prozent,progress)
+                        elif folderinfo[0] == "ERR":
+                            progress = "%s%s"  % (folderinfo[0],progress)
 
                 except Exception as error:
-                    pass
+                    print (error)
                 self.progress[listobj.name.strip('/')] = progress
         except Exception as error:
             print (error)
@@ -296,8 +279,8 @@ class DownloadMenu(ListBase):
                     try:
                         posstring = playout.getpos_online(self.baseurl,self.cwd)
                         if posstring[0] == "POS":
-                            online_file = "Datei: %s" % (posstring[1])
-                            online_pos = "Pos:  %s " % (posstring[2])
+                            online_file = posstring[1]
+                            online_pos = "Zeit:  %s " % (posstring[2])
 
                         else:
                             online_file = ""
@@ -317,13 +300,12 @@ class DownloadMenu(ListBase):
                     self.menu.append("informationen")
                     self.menu.append("Lokal löschen")
                     self.menu.append("")
+                    if online_file in self.items:
+                        self.menu.append("Aktueller Titel :%2.2d " %  (self.items.index(online_file) + 1))
                     self.menu.append("Anzahl Titel :%2.2d " %  (len(self.items)))
                     self.menu.append("Gesamtgröße %s" % (get_size(self.totalsize)))
                     self.menu.append(current_pos)
-                    self.menu.append("")
-
-                    self.menu.append("Onlineinformationen:")
-                    self.menu.append(online_file)
+                    self.menu.append("Datei: %s" % (online_file))
                     self.menu.append(online_pos)
 
                     return

@@ -76,7 +76,7 @@ class Playbackmenu(MainWindow):
         if self.counter == 1:
             playout.pc_stop()
             playout.savepos()
-            playout.savepos_online(self.nowplaying.filename,self.nowplaying._elapsed)
+            playout.savepos_online(self.nowplaying)
         elif self.counter == 2:
             playout.pc_toggle()
         elif self.counter == 3:
