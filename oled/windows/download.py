@@ -216,7 +216,7 @@ class DownloadMenu(ListBase):
         if latestplayed[0] == "POS":
             folderconf["CURRENTFILENAME"] = "%s%s" % (latestplayed[3],latestplayed[1])
             folderconf["ELAPSED"] = latestplayed[2]
-
+        print (filename)
         try:
             with open(filename,"w") as folder_conf_file:
 
