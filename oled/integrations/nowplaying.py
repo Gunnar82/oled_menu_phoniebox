@@ -118,13 +118,13 @@ class nowplaying:
 
     async def _savepos(self):
         oldfilename = ""
-        oldstate = ""
+        oldstate = "stop"
         oldstate = "none"
 
         while self.loop.is_running():
             try:
                 if not (self.input_is_stream and not self.input_is_online):
-                    if (oldfilename != self.filename and self.filename != "") or (oldstate != self._state and self._state in ["pause", "play"]):
+                    if ((oldfilename != self.filename and self.filename != "") or (oldstate != self._state and self._state in ["pause", "play"])) and self._elapsed != -1:
                         playout.savepos()
                         if self.input_is_online:
                             playout.savepos_online(self.filename,self._elapsed)

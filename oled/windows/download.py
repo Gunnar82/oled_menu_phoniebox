@@ -250,7 +250,7 @@ class DownloadMenu(ListBase):
                     additem = self.baseurl + requests.utils.quote(self.cwd + self.stripitem(item)) + '\n'
                     ofile.write(additem)
             foldername = directory[len(cfg_file_folder.AUDIO_BASEPATH_BASE):]
-            playout.pc_playfolder(foldername)
+            #playout.pc_playfolder(foldername)
             self.windowmanager.set_window("idle")
         except Exception as error:
             print (error)
