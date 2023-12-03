@@ -214,7 +214,6 @@ class DownloadMenu(ListBase):
             print (error)
 
 
-
     def playfolder(self):
 
         directory = os.path.join(cfg_file_folder.AUDIO_BASEPATH_ONLINE,self.cwd[len(self.basecwd):])
@@ -375,7 +374,10 @@ class DownloadMenu(ListBase):
         return rawitem.rstrip('\u2302').rstrip()
 
     def render(self):
-        if self.canceled or self.downloading:
+        if self.canceled:
+            self.busytext3="Abbruch! Bitte warten!"
+            self.renderbusy()
+        elif self.downloading:
             self.renderbusy()
         else:
             super().render()
