@@ -1,13 +1,12 @@
 """Manages the currently shown activewindow on screen and passes callbacks for the rotary encoder"""
 import settings
+import asyncio
+from datetime import datetime
 
 import config.symbols as symbols
-
-import asyncio
+import integrations.functions as fn
 
 from integrations.logging import *
-
-from datetime import datetime
 from integrations.rfidwatcher import RfidWatcher
 from integrations.latestplayed import LatestPlayed
 
@@ -186,7 +185,13 @@ class WindowManager():
     def turn_callback(self, direction, key=None):
         settings.lastinput = datetime.now()
         settings.staywake = False
-        if settings.screenpower:
+        if key == '0' and self.activewindow.windowtitle not in ["idle"]:
+            try:
+                fn.restart_oled()
+            except Exception as error:
+                log(lERROR,"turn_callback: %s" % (str(error)))
+
+        elif settings.screenpower:
             settings.callback_active = True
             log(lDEBUG2,"turn_callback: started")
 
