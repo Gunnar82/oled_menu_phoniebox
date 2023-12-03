@@ -39,12 +39,15 @@ class DownloadMenu(ListBase):
         self.selector = False
         self.download = False
         self.website = cfg_online.ONLINE_URL
-        self.set_busy("Verbinde Online",symbols.SYMBOL_CLOUD,self.website,busyrendertime=5)
-        self.renderbusy()
-        time.sleep(2)
-
         self.baseurl = self.website[:cfg_online.ONLINE_URL.find('/',9)]
         self.basecwd= self.website[cfg_online.ONLINE_URL.find('/',9):]
+
+        self.set_busy("Verbinde Online",symbols.SYMBOL_CLOUD,self.website,busyrendertime=60)
+        self.renderbusy()
+        self.loop.run_in_executor(None,self.execute_init)
+
+
+    def execute_init(self):
 
         try:
             with open(cfg_file_folder.FILE_LAST_ONLINE,"r") as f:
@@ -77,6 +80,8 @@ class DownloadMenu(ListBase):
         except requests.exceptions.HTTPError as error:
             self.set_busy("HTTP-Fehler",symbols.SYMBOL_NOCLOUD,str(error),set_window_to="idle")
             return
+        finally:
+            self.set_busy("Verbinde Online",symbols.SYMBOL_CLOUD,self.website,busyrendertime=0)
 
         if self.direct_play_last_folder:
             self.direct_play_last_folder = False
@@ -327,7 +332,12 @@ class DownloadMenu(ListBase):
             self.loop.create_task(self.push_handler())
 
     def on_key_left(self):
+        self.set_busy("Lese Verzeichnis",busyrendertime=60)
+        self.loop.run_in_executor(None,self.handle_key_left)
 
+
+
+    def handle_key_left(self):
         self.selector = False
         self.cwd = self.cwd.rstrip('/')
         pos = self.cwd.rfind('/')
@@ -361,6 +371,9 @@ class DownloadMenu(ListBase):
                 self.basetitle = "Online"
         except Exception as error:
             self.basetitle = self.windowtitle
+        finally:
+            self.set_busy("",busyrendertime=0)
+
 
     def stripitem(self, rawitem):
         return rawitem.rstrip('\u2302').rstrip()
