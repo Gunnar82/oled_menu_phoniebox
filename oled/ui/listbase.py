@@ -38,7 +38,7 @@ class ListBase(WindowBase):
 
         if self.left_pressed:
             self.left_pressed = False
-            self.on_key_left()
+            self.loop.run_in_executor(None,self.on_key_left)
             return
 
         if self.right_pressed:

@@ -333,11 +333,7 @@ class DownloadMenu(ListBase):
 
     def on_key_left(self):
         self.set_busy("Lese Verzeichnis",busyrendertime=60)
-        self.loop.run_in_executor(None,self.handle_key_left)
 
-
-
-    def handle_key_left(self):
         self.selector = False
         self.cwd = self.cwd.rstrip('/')
         pos = self.cwd.rfind('/')
