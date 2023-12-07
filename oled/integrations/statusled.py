@@ -20,7 +20,7 @@ class statusled:
         dc=0                               # set dc variable to 0 for 0%
         self.pwm.start(dc)                      # Start PWM with 0% duty cycle
         try:
-            while settings.STATUS_LED_ENABLED and self.loop.is_running():                      # Loop until Ctl C is pressed to stop.
+            while self.loop.is_running():                      # Loop until Ctl C is pressed to stop.
                 try:
                     status = self.musicmanager.status()
 
