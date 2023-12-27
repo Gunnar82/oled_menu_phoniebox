@@ -6,7 +6,7 @@ def get_display():
 
     from luma.core.interface.serial import spi,i2c
 
-    from luma.oled.device import ssd1351
+    from luma.oled.device import sh1106
 
     device = sh1106(i2c(port=1, address=0x3C))
 
