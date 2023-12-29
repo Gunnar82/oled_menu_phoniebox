@@ -56,6 +56,7 @@ class MenuBase(WindowBase):
 
                 if (i == self.counter):
                     y_coord -= 2
+                    draw.rectangle((x_coord + 2, y_coord + self.iconheight + 2 ,x_coord + self.iconwidth - 5, y_coord + self.iconheight + 5) , outline=outline, fill=fill)
 
                 draw.text((x_coord, y_coord) , text=self.descr[i][1], font=self.faicons, outline=outline, fill=fill)
 
