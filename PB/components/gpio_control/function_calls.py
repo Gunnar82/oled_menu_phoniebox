@@ -90,6 +90,9 @@ class phoniebox_function_calls:
     def functionCallRestartOLED(self, *args):
         function_call("sudo systemctl restart oled", shell=True)
 
+    def functionCallPullOLED(self, *args):
+        function_call("cd /home/pi/oledctrl && git pull", shell=True)
+
     def getFunctionCall(self, functionName):
         self.logger.error('Get FunctionCall: {} {}'.format(functionName, functionName in locals()))
         getattr(sys.modules[__name__], str)
