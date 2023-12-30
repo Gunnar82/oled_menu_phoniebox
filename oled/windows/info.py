@@ -1,16 +1,19 @@
 """ Shutdown menu """
-from ui.windowbase import WindowBase
+from ui.listbase import ListBase
 from luma.core.render import canvas
 from PIL import ImageFont
+
 import settings
+import asyncio
 
 import config.colors as colors
+import integrations.functions as fn
 
 import socket
 import subprocess
 import os
 
-class Infomenu(WindowBase):
+class Infomenu(ListBase):
     font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_NORMAL)
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XL)
     ipaddr = ""
@@ -20,14 +23,21 @@ class Infomenu(WindowBase):
     window_on_back = "mainmenu"
 
     def __init__(self, windowmanager, loop):
-        super().__init__(windowmanager, loop)
+        super().__init__(windowmanager, loop,"Systeminfo")
         self.counter = 0
+        self.loop = loop
         self.linewidth, self.lineheight = self.font.getsize("000")
 
+    def activate(self):
+        self.active = True
+        self.loop.create_task(self.generate())
 
-    def render(self):
-        with canvas(self.device) as draw:
+    def deactivate(self):
+        self.active = False
 
+
+    async def generate(self):
+        while self.loop.is_running() and self.active:
             try:
                 subprocess_result = subprocess.Popen('iwgetid',shell=True,stdout=subprocess.PIPE)
                 subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
@@ -55,16 +65,15 @@ class Infomenu(WindowBase):
             except:
                 pass
 
-            draw.text((1, self.lineheight*1.2), text="IP: " + self.ipaddr, font=self.font, fill="white")
-            draw.text((1, 2 * self.lineheight*1.2), text="WiFi: " + self.wifi_ssid, font=self.font, fill="white")
-            draw.text((1, 3 * self.lineheight*1.2), text="hostapdi: " + str(self.hostapd), font=self.font, fill="white")
-            draw.text((1, 4 * self.lineheight*1.2), text=self.temp, font=self.font, fill="white")
+            self.menu = []
+            self.menu.append("IP: " + self.ipaddr)
+            self.menu.append("WiFi: " + self.wifi_ssid)
+            self.menu.append("hostapdi: " + str(self.hostapd))
+            self.menu.append("OLED Version: " + fn.get_oledversion())
+            self.menu.append(self.temp)
+
+            await asyncio.sleep(10)
 
 
     def push_callback(self,lp=False):
-        if self.counter == 0:
-            self.windowmanager.set_window("mainmenu")
-
-    def turn_callback(self, direction, key=None):
-        if self.counter + direction <= 0 and self.counter + direction >= 0:
-            self.counter += direction
+        self.windowmanager.set_window("mainmenu")

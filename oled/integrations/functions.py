@@ -156,3 +156,13 @@ def get_size(size):
         size = size / 1024
 
     return "%d %s" % (size,mb[number])
+
+
+def get_oledversion():
+    version = "0"
+    try:
+        with open('/home/pi/oledctrl/build_number') as f:
+            version = f.readline().strip()
+    except Exception as error:
+         print (error)
+    return "v2-%s" % (version)

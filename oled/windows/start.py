@@ -9,7 +9,7 @@ import settings
 import config.colors as colors
 import config.symbols as symbols
 
-from integrations.functions import get_battload_color
+from integrations.functions import get_oledversion, get_battload_color
 from integrations.logging import *
 
 
@@ -36,7 +36,7 @@ class Start(WindowBase):
             self.bluetooth.enable_dev_bt()
 
     def render(self):
-        self.set_busy("Wird gestartet...")
+        self.set_busy("Wird gestartet...",busytext2=get_oledversion())
 
         if "x728" in settings.INPUTS:
             color = get_battload_color()
