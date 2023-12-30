@@ -5,3 +5,4 @@
 settings.py
 oled/pins/*
 Latest*
+oled/config/online.py
