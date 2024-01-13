@@ -62,7 +62,7 @@ class Shutdownmenu(MenuBase):
         elif self.counter == 9:
             os.system("%s -c=setidletime -v=5" % cfg_file_folder.PLAYOUT_CONTROLS)
         elif self.counter == 10:
-            os.system("%s -c=setidletime -v=20" % cfg_file_folder.PLAYOUT_CONTROLS)
+            os.system("%s -c=setidletime -v=15" % cfg_file_folder.PLAYOUT_CONTROLS)
 
         get_timeouts()
 
