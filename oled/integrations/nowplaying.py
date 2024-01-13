@@ -78,6 +78,8 @@ class nowplaying:
                         self._playingfile = playing['file']
                         if self._playingfile.startswith(('https:','http:')):
                             self.input_is_stream = True
+                        else:
+                            self.input_is_stream = False
                     else:
                         self._playingfile = ""
                         self.input_is_stream = False

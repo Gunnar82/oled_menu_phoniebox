@@ -188,6 +188,7 @@ class Idle(MainWindow):
                         self.set_busy("Erster Titel",symbols.SYMBOL_FAIL)
 
             elif key in ['right', '6']:
+                print (self.nowplaying)
                 if self.nowplaying.input_is_stream and not self.nowplaying.input_is_online and self.nowplaying._song <= self.nowplaying._playlistlength:
                     self.set_busy("Nächster Sender",symbols.SYMBOL_NEXT)
                     self.loop.create_task(self.change_folder(1))
