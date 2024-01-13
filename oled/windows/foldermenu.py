@@ -34,8 +34,18 @@ class Foldermenu(ListBase):
         self.on_key_left()
 
     async def playfolder(self,folder):
-        foldername = folder[len(cfg_file_folder.AUDIO_BASEPATH_BASE):]
+        foldername = folder[len(cfg_file_folder.AUDIO_BASEPATH_BASE) + 1:]
         await asyncio.sleep(1)
+
+        if folder.startswith(cfg_file_folder.AUDIO_BASEPATH_HOERBUCH):
+            playout.pc_enableresume(foldername)
+        elif folder.startswith(cfg_file_folder.AUDIO_BASEPATH_MUSIC):
+            playout.pc_disableresume(foldername)
+        elif folder.startswith(cfg_file_folder.AUDIO_BASEPATH_RADIO):
+            playout.pc_disableresume(foldername)
+        else:
+            print ("UNKNPWN")
+
         playout.pc_playfolder(foldername)
         self.windowmanager.set_window("idle")
 

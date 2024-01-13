@@ -82,3 +82,11 @@ def pc_playfolder(folder=cfg_file_folder.AUDIO_BASEPATH_RADIO):
 
 def pc_shutdown():
     os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=shutdown")
+
+def pc_enableresume(folder=""):
+    if folder != "":
+        print("%s -c=enableresume -d=\"%s\"" % (cfg_file_folder.RESUME_PLAY,folder))
+
+def pc_disableresume(folder=""):
+    if folder != "":
+        os.system("%s -c=disableresume -d=\"%s\"" % (cfg_file_folder.RESUME_PLAY,folder))
