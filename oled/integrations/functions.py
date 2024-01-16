@@ -166,3 +166,7 @@ def get_oledversion():
     except Exception as error:
          print (error)
     return "v2-%s" % (version)
+
+
+def delete_local_online_status():
+    os.system("sudo rm -r %s/*" % (cfg_file_folder.AUDIO_BASEPATH_ONLINE))

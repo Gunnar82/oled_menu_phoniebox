@@ -14,7 +14,7 @@ import shutil
 from ui.menubase import MenuBase
 import time
 import integrations.playout as playout
-from integrations.functions import get_size
+from integrations.functions import get_size,delete_local_online_status
 
 import config.online as cfg_online
 import config.file_folder as cfg_file_folder
@@ -29,6 +29,8 @@ class SystemMenu(MenuBase):
         self.processing = False
         self.totalsize = 0
         self.descr.append(["Update Radiosender","\uf019"])
+        self.descr.append(["Lösche Onlinestatus","\uf014"])
+
         for srv in cfg_services.RESTART_LIST:
             self.descr.append(["Restart %s" % (srv),"\uf01e",srv])
 
@@ -57,6 +59,8 @@ class SystemMenu(MenuBase):
                 self.loop.run_in_executor(None,self.exec_command)
             else:
                 self.set_busy("Online Updates deaktiviert")
+        elif self.counter == 2:
+            delete_local_online_status()
         else:
             self.cmd = "sudo systemctl restart %s" % (self.descr[self.counter][2])
             self.set_busy(self.descr[self.counter][0],self.descr[self.counter][1],busyrendertime=5)
