@@ -212,8 +212,7 @@ class Idle(MainWindow):
                 settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_RADIO
                 settings.currentfolder = get_folder_from_file(cfg_file_folder.FILE_LAST_RADIO)
                 self.windowmanager.set_window("foldermenu")
-            elif key == 'D':
-
+            elif key in  ['D','hl']:
                 self.windowmanager.set_window("downloadmenu")
             elif key =='0':
                 self.windowmanager.set_window("shutdownmenu")
@@ -226,7 +225,7 @@ class Idle(MainWindow):
             #    playout.pc_mute()
             elif key == 'start':
                 playout.pc_toggle()
-            elif key == 'hl':
+            elif key == 'TODO':
                 self.windowmanager.windows["downloadmenu"].direct_play_last_folder = True
                 self.windowmanager.set_window("downloadmenu")
 
