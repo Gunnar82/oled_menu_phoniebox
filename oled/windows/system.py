@@ -14,7 +14,7 @@ import shutil
 from ui.menubase import MenuBase
 import time
 import integrations.playout as playout
-from integrations.functions import get_size,delete_local_online_status
+from integrations.functions import get_size,delete_local_online_folder
 
 import config.online as cfg_online
 import config.file_folder as cfg_file_folder
@@ -29,7 +29,12 @@ class SystemMenu(MenuBase):
         self.processing = False
         self.totalsize = 0
         self.descr.append(["Update Radiosender","\uf019"])
-        self.descr.append(["Lösche Onlinestatus","\uf014"])
+        self.descr.append(["Lösche Online-Ordner","\uf014"])
+
+        self.descr.append(["Lösche Hörspielstatus","\uf014",cfg_file_folder.FILE_LAST_HOERBUCH])
+        self.descr.append(["Lösche Musikstatus","\uf014",cfg_file_folder.FILE_LAST_MUSIC])
+        self.descr.append(["Lösche Radiostatus","\uf014",cfg_file_folder.FILE_LAST_RADIO])
+        self.descr.append(["Lösche Onlinestatus","\uf014",cfg_file_folder.FILE_LAST_ONLINE])
 
         for srv in cfg_services.RESTART_LIST:
             self.descr.append(["Restart %s" % (srv),"\uf01e",srv])
@@ -60,7 +65,12 @@ class SystemMenu(MenuBase):
             else:
                 self.set_busy("Online Updates deaktiviert")
         elif self.counter == 2:
-            delete_local_online_status()
+            delete_local_online_folder()
+        elif self.counter >=3 and self.counter <= 6:
+            self.cmd = "sudo rm %s" % (self.descr[self.counter][2])
+            self.set_busy(self.descr[self.counter][0],self.descr[self.counter][1],busyrendertime=5)
+            self.loop.run_in_executor(None,self.exec_command)
+
         else:
             self.cmd = "sudo systemctl restart %s" % (self.descr[self.counter][2])
             self.set_busy(self.descr[self.counter][0],self.descr[self.counter][1],busyrendertime=5)

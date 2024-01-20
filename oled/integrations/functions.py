@@ -168,5 +168,5 @@ def get_oledversion():
     return "v2-%s" % (version)
 
 
-def delete_local_online_status():
+def delete_local_online_folder():
     os.system("sudo rm -r %s/*" % (cfg_file_folder.AUDIO_BASEPATH_ONLINE))
