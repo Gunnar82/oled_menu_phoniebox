@@ -36,6 +36,8 @@ class SystemMenu(MenuBase):
         self.descr.append(["Lösche Radiostatus","\uf014",cfg_file_folder.FILE_LAST_RADIO])
         self.descr.append(["Lösche Onlinestatus","\uf014",cfg_file_folder.FILE_LAST_ONLINE])
 
+        self.descr.append(["Update git pull","\uf019"])
+
         for srv in cfg_services.RESTART_LIST:
             self.descr.append(["Restart %s" % (srv),"\uf01e",srv])
 
@@ -68,6 +70,10 @@ class SystemMenu(MenuBase):
             delete_local_online_folder()
         elif self.counter >=3 and self.counter <= 6:
             self.cmd = "sudo rm %s" % (self.descr[self.counter][2])
+            self.set_busy(self.descr[self.counter][0],self.descr[self.counter][1],busyrendertime=5)
+            self.loop.run_in_executor(None,self.exec_command)
+        elif self.counter == 7:
+            self.cmd = "cd /home/pi/oledctrl && git pull && sudo systemctl restart oled"
             self.set_busy(self.descr[self.counter][0],self.descr[self.counter][1],busyrendertime=5)
             self.loop.run_in_executor(None,self.exec_command)
 
