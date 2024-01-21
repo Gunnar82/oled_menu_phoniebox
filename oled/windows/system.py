@@ -70,7 +70,7 @@ class SystemMenu(MenuBase):
         elif self.counter == 2:
             delete_local_online_folder()
         elif self.counter == 3:
-            self.cmd = "wget  --no-verbose --no-check-certificate  -r %s?confirm=true -O-" %(cfg_online.ONLINE_DELETE_STATUS)
+            self.cmd = "wget  --no-verbose --no-check-certificate %sdeletepos.php?confirm=true -O-" %(cfg_online.ONLINE_SAVEPOS)
             self.set_busy(self.descr[self.counter][0],self.descr[self.counter][1],busyrendertime=5)
             self.loop.run_in_executor(None,self.exec_command)
         elif self.counter >=4 and self.counter <= 7:
