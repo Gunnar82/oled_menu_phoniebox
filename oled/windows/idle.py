@@ -200,7 +200,7 @@ class Idle(MainWindow):
                     else:
                         self.set_busy("Letzter Titel",symbols.SYMBOL_FAIL)
 
-            elif key == 'A':
+            elif key == 'A' or key == 'Y':
                 settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_MUSIC
                 settings.currentfolder = get_folder_from_file(cfg_file_folder.FILE_LAST_MUSIC)
                 self.windowmanager.set_window("foldermenu")
@@ -208,7 +208,7 @@ class Idle(MainWindow):
                 settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_HOERBUCH 
                 settings.currentfolder = get_folder_from_file(cfg_file_folder.FILE_LAST_HOERBUCH)
                 self.windowmanager.set_window("foldermenu")
-            elif key == 'C':
+            elif key == 'C' or key == 'X':
                 settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_RADIO
                 settings.currentfolder = get_folder_from_file(cfg_file_folder.FILE_LAST_RADIO)
                 self.windowmanager.set_window("foldermenu")
