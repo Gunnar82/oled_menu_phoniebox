@@ -53,10 +53,12 @@ def getpos_online(baseurl,cwd):
     except:
         return ["ERREXP"]
 
+def add_leading_slash(folder):
+    return folder if folder[0] == '/' else '/%s' % (folder)
 
 def checkfolder(playfile):
     try:
-        lastfile=open(playfile).read().replace("\n","")
+        lastfile=add_leading_slash(open(playfile).read().replace("\n",""))
         if not os.path.isdir(cfg_file_folder.AUDIO_BASEPATH_BASE + lastfile):
             return 2
         return 0
@@ -64,7 +66,7 @@ def checkfolder(playfile):
         return 1
 
 def playlast_checked(playfile):
-    lastfile=open(playfile).read().replace("\n","")
+    lastfile=add_leading_slash(open(playfile).read().replace("\n",""))
 
     pc_playfolder(lastfile)
 
