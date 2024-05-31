@@ -65,12 +65,33 @@ class Infomenu(ListBase):
             except:
                 pass
 
+            try:
+                subprocess_result = subprocess.Popen('df -hl -text4 -tvfat -text3 -traiserfs --output=target,pcent,size | grep /',shell=True,stdout=subprocess.PIPE)
+                #subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
+                subprocess_output = subprocess_result.stdout.readlines()
+                self.dfh = subprocess_output
+                #self.dfh = subprocess_output[0].decode().split()
+            except:
+                self.dfh = "n/a"
+
+            try:
+                self.hostapd = True if os.system('systemctl is-active --quiet hostapd.service') == 0 else False
+            except:
+                pass
+
+
             self.menu = []
             self.menu.append("IP: " + self.ipaddr)
             self.menu.append("WiFi: " + self.wifi_ssid)
             self.menu.append("hostapdi: " + str(self.hostapd))
             self.menu.append("OLED Version: " + fn.get_oledversion())
             self.menu.append(self.temp)
+
+            self.menu.append("Disk-Usage:")
+            for e in self.dfh:
+                self.menu.append(e.decode())
+
+
 
             await asyncio.sleep(10)
 
