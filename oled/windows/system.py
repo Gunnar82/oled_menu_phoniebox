@@ -39,6 +39,10 @@ class SystemMenu(MenuBase):
 
         self.descr.append(["Update git pull","\uf019"])
 
+        self.descr.append(["WLAN aus","\uf0ed"])
+        self.descr.append(["WLAN an","\uf012"])
+
+
         for srv in cfg_services.RESTART_LIST:
             self.descr.append(["Restart %s" % (srv),"\uf01e",srv])
 
@@ -79,6 +83,13 @@ class SystemMenu(MenuBase):
             self.loop.run_in_executor(None,self.exec_command)
         elif self.counter == 8:
             self.cmd = "cd /home/pi/oledctrl && git pull && sudo systemctl restart oled"
+            self.set_busy(self.descr[self.counter][0],self.descr[self.counter][1],busyrendertime=5)
+            self.loop.run_in_executor(None,self.exec_command)
+        elif self.counter == 9 or self.counter == 10:
+            if self.counter == 9:
+                self.cmd = "sudo ip link set wlan0 down"
+            else:
+                self.cmd = "sudo ip link set wlan0 up"
             self.set_busy(self.descr[self.counter][0],self.descr[self.counter][1],busyrendertime=5)
             self.loop.run_in_executor(None,self.exec_command)
 
