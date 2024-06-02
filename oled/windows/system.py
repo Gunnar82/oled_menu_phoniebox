@@ -42,6 +42,9 @@ class SystemMenu(MenuBase):
         self.descr.append(["WLAN aus","\uf0ed"])
         self.descr.append(["WLAN an","\uf012"])
 
+        self.descr.append(["Bluetooth Autoconnect an",symbols.SYMBOL_BLUETOOTH_ON])
+        self.descr.append(["Bluetooth Autoconnect aus",symbols.SYMBOL_BLUETOOTH_OFF])
+
 
         for srv in cfg_services.RESTART_LIST:
             self.descr.append(["Restart %s" % (srv),"\uf01e",srv])
@@ -85,11 +88,21 @@ class SystemMenu(MenuBase):
             self.cmd = "cd /home/pi/oledctrl && git pull && sudo systemctl restart oled"
             self.set_busy(self.descr[self.counter][0],self.descr[self.counter][1],busyrendertime=5)
             self.loop.run_in_executor(None,self.exec_command)
+
         elif self.counter == 9 or self.counter == 10:
             if self.counter == 9:
                 self.cmd = "sudo ip link set wlan0 down"
             else:
                 self.cmd = "sudo ip link set wlan0 up"
+            self.set_busy(self.descr[self.counter][0],self.descr[self.counter][1],busyrendertime=5)
+            self.loop.run_in_executor(None,self.exec_command)
+
+        elif self.counter == 11:
+            self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=False/BLUETOOTH_AUTOCONNECT=True/g' /home/pi/oledctrl/oled/config/bluetooth.py"
+            self.set_busy(self.descr[self.counter][0],self.descr[self.counter][1],busyrendertime=5)
+            self.loop.run_in_executor(None,self.exec_command)
+        elif self.counter == 12:
+            self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=True/BLUETOOTH_AUTOCONNECT=False/g' /home/pi/oledctrl/oled/config/bluetooth.py"
             self.set_busy(self.descr[self.counter][0],self.descr[self.counter][1],busyrendertime=5)
             self.loop.run_in_executor(None,self.exec_command)
 

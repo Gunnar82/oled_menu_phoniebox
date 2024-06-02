@@ -8,6 +8,7 @@ import settings
 
 import config.colors as colors
 import config.symbols as symbols
+import config.bluetooth as cbluetooth
 
 from integrations.functions import get_oledversion, get_battload_color
 from integrations.logging import *
@@ -28,7 +29,7 @@ class Start(WindowBase):
     def activate(self):
         self.bluetooth.enable_dev_local()
 
-        if (settings.BLUETOOTH_AUTOCONNECT):
+        if (cbluetooth.BLUETOOTH_AUTOCONNECT):
             self.set_busy("Verbinde...",symbols.SYMBOL_BLUETOOTH_OFF,self.bluetooth.selected_bt_name, busyrendertime = 5)
             self.busy = True
             self.renderbusy()
