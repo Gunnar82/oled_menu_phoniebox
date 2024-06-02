@@ -66,7 +66,7 @@ class Infomenu(ListBase):
                 pass
 
             try:
-                subprocess_result = subprocess.Popen('df -hl -text4 -tvfat -text3 -traiserfs --output=target,pcent,size | grep /',shell=True,stdout=subprocess.PIPE)
+                subprocess_result = subprocess.Popen('df -hl -text4 -tvfat -text3 -traiserfs --output=pcent,target,size | grep / ',shell=True,stdout=subprocess.PIPE)
                 #subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
                 subprocess_output = subprocess_result.stdout.readlines()
                 self.dfh = subprocess_output
