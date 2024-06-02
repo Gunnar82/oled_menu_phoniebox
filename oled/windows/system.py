@@ -11,7 +11,7 @@ import subprocess,os
 import asyncio
 import shutil
 
-from ui.menubase import MenuBase
+from ui.listbase import ListBase
 import time
 import integrations.playout as playout
 from integrations.functions import get_size,delete_local_online_folder
@@ -20,7 +20,7 @@ import config.online as cfg_online
 import config.file_folder as cfg_file_folder
 import config.services as cfg_services
 
-class SystemMenu(MenuBase):
+class SystemMenu(ListBase):
     def __init__(self, windowmanager,loop,title):
         super().__init__(windowmanager, loop, title)
         self.loop = loop
@@ -28,26 +28,26 @@ class SystemMenu(MenuBase):
         self.timeout = False
         self.processing = False
         self.totalsize = 0
-        self.descr.append(["Update Radiosender","\uf019"])
-        self.descr.append(["Lösche Online-Ordner","\uf014"])
-        self.descr.append(["Lösche Online-Status Online","\uf014"])
+        self.menu.append("Update Radiosender")
+        self.menu.append("Lösche Online-Ordner")
+        self.menu.append("Lösche Online-Status Online")
 
-        self.descr.append(["Lösche Hörspielstatus","\uf014",cfg_file_folder.FILE_LAST_HOERBUCH])
-        self.descr.append(["Lösche Musikstatus","\uf014",cfg_file_folder.FILE_LAST_MUSIC])
-        self.descr.append(["Lösche Radiostatus","\uf014",cfg_file_folder.FILE_LAST_RADIO])
-        self.descr.append(["Lösche Onlinestatus","\uf014",cfg_file_folder.FILE_LAST_ONLINE])
+        self.menu.append("Lösche Hörspielstatus")#,])
+        self.menu.append("Lösche Musikstatus")#])
+        self.menu.append("Lösche Radiostatus")#])
+        self.menu.append("Lösche Onlinestatus")
 
-        self.descr.append(["Update git pull","\uf019"])
+        self.menu.append("Update git pull")
 
-        self.descr.append(["WLAN aus","\uf0ed"])
-        self.descr.append(["WLAN an","\uf012"])
+        self.menu.append("WLAN aus")
+        self.menu.append("WLAN an")
 
-        self.descr.append(["Bluetooth Autoconnect an",symbols.SYMBOL_BLUETOOTH_ON])
-        self.descr.append(["Bluetooth Autoconnect aus",symbols.SYMBOL_BLUETOOTH_OFF])
+        self.menu.append("Bluetooth Autoconnect an")
+        self.menu.append("Bluetooth Autoconnect aus")
 
 
         for srv in cfg_services.RESTART_LIST:
-            self.descr.append(["Restart %s" % (srv),"\uf01e",srv])
+            self.menu.append("Restart %s" % (srv))
 
     def activate(self):
         self.cmd = ""
@@ -58,59 +58,70 @@ class SystemMenu(MenuBase):
             subprocess_result = subprocess.Popen(self.cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
             subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
             if subprocess_result.returncode == 0:
-                self.set_busy(self.descr[self.counter][0],symbols.SYMBOL_PASS, busytext2="Erfolgreich")
+                self.set_busy(self.menu[self.position],symbols.SYMBOL_PASS, busytext2="Erfolgreich")
             else:
-                self.set_busy(self.descr[self.counter][0],symbols.SYMBOL_FAIL, busytext2=subprocess_output[0].decode())
+                self.set_busy(self.menu[self.position],symbols.SYMBOL_FAIL, busytext2=subprocess_output[0].decode())
         finally:
             time.sleep(5)
             self.processing = False
 
 
     async def push_handler(self,button = '*'):
-        if self.counter == 1:
+        self.set_busy("Verarbeite...",busytext2=self.menu[self.position],busyrendertime=5)
+
+        if self.position == 0:
             if cfg_online.UPDATE_RADIO:
                 self.cmd = "wget  --no-verbose --no-check-certificate  -r %s  --no-parent -A txt -nH -P %s/" %(cfg_online.ONLINE_RADIO_URL,cfg_file_folder.AUDIO_BASEPATH_BASE)
-                self.set_busy("Aktualisiere Radiostationen",self.descr[self.counter][1],busyrendertime=5)
                 self.loop.run_in_executor(None,self.exec_command)
             else:
                 self.set_busy("Online Updates deaktiviert")
-        elif self.counter == 2:
+        elif self.position == 1:
             delete_local_online_folder()
-        elif self.counter == 3:
+        elif self.position == 2:
             self.cmd = "wget  --no-verbose --no-check-certificate %sdeletepos.php?confirm=true -O-" %(cfg_online.ONLINE_SAVEPOS)
-            self.set_busy(self.descr[self.counter][0],self.descr[self.counter][1],busyrendertime=5)
             self.loop.run_in_executor(None,self.exec_command)
-        elif self.counter >=4 and self.counter <= 7:
-            self.cmd = "sudo rm %s" % (self.descr[self.counter][2])
-            self.set_busy(self.descr[self.counter][0],self.descr[self.counter][1],busyrendertime=5)
+        elif self.position >=3 and self.position <= 6:
+            if self.position == 3:
+                what = cfg_file_folder.FILE_LAST_HOERBUCH
+            elif self.position == 4:
+                what = cfg_file_folder.FILE_LAST_MUSIC
+            elif self.position == 5:
+                what = cfg_file_folder.FILE_LAST_RADIO
+            else:
+                what = cfg_file_folder.FILE_LAST_ONLINE
+
+            self.cmd = "sudo rm %s" % (what)
+
             self.loop.run_in_executor(None,self.exec_command)
-        elif self.counter == 8:
+        elif self.position == 7:
             self.cmd = "cd /home/pi/oledctrl && git pull && sudo systemctl restart oled"
-            self.set_busy(self.descr[self.counter][0],self.descr[self.counter][1],busyrendertime=5)
             self.loop.run_in_executor(None,self.exec_command)
 
-        elif self.counter == 9 or self.counter == 10:
-            if self.counter == 9:
+        elif self.position == 8 or self.position == 9:
+            if self.position == 9:
                 self.cmd = "sudo ip link set wlan0 down"
             else:
                 self.cmd = "sudo ip link set wlan0 up"
-            self.set_busy(self.descr[self.counter][0],self.descr[self.counter][1],busyrendertime=5)
             self.loop.run_in_executor(None,self.exec_command)
 
-        elif self.counter == 11:
+        elif self.position == 10:
             self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=False/BLUETOOTH_AUTOCONNECT=True/g' /home/pi/oledctrl/oled/config/bluetooth.py"
-            self.set_busy(self.descr[self.counter][0],self.descr[self.counter][1],busyrendertime=5)
             self.loop.run_in_executor(None,self.exec_command)
-        elif self.counter == 12:
+        elif self.position == 11:
             self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=True/BLUETOOTH_AUTOCONNECT=False/g' /home/pi/oledctrl/oled/config/bluetooth.py"
-            self.set_busy(self.descr[self.counter][0],self.descr[self.counter][1],busyrendertime=5)
             self.loop.run_in_executor(None,self.exec_command)
 
         else:
-            self.cmd = "sudo systemctl restart %s" % (self.descr[self.counter][2])
-            self.set_busy(self.descr[self.counter][0],self.descr[self.counter][1],busyrendertime=5)
+            self.cmd = "sudo systemctl restart %s" % (self.menu[self.position][2])
             self.loop.run_in_executor(None,self.exec_command)
 
+
+    def push_callback(self,lp=False):
+        if self.position < 0:
+            self.windowmanager.set_window(self.window_on_back)
+        else:
+            self.set_busy("Verarbeite...", busytext2=self.menu[self.position])
+            self.loop.create_task(self.push_handler())
 
 
     def render(self):
