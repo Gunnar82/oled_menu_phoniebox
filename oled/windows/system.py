@@ -117,7 +117,7 @@ class SystemMenu(ListBase):
         else:
             self.cmd = "sudo systemctl restart %s" % (self.menu[self.position][2])
 
-        if not self.position in [2,12] :
+        if not self.position in [1,12] :
             self.loop.run_in_executor(None,self.exec_command)
 
 
