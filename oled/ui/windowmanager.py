@@ -75,19 +75,20 @@ class WindowManager():
 
         while self.loop.is_running():
 
+            seconds_since_last_input = (datetime.now() - settings.lastinput).total_seconds()
 
-            if ((datetime.now() - settings.lastinput).total_seconds() >= settings.MENU_TIMEOUT) and self.activewindow.timeout:
+            if (seconds_since_last_input >= settings.MENU_TIMEOUT) and self.activewindow.timeout:
                 self.set_window(self.activewindow.timeoutwindow)
 
             if self.activewindow.contrasthandle:
                 log(lDEBUG2,"contrasthandle")
-                if (datetime.now() - settings.lastinput).total_seconds() >= settings.DARK_TIMEOUT:
+                if (seconds_since_last_input >= settings.DARK_TIMEOUT):
                     self.rendertime = settings.DARK_RENDERTIME
                     self.looptime = int (settings.DARK_RENDERTIME // 2)
 
                     contrast = settings.CONTRAST_BLACK
 
-                elif  (datetime.now() - settings.lastinput).total_seconds() >= settings.CONTRAST_TIMEOUT:
+                elif  (seconds_since_last_input >= settings.CONTRAST_TIMEOUT):
                     self.looptime = settings.CONTRAST_RENDERTIME
                     self.rendertime = settings.CONTRAST_RENDERTIME
                     log(lDEBUG2,"contrast_timeout")
@@ -113,7 +114,7 @@ class WindowManager():
 
             if self.activewindow != []:
                 count = 0
-                while (contrast == settings.CONTRAST_BLACK) and (count < 4 * settings.DARK_RENDERTIME) and ((datetime.now() - settings.lastinput).total_seconds() >= settings.CONTRAST_TIMEOUT):
+                while (contrast == settings.CONTRAST_BLACK) and (count < 4 * settings.DARK_RENDERTIME) and (seconds_since_last_input >= settings.CONTRAST_TIMEOUT):
                     count += 1
                     await asyncio.sleep(0.25)
 

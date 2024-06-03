@@ -20,7 +20,7 @@ class Ende(WindowBase):
         self.timeout = False
         self.window_on_back = "none"
         self.power_timer = False
-        self._rendertime = 5
+        self._rendertime = 1
 
         self.windowmanager = windowmanager
         self.timeout = False
@@ -38,6 +38,7 @@ class Ende(WindowBase):
             self.loop.create_task(self.gpicase_timer())
         else:
             self.set_busy("System wird","\uf011",settings.shutdown_reason,busyrendertime=1)
+
         self.renderbusy()
 
     def render(self):
