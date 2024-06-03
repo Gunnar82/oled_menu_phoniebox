@@ -32,9 +32,9 @@ class SystemMenu(ListBase):
         self.menu.append("Lösche Online-Ordner")
         self.menu.append("Lösche Online-Status Online")
 
-        self.menu.append("Lösche Hörspielstatus")#,])
-        self.menu.append("Lösche Musikstatus")#])
-        self.menu.append("Lösche Radiostatus")#])
+        self.menu.append("Lösche Hörspielstatus")
+        self.menu.append("Lösche Musikstatus")
+        self.menu.append("Lösche Radiostatus")
         self.menu.append("Lösche Onlinestatus")
 
         self.menu.append("Update git pull")
@@ -45,9 +45,10 @@ class SystemMenu(ListBase):
         self.menu.append("Bluetooth Autoconnect an")
         self.menu.append("Bluetooth Autoconnect aus")
 
+        self.menu.append("Dienste neustarten:")
 
         for srv in cfg_services.RESTART_LIST:
-            self.menu.append("Restart %s" % (srv))
+            self.menu.append("%s" % (srv))
 
     def activate(self):
         self.cmd = ""
@@ -110,10 +111,13 @@ class SystemMenu(ListBase):
         elif self.position == 11:
             self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=True/BLUETOOTH_AUTOCONNECT=False/g' /home/pi/oledctrl/oled/config/bluetooth.py"
 
+        elif self.position == 12:
+            self.cmd = ""
+
         else:
             self.cmd = "sudo systemctl restart %s" % (self.menu[self.position][2])
 
-        if not self.position == 2:
+        if not self.position in [2,12] :
             self.loop.run_in_executor(None,self.exec_command)
 
 
