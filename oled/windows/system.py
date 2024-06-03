@@ -115,7 +115,7 @@ class SystemMenu(ListBase):
             self.cmd = ""
 
         else:
-            self.cmd = "sudo systemctl restart %s" % (self.menu[self.position][2])
+            self.cmd = "sudo systemctl restart %s" % (self.menu[self.position])
 
         if not self.position in [1,12] :
             self.loop.run_in_executor(None,self.exec_command)
@@ -125,6 +125,8 @@ class SystemMenu(ListBase):
     def push_callback(self,lp=False):
         if self.position < 0:
             self.windowmanager.set_window(self.window_on_back)
+        elif self.position == 12:
+            pass
         else:
             self.set_busy("Verarbeite...", busytext2=self.menu[self.position])
             self.loop.create_task(self.push_handler())
