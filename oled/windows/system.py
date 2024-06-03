@@ -72,14 +72,16 @@ class SystemMenu(ListBase):
         if self.position == 0:
             if cfg_online.UPDATE_RADIO:
                 self.cmd = "wget  --no-verbose --no-check-certificate  -r %s  --no-parent -A txt -nH -P %s/" %(cfg_online.ONLINE_RADIO_URL,cfg_file_folder.AUDIO_BASEPATH_BASE)
-                self.loop.run_in_executor(None,self.exec_command)
+
             else:
                 self.set_busy("Online Updates deaktiviert")
+
         elif self.position == 1:
             delete_local_online_folder()
+
         elif self.position == 2:
             self.cmd = "wget  --no-verbose --no-check-certificate %sdeletepos.php?confirm=true -O-" %(cfg_online.ONLINE_SAVEPOS)
-            self.loop.run_in_executor(None,self.exec_command)
+
         elif self.position >=3 and self.position <= 6:
             if self.position == 3:
                 what = cfg_file_folder.FILE_LAST_HOERBUCH
@@ -92,28 +94,28 @@ class SystemMenu(ListBase):
 
             self.cmd = "sudo rm %s" % (what)
 
-            self.loop.run_in_executor(None,self.exec_command)
+
         elif self.position == 7:
             self.cmd = "cd /home/pi/oledctrl && git pull && sudo systemctl restart oled"
-            self.loop.run_in_executor(None,self.exec_command)
 
         elif self.position == 8 or self.position == 9:
             if self.position == 9:
                 self.cmd = "sudo ip link set wlan0 down"
             else:
                 self.cmd = "sudo ip link set wlan0 up"
-            self.loop.run_in_executor(None,self.exec_command)
 
         elif self.position == 10:
             self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=False/BLUETOOTH_AUTOCONNECT=True/g' /home/pi/oledctrl/oled/config/bluetooth.py"
-            self.loop.run_in_executor(None,self.exec_command)
+
         elif self.position == 11:
             self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=True/BLUETOOTH_AUTOCONNECT=False/g' /home/pi/oledctrl/oled/config/bluetooth.py"
-            self.loop.run_in_executor(None,self.exec_command)
 
         else:
             self.cmd = "sudo systemctl restart %s" % (self.menu[self.position][2])
+
+        if not self.position == 2:
             self.loop.run_in_executor(None,self.exec_command)
+
 
 
     def push_callback(self,lp=False):
