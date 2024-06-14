@@ -180,7 +180,11 @@ class Idle(MainWindow):
                     self.set_busy("Vorheriger Sender",symbols.SYMBOL_PREV)
                     self.loop.create_task(self.change_folder(-1))
                 else:
-                    if int(self.nowplaying._song) > 1:
+                    if float(self.nowplaying._elapsed) > 10:
+                        self.set_busy("Neustart Track",symbols.SYMBOL_PREV)
+                        log (lDEBUG,"idle: seek 0")
+                        playout.pc_seek0()
+                    elif int(self.nowplaying._song) > 1:
                         self.set_busy("Zurück",symbols.SYMBOL_PREV)
                         log (lDEBUG,"idle: prev")
                         playout.pc_prev()

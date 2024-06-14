@@ -29,6 +29,11 @@ def pc_reboot():
     print("Reboot down system")
     os.system("%s -c=reboot" % (cfg_file_folder.PLAYOUT_CONTROLS))
 
+
+def pc_seek0():
+    print("mpc seek 0")
+    os.system("mpc seek 0")
+
 def savepos():
     os.system("%s -c=savepos" % (cfg_file_folder.RESUME_PLAY))
 
