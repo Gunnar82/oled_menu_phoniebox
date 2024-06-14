@@ -45,6 +45,12 @@ class SystemMenu(ListBase):
         self.menu.append("Bluetooth Autoconnect an")
         self.menu.append("Bluetooth Autoconnect aus")
 
+        self.menu.append("service hostapd beenden")
+        self.menu.append("service hostapd starten")
+        self.menu.append("service hostapd deaktivieren")
+        self.menu.append("service hostapd aktivieren")
+
+
         self.menu.append("Dienste neustarten:")
 
         for srv in cfg_services.RESTART_LIST:
@@ -112,6 +118,18 @@ class SystemMenu(ListBase):
             self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=True/BLUETOOTH_AUTOCONNECT=False/g' /home/pi/oledctrl/oled/config/bluetooth.py"
 
         elif self.position == 12:
+            self.cmd = "sudo systemctl stop hostapd"
+
+        elif self.position == 13:
+            self.cmd = "sudo systemctl start hostapd"
+
+        elif self.position == 14:
+            self.cmd = "echo \"disabled\" > /home/pi/oledctrl/oled/config/hotspot"
+
+        elif self.position == 15:
+            self.cmd = "echo \"enabled\" > /home/pi/oledctrl/oled/config/hotspot"
+
+        elif self.position == 16:
             self.cmd = ""
 
         else:
