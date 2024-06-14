@@ -37,21 +37,23 @@ class SystemMenu(ListBase):
         self.menu.append("Lösche Radiostatus")
         self.menu.append("Lösche Onlinestatus")
 
-        self.menu.append("Update git pull")
+        self.menu.append("git pull OLED")
 
-        self.menu.append("WLAN aus")
-        self.menu.append("WLAN an")
+        self.menu.append("WLAN: aus")
+        self.menu.append("WLAN: an")
 
-        self.menu.append("Bluetooth Autoconnect an")
-        self.menu.append("Bluetooth Autoconnect aus")
+        self.menu.append("Bluetooth: autoconnect AN")
+        self.menu.append("Bluetooth: autoconnect AUS")
 
-        self.menu.append("service hostapd beenden")
-        self.menu.append("service hostapd starten")
-        self.menu.append("service hostapd deaktivieren")
-        self.menu.append("service hostapd aktivieren")
+        self.menu.append("> service hostapd:")
+
+        self.menu.append(" beenden")
+        self.menu.append(" starten")
+        self.menu.append(" deaktivieren")
+        self.menu.append(" aktivieren")
 
 
-        self.menu.append("Dienste neustarten:")
+        self.menu.append("> Dienste neustarten:")
 
         for srv in cfg_services.RESTART_LIST:
             self.menu.append("%s" % (srv))
@@ -117,25 +119,25 @@ class SystemMenu(ListBase):
         elif self.position == 11:
             self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=True/BLUETOOTH_AUTOCONNECT=False/g' /home/pi/oledctrl/oled/config/bluetooth.py"
 
-        elif self.position == 12:
+        elif self.position == 13:
             self.cmd = "sudo systemctl stop hostapd"
 
-        elif self.position == 13:
+        elif self.position == 14:
             self.cmd = "sudo systemctl start hostapd"
 
-        elif self.position == 14:
+        elif self.position == 15:
             self.cmd = "echo \"disabled\" > /home/pi/oledctrl/oled/config/hotspot"
 
-        elif self.position == 15:
+        elif self.position == 16:
             self.cmd = "echo \"enabled\" > /home/pi/oledctrl/oled/config/hotspot"
 
-        elif self.position == 16:
+        elif self.position in [12, 17]:
             self.cmd = ""
 
         else:
             self.cmd = "sudo systemctl restart %s" % (self.menu[self.position])
 
-        if not self.position in [1,12] :
+        if not self.position in [1,12,17] :
             self.loop.run_in_executor(None,self.exec_command)
 
 
