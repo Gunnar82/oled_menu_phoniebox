@@ -7,7 +7,6 @@ import settings
 import config.colors as colors
 import config.symbols as symbols
 
-import asyncio
 
 class MenuBase(WindowBase):
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.MENUBASE_ICON_SIZE)

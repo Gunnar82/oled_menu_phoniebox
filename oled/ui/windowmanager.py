@@ -1,7 +1,8 @@
 """Manages the currently shown activewindow on screen and passes callbacks for the rotary encoder"""
 import settings
-import asyncio
 from datetime import datetime
+
+import asyncio
 
 import config.symbols as symbols
 import integrations.functions as fn
