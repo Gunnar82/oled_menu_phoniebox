@@ -16,6 +16,8 @@ class ListBase(WindowBase):
     font = ImageFont.truetype(settings.FONT_TEXT, size=settings.LISTBASE_ENTRY_SIZE)
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.LISTBASE_ENTRY_SIZE)
 
+    comment = ["c", "h"]
+
     def __init__(self, windowmanager, loop, title):
         super().__init__(windowmanager, loop)
         self.menu = []
@@ -125,7 +127,7 @@ class ListBase(WindowBase):
 
     def is_comment(self):
         try:
-            return self.menu[self.position][1] == "comment"
+            return self.menu[self.position][1] in self.comment
         except:
             return False
 

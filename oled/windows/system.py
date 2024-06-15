@@ -46,7 +46,7 @@ class SystemMenu(ListBase):
         self.menu.append(["Bluetooth: autoconnect AN"])
         self.menu.append(["Bluetooth: autoconnect AUS"])
 
-        self.menu.append(["> service hostapd:", "comment"])
+        self.menu.append(["> service hostapd:", "h"])
 
         self.menu.append([" beenden"])
         self.menu.append([" starten"])
@@ -54,7 +54,7 @@ class SystemMenu(ListBase):
         self.menu.append([" aktivieren"])
 
 
-        self.menu.append(["> Dienste neustarten:", "comment"])
+        self.menu.append(["> Dienste neustarten:", "h"])
 
         for srv in cfg_services.RESTART_LIST:
             self.menu.append(["%s" % (srv)])

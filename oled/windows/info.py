@@ -82,15 +82,15 @@ class Infomenu(ListBase):
 
 
             self.menu = []
-            self.menu.append(["IP: " + self.ipaddr, "comment"] )
-            self.menu.append(["WiFi: " + self.wifi_ssid, "comment"])
-            self.menu.append(["hostapdi: " + str(self.hostapd), "comment"])
-            self.menu.append(["OLED Version: " + fn.get_oledversion(), "comment"])
+            self.menu.append(["IP: " + self.ipaddr, "c"] )
+            self.menu.append(["WiFi: " + self.wifi_ssid, "c"])
+            self.menu.append(["hostapdi: " + str(self.hostapd), "c"])
+            self.menu.append(["OLED Version: " + fn.get_oledversion(), "c"])
             self.menu.append([self.temp, "comment"])
 
-            self.menu.append(["Disk-Usage:", "comment"])
+            self.menu.append(["Disk-Usage:", "c"])
             for e in self.dfh:
-                self.menu.append([e.decode(), "comment"])
+                self.menu.append([e.decode(), "c"])
 
 
             await asyncio.sleep(10)
