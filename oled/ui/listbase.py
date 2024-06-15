@@ -26,6 +26,7 @@ class ListBase(WindowBase):
         self.position = -2
         self.progress = {}
         self.selection_changed = True
+        self.handle_left_key = True
         self.titlelineheight = self.font.getsize(self.basetitle)[1] + 3
 
         self.entrylinewidth,self.entrylineheight = self.font.getsize("000")
@@ -36,7 +37,7 @@ class ListBase(WindowBase):
 
     def render(self):
 
-        if self.left_pressed:
+        if self.left_pressed and self.handle_left_key:
             self.left_pressed = False
             self.loop.run_in_executor(None,self.on_key_left)
             return
@@ -94,7 +95,7 @@ class ListBase(WindowBase):
 
                 if self.position  == seite * self.displaylines+ i : #selected
                     progresscolor = colors.COLOR_SELECTED
-                    drawtext = self.menu[seite * self.displaylines + i]
+                    drawtext = self.menu[seite * self.displaylines + i][0]
                     if (datetime.now()-settings.lastinput).total_seconds() > 2:
                         if self.font.getsize(drawtext[self.drawtextx:])[0] > settings.DISPLAY_WIDTH -1 - self.startleft:
                             self.drawtextx += 1
@@ -110,11 +111,11 @@ class ListBase(WindowBase):
                 else:
                     progresscolor = colors.COLOR_GREEN
 
-                    draw.text((self.startleft, current_y), self.menu[seite *self.displaylines + i], font=self.font, fill="white")
+                    draw.text((self.startleft, current_y), self.menu[seite *self.displaylines + i][0], font=self.font, fill="white")
 
                 try:
                     if not scrolling:
-                        drawtext = self.progress[self.menu[seite * self.displaylines + i]]
+                        drawtext = self.progress[self.menu[seite * self.displaylines + i][0]]
                         linewidth1, lineheight1 = self.font.getsize(drawtext)
                         log(lDEBUG2,"listbase: percent:%s:" %(drawtext))
                         draw.rectangle((settings.DISPLAY_WIDTH - linewidth1 - 15  , current_y , settings.DISPLAY_WIDTH , current_y + self.entrylineheight ), outline="black", fill="black")
@@ -122,19 +123,25 @@ class ListBase(WindowBase):
                 except Exception as error:
                     log(lDEBUG2,"no percentage")
 
+    def is_comment(self):
+        try:
+            return self.menu[self.position][1] == "comment"
+        except:
+            return False
 
     def on_key_left(self):
         raise NotImplementedError()
 
     def on_key_right(self):
-        self.push_callback()
+        if not self.is_comment():
+            self.push_callback()
 
     def push_callback(self,lp=False):
         raise NotImplementedError()
 
     def turn_callback(self, direction, key=None):
         if key:
-            if key == 'left' or key == '4' or key == '0':
+            if (key == 'left' or key == '4' or key == '0') and self.handle_left_key:
                 self.set_busy("übergeordneter Ordner",busyrendertime=1)
                 self.left_pressed = True
                 return

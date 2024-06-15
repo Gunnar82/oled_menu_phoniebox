@@ -112,7 +112,8 @@ class Foldermenu(ListBase):
 
         self.generate_folders_array(folder)
         self.menu = []
-        self.menu = self.folders
+        for folder in self.folders:
+            self.menu.append([folder])
         if settings.current_selectedfolder.rfind(settings.currentfolder) == 0:
             search = settings.current_selectedfolder[len(settings.currentfolder)+1:]
             log(lDEBUG,"search: %s" % (search))
@@ -176,7 +177,7 @@ class Foldermenu(ListBase):
                 elif len(thefile) <= 1 and not 'livestream.txt' in thefile:
                     self.set_busy("Verzeichnis ist leer",busysymbol="\uf059")
                 else:
-                    self.set_busy("Auswahl startet","\uf07C",self.menu[self.position])
+                    self.set_busy("Auswahl startet","\uf07C",self.menu[self.position][0])
                     self.loop.create_task(self.playfolder(settings.current_selectedfolder))
 
 

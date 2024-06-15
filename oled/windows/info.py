@@ -27,6 +27,7 @@ class Infomenu(ListBase):
         self.counter = 0
         self.loop = loop
         self.linewidth, self.lineheight = self.font.getsize("000")
+        self.handle_left_key = False
 
     def activate(self):
         self.active = True
@@ -81,16 +82,15 @@ class Infomenu(ListBase):
 
 
             self.menu = []
-            self.menu.append("IP: " + self.ipaddr)
-            self.menu.append("WiFi: " + self.wifi_ssid)
-            self.menu.append("hostapdi: " + str(self.hostapd))
-            self.menu.append("OLED Version: " + fn.get_oledversion())
-            self.menu.append(self.temp)
+            self.menu.append(["IP: " + self.ipaddr, "comment"] )
+            self.menu.append(["WiFi: " + self.wifi_ssid, "comment"])
+            self.menu.append(["hostapdi: " + str(self.hostapd), "comment"])
+            self.menu.append(["OLED Version: " + fn.get_oledversion(), "comment"])
+            self.menu.append([self.temp, "comment"])
 
-            self.menu.append("Disk-Usage:")
+            self.menu.append(["Disk-Usage:", "comment"])
             for e in self.dfh:
-                self.menu.append(e.decode())
-
+                self.menu.append([e.decode(), "comment"])
 
 
             await asyncio.sleep(10)

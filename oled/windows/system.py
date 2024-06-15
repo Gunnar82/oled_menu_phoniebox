@@ -26,37 +26,38 @@ class SystemMenu(ListBase):
         self.loop = loop
         self.window_on_back = "idle"
         self.timeout = False
+        self.handle_left_key = False
         self.processing = False
         self.totalsize = 0
-        self.menu.append("Update Radiosender")
-        self.menu.append("Lösche Online-Ordner")
-        self.menu.append("Lösche Online-Status Online")
+        self.menu.append(["Update Radiosender"])
+        self.menu.append(["Lösche Online-Ordner"])
+        self.menu.append(["Lösche Online-Status Online"])
 
-        self.menu.append("Lösche Hörspielstatus")
-        self.menu.append("Lösche Musikstatus")
-        self.menu.append("Lösche Radiostatus")
-        self.menu.append("Lösche Onlinestatus")
+        self.menu.append(["Lösche Hörspielstatus"])
+        self.menu.append(["Lösche Musikstatus"])
+        self.menu.append(["Lösche Radiostatus"])
+        self.menu.append(["Lösche Onlinestatus"])
 
-        self.menu.append("git pull OLED")
+        self.menu.append(["git pull OLED"])
 
-        self.menu.append("WLAN: aus")
-        self.menu.append("WLAN: an")
+        self.menu.append(["WLAN: aus"])
+        self.menu.append(["WLAN: an"])
 
-        self.menu.append("Bluetooth: autoconnect AN")
-        self.menu.append("Bluetooth: autoconnect AUS")
+        self.menu.append(["Bluetooth: autoconnect AN"])
+        self.menu.append(["Bluetooth: autoconnect AUS"])
 
-        self.menu.append("> service hostapd:")
+        self.menu.append(["> service hostapd:", "comment"])
 
-        self.menu.append(" beenden")
-        self.menu.append(" starten")
-        self.menu.append(" deaktivieren")
-        self.menu.append(" aktivieren")
+        self.menu.append([" beenden"])
+        self.menu.append([" starten"])
+        self.menu.append([" deaktivieren"])
+        self.menu.append([" aktivieren"])
 
 
-        self.menu.append("> Dienste neustarten:")
+        self.menu.append(["> Dienste neustarten:", "comment"])
 
         for srv in cfg_services.RESTART_LIST:
-            self.menu.append("%s" % (srv))
+            self.menu.append(["%s" % (srv)])
 
     def activate(self):
         self.cmd = ""
@@ -67,16 +68,17 @@ class SystemMenu(ListBase):
             subprocess_result = subprocess.Popen(self.cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
             subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
             if subprocess_result.returncode == 0:
-                self.set_busy(self.menu[self.position],symbols.SYMBOL_PASS, busytext2="Erfolgreich")
+                self.set_busy(self.menu[self.position][0],symbols.SYMBOL_PASS, busytext2="Erfolgreich")
             else:
-                self.set_busy(self.menu[self.position],symbols.SYMBOL_FAIL, busytext2=subprocess_output[0].decode())
+                self.set_busy(self.menu[self.position][0],symbols.SYMBOL_FAIL, busytext2=subprocess_output[0].decode())
         finally:
             time.sleep(5)
             self.processing = False
 
 
     async def push_handler(self,button = '*'):
-        self.set_busy("Verarbeite...",busytext2=self.menu[self.position],busyrendertime=5)
+        self.cmd = ""
+        self.set_busy("Verarbeite...",busytext2=self.menu[self.position][0],busyrendertime=5)
 
         if self.position == 0:
             if cfg_online.UPDATE_RADIO:
@@ -131,14 +133,11 @@ class SystemMenu(ListBase):
         elif self.position == 16:
             self.cmd = "echo \"enabled\" > /home/pi/oledctrl/oled/config/hotspot"
 
-        elif self.position in [12, 17]:
-            self.cmd = ""
-
         else:
-            self.cmd = "sudo systemctl restart %s" % (self.menu[self.position])
+            self.cmd = "sudo systemctl restart %s" % (self.menu[self.position][0])
 
-        if not self.position in [1,12,17] :
-            self.loop.run_in_executor(None,self.exec_command)
+
+        self.loop.run_in_executor(None,self.exec_command)
 
 
 
@@ -148,7 +147,7 @@ class SystemMenu(ListBase):
         elif self.position == 12:
             pass
         else:
-            self.set_busy("Verarbeite...", busytext2=self.menu[self.position])
+            self.set_busy("Verarbeite...", busytext2=self.menu[self.position][0])
             self.loop.create_task(self.push_handler())
 
 
