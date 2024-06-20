@@ -19,7 +19,8 @@ class Playlistmenu(ListBase):
 
 
     async def eyed3_playlist(self):
-        for idx, a in enumerate(self.menu):
+
+        for idx, a in enumerate(self.playlist):
             if a.startswith("file"):
                 a = a[a.find(":")+1:]
 
@@ -46,13 +47,19 @@ class Playlistmenu(ListBase):
                 except:
                     pass
             a = a[a.rfind("/") + 1:] #filename only
-            self.menu[idx] = a
+            self.playlist[idx] = a
+
+            self.menu = []
+            for itm in self.playlist:
+                self.menu.append([itm])
+
 
 
 
     def activate(self):
         self.window_on_back = "idle"
-        self.menu = self.musicmanager.playlist()
+        self.playlist = self.musicmanager.playlist()
+
         self.loop.create_task(self.eyed3_playlist())
         self.song = -1
         cnt = 0 
