@@ -252,7 +252,8 @@ class DownloadMenu(ListBase):
                 elif self.position == 1:
                     self.loop.run_in_executor(None, self.downloadfolder)
                 elif self.position == 2 and self.selector:
-                    self.menu = self.items
+                    self.menu = []
+                    for items in self.items: self.menu.append([item])
                 elif self.position == -1 and self.selector:
                     self.selector = False
                 elif self.position == 3:
@@ -270,14 +271,15 @@ class DownloadMenu(ListBase):
                         except Exception as e:
                             self.set_busy("Fehler!",busytext2=str(e),busyrendertime=5,busysymbol="\uf057")
             else:
-                self.cwd += self.stripitem(self.menu[self.position]) + '/'
+                self.cwd += self.stripitem(self.items[self.position]) + '/'
 
                 self.url = self.baseurl + self.cwd
 
                 hasfolder, self.items = self.get_content()
 
                 if hasfolder:
-                    self.menu = self.items
+                    self.menu = []
+                    for item in self.items: self.menu.append([item])
                 else:
                     self.selector = True
                     try:
@@ -294,23 +296,23 @@ class DownloadMenu(ListBase):
                         online_pos = ""
 
                     try:
-                        current_pos = "Fortschritt: %s" % (self.progress[self.menu[self.position]])
+                        current_pos = "Fortschritt: %s" % (self.progress[self.items[self.position]])
                     except:
                         current_pos = "Fortschritt nicht verfügbar"
 
                     self.menu = []
-                    self.menu.append("Abspielen")
-                    self.menu.append("Herunterladen")
-                    self.menu.append("informationen")
-                    self.menu.append("Lokal löschen")
-                    self.menu.append("")
+                    self.menu.append(["Abspielen"])
+                    self.menu.append(["Herunterladen"])
+                    self.menu.append(["informationen"])
+                    self.menu.append(["Lokal löschen"])
+                    self.menu.append([""])
                     if online_file in self.items:
-                        self.menu.append("Aktueller Titel :%2.2d " %  (self.items.index(online_file) + 1))
-                    self.menu.append("Anzahl Titel :%2.2d " %  (len(self.items)))
-                    self.menu.append("Gesamtgröße %s" % (get_size(self.totalsize)))
-                    self.menu.append(current_pos)
-                    self.menu.append("Datei: %s" % (online_file))
-                    self.menu.append(online_pos)
+                        self.menu.append(["Aktueller Titel :%2.2d " %  (self.items.index(online_file) + 1)])
+                    self.menu.append(["Anzahl Titel :%2.2d " %  (len(self.items))])
+                    self.menu.append(["Gesamtgröße %s" % (get_size(self.totalsize))])
+                    self.menu.append([current_pos])
+                    self.menu.append(["Datei: %s" % (online_file)])
+                    self.menu.append([online_pos])
 
                     return
 
@@ -327,7 +329,7 @@ class DownloadMenu(ListBase):
         elif (self.position == -1 or  self.position == -2) and not self.selector:
             self.windowmanager.set_window("mainmenu")
         else:
-            if not self.selector or self.position == 0: self.set_busy("Auswahl verarbeiten...",symbols.SYMBOL_CLOUD,self.menu[self.position],busyrendertime=2)
+            if not self.selector or self.position == 0: self.set_busy("Auswahl verarbeiten...",symbols.SYMBOL_CLOUD,self.menu[self.position][0],busyrendertime=2)
             self.loop.create_task(self.push_handler())
 
     def on_key_left(self):
@@ -349,13 +351,14 @@ class DownloadMenu(ListBase):
 
         #pos = self.cwd.rfind("/")
 
-        test, self.menu = self.get_content()
-
+        test, self.items = self.get_content()
+        self.menu = []
+        for item in self.items: self.menu.append([item])
         try:
-            self.position =  self.menu.index(last) 
+            self.position =  self.items(last) 
         except:
             try:
-                self.position =  self.menu.index('%s \u2302'% (last))
+                self.position =  self.items.index('%s \u2302'% (last))
             except:
                 self.position = -1
 
