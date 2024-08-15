@@ -35,7 +35,7 @@ settings.callback_active = False
 
 from integrations.logging import *
 
-displays = ["st7789", "ssd1351", "sh1106_i2c", "sh1106_i2c", "emulated"]
+displays = ["st7789", "ssd1351", "sh1106_i2c", "sh1106_i2c", "emulated","gpicase2"]
 
 if not settings.DISPLAY_DRIVER in displays:
     raise Exception("no DISPLAY")
