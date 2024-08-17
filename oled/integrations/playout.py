@@ -39,11 +39,11 @@ def savepos():
 
 def savepos_online(nowplaying):
     data = {'url' : nowplaying.filename, 'pos' : str(nowplaying._elapsed), 'song' : str(nowplaying._song), 'length' : str(nowplaying._playlistlength)}
-    try:
-        r = requests.post(cfg_online.ONLINE_SAVEPOS,data=data,timeout=8)
+    #try:
+    #    r = requests.post(cfg_online.ONLINE_SAVEPOS,data=data,timeout=8)
 
-    except Exception as error:
-        print (error)
+#    except Exception as error:
+#        print (error)
 
 def getpos_online(baseurl,cwd):
     url = baseurl+urllib.parse.quote(cwd)
