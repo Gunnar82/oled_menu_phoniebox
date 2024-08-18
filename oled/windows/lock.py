@@ -26,7 +26,7 @@ class Lock(MainWindow):
         self.timeout = False
         self.unlockcodes = []
 
-        self.unlockcodes.append( ['up','down','left','right','start','select','x','y','hl','hr'])
+        self.unlockcodes.append( ['up','down','left','right','start','select','x','hl','hr'])
         self.unlockcodes.append( ['1','2','3','4','5','6','7','8','9','0','a','b','c','d'] )
         self.unlockindex = -1
 
