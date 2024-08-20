@@ -165,7 +165,7 @@ def get_oledversion():
             version = f.readline().strip()
     except Exception as error:
          print (error)
-    return "v2-%s" % (version)
+    return "v3-%s" % (version)
 
 
 def delete_local_online_folder():
