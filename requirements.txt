@@ -8,3 +8,4 @@ Pillow==9.5.0
 qrcode
 pygame==2.5.1
 watchdog
+pexpect

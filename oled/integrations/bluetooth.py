@@ -36,16 +36,14 @@ class BluetoothOutput():
     def get_bt_dev_status():
         return True if (os.system(cmd_check_bt_dev = "bluetoothctl connect %s && sudo l2ping %s -c 1" % (self.selected_bt_mac, self.selected_bt_mac))== 0) else False
 
+
     def get_bt_devices(self):
-        result = subprocess.run("bluetoothctl devices", shell=True, capture_output=True)
-        lines = result.stdout.decode().splitlines()
         devices = []
         try:
-            for line in lines:
-                elems = line.split(' ',2)
-                devices.append([elems[1],elems[2]])
+            for device in self.get_paired_devices():
+                devices.append([device['mac_address',device['name']]])
         except:
-            pass
+            print (err)
 
         return devices
 
@@ -113,7 +111,10 @@ class BluetoothOutput():
 
 
     def start_bluetoothctl(self):
-        subprocess.check_output("rfkill unblock bluetooth", shell=True)
+        self.process = pexpect.spawnu("bluetoothctl", echo=False)
+
+
+    def stop_bluetoothctl(self):
         self.process = pexpect.spawnu("bluetoothctl", echo=False)
 
     def start_scan(self):
@@ -205,5 +206,31 @@ class BluetoothOutput():
         else:
             res = self.process.expect(
                 ["Failed to trust", "Pairing successful", pexpect.EOF]
+            )
+            return res == 1
+
+    def connect(self, mac_address):
+        """Try to connect to a device by mac address."""
+        try:
+            self.send(f"connect {mac_address}", 2)
+        except Exception as e:
+            print (e)
+            return False
+        else:
+            res = self.process.expect(
+                ["Failed to connect", "Connection successful", pexpect.EOF]
+            )
+            return res == 1
+
+    def disconnect(self, mac_address=""):
+        """Try to disconnect to a device by mac address."""
+        try:
+            self.send(f"disconnect {mac_address}", 2)
+        except Exception as e:
+            print (e)
+            return False
+        else:
+            res = self.process.expect(
+                ["Failed to disconnect", "Successful disconnected", pexpect.EOF]
             )
             return res == 1

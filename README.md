@@ -1,3 +1,6 @@
+#VERSION > 301 
+sudo pip3 install pexpect on UPDATE < 300
+
 # Phoniebox OLED MENU
 
 basierend auf

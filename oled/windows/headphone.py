@@ -19,7 +19,10 @@ class Headphonemenu(MenuBase):
     def __init__(self, windowmanager,loop,bluetooth,title):
         super().__init__(windowmanager,loop,title)
         self.bluetooth = bluetooth
+        self.descr.append([settings.ALSA_DEV_LOCAL,symbols.SYMBOL_SPEAKER])
+        self.descr.append(["",symbols.SYMBOL_HEADPHONE])
 
+        self.descr.append(["Gerät suchen","\uf01e"])
 
 
     def set_current_bt_name(self):
@@ -28,39 +31,10 @@ class Headphonemenu(MenuBase):
 
     def deactivate(self):
         print ("ende")
-        self.bluetooth.stop_scan()
         #self.bluetooth.start_bluetoothctl()
 
     def activate (self):
-        self.bluetooth.start_bluetoothctl()
-        self.bluetooth.start_scan()
-        self.gen_menu()
-
-    def gen_menu(self):
-        print (len(self.descr))
-        while len(self.descr) > 1:
-            self.descr.pop()
-
-        self.descr.append([settings.ALSA_DEV_LOCAL,symbols.SYMBOL_SPEAKER])
-        self.descr.append(["",symbols.SYMBOL_HEADPHONE])
         self.set_current_bt_name()
-
-
-        self.descr.append(["Gerät suchen","\uf01e"])
-
-        for devices in self.bluetooth.get_paired_devices():
-            self.descr.append([devices['name'],symbols.SYMBOL_BLUETOOTH_OFF,devices['mac_address']])
-
-        for devices in self.bluetooth.get_discoverable_devices():
-            self.descr.append([devices['name'],symbols.SYMBOL_BLUETOOTH_ON,devices['mac_address']])
-
-    def turn_callback(self,direction, key = None):
-        super().turn_callback(direction,key)
-#        if self.counter == 3:
-#            if direction > 0 or key in ['right','up','2', '4'] :
-#                self.counter = 4
-#            elif  direction < 0 or key in ['left','down','6','8']:
-#                self.counter = 2
 
     #def push_callback(self,lp=False):
     async def push_handler(self):
@@ -74,16 +48,8 @@ class Headphonemenu(MenuBase):
                 await asyncio.sleep(1)
 
         elif self.counter == 3:
-            self.gen_menu()
+            self.windowmanager.set_window("bluetoothmenu")
 
-        else:
-            if self.descr[self.counter][1] == symbols.SYMBOL_BLUETOOTH_OFF:
-                self.bluetooth.set_alsa_bluetooth_mac(self.descr[self.counter][2],self.descr[self.counter][0])
-
-            elif self.descr[self.counter][1] == symbols.SYMBOL_BLUETOOTH_ON:
-                self.bluetooth.pair(self.descr[self.counter][2])
-                self.bluetooth.trust(self.descr[self.counter][2])
-                self.gen_menu()
         await asyncio.sleep(1)
 
 

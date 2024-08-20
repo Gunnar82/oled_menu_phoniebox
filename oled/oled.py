@@ -55,6 +55,7 @@ from ui.windowmanager import WindowManager
 import windows.idle
 import windows.info
 import windows.headphone
+import windows.bluetooth
 import windows.mainmenu
 import windows.playbackmenu
 import windows.playlistmenu
@@ -128,6 +129,7 @@ def main():
     loadedwins.append(windows.mainmenu.Mainmenu(windowmanager,loop,"Hauptmenü"))
     loadedwins.append(windows.info.Infomenu(windowmanager,loop))
     loadedwins.append(windows.headphone.Headphonemenu(windowmanager,loop,objbluetooth,"Audioausgabe"))
+    loadedwins.append(windows.bluetooth.Bluetoothmenu(windowmanager,loop,objbluetooth,"Bluetoothmenu"))
     loadedwins.append(windows.playlistmenu.Playlistmenu(windowmanager, loop, musicmanager))
     loadedwins.append(windows.foldermenu.Foldermenu(windowmanager,loop))
     loadedwins.append(windows.folderinfo.FolderInfo(windowmanager, loop))
