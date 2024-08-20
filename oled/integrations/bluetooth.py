@@ -1,7 +1,8 @@
 import settings
 import os, re
 import subprocess
-
+import pexpect
+import time
 
 bt_dev_1="bt_dev_1"
 
@@ -9,6 +10,8 @@ bt_dev_1="bt_dev_1"
 class BluetoothOutput():
 
     def __init__(self):
+
+        self.new_devices = []
 
         self.selected_bt_mac, self.selected_bt_name = self.read_dev_bt_from_file()
         self.all_bt_dev = self.get_bt_devices()
@@ -96,3 +99,111 @@ class BluetoothOutput():
 
     def output_status_bt(self):
         return self.output_status(bt_dev_1)
+
+    def send(self, command, pause=0):
+        self.process.send(f"{command}\n")
+        time.sleep(pause)
+        if self.process.expect(["bluetooth", pexpect.EOF]):
+            raise Exception(f"failed after {command}")
+
+    def get_output(self, *args, **kwargs):
+        """Run a command in bluetoothctl prompt, return output as a list of lines."""
+        self.send(*args, **kwargs)
+        return self.process.before.split("\r\n")
+
+
+    def start_bluetoothctl(self):
+        subprocess.check_output("rfkill unblock bluetooth", shell=True)
+        self.process = pexpect.spawnu("bluetoothctl", echo=False)
+
+    def start_scan(self):
+        """Start bluetooth scanning process."""
+        try:
+            self.send("scan on")
+        except Exception as e:
+            print (e)
+
+
+    def stop_scan(self):
+        """Start bluetooth scanning process."""
+        try:
+            self.send("scan off")
+        except Exception as e:
+            print (e)
+
+    def get_available_devices(self):
+        """Return a list of tuples of paired and discoverable devices."""
+        available_devices = []
+        try:
+            out = self.get_output("devices")
+        except Exception as e:
+            print(e)
+        else:
+            for line in out:
+                device = self.parse_device_info(line)
+                if device:
+                    available_devices.append(device)
+        return available_devices
+
+    def get_paired_devices(self):
+        """Return a list of tuples of paired devices."""
+        paired_devices = []
+        try:
+            out = self.get_output("paired-devices")
+        except Exception as e:
+            print (e)
+        else:
+            for line in out:
+                device = self.parse_device_info(line)
+                if device:
+                    paired_devices.append(device)
+        return paired_devices
+
+    def get_discoverable_devices(self):
+        """Filter paired devices out of available."""
+        available = self.get_available_devices()
+        paired = self.get_paired_devices()
+        return [d for d in available if d not in paired]
+
+    def parse_device_info(self, info_string):
+        """Parse a string corresponding to a device."""
+        device = {}
+        block_list = ["[\x1b[0;", "removed"]
+        if not any(keyword in info_string for keyword in block_list):
+            try:
+                device_position = info_string.index("Device")
+            except ValueError:
+                pass
+            else:
+                if device_position > -1:
+                    attribute_list = info_string[device_position:].split(" ", 2)
+                    device = {
+                        "mac_address": attribute_list[1],
+                        "name": attribute_list[2],
+                    }
+        return device
+
+    def pair(self, mac_address):
+        """Try to pair with a device by mac address."""
+        try:
+            self.send(f"pair {mac_address}", 4)
+        except Exception as e:
+            print (e)
+            return False
+        else:
+            res = self.process.expect(
+                ["Failed to pair", "Pairing successful", pexpect.EOF]
+            )
+            return res == 1
+
+    def trust(self, mac_address):
+        try:
+            self.send(f"trust {mac_address}", 4)
+        except Exception as e:
+            print (e)
+            return False
+        else:
+            res = self.process.expect(
+                ["Failed to trust", "Pairing successful", pexpect.EOF]
+            )
+            return res == 1
