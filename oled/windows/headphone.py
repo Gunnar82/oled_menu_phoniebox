@@ -48,6 +48,8 @@ class Headphonemenu(MenuBase):
                 await asyncio.sleep(1)
 
         elif self.counter == 3:
+            self.bluetooth.cmd_disconnect()
+            time.sleep(2)
             self.windowmanager.set_window("bluetoothmenu")
 
         await asyncio.sleep(1)

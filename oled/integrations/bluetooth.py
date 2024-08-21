@@ -33,8 +33,11 @@ class BluetoothOutput():
 
         return mac,name
 
-    def get_bt_dev_status():
+    def get_bt_dev_status(self):
         return True if (os.system(cmd_check_bt_dev = "bluetoothctl connect %s && sudo l2ping %s -c 1" % (self.selected_bt_mac, self.selected_bt_mac))== 0) else False
+
+    def cmd_disconnect(self):
+        return True if (os.system("bluetoothctl disconnect")== 0) else False
 
 
     def get_bt_devices(self):
@@ -101,7 +104,7 @@ class BluetoothOutput():
     def send(self, command, pause=0):
         self.process.send(f"{command}\n")
         time.sleep(pause)
-        if self.process.expect(["]", pexpect.EOF]):
+        if self.process.expect(["bluetooth", pexpect.EOF]):
             raise Exception(f"failed after {command}")
 
     def get_output(self, *args, **kwargs):
