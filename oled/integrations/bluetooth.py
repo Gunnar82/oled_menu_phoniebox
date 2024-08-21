@@ -101,7 +101,7 @@ class BluetoothOutput():
     def send(self, command, pause=0):
         self.process.send(f"{command}\n")
         time.sleep(pause)
-        if self.process.expect(["bluetooth", pexpect.EOF]):
+        if self.process.expect(["]", pexpect.EOF]):
             raise Exception(f"failed after {command}")
 
     def get_output(self, *args, **kwargs):
@@ -115,7 +115,8 @@ class BluetoothOutput():
 
 
     def stop_bluetoothctl(self):
-        self.process = pexpect.spawnu("bluetoothctl", echo=False)
+        pass
+        #self.process = pexpect.spawnu("bluetoothctl", echo=False)
 
     def start_scan(self):
         """Start bluetooth scanning process."""
@@ -232,5 +233,18 @@ class BluetoothOutput():
         else:
             res = self.process.expect(
                 ["Failed to disconnect", "Successful disconnected", pexpect.EOF]
+            )
+            return res == 1
+
+    def remove(self, mac_address):
+        """Remove paired device by mac address, return success of the operation."""
+        try:
+            self.send(f"remove {mac_address}", 3)
+        except Exception as e:
+            print(e)
+            return False
+        else:
+            res = self.process.expect(
+                ["not available", "Device has been removed", pexpect.EOF]
             )
             return res == 1
