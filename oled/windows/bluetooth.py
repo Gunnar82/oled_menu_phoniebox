@@ -1,5 +1,5 @@
 """ Shutdown menu """
-from ui.menubase import MenuBase
+from ui.listbase import ListBase
 from luma.core.render import canvas
 
 import settings
@@ -13,15 +13,16 @@ import time
 import asyncio
 
  
-class Bluetoothmenu(MenuBase):
+class Bluetoothmenu(ListBase):
 
     def __init__(self, windowmanager,loop,bluetooth,title):
         super().__init__(windowmanager,loop,title)
         self.bluetooth = bluetooth
         self.window_on_back = "headphonemenu"
-        self.descr.append(["aktualisieren","\uf01e"])
-        self.descr.append(["",""])
-        self.descr.append(["",""])
+        self.menu.append(["aktualisieren...","c"])
+        self.menu.append(["","h"])
+        self.handle_left_key = False
+
 
         self.generate = False
         self.timeout = False
@@ -43,19 +44,21 @@ class Bluetoothmenu(MenuBase):
     async def gen_menu(self):
         while self.loop.is_running() and self.active:
             if self.generate:
-                print ("running loop bt")
-                while len(self.descr) > 4:
-                    print (self.descr)
-                    self.descr.pop()
+
+                while len(self.menu) > 2:
+                    self.menu.pop()
+
+                self.menu.append(["> gekoppelte Geräte:","c"])
 
                 for device in self.bluetooth.get_paired_devices():
-                    print ("paired devices: %s" %(device))
-                    self.descr.append([device['name'],symbols.SYMBOL_BLUETOOTH_OFF,device['mac_address']])
+                    self.menu.append([device['name'],symbols.SYMBOL_BLUETOOTH_OFF,device['mac_address']])
+
+                self.menu.append(["","h"])
+                self.menu.append(["> neue Geräte:","c"])
 
                 for device in self.bluetooth.get_discoverable_devices():
-                    print ("availabe devices: %s" %(device))
 
-                    self.descr.append([device['name'],symbols.SYMBOL_BLUETOOTH_ON,device['mac_address']])
+                    self.menu.append([device['name'],symbols.SYMBOL_BLUETOOTH_ON,device['mac_address']])
 
                 self.generate = False
 
@@ -64,17 +67,17 @@ class Bluetoothmenu(MenuBase):
     #def push_callback(self,lp=False):
     async def push_handler(self):
         await asyncio.sleep(1)
-        if (self.counter == 1):
+        if (self.position == 1):
             self.bluetooth.start_scan()
 
             self.generate = True
         else:
-            if self.descr[self.counter][1] == symbols.SYMBOL_BLUETOOTH_OFF:
-                self.bluetooth.set_alsa_bluetooth_mac(self.descr[self.counter][2],self.descr[self.counter][0])
+            if self.menu[self.position][1] == symbols.SYMBOL_BLUETOOTH_OFF:
+                self.bluetooth.set_alsa_bluetooth_mac(self.menu[self.position][2],self.menu[self.position][0])
 
-            elif self.descr[self.counter][1] == symbols.SYMBOL_BLUETOOTH_ON:
-                self.bluetooth.pair(self.descr[self.counter][2])
-                self.bluetooth.trust(self.descr[self.counter][2])
+            elif self.menu[self.position][1] == symbols.SYMBOL_BLUETOOTH_ON:
+                self.bluetooth.pair(self.menu[self.position][2])
+                self.bluetooth.trust(self.menu[self.position][2])
                 self.generate = True
 
         await asyncio.sleep(1)
@@ -83,13 +86,3 @@ class Bluetoothmenu(MenuBase):
     def turn_callback(self, direction, key=None):
         super().turn_callback(direction,key)
 
-        if direction > 0 and self.counter == 2:
-            self.counter = 5
-        elif direction < 0 and self.counter == 5:
-            self.counter == 2
-
-        if key == 'X' or key == '5':
-            if self.counter > 1 and self.descr[self.counter][1] == symbols.SYMBOL_BLUETOOTH_OFF:
-                self.set_busy("Gerät gelöscht: %s!" % (self.descr[self.counter][0]))
-                self.bluetooth.remove(self.descr[self.counter][2])
-                self.generate = True

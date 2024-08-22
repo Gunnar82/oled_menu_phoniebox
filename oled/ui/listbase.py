@@ -139,7 +139,12 @@ class ListBase(WindowBase):
             self.push_callback()
 
     def push_callback(self,lp=False):
-        raise NotImplementedError()
+        if self.counter in [ -1, -2]:
+            self.windowmanager.set_window(self.window_on_back)
+        else:
+            if not self.is_comment():
+                self.set_busy("Verarbeite...", self.menu[self.position][1],self.menu[self.position][0])
+                self.loop.create_task(self.push_handler())
 
     def turn_callback(self, direction, key=None):
         if key:
