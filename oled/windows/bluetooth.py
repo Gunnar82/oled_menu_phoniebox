@@ -87,6 +87,7 @@ class Bluetoothmenu(ListBase):
                 self.bluetooth.trust(self.menu[self.position][2])
             else:
                 self.selector = True
+                self.position = 0
 
                 self.selected_device = self.menu[self.position]
         else:
