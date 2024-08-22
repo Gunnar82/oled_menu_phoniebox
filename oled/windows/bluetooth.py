@@ -86,23 +86,24 @@ class Bluetoothmenu(ListBase):
                 self.bluetooth.pair(self.menu[self.position][2])
                 self.bluetooth.trust(self.menu[self.position][2])
             else:
+                self.selected_device = self.menu[self.position]
+
                 self.selector = True
                 self.position = 0
 
-                self.selected_device = self.menu[self.position]
         else:
+
             if self.selected_device[1] == symbols.SYMBOL_BLUETOOTH_OFF:
 
                 if self.position == 1:
-                    print ("1")
                     self.bluetooth.set_alsa_bluetooth_mac(self.selected_device[2],self.selected_device[0])
                 elif self.position == 2:
                     self.bluetooth.remove(self.selected_device[2])
 
                 self.selected_device = []
-                self.selector = False
+            self.selector = False
 
-                self.position = 0
+            self.position = 0
 
 
         self.generate = True
