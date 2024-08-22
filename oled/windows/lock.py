@@ -24,15 +24,22 @@ class Lock(MainWindow):
         self.busyrendertime = 0.25
 
         self.timeout = False
-        self.unlockcodes = []
-
-        self.unlockcodes.append( ['up','down','left','right','start','select','x','hl','hr'])
-        self.unlockcodes.append( ['1','2','3','4','5','6','7','8','9','0','a','b','c','d'] )
         self.unlockindex = -1
 
         self.currentkey = 0
 
+
+
+    def gen_unlockcodes(self):
+        self.unlockcodes = []
+
+        self.unlockcodes.append( ['up','down','left','right','start','select','x','hl','hr'])
+        self.unlockcodes.append( ['1','2','3','4','5','6','7','8','9','0','a','b','c','d'] )
+
+
     def activate(self):
+        self.gen_unlockcodes()
+
         self.unlockcode = []
 
         if "gpicase" in settings.INPUTS: self.unlockindex = 0
@@ -41,16 +48,19 @@ class Lock(MainWindow):
         if self.unlockindex == -1:
             self.set_busy("Kein kompatibler INPUT",symbols.SYMBOL_ERROR,set_window_to="idle")
         else:
-            for r in range(0,4):
-                length = len(self.unlockcodes[self.unlockindex])
-                pos = random.randint(0,length-1)
-                char = self.unlockcodes[ self.unlockindex ][pos]
+            try:
+                for r in range(0,4):
+                    length = len(self.unlockcodes[self.unlockindex])
+                    pos = random.randint(0,length-1)
+                    char = self.unlockcodes[ self.unlockindex ][pos]
 
-                self.unlockcode.append(char)
-                try:
+                    self.unlockcode.append(char)
                     self.unlockcodes[ self.unlockindex ].remove(char)
-                except:
-                    pass
+            except:
+                self.gen_unlockcodes()
+                self.set_busy("Random Fehler")
+                self.windowmanager.set_window("idle")
+
 
             self.currentkey = 0
 
