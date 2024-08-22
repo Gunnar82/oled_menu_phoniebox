@@ -38,3 +38,5 @@ SYMBOL_PASS = "\uf00c"
 SYMBOL_FAIL = "\uf00d"
 
 SYMBOL_ERROR = "\uf057"
+
+SYMBOL_REFRESH = "\uf01e"
