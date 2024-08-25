@@ -5,12 +5,14 @@ from PIL import ImageFont
 from datetime import datetime
 
 import settings
+import logging
+import config.loglevel
+logger = logging.getLogger("oled.ui_listbase")
+logger.setLevel(config.loglevel.LOGLEVEL)
 
 import config.colors as colors
 import config.symbols as symbols
 
-
-from integrations.logging import *
 
 class ListBase(WindowBase):
     font = ImageFont.truetype(settings.FONT_TEXT, size=settings.LISTBASE_ENTRY_SIZE)
@@ -119,11 +121,11 @@ class ListBase(WindowBase):
                     if not scrolling:
                         drawtext = self.progress[self.menu[seite * self.displaylines + i][0]]
                         linewidth1, lineheight1 = self.font.getsize(drawtext)
-                        log(lDEBUG2,"listbase: percent:%s:" %(drawtext))
+                        logger.debug("listbase: percent:%s:" %(drawtext))
                         draw.rectangle((settings.DISPLAY_WIDTH - linewidth1 - 15  , current_y , settings.DISPLAY_WIDTH , current_y + self.entrylineheight ), outline="black", fill="black")
                         draw.text((settings.DISPLAY_WIDTH - linewidth1 - self.startleft, current_y), drawtext, font=self.font, fill=progresscolor)
                 except Exception as error:
-                    log(lDEBUG2,"no percentage")
+                    logger.debug("no percentage")
 
     def is_comment(self):
         try:
@@ -174,7 +176,7 @@ class ListBase(WindowBase):
             elif key == 'C' or key == 'hr':
                     direction = self.displaylines
 
-        log(lDEBUG,"Handling  Menu Items: %d, Lines: %d, direction: %s" % (len(self.menu), self.displaylines, direction))
+        logger.debug("Handling  Menu Items: %d, Lines: %d, direction: %s" % (len(self.menu), self.displaylines, direction))
 
         if self.position + direction  >= len(self.menu) : # zero based
             self.position = len(self.menu) -1
@@ -185,7 +187,7 @@ class ListBase(WindowBase):
 
         self.selection_changed = True
 
-        log(lDEBUG,"self.position: %d" % (self.position))
+        logger.debug("self.position: %d" % (self.position))
 
 
 

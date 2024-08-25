@@ -3,11 +3,15 @@ import settings
 from datetime import datetime
 
 import asyncio
+import logging
+import config.loglevel
+logger = logging.getLogger("oled.windowmanager")
+logger.setLevel(config.loglevel.LOGLEVEL)
 
 import config.symbols as symbols
 import integrations.functions as fn
 
-from integrations.logging import *
+
 from integrations.rfidwatcher import RfidWatcher
 from integrations.latestplayed import LatestPlayed
 
@@ -33,11 +37,11 @@ class WindowManager():
         self.lastplayed.start()
 
         self.rendered_busy = False
-        log(lINFO,"Rendering task created")
+        logger.info("Rendering task created")
 
     def add_window(self, windowid, window):
         self.windows[windowid] = window
-        log(lINFO,f"Added {windowid} window")
+        logger.info(f"Added {windowid} window")
 
     def set_window(self, windowid):
         if windowid in self.windows:
@@ -46,9 +50,9 @@ class WindowManager():
             except (NotImplementedError, AttributeError):
                 pass
             self.activewindow = self.windows[windowid]
-            log(lINFO,f"Activated {windowid}")
+            logger.info(f"Activated {windowid}")
         else:
-            log(lINFO,f"Window {windowid} not found!")
+            logger.info(f"Window {windowid} not found!")
 
         try:
             self.rendertime = self.activewindow._rendertime
@@ -66,7 +70,7 @@ class WindowManager():
 
 
     def clear_window(self):
-        log(lDEBUG,"Show blank screen")
+        logger.debug("Show blank screen")
         settings.screenpower = False
         self.device.clear()
         #Low-Power sleep mode
@@ -82,7 +86,7 @@ class WindowManager():
                 self.set_window(self.activewindow.timeoutwindow)
 
             if self.activewindow.contrasthandle:
-                log(lDEBUG2,"contrasthandle")
+                logger.debug("contrasthandle")
                 if (seconds_since_last_input >= settings.DARK_TIMEOUT):
                     self.rendertime = settings.DARK_RENDERTIME
                     self.looptime = int (settings.DARK_RENDERTIME // 2)
@@ -92,10 +96,10 @@ class WindowManager():
                 elif  (seconds_since_last_input >= settings.CONTRAST_TIMEOUT):
                     self.looptime = settings.CONTRAST_RENDERTIME
                     self.rendertime = settings.CONTRAST_RENDERTIME
-                    log(lDEBUG2,"contrast_timeout")
+                    logger.debug("contrast_timeout")
                     if settings.DISABLE_DISPLAY:
                         if settings.screenpower:
-                            log(lDEBUG,"disable Display")
+                            logger.debug("disable Display")
                             self.clear_window()
                     else:
                         contrast = settings.CONTRAST_DARK
@@ -128,9 +132,9 @@ class WindowManager():
 
                 if settings.screenpower:
                     try:
-                        log(lDEBUG3,"busy State of %s:  %s" %(self.activewindow.windowtitle,self.activewindow.busy))
+                        logger.debug("busy State of %s:  %s" %(self.activewindow.windowtitle,self.activewindow.busy))
                         if (datetime.now() - self.lastrfidate).total_seconds() < 3:
-                            log(lDEBUG,"render rfid symbol")
+                            logger.debug("render rfid symbol")
                             self.activewindow.busysymbol = symbols.SYMBOL_CARD_READ
                             #self.rendertime = self.activewindow.busyrendertime
                             self.activewindow.renderbusy()
@@ -139,24 +143,24 @@ class WindowManager():
                         elif ((datetime.now() - self.activewindow.start_busyrendertime).total_seconds() < self.activewindow.busyrendertime and self.activewindow.busy) or (settings.callback_active and self.activewindow.changerender):
 
                                 self.activewindow.renderbusy()
-                                log(lDEBUG2,"rendering busy of window %s, busyrendertime: %d" %(self.activewindow.windowtitle,self.rendertime))
+                                logger.debug("rendering busy of window %s, busyrendertime: %d" %(self.activewindow.windowtitle,self.rendertime))
                                 await asyncio.sleep(self._RENDERTIME)
                         else:
-                            log(lDEBUG3,"general rendering")
+                            logger.debug("general rendering")
                             self.activewindow.render()
                     except Exception as error:
-                        log(lERROR,error)
+                        logger.error(error)
 
             iTimerCounter = 0 
 
             while (iTimerCounter < self.rendertime / self._RENDERTIME  and settings.screenpower):
-                log(lDEBUG2,"renderloop: %d, %d "%(iTimerCounter+1, self.rendertime / self._RENDERTIME))
+                logger.debug("renderloop: %d, %d "%(iTimerCounter+1, self.rendertime / self._RENDERTIME))
                 iTimerCounter += 1
                 await asyncio.sleep(self._RENDERTIME)
-                log(lDEBUG3, "self.busytext1: %s" %(self.activewindow.busytext1))
+                logger.debug("self.busytext1: %s" %(self.activewindow.busytext1))
 
                 if (not settings.callback_active and self.rendered_busy):
-                    log(lDEBUG3,"render resetting %s.busy to False" %(self.activewindow.windowtitle))
+                    logger.debug("render resetting %s.busy to False" %(self.activewindow.windowtitle))
                     self.activewindow.busy = False
 
             await asyncio.sleep(self._RENDERTIME)
@@ -167,16 +171,16 @@ class WindowManager():
         settings.staywake = False
         if settings.screenpower:
             settings.callback_active = True
-            log(lDEBUG2,"push_callback: started")
+            logger.debug("push_callback: started")
 
             try:
                 self.device.contrast(settings.CONTRAST_FULL)
                 self.activewindow.push_callback(lp=lp)
             except (NotImplementedError, AttributeError):
-                log(lERROR,"window_manager: push_callback error")
+                logger.error("window_manager: push_callback error")
             finally:
                 settings.callback_active = False
-                log(lDEBUG2,"push_callback: ended")
+                logger.debug("push_callback: ended")
 
         else: 
             settings.screenpower = True
@@ -191,24 +195,24 @@ class WindowManager():
             try:
                 fn.restart_oled()
             except Exception as error:
-                log(lERROR,"turn_callback: %s" % (str(error)))
+                logger.error("turn_callback: %s" % (str(error)))
 
         elif settings.screenpower:
             settings.callback_active = True
-            log(lDEBUG2,"turn_callback: started")
+            logger.debug("turn_callback: started")
 
             try:
                 self.device.contrast(settings.CONTRAST_FULL)
                 if key == '#':
-                    log(lINFO,"activate window_on_back: %s" % (self.activewindow.window_on_back))
+                    logger.info("activate window_on_back: %s" % (self.activewindow.window_on_back))
                     if self.activewindow.window_on_back not in ["","none","n/a"]: self.set_window(self.activewindow.window_on_back)
                 else:
                     self.activewindow.turn_callback(direction,key=key)
             except (NotImplementedError, AttributeError):
-                log(lERROR,"window_manager: turn_callback error")
+                logger.error("window_manager: turn_callback error")
             finally:
                 settings.callback_active = False
-                log(lDEBUG2,"turn_callback: ended")
+                logger.debug("turn_callback: ended")
 
         else:
             settings.screenpower = True

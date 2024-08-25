@@ -1,6 +1,10 @@
 """ Playlist menu """
 from ui.listbase import ListBase
 import settings
+import logging
+logger = logging.getLogger("oled.wnd_foldermenu")
+import config.loglevel
+logger.setLevel(config.loglevel.LOGLEVEL)
 
 import config.colors as colors
 import config.symbols as symbols
@@ -12,7 +16,7 @@ import asyncio
 
 import config.file_folder as cfg_file_folder
 
-from integrations.logging import *
+
 
 class Foldermenu(ListBase):
     folders = []
@@ -50,14 +54,14 @@ class Foldermenu(ListBase):
         self.windowmanager.set_window("idle")
 
     def on_key_left(self):
-        log(lDEBUG,"settings.currentfolder:%s " %(settings.currentfolder))
+        logger.debug("settings.currentfolder:%s " %(settings.currentfolder))
         settings.current_selectedfolder = settings.currentfolder
         settings.currentfolder = functions.get_parent_folder(settings.currentfolder)
         if len(settings.currentfolder) < len(settings.audio_basepath):
             settings.currentfolder = settings.audio_basepath
         self.generate_folders(settings.currentfolder)
         self.basetitle = os.path.split(settings.currentfolder)[-1]
-        log(lDEBUG,"self.basetitle: %s" % (self.basetitle))
+        logger.debug("self.basetitle: %s" % (self.basetitle))
 
 
     def generate_folders_array(self,path):
@@ -73,7 +77,7 @@ class Foldermenu(ListBase):
                     folderconf["CURRENTFILENAME"] = ""
 
                     fn = os.path.join(d,"folder.conf")
-                    log(lDEBUG,"playlistfolder: %s" % (fn))
+                    logger.debug("playlistfolder: %s" % (fn))
                     folder_conf_file = open(fn,"r")
                     lines = folder_conf_file.readlines()
                     folder_conf_file.close()
@@ -93,16 +97,16 @@ class Foldermenu(ListBase):
                         prozent = (mpos +1)  / len(subfiles)
                         #print ("prozent: %s, lastplayedfile: %s, mpos: %s" %(prozent, lastplayedfile, mpos))
 
-                        log(lDEBUG2,"foldermenu: ptogress%.2f" % (prozent))
+                        logger.debug("foldermenu: ptogress%.2f" % (prozent))
                         self.progress[file] = "%2.2d %%" % (prozent * 100)
                 except Exception as error:
-                    log(lDEBUG2,error)
+                    logger.debug(error)
 
                 try:
                     if (functions.has_subfolders(os.path.join(path,file))):
                         file = symbols.SYMBOL_FOLDER +" " + file
                 except Exception as error:
-                    log(lDEBUG2,error)
+                    logger.debug(error)
                 self.folders.append(file)
 
         self.folders.sort()
@@ -116,18 +120,18 @@ class Foldermenu(ListBase):
             self.menu.append([folder])
         if settings.current_selectedfolder.rfind(settings.currentfolder) == 0:
             search = settings.current_selectedfolder[len(settings.currentfolder)+1:]
-            log(lDEBUG,"search: %s" % (search))
+            logger.debug("search: %s" % (search))
             try:
                 _pos = self.folders.index(search)
     
-                log(lDEBUG,"foldermenu: generate_folders: position: %d, _pos: %d, self.displaylines: %d" % ( self.position, _pos, self.displaylines))
+                logger.debug("foldermenu: generate_folders: position: %d, _pos: %d, self.displaylines: %d" % ( self.position, _pos, self.displaylines))
 
                 self.position= _pos
             except:
                 try:
                     _pos = self.folders.index(symbols.SYMBOL_FOLDER + " " + search)
     
-                    log(lDEBUG,"foldermenu: generate_folders: position: %d, _pos: %d, self.displaylines: %d" % ( self.position, _pos, self.displaylines))
+                    logger.debug("foldermenu: generate_folders: position: %d, _pos: %d, self.displaylines: %d" % ( self.position, _pos, self.displaylines))
 
                     self.position= _pos
                 except:

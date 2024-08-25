@@ -16,7 +16,6 @@ INPUTS=["gpicase"]
 
 use_eyed3 = False
 
-LOGLEVEL=1
 
 ###DISPLAY_SETTINGS i2c
 DISPLAY_TYPE = "spi" # or "i2c"

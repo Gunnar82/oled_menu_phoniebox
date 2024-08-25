@@ -3,12 +3,17 @@ from ui.listbase import ListBase
 from luma.core.render import canvas
 
 import settings
+import logging
+import config.loglevel
+
+logger = logging.getLogger("oled.wnd_bluetooth")
+logger.setLevel(config.loglevel.LOGLEVEL)
 
 import config.colors as colors
 import config.symbols as symbols
 
 import os
-from integrations.logging import *
+
 import time
 import asyncio
 

@@ -3,6 +3,14 @@ import os, re
 import subprocess
 import pexpect
 import time
+import logging
+
+logger = logging.getLogger("oled.bluetooth")
+import config.loglevel
+
+logger.setLevel(config.loglevel.LOGLEVEL)
+
+
 
 bt_dev_1="bt_dev_1"
 
@@ -27,7 +35,7 @@ class BluetoothOutput():
                 name = re.findall("description \"[A-Za-z0-9_\- ]*\"",text)[0].split("\"")[1]
 
         except Exception as errir:
-            print (error)
+            logger.error(e)
         finally:
             reader.close()
 
@@ -134,7 +142,7 @@ class BluetoothOutput():
         try:
             self.send("scan off")
         except Exception as e:
-            print (e)
+            logger.error(e)
 
     def get_available_devices(self):
         """Return a list of tuples of paired and discoverable devices."""
@@ -156,7 +164,7 @@ class BluetoothOutput():
         try:
             out = self.get_output("paired-devices")
         except Exception as e:
-            print (e)
+            logger.error(e)
         else:
             for line in out:
                 device = self.parse_device_info(line)
@@ -193,7 +201,7 @@ class BluetoothOutput():
         try:
             self.send(f"pair {mac_address}", 4)
         except Exception as e:
-            print (e)
+            logger.error(e)
             return False
         else:
             res = self.process.expect(
@@ -205,7 +213,7 @@ class BluetoothOutput():
         try:
             self.send(f"trust {mac_address}", 4)
         except Exception as e:
-            print (e)
+            logger.error(e)
             return False
         else:
             res = self.process.expect(
@@ -218,7 +226,7 @@ class BluetoothOutput():
         try:
             self.send(f"connect {mac_address}", 2)
         except Exception as e:
-            print (e)
+            logger.error(e)
             return False
         else:
             res = self.process.expect(
@@ -231,7 +239,7 @@ class BluetoothOutput():
         try:
             self.send(f"disconnect {mac_address}", 2)
         except Exception as e:
-            print (e)
+            logger.error(e)
             return False
         else:
             res = self.process.expect(

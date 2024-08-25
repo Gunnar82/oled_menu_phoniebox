@@ -6,6 +6,9 @@ import sys
 import os
 import time
 import importlib
+import logging
+
+logger = logging.getLogger("oled.main")
 
 from subprocess import call
 import integrations.bluetooth
@@ -13,6 +16,10 @@ import integrations.functions as fn
 import integrations.playout as playout
 
 import settings
+import config.loglevel
+
+logger.setLevel(config.loglevel.LOGLEVEL)
+
 import config.file_folder as cfg_file_folder
 
 ######
@@ -33,7 +40,6 @@ settings.callback_active = False
 
 
 
-from integrations.logging import *
 
 displays = ["st7789", "ssd1351", "sh1106_i2c", "sh1106_i2c", "emulated","gpicase2"]
 
@@ -209,7 +215,7 @@ def main():
     try:
         loop.run_forever()
     except (KeyboardInterrupt, SystemExit):
-        log(lERROR,"Exiting")
+        logger.error("main Loop exiting")
     finally:
         loop.close()
 

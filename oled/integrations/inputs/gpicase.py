@@ -3,9 +3,14 @@ import threading
 import settings
 import pygame
 import time
+import logging
+
+logger = logging.getLogger("oled.gpicase")
+import config.loglevel
+logger.setLevel(config.loglevel.LOGLEVEL)
 
 import integrations.playout as playout
-from integrations.logging import *
+
 
 try:
     #Only avaiable on Raspberry
@@ -52,7 +57,7 @@ class pygameInput():
             self.powerbtn = gpio26
             if settings.job_t >= 0:
                 #if self.powerbtn != gpio26:
-                log (lDEBUG,"Shutdown Timer active - Waiting")
+                log.debug("Shutdown Timer active - Waiting")
                 if gpio26 == 0:
                     if self.powerpressed < 1:
                         self.powerpressed += 1
@@ -66,13 +71,13 @@ class pygameInput():
                     playout.savepos_online(self.nowplaying)
                 playout.savepos()
                 #self.mopidyconnection.stop()
-                log(lINFO,"Stopping event loop")
+                logger.info("Stopping event loop")
                 playout.pc_shutdown()
                 time.sleep(1)
                 self.loop.stop()
 
         finally:
-            log(lDEBUG,"gpicase power handling: ende")
+            logger.debug("gpicase power handling: ende")
             time.sleep(0.1)
             settings.callback_active = False
 
@@ -86,7 +91,7 @@ class pygameInput():
         while self.loop.is_running() and not shutdown:
             #self.clock.tick(60)
             for event in pygame.event.get():
-                log(lDEBUG,"pygame: %s " % (event))
+                logger.debug("pygame: %s " % (event))
                 if event.type == pygame.JOYDEVICEADDED:
                     joy = pygame.joystick.Joystick(event.device_index)
                     joysticks.append(joy)
@@ -95,16 +100,16 @@ class pygameInput():
                 elif event.type == pygame.JOYHATMOTION:
                     x,y = event.value
                     if (y == -1 and x == 0): # keypad down
-                        log (lDEBUG2, "pygame: down")
+                        logger.debug ("pygame: down")
                         self.turn_callback(0,'down')
                     elif (y == 1 and x == 0): #keypad up
-                        log (lDEBUG2, "pygame: up")
+                        logger.debug ("pygame: up")
                         self.turn_callback(0,'up')
                     elif (x == -1 and y == 0): # keypad left
-                        log (lDEBUG2, "pygame: left")
+                        logger.debug ("pygame: left")
                         self.turn_callback(0,'left')
                     elif (x == 1 and y == 0): #keypas right
-                         log (lDEBUG2, "pygame: right")
+                         logger.debug( "pygame: right")
                          self.turn_callback(0,'right')
                 elif event.type == pygame.JOYBUTTONUP:
                     if int(event.button) == 0: # A
@@ -127,7 +132,7 @@ class pygameInput():
             await asyncio.sleep(0.1)
 
     def quit(self):
-        log(lERROR,"Shutting Down Pygame")
+        logger.error("Shutting Down Pygame")
         #pygame.joystick.quit()
         #pygame.display.quit()
         #pygame.quit()

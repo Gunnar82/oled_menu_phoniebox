@@ -3,9 +3,14 @@ import asyncio
 import threading
 import settings # pylint: disable=import-error
 import time
+import logging
+import config.loglevel
+logger = logging.getLogger("oled.pirateaudio")
+logger.setLevel(config.loglevel.LOGLEVEL)
+
 import integrations.functions as fn
 
-from integrations.logging import *
+
 
 try:
     #Only avaiable on Raspberry
@@ -32,7 +37,7 @@ class PirateAudio():
         self._setup_gpio(self.PIN_B)
         self._setup_gpio(self.PIN_X)
         self._setup_gpio(self.PIN_Y)
-        log(lINFO,"using gpiocontrol")
+        logger.info("using gpiocontrol")
 
     def _button_press(self, *args):
         try:
@@ -40,7 +45,7 @@ class PirateAudio():
             if not settings.callback_active:
                 settings.callback_active = True
                 key = args[0]
-                log(lDEBUG,"gpiocontrol args %s"%(format(args)))
+                logger.debug("gpiocontrol args %s"%(format(args)))
 
                 if key == self.PIN_A:
                     self.turn_callback(0,'#')
@@ -51,7 +56,7 @@ class PirateAudio():
                 elif key == self.PIN_Y:
                     self.turn_callback(1)
         finally:
-            log(lDEBUG,"gpiocontrol: ende")
+            logger.debug("gpiocontrol: ende")
             time.sleep(0.1)
             settings.callback_active = False
 

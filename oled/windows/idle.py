@@ -3,6 +3,11 @@ import datetime
 import asyncio
 from ui.mainwindow import MainWindow
 import settings
+import logging
+import config.loglevel
+
+logger = logging.getLogger("oled.wnd_idle")
+logger.setLevel(config.loglevel.LOGLEVEL)
 
 import config.colors as colors
 import config.symbols as symbols
@@ -20,7 +25,7 @@ import integrations.playout as playout
 
 from integrations.functions import get_battload_color, to_min_sec, get_folder, get_folder_of_livestream, get_folder_from_file
 
-from integrations.logging import *
+
 
 
 
@@ -60,7 +65,7 @@ class Idle(MainWindow):
                 self.busyrendertime = 0.5
 
                 if ((datetime.datetime.now() - settings.lastinput).total_seconds() > 120):
-                    log(lINFO,"X728: Shutting down: Low Battery (EMERG)")
+                    logger.info("X728: Shutting down: Low Battery (EMERG)")
                     playout.savepos_online(self.nowplaying)
                     playout.savepos()
                     playout.pc_shutdown()
@@ -75,7 +80,7 @@ class Idle(MainWindow):
             ####setting idle text / Icon on Song Number Changed
             try:
                 if ((now - self.nowplaying.lasttitlechange ).total_seconds() < 3):
-                    log(lDEBUG,"Titelwechsel erkannt")
+                    logger.debug("Titelwechsel erkannt")
                     self.set_busy ("Titelwechsel", symbols.SYMBOL_CHANGING_SONG, "%2.2d von %2.2d " % (int(self.nowplaying._song), int(self.nowplaying._playlistlength)))
                     self.busy = True
             except Exception as error:
@@ -182,11 +187,11 @@ class Idle(MainWindow):
                 else:
                     if float(self.nowplaying._elapsed) > 10:
                         self.set_busy("Neustart Track",symbols.SYMBOL_PREV)
-                        log (lDEBUG,"idle: seek 0")
+                        logger.debug("idle: seek 0")
                         playout.pc_seek0()
                     elif int(self.nowplaying._song) > 1:
                         self.set_busy("Zurück",symbols.SYMBOL_PREV)
-                        log (lDEBUG,"idle: prev")
+                        logger.debug("idle: prev")
                         playout.pc_prev()
                     else:
                         self.set_busy("Erster Titel",symbols.SYMBOL_FAIL)
@@ -199,7 +204,7 @@ class Idle(MainWindow):
                 else:
                     if int(self.nowplaying._song) < int(self.nowplaying._playlistlength):
                         self.set_busy("Weiter",symbols.SYMBOL_NEXT)
-                        log (lDEBUG,"idle: next")
+                        logger.debug("idle: next")
                         playout.pc_next()
                     else:
                         self.set_busy("Letzter Titel",symbols.SYMBOL_FAIL)

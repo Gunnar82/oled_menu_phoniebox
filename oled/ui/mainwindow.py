@@ -13,13 +13,18 @@ import os
 import RPi.GPIO as GPIO
 import locale
 import time
+import logging
+import config.loglevel
+
+logger = logging.getLogger("oled.mainwindow")
+logger.setLevel(config.loglevel.LOGLEVEL)
 
 import integrations.bluetooth
 import integrations.playout as playout
 
 from integrations.functions import get_battload_color, to_min_sec, get_folder, get_folder_of_livestream, get_folder_from_file
 
-from integrations.logging import *
+
 
 
 
@@ -108,7 +113,7 @@ class MainWindow(WindowBase):
                 pos = int(settings.battcapacity/100*settings.DISPLAY_WIDTH)
                 draw.rectangle((0,3,pos,3),outline=get_battload_color(),fill=get_battload_color())
             except:
-                log(lERROR,"Battery Error")
+                logger.error("Battery Error")
 
         #Currently playing song
 

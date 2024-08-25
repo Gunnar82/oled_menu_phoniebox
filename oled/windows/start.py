@@ -5,13 +5,17 @@ from luma.core.render import canvas
 from datetime import datetime
 
 import settings
+import logging
+import config.loglevel
+logger = logging.getLogger("oled.start")
+logger.setLevel(config.loglevel.LOGLEVEL)
 
 import config.colors as colors
 import config.symbols as symbols
 import config.bluetooth as cbluetooth
 
 from integrations.functions import get_oledversion, get_battload_color
-from integrations.logging import *
+
 
 
 class Start(WindowBase):
@@ -50,7 +54,7 @@ class Start(WindowBase):
 
 
         if self.mopidyconnection.connected and ((datetime.now() - self.startup).total_seconds() >= settings.START_TIMEOUT):
-            log (lDEBUG,"start: init")
+            logger.debug("start: init")
             self.windowmanager.set_window("idle")
 
 
