@@ -249,7 +249,13 @@ class Idle(MainWindow):
                 if playout.checkfolder(what) != 0:
                     self.set_busy("Fehler",symbols.SYMBOL_ERROR,what)
                 else:
-                    self.set_busy("Starte",symbols.SYMBOL_PASS,what,busyrendertime=5)
+                    try:
+                        with open(what) as f:
+                            content = f.read()
+                    except:
+                        content = "Fehler"
+
+                    self.set_busy(what.split("/")[-1],symbols.SYMBOL_PASS,content,busyrendertime=5)
                     self.loop.create_task(self.playlast(what))
         else:
             if (direction > 0):
