@@ -4,6 +4,8 @@ import settings
 import config.colors as colors
 import config.symbols as symbols
 
+import re
+import imp
 import time
 import requests
 import htmllistparse
@@ -38,7 +40,7 @@ class SystemMenu(ListBase):
         self.menu.append(["Lösche Radiostatus"])
         self.menu.append(["Lösche Onlinestatus"])
 
-        self.menu.append(["git pull OLED"])
+        self.menu.append(["Update OLED"])
 
         self.menu.append(["WLAN: aus"])
         self.menu.append(["WLAN: an"])
@@ -107,7 +109,8 @@ class SystemMenu(ListBase):
 
 
         elif self.position == 7:
-            self.cmd = "cd /home/pi/oledctrl && git pull && sudo systemctl restart oled"
+
+            self.cmd = "cd /home/pi/oledctrl && git pull && sudo pip3 install -r requirements.txt && sudo systemctl restart oled"
 
         elif self.position == 8 or self.position == 9:
             if self.position == 9:
