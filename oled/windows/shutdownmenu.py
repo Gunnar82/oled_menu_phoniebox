@@ -37,7 +37,7 @@ class Shutdownmenu(MenuBase):
             restart_oled()
 
         elif self.counter == 2:
-            playout.toggle()
+            playout.pc_toggle()
             self.mopidyconnection.stop()
             settings.shutdown_reason = settings.SR2
             print("Stopping event loop")
