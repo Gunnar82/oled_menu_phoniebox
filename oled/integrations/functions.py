@@ -2,6 +2,7 @@ import os
 import subprocess, re
 import datetime
 import settings
+import logging
 
 import config.colors as colors
 import config.symbols as symbols
@@ -170,3 +171,16 @@ def get_oledversion():
 
 def delete_local_online_folder():
     os.system("sudo rm -r %s/*" % (cfg_file_folder.AUDIO_BASEPATH_ONLINE))
+
+
+def run_command(command, cwd=None):
+    """Führt einen Shell-Befehl aus und prüft die Ausgabe."""
+    try:
+        result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=cwd)
+        logging.info(f"Erfolgreich ausgeführt: {command}")
+        logging.info(result.stdout)
+        return True
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Fehler bei der Ausführung von: {command}")
+        logging.error(e.stderr)
+        return False
