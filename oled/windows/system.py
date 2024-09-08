@@ -16,7 +16,8 @@ import shutil
 from ui.listbase import ListBase
 import time
 import integrations.playout as playout
-from integrations.functions import get_size,delete_local_online_folder
+
+from integrations.functions import get_size,delete_local_online_folder, run_command
 
 import config.online as cfg_online
 import config.file_folder as cfg_file_folder
@@ -67,9 +68,7 @@ class SystemMenu(ListBase):
     def exec_command(self):
         try:
             self.processing = True
-            subprocess_result = subprocess.Popen(self.cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
-            subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
-            if subprocess_result.returncode == 0:
+            if run_command(self.cmd) == True:
                 self.set_busy(self.menu[self.position][0],symbols.SYMBOL_PASS, busytext2="Erfolgreich")
             else:
                 self.set_busy(self.menu[self.position][0],symbols.SYMBOL_FAIL, busytext2=subprocess_output[0].decode())

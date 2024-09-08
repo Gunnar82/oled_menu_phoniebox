@@ -173,14 +173,21 @@ def delete_local_online_folder():
     os.system("sudo rm -r %s/*" % (cfg_file_folder.AUDIO_BASEPATH_ONLINE))
 
 
-def run_command(command, cwd=None):
+def run_command(commands, cwd=None):
     """Führt einen Shell-Befehl aus und prüft die Ausgabe."""
     try:
-        result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=cwd)
-        logging.info(f"Erfolgreich ausgeführt: {command}")
-        logging.info(result.stdout)
-        return True
-    except subprocess.CalledProcessError as e:
-        logging.error(f"Fehler bei der Ausführung von: {command}")
-        logging.error(e.stderr)
+        if isinstance(commands,str):
+            subprocess_result = subprocess.Popen(commands,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd=cwd)
+            subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
+            return (subprocess_result.returncode == 0)
+
+        elif isinstance(commands,list):
+            for command in commands:
+                subprocess_result = subprocess.Popen(commands,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd=cwd)
+                subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
+                if subprocess_result.returncode != 0: return False
+            return True
+
+    except:
         return False
+
