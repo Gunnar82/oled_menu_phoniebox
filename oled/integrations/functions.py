@@ -173,7 +173,7 @@ def delete_local_online_folder():
     os.system("sudo rm -r %s/*" % (cfg_file_folder.AUDIO_BASEPATH_ONLINE))
 
 
-def run_command(commands, cwd=None):
+def run_command(commands, cwd="/home/pi/oledctrl/"):
     """Führt einen Shell-Befehl aus und prüft die Ausgabe."""
     try:
         if isinstance(commands,str):
