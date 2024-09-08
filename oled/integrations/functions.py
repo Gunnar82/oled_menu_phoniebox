@@ -183,11 +183,13 @@ def run_command(commands, cwd="/home/pi/oledctrl/"):
 
         elif isinstance(commands,list):
             for command in commands:
-                subprocess_result = subprocess.Popen(commands,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd=cwd)
+                subprocess_result = subprocess.Popen(command,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd=cwd)
                 subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
-                if subprocess_result.returncode != 0: return False
+                print (subprocess_output)
+                if subprocess_result.returncode != 0:
+                    return False
             return True
 
-    except:
+    except Exception as e:
         return False
 

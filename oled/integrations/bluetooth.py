@@ -1,9 +1,12 @@
 import settings
-import os, re
+import  re
 import subprocess
 import pexpect
 import time
 import logging
+
+
+from integrations.functions import run_command
 
 logger = logging.getLogger("oled.bluetooth")
 import config.loglevel
@@ -42,10 +45,10 @@ class BluetoothOutput():
         return mac,name
 
     def get_bt_dev_status(self):
-        return True if (os.system(cmd_check_bt_dev = "bluetoothctl connect %s && sudo l2ping %s -c 1" % (self.selected_bt_mac, self.selected_bt_mac))== 0) else False
+        return run_command ("bluetoothctl connect %s && sudo l2ping %s -c 1" % (self.selected_bt_mac, self.selected_bt_mac))
 
     def cmd_disconnect(self):
-        return True if (os.system("bluetoothctl disconnect")== 0) else False
+        return run_command("bluetoothctl disconnect")
 
 
     def get_bt_devices(self):
@@ -74,24 +77,22 @@ class BluetoothOutput():
         asound_new = re.sub("(?:[0-9A-Fa-f]{2}[:-]){5}(?:[0-9A-Fa-f]{2})",mac,asound_content)
         asound_new = re.sub("description \"[A-Za-z0-9_\- ]*\"","description \"%s\"" %(name),asound_new)
 
-        os.system ("sudo chown pi /etc/asound.conf")
+        run_command("sudo chown pi /etc/asound.conf")
 
         with open('/etc/asound.conf','w') as asound:
             asound.write(asound_new)
 
-        os.system ("sudo chown root /etc/asound.conf")
+        run_command(["sudo chown root /etc/asound.conf", "sudo systemctl restart mpd", "sudo systemctl restart phoniebox-bt-buttons.service"])
 
-        os.system ("sudo systemctl restart mpd")
-        os.system ("sudo systemctl restart phoniebox-bt-buttons.service")
         self.selected_bt_mac, self.selected_bt_name = self.read_dev_bt_from_file()
 
 
 
     def enable_dev_bt(self):
-        return os.system("bluetoothctl connect %s && sudo l2ping %s -c 1 && mpc enable \"%s\" && mpc disable \"%s\"" % (self.selected_bt_mac, self.selected_bt_mac, bt_dev_1, settings.ALSA_DEV_LOCAL))
+        return run_command([f"bluetoothctl connect {self.selected_bt_mac}", f"sudo l2ping {self.selected_bt_mac} -c 1", f"mpc enable \"{bt_dev_1}\"", f"mpc disable \"{settings.ALSA_DEV_LOCAL}\""])
 
     def enable_dev_local(self):
-        os.system("mpc enable \"%s\" && mpc disable \"%s\"" % (settings.ALSA_DEV_LOCAL, bt_dev_1))
+        run_command([f"mpc enable \"{settings.ALSA_DEV_LOCAL}\"", f"mpc disable \"{bt_dev_1}\""])
 
 
     def output_status(self,device="hifiberry"):

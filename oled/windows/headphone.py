@@ -12,6 +12,7 @@ logger.setLevel(config.loglevel.LOGLEVEL)
 import config.colors as colors
 import config.symbols as symbols
 
+
 import os
 
 import time
@@ -48,7 +49,7 @@ class Headphonemenu(MenuBase):
             self.bluetooth.enable_dev_local()
 
         elif self.counter == 2:
-            if self.bluetooth.enable_dev_bt() != 0:
+            if not self.bluetooth.enable_dev_bt():
                 self.set_busy ("Keine Verbindung!",symbols.SYMBOL_ERROR,self.bluetooth.selected_bt_name)
                 await asyncio.sleep(1)
 
