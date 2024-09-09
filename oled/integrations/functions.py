@@ -98,7 +98,7 @@ def restart_oled():
 
     print ("restarting  service")
 
-    os.system("sudo systemctl restart oled")
+    run_command("sudo systemctl restart oled")
 
 
 def get_usb_name():
@@ -113,13 +113,13 @@ def mountusb():
 
     if not os.path.ismount(cfg_file_folder.AUDIO_BASEPATH_USB):
         print (usbdev)
-        os.system("unionfs-fuse -orw,cow,allow_other /media/pb_import/tmpfs/=rw:/media/pb_import/%s=ro %s" % (usbdev, cfg_file_folder.AUDIO_BASEPATH_USB))
-        os.system("mpc update")
+        run_command("unionfs-fuse -orw,cow,allow_other /media/pb_import/tmpfs/=rw:/media/pb_import/%s=ro %s" % (usbdev, cfg_file_folder.AUDIO_BASEPATH_USB))
+        run_command("mpc update")
     else:
         print ("already mounted")
 
 def umountusb():
-    os.system("/home/pi/RPi-Jukebox-RFID/shared/audiofolders/usb/")
+    run_command("/home/pi/RPi-Jukebox-RFID/shared/audiofolders/usb/")
 
 def get_folder_from_file(filename):
     try:
@@ -170,7 +170,7 @@ def get_oledversion():
 
 
 def delete_local_online_folder():
-    os.system("sudo rm -r %s/*" % (cfg_file_folder.AUDIO_BASEPATH_ONLINE))
+    run_command("sudo rm -r %s/*" % (cfg_file_folder.AUDIO_BASEPATH_ONLINE))
 
 
 def run_command(commands, cwd="/home/pi/oledctrl/"):

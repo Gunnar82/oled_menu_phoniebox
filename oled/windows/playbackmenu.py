@@ -12,7 +12,7 @@ import os
 
 from ui.mainwindow import MainWindow
 import integrations.playout as playout
-from integrations.functions import to_min_sec,get_folder_of_livestream, get_folder
+from integrations.functions import to_min_sec,get_folder_of_livestream, get_folder, run_command
 
 import RPi.GPIO as GPIO
 
@@ -125,6 +125,6 @@ class Playbackmenu(MainWindow):
             if (self.counter + direction < len(self.descr) and self.counter + direction >= 0):
                 self.counter += direction
             
-        #os.system("mpc volume {}{} > /dev/null".format(plus,direction))
+        #run_command("mpc volume {}{} > /dev/null".format(plus,direction))
         #if self.counter + direction <= 0 and self.counter + direction >= 0:
             #self.counter += direction

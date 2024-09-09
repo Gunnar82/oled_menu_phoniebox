@@ -6,7 +6,7 @@ from PIL import ImageFont
 import settings
 
 import config.colors as colors
-
+from integrations.functions import run_command
 import os
 import asyncio
 import subprocess
@@ -80,7 +80,7 @@ class Wlanmenu(WindowBase):
 
         while self.loop.is_running():
             try:
-                self._hostapd = True if os.system('systemctl is-active --quiet hostapd.service') == 0 else False
+                self._hostapd = run_command('systemctl is-active --quiet hostapd.service')
             except:
                 pass
 
@@ -126,7 +126,7 @@ class Wlanmenu(WindowBase):
             self.windowmanager.set_window("mainmenu")
         elif self.counter == 1:
             try:
-                os.system('sudo /usr/bin/autohotspotN')
+                run_command('sudo /usr/bin/autohotspotN')
 
             except:
                 pass

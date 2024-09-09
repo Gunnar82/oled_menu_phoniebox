@@ -5,7 +5,7 @@ from luma.core.render import canvas
 import settings
 
 import config.colors as colors
-
+from integrations.functions import run_command
 import socket
 import subprocess
 import os
@@ -31,10 +31,10 @@ class Firewallmenu(MenuBase):
         await asyncio.sleep(1)
         if self.counter == 2:
             for srv in cfg_services.ufw_services_allow:
-                os.system("sudo ufw deny %s" % (srv))
+                run_command("sudo ufw deny %s" % (srv))
         elif self.counter == 3:
             for srv in cfg_services.ufw_services_allow:
-                os.system("sudo ufw allow %s" % (srv))
+                run_command("sudo ufw allow %s" % (srv))
         await asyncio.sleep(5)
 
 

@@ -9,6 +9,8 @@ import asyncio
 import config.colors as colors
 import integrations.functions as fn
 
+from integrations.functions import run_command
+
 import socket
 import subprocess
 import os
@@ -62,7 +64,7 @@ class Infomenu(ListBase):
                 self.ipaddr = "n/a"
 
             try:
-                self.hostapd = True if os.system('systemctl is-active --quiet hostapd.service') == 0 else False
+                self.hostapd = True if run_command('systemctl is-active --quiet hostapd.service') == 0 else False
             except:
                 pass
 
@@ -76,7 +78,7 @@ class Infomenu(ListBase):
                 self.dfh = "n/a"
 
             try:
-                self.hostapd = True if os.system('systemctl is-active --quiet hostapd.service') == 0 else False
+                self.hostapd = run_command('systemctl is-active --quiet hostapd.service')
             except:
                 pass
 

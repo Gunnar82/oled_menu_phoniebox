@@ -11,7 +11,7 @@ import os
 import integrations.playout as playout
 import asyncio
 
-from integrations.functions import restart_oled, get_timeouts
+from integrations.functions import restart_oled, get_timeouts, run_command
 
 class Shutdownmenu(MenuBase):
 
@@ -50,19 +50,19 @@ class Shutdownmenu(MenuBase):
             self.loop.stop()
         
         elif self.counter == 4:
-            os.system("%s -c=shutdownafter -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
+            run_command("%s -c=shutdownafter -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
         elif self.counter == 5:
-            os.system("%s -c=shutdownafter -v=15" % cfg_file_folder.PLAYOUT_CONTROLS)
+            run_command("%s -c=shutdownafter -v=15" % cfg_file_folder.PLAYOUT_CONTROLS)
         elif self.counter == 6:
-            os.system("%s -c=shutdownafter -v=30" % cfg_file_folder.PLAYOUT_CONTROLS)
+            run_command("%s -c=shutdownafter -v=30" % cfg_file_folder.PLAYOUT_CONTROLS)
         elif self.counter == 7:
-            os.system("%s -c=shutdownafter -v=60" % cfg_file_folder.PLAYOUT_CONTROLS)
+            run_command("%s -c=shutdownafter -v=60" % cfg_file_folder.PLAYOUT_CONTROLS)
         elif self.counter == 8:
-            os.system("%s -c=setidletime -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
+            run_command("%s -c=setidletime -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
         elif self.counter == 9:
-            os.system("%s -c=setidletime -v=5" % cfg_file_folder.PLAYOUT_CONTROLS)
+            run_command("%s -c=setidletime -v=5" % cfg_file_folder.PLAYOUT_CONTROLS)
         elif self.counter == 10:
-            os.system("%s -c=setidletime -v=15" % cfg_file_folder.PLAYOUT_CONTROLS)
+            run_command("%s -c=setidletime -v=15" % cfg_file_folder.PLAYOUT_CONTROLS)
 
         get_timeouts()
 
@@ -80,10 +80,10 @@ class Shutdownmenu(MenuBase):
         if key:
             if key == 'A':
                 self.set_busy("Austimer 30 min","\uf0a2")
-                os.system("%s -c=shutdownafter -v=30" % cfg_file_folder.PLAYOUT_CONTROLS)
+                run_command("%s -c=shutdownafter -v=30" % cfg_file_folder.PLAYOUT_CONTROLS)
             elif key == 'B':
                 self.set_busy("Austimer deaktiviert","\uf1f7")
-                os.system("%s -c=shutdownafter -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
+                run_command("%s -c=shutdownafter -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
 
             elif key == 'C':
                 playout.savepos()

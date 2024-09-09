@@ -6,6 +6,9 @@ import musicpd
 import settings # pylint: disable=import-error
 import os
 
+from integrations.functions import run_command
+
+
 class MopidyControl():
     def __init__(self, loop):
         self.client = musicpd.MPDClient()
@@ -147,8 +150,8 @@ class MopidyControl():
     def _playradiostation(self, stationid):
         try:
             #self.client.clear()
-            #os.system("/home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=playerstop")
-            os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/rfid_trigger_play.sh -d=\"%s\"" % settings.RADIO_PLAYLIST)
+            #run_command("/home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=playerstop")
+            run_command("sudo /home/pi/RPi-Jukebox-RFID/scripts/rfid_trigger_play.sh -d=\"%s\"" % settings.RADIO_PLAYLIST)
             #self.client.load("GBRadio")
             #self.loadedplaylist = "GBRadio"
         except musicpd.ConnectionError:
@@ -171,7 +174,7 @@ class MopidyControl():
                 d = os.path.join(rootdir, file)
                 if os.path.isdir(d):
                     recursive = "-v='recursive'"
-            os.system("sudo /home/RPi-Jukebox-RFID/scripts/rfid_trigger_play.sh -d=\"%s\" %s" % (name,recursive))
+            run_command("sudo /home/RPi-Jukebox-RFID/scripts/rfid_trigger_play.sh -d=\"%s\" %s" % (name,recursive))
 
             self.loadedplaylist = name
             print(f"Loaded and playing Playlist {name}")

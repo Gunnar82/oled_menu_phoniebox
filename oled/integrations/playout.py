@@ -6,36 +6,38 @@ import urllib.parse
 import config.file_folder as cfg_file_folder
 import config.online as cfg_online
 
+from integrations.functions import run_command
+
 def pc_prev():
-    os.system("%s -c=playerprev" % (cfg_file_folder.PLAYOUT_CONTROLS))
+    run_command("%s -c=playerprev" % (cfg_file_folder.PLAYOUT_CONTROLS))
 def pc_next():
-    os.system("%s -c=playernext" % (cfg_file_folder.PLAYOUT_CONTROLS))
+    run_command("%s -c=playernext" % (cfg_file_folder.PLAYOUT_CONTROLS))
 def pc_stop():
-    os.system("%s -c=playerstop" % (cfg_file_folder.PLAYOUT_CONTROLS))
+    run_command("%s -c=playerstop" % (cfg_file_folder.PLAYOUT_CONTROLS))
 
 def pc_play(pos = 0):
-    os.system("%s -c=playerplay -v=%d" % (cfg_file_folder.PLAYOUT_CONTROLS, pos))
+    run_command("%s -c=playerplay -v=%d" % (cfg_file_folder.PLAYOUT_CONTROLS, pos))
 
 def pc_mute():
-    os.system("%s -c=mute" % (cfg_file_folder.PLAYOUT_CONTROLS))
+    run_command("%s -c=mute" % (cfg_file_folder.PLAYOUT_CONTROLS))
 
 def pc_toggle():
-    os.system("%s -c=playerpause" % (cfg_file_folder.PLAYOUT_CONTROLS))
+    run_command("%s -c=playerpause" % (cfg_file_folder.PLAYOUT_CONTROLS))
 
 def pc_shutdown():
-    os.system("%s -c=shutdown" % (cfg_file_folder.PLAYOUT_CONTROLS))
+    run_command("%s -c=shutdown" % (cfg_file_folder.PLAYOUT_CONTROLS))
 
 def pc_reboot():
     print("Reboot down system")
-    os.system("%s -c=reboot" % (cfg_file_folder.PLAYOUT_CONTROLS))
+    run_command("%s -c=reboot" % (cfg_file_folder.PLAYOUT_CONTROLS))
 
 
 def pc_seek0():
     print("mpc seek 0")
-    os.system("mpc seek 0")
+    run_command("mpc seek 0")
 
 def savepos():
-    os.system("%s -c=savepos" % (cfg_file_folder.RESUME_PLAY))
+    run_command("%s -c=savepos" % (cfg_file_folder.RESUME_PLAY))
 
 def savepos_online(nowplaying):
     data = {'url' : nowplaying.filename, 'pos' : str(nowplaying._elapsed), 'song' : str(nowplaying._song), 'length' : str(nowplaying._playlistlength)}
@@ -76,19 +78,19 @@ def playlast_checked(playfile):
     pc_playfolder(lastfile)
 
 def pc_volup(step=5):
-    os.system("mpc vol  +%d" % (step))
-#    os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumeup -v=%d" % (step))
+    run_command("mpc vol  +%d" % (step))
+#    run_command("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumeup -v=%d" % (step))
 
 def pc_voldown(step=5):
-    os.system("mpc vol -%d" % (step))
-#    os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumedown -v=%d" % (step))
+    run_command("mpc vol -%d" % (step))
+#    run_command("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=volumedown -v=%d" % (step))
 
 
 def pc_playfolder(folder=cfg_file_folder.AUDIO_BASEPATH_RADIO):
-    os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/rfid_trigger_play.sh -d=\"%s\"" % (folder))
+    run_command("sudo /home/pi/RPi-Jukebox-RFID/scripts/rfid_trigger_play.sh -d=\"%s\"" % (folder))
 
 def pc_shutdown():
-    os.system("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=shutdown")
+    run_command("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=shutdown")
 
 def pc_enableresume(folder=""):
     if folder != "":
@@ -96,4 +98,4 @@ def pc_enableresume(folder=""):
 
 def pc_disableresume(folder=""):
     if folder != "":
-        os.system("%s -c=disableresume -d=\"%s\"" % (cfg_file_folder.RESUME_PLAY,folder))
+        run_command("%s -c=disableresume -d=\"%s\"" % (cfg_file_folder.RESUME_PLAY,folder))
