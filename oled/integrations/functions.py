@@ -4,6 +4,14 @@ import datetime
 import settings
 import logging
 
+from integrations.logging_config import setup_logger
+
+
+setup_logger()
+logger = logging.getLogger(__name__)
+
+
+
 import config.colors as colors
 import config.symbols as symbols
 import config.file_folder as cfg_file_folder
@@ -177,19 +185,24 @@ def run_command(commands, cwd="/home/pi/oledctrl/"):
     """Führt einen Shell-Befehl aus und prüft die Ausgabe."""
     try:
         if isinstance(commands,str):
+            logger.debug(f"running single command: {commands}")
             subprocess_result = subprocess.Popen(commands,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd=cwd)
             subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
             return (subprocess_result.returncode == 0)
 
         elif isinstance(commands,list):
             for command in commands:
+                logger.debug(f"running multiple commands: {commands}")
+
                 subprocess_result = subprocess.Popen(command,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd=cwd)
                 subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
                 print (subprocess_output)
                 if subprocess_result.returncode != 0:
+                    logger.info("command returncode not 0")
                     return False
             return True
 
     except Exception as e:
+        logger.exception(str(e))
         return False
 
