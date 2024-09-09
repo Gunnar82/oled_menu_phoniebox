@@ -6,9 +6,13 @@ from datetime import datetime
 
 import settings
 import logging
-import config.loglevel
-logger = logging.getLogger("oled.ui_listbase")
-logger.setLevel(config.loglevel.LOGLEVEL)
+
+from integrations.logging_config import setup_logger
+
+
+setup_logger()
+logger = logging.getLogger(__name__)
+
 
 import config.colors as colors
 import config.symbols as symbols

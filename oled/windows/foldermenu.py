@@ -2,9 +2,11 @@
 from ui.listbase import ListBase
 import settings
 import logging
-logger = logging.getLogger("oled.wnd_foldermenu")
-import config.loglevel
-logger.setLevel(config.loglevel.LOGLEVEL)
+
+from integrations.logging_config import setup_logger
+
+setup_logger()
+logger = logging.getLogger(__name__)
 
 import config.colors as colors
 import config.symbols as symbols

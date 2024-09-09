@@ -8,7 +8,11 @@ import time
 import importlib
 import logging
 
-logger = logging.getLogger("oled.main")
+from integrations.logging_config import setup_logger
+
+
+setup_logger()
+logger = logging.getLogger(__name__)
 
 from subprocess import call
 import integrations.bluetooth
@@ -16,9 +20,6 @@ import integrations.functions as fn
 import integrations.playout as playout
 
 import settings
-import config.loglevel
-
-logger.setLevel(config.loglevel.LOGLEVEL)
 
 import config.file_folder as cfg_file_folder
 

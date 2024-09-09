@@ -9,9 +9,10 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 import logging
-import config.loglevel
-logger = logging.getLogger("oled.latestplayed")
-logger.setLevel(config.loglevel.LOGLEVEL)
+from integrations.logging_config import setup_logger
+
+setup_logger()
+logger = logging.getLogger(__name__)
 
 latest_played_changed = False
 

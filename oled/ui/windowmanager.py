@@ -4,9 +4,12 @@ from datetime import datetime
 
 import asyncio
 import logging
-import config.loglevel
-logger = logging.getLogger("oled.windowmanager")
-logger.setLevel(config.loglevel.LOGLEVEL)
+
+from integrations.logging_config import setup_logger
+
+
+setup_logger()
+logger = logging.getLogger(__name__)
 
 import config.symbols as symbols
 import integrations.functions as fn

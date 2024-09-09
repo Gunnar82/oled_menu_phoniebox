@@ -5,9 +5,11 @@ import pygame
 import time
 import logging
 
-logger = logging.getLogger("oled.gpicase")
-import config.loglevel
-logger.setLevel(config.loglevel.LOGLEVEL)
+from integrations.logging_config import setup_logger
+
+
+setup_logger()
+logger = logging.getLogger(__name__)
 
 import integrations.playout as playout
 

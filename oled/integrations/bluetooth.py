@@ -8,11 +8,11 @@ import logging
 
 from integrations.functions import run_command
 
-logger = logging.getLogger("oled.bluetooth")
-import config.loglevel
+from integrations.logging_config import setup_logger
 
-logger.setLevel(config.loglevel.LOGLEVEL)
 
+setup_logger()
+logger = logging.getLogger(__name__)
 
 
 bt_dev_1="bt_dev_1"

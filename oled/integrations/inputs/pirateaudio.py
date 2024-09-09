@@ -4,9 +4,11 @@ import threading
 import settings # pylint: disable=import-error
 import time
 import logging
-import config.loglevel
-logger = logging.getLogger("oled.pirateaudio")
-logger.setLevel(config.loglevel.LOGLEVEL)
+
+from integrations.logging_config import setup_logger
+
+setup_logger()
+logger = logging.getLogger(__name__)
 
 import integrations.functions as fn
 
