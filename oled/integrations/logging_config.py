@@ -20,8 +20,8 @@ def setup_logger():
     #file_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
 
     # StreamHandler für stdout (Konsole)
-    stdout_handler = logging.StreamHandler(sys.stdout)
-    stdout_handler.setLevel(logging.DEBUG)  # Setzt das Level für diesen Handler
+    stdout_handler = logging.StreamHandler(sys.stderr)
+    stdout_handler.setLevel(level)  # Setzt das Level für diesen Handler
 
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
