@@ -1,3 +1,3 @@
 import logging
 
-LOGLEVEL = logging.ERROR
+LOGLEVEL = logging.INFO

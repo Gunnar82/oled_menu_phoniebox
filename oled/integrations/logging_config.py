@@ -5,10 +5,10 @@ import config.loglevel
 
 
 
-def setup_logger():
+def setup_logger(level = config.loglevel.LOGLEVEL):
     # Grundlegende Konfiguration des Loggings
     logging.basicConfig(
-        level= config.loglevel.LOGLEVEL,  # Log-Level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+        level= level,  # Log-Level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Format der Log-Nachrichten
         datefmt='%Y-%m-%d %H:%M:%S'
     )

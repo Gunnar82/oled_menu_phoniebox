@@ -103,35 +103,40 @@ class pygameInput():
                     x,y = event.value
                     if (y == -1 and x == 0): # keypad down
                         logger.debug ("pygame: down")
-                        self.turn_callback(0,'down')
+                        await self.loop.run_in_executor(None,self.handle_turn,0,'down')
                     elif (y == 1 and x == 0): #keypad up
                         logger.debug ("pygame: up")
-                        self.turn_callback(0,'up')
+                        await self.loop.run_in_executor(None,self.handle_turn,0,'up')
                     elif (x == -1 and y == 0): # keypad left
                         logger.debug ("pygame: left")
-                        self.turn_callback(0,'left')
+                        await self.loop.run_in_executor(None,self.handle_turn,0,'left')
                     elif (x == 1 and y == 0): #keypas right
                          logger.debug( "pygame: right")
-                         self.turn_callback(0,'right')
+                         await self.loop.run_in_executor(None,self.handle_turn,0,'right')
                 elif event.type == pygame.JOYBUTTONUP:
                     if int(event.button) == 0: # A
                         self.push_callback()
                     elif int(event.button) == 1: #B
-                        self.turn_callback(0,'#')
+                        await self.loop.run_in_executor(None,self.handle_turn,0,'#')
                     elif int(event.button) == 2: # X
-                        self.turn_callback(0,'X')
+                        await self.loop.run_in_executor(None,self.handle_turn,0,'X')
                     elif int(event.button) == 3: # Y
-                        self.turn_callback(0,'Y')
+                        await self.loop.run_in_executor(None,self.handle_turn,0,'Y')
                     elif int(event.button) == 4: # HL
-                        self.turn_callback(0,'hl')
+                        await self.loop.run_in_executor(None,self.handle_turn,0,'hl')
                     elif int(event.button) == 5: # HR
-                        self.turn_callback(0,'hr')
+                        await self.loop.run_in_executor(None,self.handle_turn,0,'hr')
                     elif int(event.button) == 6: # START
-                        self.turn_callback(0,'select')
+                        await self.loop.run_in_executor(None,self.handle_turn,0,'select')
                     elif int(event.button) == 7: # START
-                        self.turn_callback(0,'start')
+                        await self.loop.run_in_executor(None,self.handle_turn,0,'start')
 
             await asyncio.sleep(0.1)
+
+
+    def handle_turn(self,rotation,key):
+        self.turn_callback(rotation,key)
+
 
     def quit(self):
         logger.error("Shutting Down Pygame")

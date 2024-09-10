@@ -157,7 +157,7 @@ class WindowManager():
             iTimerCounter = 0 
 
             while (iTimerCounter < self.rendertime / self._RENDERTIME  and settings.screenpower):
-                logger.debug("renderloop: %d, %d "%(iTimerCounter+1, self.rendertime / self._RENDERTIME))
+                logger.debug("renderloop: %d, %d, %.2f "%(iTimerCounter+1, self.rendertime / self._RENDERTIME, self._RENDERTIME))
                 iTimerCounter += 1
                 await asyncio.sleep(self._RENDERTIME)
                 logger.debug("self.busytext1: %s" %(self.activewindow.busytext1))
