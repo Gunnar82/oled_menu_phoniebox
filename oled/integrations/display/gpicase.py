@@ -8,10 +8,10 @@ from luma.core.device import linux_framebuffer
 def get_display():
     settings.CONTRAST_HANDLE = False
 
-    print("gpicase2")
+    print("gpicase")
 
     device = linux_framebuffer("/dev/fb0",bgr=True)
-    device.capabilities(width=640,height=480,rotate=0,mode='RGB')
+    device.capabilities(width=320,height=240,rotate=0,mode='RGB')
     return device
 
 def do_nothing(obj):
@@ -19,4 +19,4 @@ def do_nothing(obj):
 
 
 def set_fonts():
-    import fonts.fonts_640x480
+    import fonts.fonts_320x240

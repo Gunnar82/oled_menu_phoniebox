@@ -42,7 +42,7 @@ settings.callback_active = False
 
 
 
-displays = ["st7789", "ssd1351", "sh1106_i2c", "sh1106_i2c", "emulated","gpicase2"]
+displays = ["st7789", "ssd1351", "sh1106_i2c", "sh1106_i2c", "emulated","gpicase","gpicase2"]
 
 if not settings.DISPLAY_DRIVER in displays:
     raise Exception("no DISPLAY")
