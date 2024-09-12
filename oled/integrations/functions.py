@@ -196,7 +196,7 @@ def run_command(commands, cwd="/home/pi/oledctrl/"):
 
                 subprocess_result = subprocess.Popen(command,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd=cwd)
                 subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
-                print (subprocess_output)
+                logger.debug(subprocess_output)
                 if subprocess_result.returncode != 0:
                     logger.info("command returncode not 0")
                     return False
