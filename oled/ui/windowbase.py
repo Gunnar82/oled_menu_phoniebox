@@ -43,8 +43,7 @@ class WindowBase():
         self._rendertime = 0.25
 
     def clear_window(self):
-        with canvas(self.device) as draw:
-            draw.rectangle((0,0,640,480),outline="black",fill="black")
+        self.device.clear()
 
     def set_busy(self,busytext1,busysymbol=symbols.SYMBOL_SANDCLOCK,busytext2="", busyrendertime=3,busytext3="",set_window_to="none"):
 
