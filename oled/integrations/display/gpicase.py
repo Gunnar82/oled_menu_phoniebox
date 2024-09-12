@@ -11,7 +11,7 @@ def get_display():
     print("gpicase")
 
     device = linux_framebuffer("/dev/fb0",bgr=True)
-    device.capabilities(width=320,height=240,rotate=0,mode='RGB')
+    #device.capabilities(width=320,height=240,rotate=0,mode='RGB')
     return device
 
 def do_nothing(obj):
