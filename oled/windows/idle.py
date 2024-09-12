@@ -39,6 +39,7 @@ class Idle(MainWindow):
         self.window_on_back = "playlistmenu"
 
     def activate(self):
+        self.clear_window()
         self.titlex = 0
         self.namex = 0
         self.albumx = 0

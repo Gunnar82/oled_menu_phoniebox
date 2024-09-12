@@ -34,6 +34,7 @@ class Start(WindowBase):
 
 
     def activate(self):
+        self.clear_window()
         self.bluetooth.enable_dev_local()
 
         if (cbluetooth.BLUETOOTH_AUTOCONNECT):
