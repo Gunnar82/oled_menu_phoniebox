@@ -16,8 +16,6 @@ import subprocess
 import os
 
 class Infomenu(ListBase):
-    font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_NORMAL)
-    faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XL)
     ipaddr = ""
     wifi_ssid = ""
     hostapd = False
