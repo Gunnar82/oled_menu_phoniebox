@@ -22,7 +22,6 @@ class Infomenu(ListBase):
     wifi_ssid = ""
     hostapd = False
     temp = "n/a"
-    window_on_back = "mainmenu"
 
     def __init__(self, windowmanager, loop):
         super().__init__(windowmanager, loop,"Systeminfo")

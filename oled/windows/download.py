@@ -26,7 +26,6 @@ class DownloadMenu(ListBase):
         super().__init__(windowmanager, loop, "Download")
         self.direct_play_last_folder = False
 
-        self.window_on_back = "idle"
         self.timeout = False
         self.contrasthandle = False
         self.canceled = False

@@ -27,7 +27,6 @@ class SystemMenu(ListBase):
     def __init__(self, windowmanager,loop,title):
         super().__init__(windowmanager, loop, title)
         self.loop = loop
-        self.window_on_back = "idle"
         self.timeout = False
         self.handle_left_key = False
         self.processing = False
