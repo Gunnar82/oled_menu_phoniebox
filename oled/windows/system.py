@@ -174,6 +174,13 @@ class SystemMenu(ListBase):
         elif self.position == 23:
             self.cmd = "echo \"enabled\" > /home/pi/oledctrl/oled/config/hotspot"
 
+
+        elif self.position == 24:
+            self.cmd = "sudo sed -i \"s/^ssid=.*/ssid=pb_`tr -dc 'A-Za-z0-9' </dev/urandom | head -c 7`/\" \"/etc/hostapd/hostapd.conf\""
+
+        elif self.position == 25:
+            self.cmd = "sudo sed -i \"s/^wpa_passphrase=.*/wpa_passphrase=`tr -dc 'A-Za-z0-9' </dev/urandom | head -c 10`/\" \"/etc/hostapd/hostapd.conf\""
+
         elif self.position > 26:
             self.cmd = "sudo systemctl restart %s" % (self.menu[self.position][0])
 
@@ -186,8 +193,8 @@ class SystemMenu(ListBase):
         self.menu[13] = ["Firewall Status: %s " % ("AUS" if "deny" not in self.firewall_status else "EIN"),"h"]
         self.menu[16] = [f"Bluetooth_Autoconnect ({config.bluetooth.BLUETOOTH_AUTOCONNECT}):","h"]
         self.menu[19] = [f"hostapd (aktiviert: {self.hostapd_status}):", "h"]
-        self.menu[24] = [self.hostapd_ssid, "h"]
-        self.menu[25] = [self.hostapd_psk, "h"]
+        self.menu[24] = [self.hostapd_ssid]
+        self.menu[25] = [self.hostapd_psk]
 
 
         if self.processing:
