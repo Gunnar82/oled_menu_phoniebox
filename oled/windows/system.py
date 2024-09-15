@@ -45,6 +45,9 @@ class SystemMenu(ListBase):
         self.menu.append(["WLAN: aus"])
         self.menu.append(["WLAN: an"])
 
+        self.menu.append(["Firewall: Auto Enable: AN"])
+        self.menu.append(["Firewall: Auto Enable: AUS"])
+
         self.menu.append(["Bluetooth: autoconnect AN"])
         self.menu.append(["Bluetooth: autoconnect AUS"])
 
@@ -117,21 +120,28 @@ class SystemMenu(ListBase):
                 self.cmd = "sudo ip link set wlan0 up"
 
         elif self.position == 10:
-            self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=False/BLUETOOTH_AUTOCONNECT=True/g' /home/pi/oledctrl/oled/config/bluetooth.py"
+            self.cmd = "sed -i 's/AUTO_ENABLED=False/AUTO_ENABLED=True/g' /home/pi/oledctrl/oled/config/firewall.py"
 
         elif self.position == 11:
-            self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=True/BLUETOOTH_AUTOCONNECT=False/g' /home/pi/oledctrl/oled/config/bluetooth.py"
+            self.cmd = "sed -i 's/AUTO_ENABLED=True/AUTO_ENABLED=False/g' /home/pi/oledctrl/oled/config/firewall.py"
+
+        elif self.position == 12:
+            self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=False/BLUETOOTH_AUTOCONNECT=True/g' /home/pi/oledctrl/oled/config/bluetooth.py"
 
         elif self.position == 13:
-            self.cmd = "sudo systemctl stop hostapd"
+            self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=True/BLUETOOTH_AUTOCONNECT=False/g' /home/pi/oledctrl/oled/config/bluetooth.py"
 
-        elif self.position == 14:
-            self.cmd = "sudo systemctl start hostapd"
 
         elif self.position == 15:
-            self.cmd = "echo \"disabled\" > /home/pi/oledctrl/oled/config/hotspot"
+            self.cmd = "sudo systemctl stop hostapd"
 
         elif self.position == 16:
+            self.cmd = "sudo systemctl start hostapd"
+
+        elif self.position == 17:
+            self.cmd = "echo \"disabled\" > /home/pi/oledctrl/oled/config/hotspot"
+
+        elif self.position == 18:
             self.cmd = "echo \"enabled\" > /home/pi/oledctrl/oled/config/hotspot"
 
         else:

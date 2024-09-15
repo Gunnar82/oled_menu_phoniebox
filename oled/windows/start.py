@@ -16,8 +16,9 @@ logger = logging.getLogger(__name__)
 import config.colors as colors
 import config.symbols as symbols
 import config.bluetooth as cbluetooth
+import config.firewall as cfirewall
 
-from integrations.functions import get_oledversion, get_battload_color
+from integrations.functions import get_oledversion, get_battload_color, enable_firewall
 
 
 
@@ -37,7 +38,16 @@ class Start(WindowBase):
         self.clear_window()
         self.bluetooth.enable_dev_local()
 
+        if (cfirewall.AUTO_ENABLED):
+            logger.info("auto_enable firewall")
+            self.set_busy("Aktiviere Firewall", busyrendertime = 5)
+            self.busy = True
+            self.renderbusy()
+
+            enable_firewall()
+
         if (cbluetooth.BLUETOOTH_AUTOCONNECT):
+            logger.info("bluetooth autoconnect")
             self.set_busy("Verbinde...",symbols.SYMBOL_BLUETOOTH_OFF,self.bluetooth.selected_bt_name, busyrendertime = 5)
             self.busy = True
             self.renderbusy()

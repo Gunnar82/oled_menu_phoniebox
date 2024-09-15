@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 import config.colors as colors
 import config.symbols as symbols
 import config.file_folder as cfg_file_folder
+import config.services as cfg_services
 
 def get_parent_folder(folder):
     return os.path.dirname(folder)
@@ -206,3 +207,39 @@ def run_command(commands, cwd="/home/pi/oledctrl/"):
         logger.exception(str(e))
         return False
 
+def output_command(command, cwd="/home/pi/oledctrl/"):
+    try:
+        subprocess_result = subprocess.Popen(command,shell=True,stdout=subprocess.PIPE)
+        subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
+        decoded_output = subprocess_output[0].decode('utf-8')
+        logger.debug(f"command output decoded: {decoded_output}")
+        return decoded_output
+    except Exception as e:
+        logger.error(f"output_command: {e}")
+        return "err"
+
+def get_firewall_state():
+    output = output_command("sudo ufw status numbered | grep '\[' | cut -d ']' -f 2")
+    output = re.sub(' +',' ', output)
+    output = output.replace("ALLOW IN"," allow")
+    output = output.replace("DENY IN"," deny")
+    output = output.replace("Anywhere","")
+    logger.debug(f"firewall_state: {output}")
+    return output
+
+def enable_firewall():
+    try:
+        logger.info("enable firewall")
+        run_command(["echo \"y\" | sudo ufw enable","sudo ufw default deny incoming","sudo ufw default allow outgoing"])
+        for srv in cfg_services.ufw_services_allow:
+            run_command(f"sudo ufw deny {srv}")
+        return True
+
+    except Exception as e:
+        logger.error(e)
+        return False
+
+def disable_firewall():
+    logger.info("disable firewall")
+    for srv in cfg_services.ufw_services_allow:
+        run_command(f"sudo ufw allow {srv}")
