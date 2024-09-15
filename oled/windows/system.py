@@ -12,21 +12,29 @@ import htmllistparse
 import subprocess,os
 import asyncio
 import shutil
+import importlib
 
 from ui.listbase import ListBase
 import time
 import integrations.playout as playout
 
-from integrations.functions import get_size,delete_local_online_folder, run_command
+from integrations.functions import get_size,delete_local_online_folder, run_command, get_hostapd_file_status
 
 import config.online as cfg_online
 import config.file_folder as cfg_file_folder
 import config.services as cfg_services
 
+
+import config.bluetooth
+import config.firewall
+
+
 class SystemMenu(ListBase):
     def __init__(self, windowmanager,loop,title):
         super().__init__(windowmanager, loop, title)
         self.loop = loop
+        self.hostapd_status = get_hostapd_file_status()
+
         self.timeout = False
         self.handle_left_key = False
         self.processing = False
@@ -45,13 +53,15 @@ class SystemMenu(ListBase):
         self.menu.append(["WLAN: aus"])
         self.menu.append(["WLAN: an"])
 
-        self.menu.append(["Firewall: Auto Enable: AN"])
-        self.menu.append(["Firewall: Auto Enable: AUS"])
+        self.menu.append([""])
+        self.menu.append(["> aktivieren"])
+        self.menu.append(["> deaktivieren"])
 
-        self.menu.append(["Bluetooth: autoconnect AN"])
-        self.menu.append(["Bluetooth: autoconnect AUS"])
+        self.menu.append([""])
+        self.menu.append(["> aktivieren"])
+        self.menu.append(["> deaktivieren"])
 
-        self.menu.append(["> service hostapd:", "h"])
+        self.menu.append([""])
 
         self.menu.append([" beenden"])
         self.menu.append([" starten"])
@@ -73,9 +83,14 @@ class SystemMenu(ListBase):
             if run_command(self.cmd) == True:
                 self.set_busy(self.menu[self.position][0],symbols.SYMBOL_PASS, busytext2="Erfolgreich")
             else:
-                self.set_busy(self.menu[self.position][0],symbols.SYMBOL_FAIL, busytext2=subprocess_output[0].decode())
+                self.set_busy(self.menu[self.position][0],symbols.SYMBOL_FAIL, busytext2="Fehler")
         finally:
             time.sleep(5)
+            importlib.reload(config.firewall)
+            importlib.reload(config.bluetooth)
+
+            self.hostapd_status = get_hostapd_file_status()
+
             self.processing = False
 
 
@@ -119,50 +134,44 @@ class SystemMenu(ListBase):
             else:
                 self.cmd = "sudo ip link set wlan0 up"
 
-        elif self.position == 10:
+        elif self.position == 11:
             self.cmd = "sed -i 's/AUTO_ENABLED=False/AUTO_ENABLED=True/g' /home/pi/oledctrl/oled/config/firewall.py"
 
-        elif self.position == 11:
+        elif self.position == 12:
             self.cmd = "sed -i 's/AUTO_ENABLED=True/AUTO_ENABLED=False/g' /home/pi/oledctrl/oled/config/firewall.py"
 
-        elif self.position == 12:
+        elif self.position == 14:
             self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=False/BLUETOOTH_AUTOCONNECT=True/g' /home/pi/oledctrl/oled/config/bluetooth.py"
 
-        elif self.position == 13:
+        elif self.position == 15:
             self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=True/BLUETOOTH_AUTOCONNECT=False/g' /home/pi/oledctrl/oled/config/bluetooth.py"
 
 
-        elif self.position == 15:
+        elif self.position == 17:
             self.cmd = "sudo systemctl stop hostapd"
 
-        elif self.position == 16:
+        elif self.position == 18:
             self.cmd = "sudo systemctl start hostapd"
 
-        elif self.position == 17:
+        elif self.position == 19:
             self.cmd = "echo \"disabled\" > /home/pi/oledctrl/oled/config/hotspot"
 
-        elif self.position == 18:
+        elif self.position == 20:
             self.cmd = "echo \"enabled\" > /home/pi/oledctrl/oled/config/hotspot"
 
-        else:
+        elif self.position > 21:
             self.cmd = "sudo systemctl restart %s" % (self.menu[self.position][0])
 
 
         self.loop.run_in_executor(None,self.exec_command)
 
 
-
-    def push_callback(self,lp=False):
-        if self.position < 0:
-            self.windowmanager.set_window(self.window_on_back)
-        elif self.position == 12:
-            pass
-        else:
-            self.set_busy("Verarbeite...", busytext2=self.menu[self.position][0])
-            self.loop.create_task(self.push_handler())
-
-
     def render(self):
+        self.menu[10] = [f"Firewall AUTO_ENABLED ({config.firewall.AUTO_ENABLED}):","h"]
+        self.menu[13] = [f"Bluetooth_Autoconnect ({config.bluetooth.BLUETOOTH_AUTOCONNECT}):","h"]
+        self.menu[16] = [f"hostapd (aktiviert: {self.hostapd_status}):", "h"]
+
+
         if self.processing:
             self.renderbusy()
         else:

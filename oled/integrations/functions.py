@@ -243,3 +243,25 @@ def disable_firewall():
     logger.info("disable firewall")
     for srv in cfg_services.ufw_services_allow:
         run_command(f"sudo ufw allow {srv}")
+
+
+def lese_status(dateipfad):
+    try:
+        with open(dateipfad, 'r') as datei:
+            inhalt = datei.read().strip()  # Lies den Inhalt und entferne führende/folgende Leerzeichen
+
+            if inhalt == 'enabled':
+                return True
+            elif inhalt == 'disabled':
+                return False
+            else:
+                raise ValueError("Datei enthält einen unerwarteten Wert: {}".format(inhalt))
+    except FileNotFoundError:
+        logger.error(f"Die Datei wurde nicht gefunden: {dateipfad}")
+        return False
+    except Exception as e:
+        logger.error(f"Ein Fehler ist aufgetreten: {e}")
+        return False
+
+def get_hostapd_file_status():
+    return lese_status('/home/pi/oledctrl/oled/config/hotspot')
