@@ -263,5 +263,32 @@ def lese_status(dateipfad):
         logger.error(f"Ein Fehler ist aufgetreten: {e}")
         return False
 
+def finde_zeile_nach_wert(dateipfad, suchwert):
+    """
+    Durchsucht eine Datei nach einem bestimmten Wert und gibt die Zeile zurück, die diesen Wert enthält.
+    
+    :param dateipfad: Pfad zur Datei, die durchsucht werden soll.
+    :param suchwert: Der Wert, nach dem in der Datei gesucht wird.
+    :return: Die Zeile, die den Suchwert enthält, oder None, wenn der Wert nicht gefunden wird.
+    """
+    try:
+        with open(dateipfad, 'r') as datei:
+            for zeile in datei:
+                if suchwert in zeile:
+                    return zeile.strip()  # Gibt die Zeile ohne führende und nachfolgende Leerzeichen zurück
+        return None  # Gibt None zurück, wenn der Wert nicht gefunden wird
+    except FileNotFoundError:
+        logger.error(f"Die Datei '{dateipfad}' wurde nicht gefunden.")
+    except Exception as e:
+        logger.error(f"Ein Fehler ist aufgetreten: {e}")
+
+
 def get_hostapd_file_status():
     return lese_status('/home/pi/oledctrl/oled/config/hotspot')
+
+
+def get_hostapd_ssid():
+    return finde_zeile_nach_wert("/etc/hostapd/hostapd.conf","ssid")
+
+def get_hostapd_psk():
+    return finde_zeile_nach_wert("/etc/hostapd/hostapd.conf","wpa_passphrase")

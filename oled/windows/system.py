@@ -30,11 +30,16 @@ import config.firewall
 
 
 class SystemMenu(ListBase):
+    def refresh_values(self):
+        self.hostapd_status = get_hostapd_file_status()
+        self.hostapd_ssid = get_hostapd_ssid()
+        self.hostapd_psk = get_hostapd_psk()
+        self.firewall_status = str(get_firewall_state())
+
     def __init__(self, windowmanager,loop,title):
         super().__init__(windowmanager, loop, title)
+        self.refresh_values()
         self.loop = loop
-        self.hostapd_status = get_hostapd_file_status()
-        self.firewall_status = str(get_firewall_state())
         self.timeout = False
         self.handle_left_key = False
         self.processing = False
@@ -72,7 +77,8 @@ class SystemMenu(ListBase):
         self.menu.append([" deaktivieren"])
         self.menu.append([" aktivieren"])
 
-
+        self.menu.append(["ssid"])
+        self.menu.append(["psk"])
         self.menu.append(["> Dienste neustarten:", "h"])
 
         for srv in cfg_services.RESTART_LIST:
@@ -98,9 +104,7 @@ class SystemMenu(ListBase):
             importlib.reload(config.firewall)
             importlib.reload(config.bluetooth)
 
-            self.hostapd_status = get_hostapd_file_status()
-            self.firewall_status = str(get_firewall_state())
-
+            self.refresh_values()
             self.processing = False
 
 
@@ -170,7 +174,7 @@ class SystemMenu(ListBase):
         elif self.position == 23:
             self.cmd = "echo \"enabled\" > /home/pi/oledctrl/oled/config/hotspot"
 
-        elif self.position > 24:
+        elif self.position > 26:
             self.cmd = "sudo systemctl restart %s" % (self.menu[self.position][0])
 
 
@@ -182,6 +186,8 @@ class SystemMenu(ListBase):
         self.menu[13] = ["Firewall Status: %s " % ("AUS" if "deny" not in self.firewall_status else "EIN"),"h"]
         self.menu[16] = [f"Bluetooth_Autoconnect ({config.bluetooth.BLUETOOTH_AUTOCONNECT}):","h"]
         self.menu[19] = [f"hostapd (aktiviert: {self.hostapd_status}):", "h"]
+        self.menu[24] = [self.hostapd_ssid, "h"]
+        self.menu[25] = [self.hostapd_psk, "h"]
 
 
         if self.processing:
