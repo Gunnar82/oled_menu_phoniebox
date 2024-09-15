@@ -70,7 +70,6 @@ import windows.foldermenu
 import windows.shutdownmenu
 import windows.folderinfo
 import windows.start
-import windows.wlan
 import windows.ende
 import windows.download as wdownload
 import windows.lock as wlock
@@ -140,7 +139,6 @@ def main():
     loadedwins.append(windows.foldermenu.Foldermenu(windowmanager,loop))
     loadedwins.append(windows.folderinfo.FolderInfo(windowmanager, loop))
     loadedwins.append(windows.ende.Ende(windowmanager, loop))
-    loadedwins.append(windows.wlan.Wlanmenu(windowmanager, loop))
     loadedwins.append(shutdownscreen)
     loadedwins.append(windows.start.Start(windowmanager, loop, mopidy,objbluetooth))
     loadedwins.append(wdownload.DownloadMenu(windowmanager,loop))
