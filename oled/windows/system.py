@@ -18,7 +18,7 @@ from ui.listbase import ListBase
 import time
 import integrations.playout as playout
 
-from integrations.functions import get_size,delete_local_online_folder, run_command, get_hostapd_file_status
+from integrations.functions import *
 
 import config.online as cfg_online
 import config.file_folder as cfg_file_folder
@@ -34,7 +34,7 @@ class SystemMenu(ListBase):
         super().__init__(windowmanager, loop, title)
         self.loop = loop
         self.hostapd_status = get_hostapd_file_status()
-
+        self.firewall_status = str(get_firewall_state())
         self.timeout = False
         self.handle_left_key = False
         self.processing = False
@@ -56,6 +56,10 @@ class SystemMenu(ListBase):
         self.menu.append([""])
         self.menu.append(["> aktivieren"])
         self.menu.append(["> deaktivieren"])
+
+        self.menu.append([""])
+        self.menu.append(["> EIN"])
+        self.menu.append(["> AUS"])
 
         self.menu.append([""])
         self.menu.append(["> aktivieren"])
@@ -80,16 +84,22 @@ class SystemMenu(ListBase):
     def exec_command(self):
         try:
             self.processing = True
-            if run_command(self.cmd) == True:
-                self.set_busy(self.menu[self.position][0],symbols.SYMBOL_PASS, busytext2="Erfolgreich")
+            if self.position == 14:
+                enable_firewall()
+            elif self.position == 15:
+                disable_firewall()
             else:
-                self.set_busy(self.menu[self.position][0],symbols.SYMBOL_FAIL, busytext2="Fehler")
+                if run_command(self.cmd) == True:
+                    self.set_busy(self.menu[self.position][0],symbols.SYMBOL_PASS, busytext2="Erfolgreich")
+                else:
+                    self.set_busy(self.menu[self.position][0],symbols.SYMBOL_FAIL, busytext2="Fehler")
         finally:
             time.sleep(5)
             importlib.reload(config.firewall)
             importlib.reload(config.bluetooth)
 
             self.hostapd_status = get_hostapd_file_status()
+            self.firewall_status = str(get_firewall_state())
 
             self.processing = False
 
@@ -140,26 +150,27 @@ class SystemMenu(ListBase):
         elif self.position == 12:
             self.cmd = "sed -i 's/AUTO_ENABLED=True/AUTO_ENABLED=False/g' /home/pi/oledctrl/oled/config/firewall.py"
 
-        elif self.position == 14:
+
+        elif self.position == 17:
             self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=False/BLUETOOTH_AUTOCONNECT=True/g' /home/pi/oledctrl/oled/config/bluetooth.py"
 
-        elif self.position == 15:
+        elif self.position == 18:
             self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=True/BLUETOOTH_AUTOCONNECT=False/g' /home/pi/oledctrl/oled/config/bluetooth.py"
 
 
-        elif self.position == 17:
+        elif self.position == 20:
             self.cmd = "sudo systemctl stop hostapd"
 
-        elif self.position == 18:
+        elif self.position == 21:
             self.cmd = "sudo systemctl start hostapd"
 
-        elif self.position == 19:
+        elif self.position == 22:
             self.cmd = "echo \"disabled\" > /home/pi/oledctrl/oled/config/hotspot"
 
-        elif self.position == 20:
+        elif self.position == 23:
             self.cmd = "echo \"enabled\" > /home/pi/oledctrl/oled/config/hotspot"
 
-        elif self.position > 21:
+        elif self.position > 24:
             self.cmd = "sudo systemctl restart %s" % (self.menu[self.position][0])
 
 
@@ -168,8 +179,9 @@ class SystemMenu(ListBase):
 
     def render(self):
         self.menu[10] = [f"Firewall AUTO_ENABLED ({config.firewall.AUTO_ENABLED}):","h"]
-        self.menu[13] = [f"Bluetooth_Autoconnect ({config.bluetooth.BLUETOOTH_AUTOCONNECT}):","h"]
-        self.menu[16] = [f"hostapd (aktiviert: {self.hostapd_status}):", "h"]
+        self.menu[13] = ["Firewall Status: %s " % ("AUS" if "deny" not in self.firewall_status else "EIN"),"h"]
+        self.menu[16] = [f"Bluetooth_Autoconnect ({config.bluetooth.BLUETOOTH_AUTOCONNECT}):","h"]
+        self.menu[19] = [f"hostapd (aktiviert: {self.hostapd_status}):", "h"]
 
 
         if self.processing:

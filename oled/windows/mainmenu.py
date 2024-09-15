@@ -23,7 +23,6 @@ class Mainmenu(MenuBase):
         self.descr.append([ "USB-Stick", symbols.SYMBOL_USB,"foldermenu" ])
         self.descr.append([ "Betriebsinfos", "\uf022", "infomenu" ])
         self.descr.append([ "WLAN / Hotspot", "\uf09e", "wlanmenu" ])
-        self.descr.append([ "Firewall", "\uf1cb", "firewallmenu" ])
         self.descr.append([ "Audioausgabe", symbols.SYMBOL_BLUETOOTH_OFF, "headphonemenu" ])
         self.descr.append([ "Systemmenu", "\uf013", "systemmenu" ])
         self.descr.append([ "Tastensperre", symbols.SYMBOL_LOCKED, "lock" ])
