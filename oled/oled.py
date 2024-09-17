@@ -138,7 +138,7 @@ def main():
     loadedwins.append(windows.playlistmenu.Playlistmenu(windowmanager, loop, musicmanager))
     loadedwins.append(windows.foldermenu.Foldermenu(windowmanager,loop))
     loadedwins.append(windows.folderinfo.FolderInfo(windowmanager, loop))
-    loadedwins.append(windows.ende.Ende(windowmanager, loop))
+    loadedwins.append(windows.ende.Ende(windowmanager, loop,_nowplaying))
     loadedwins.append(shutdownscreen)
     loadedwins.append(windows.start.Start(windowmanager, loop, mopidy,objbluetooth))
     loadedwins.append(wdownload.DownloadMenu(windowmanager,loop))
