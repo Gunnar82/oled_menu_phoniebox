@@ -2,7 +2,6 @@ import os
 import subprocess, re
 import datetime
 import settings
-import qrcode
 import logging
 
 from integrations.logging_config import setup_logger

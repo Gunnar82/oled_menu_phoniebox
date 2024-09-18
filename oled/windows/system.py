@@ -36,16 +36,23 @@ class SystemMenu(ListBase):
 
 
 
-    def show_qr(self):
+    def create_qr(self):
+
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=12,
+            border=1,
+        )
 
         ssid = self.hostapd_ssid.split('=',1)[1]
         psk = self.hostapd_psk.split('=',1)[1]
         wifi_format = f"WIFI:T:WPA;S:{ssid};P:{psk};H:false;;"
-        self.qr.add_data(wifi_format)
-        self.qr.make(fit=True)
-        img = self.qr.make_image(fill='black', back_color='white')
-        img.resize((settings.DISPLAY_WIDTH, settings.DISPLAY_HEIGHT))
-        return img
+        qr.add_data(wifi_format)
+        qr.make(fit=True)
+        img = None
+        img = qr.make_image(fill='black', back_color='white')
+        return img.resize((settings.DISPLAY_HEIGHT,settings.DISPLAY_HEIGHT))
 
     def refresh_values(self):
         self.hostapd_status = get_hostapd_file_status()
@@ -64,12 +71,6 @@ class SystemMenu(ListBase):
         self.totalsize = 0
 
         # QR-Code generieren
-        self.qr = qrcode.QRCode(
-            version=1,
-            error_correction=qrcode.constants.ERROR_CORRECT_L,
-            box_size=12,
-            border=1,
-        )
 
         self.menu.append(["Update Radiosender"])
         self.menu.append(["Lösche Online-Ordner"])
@@ -114,6 +115,10 @@ class SystemMenu(ListBase):
 
     def activate(self):
         self.cmd = ""
+
+    def deactivate(self):
+        self.showqr = False
+        self.qrimage = None
 
     def exec_command(self):
         try:
@@ -207,7 +212,7 @@ class SystemMenu(ListBase):
             self.cmd = "echo \"enabled\" > /home/pi/oledctrl/oled/config/hotspot"
         elif self.position == 24:
             self.showqr = True
-            self.qrimage = self.show_qr()
+            self.qrimage = self.create_qr()
 
         elif self.position == 25:
             self.cmd = "sudo sed -i \"s/^ssid=.*/ssid=pb_`tr -dc 'A-Za-z0-9' </dev/urandom | head -c 7`/\" \"/etc/hostapd/hostapd.conf\""
