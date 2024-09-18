@@ -20,6 +20,8 @@ busyfaiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=settings.WINDOWBAS
 class WindowBase():
     changerender = False
     fontheading = ImageFont.truetype(settings.FONT_TEXT, size=settings.WINDOWBASE_HEADING_SIZE)
+    timeout = True
+    contrasthandle = True
 
     def __init__(self, windowmanager,loop):
         self.start_busyrendertime = datetime.now()
@@ -30,8 +32,7 @@ class WindowBase():
         self.page = 0
         self.device = self.windowmanager.device
         self.loop = self.windowmanager.loop
-        self.timeout = True
-        self.contrasthandle = True
+
         self.timeoutwindow="idle"
         self.window_on_back = "mainmenu"
         self.busysymbol = symbols.SYMBOL_SANDCLOCK

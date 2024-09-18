@@ -34,6 +34,8 @@ import config.firewall
 
 class SystemMenu(ListBase):
 
+    qr_width = settings.DISPLAY_HEIGHT if settings.DISPLAY_HEIGHT < settings.DISPLAY_WIDTH else settings.DISPLAY_WIDTH
+
 
 
     def create_qr(self):
@@ -45,6 +47,7 @@ class SystemMenu(ListBase):
             border=1,
         )
 
+    
         ssid = self.hostapd_ssid.split('=',1)[1]
         psk = self.hostapd_psk.split('=',1)[1]
         wifi_format = f"WIFI:T:WPA;S:{ssid};P:{psk};H:false;;"
@@ -52,7 +55,7 @@ class SystemMenu(ListBase):
         qr.make(fit=True)
         img = None
         img = qr.make_image(fill='black', back_color='white')
-        return img.resize((settings.DISPLAY_HEIGHT,settings.DISPLAY_HEIGHT))
+        return img.resize((self.qr_width,self.qr_width))
 
     def refresh_values(self):
         self.hostapd_status = get_hostapd_file_status()
@@ -144,6 +147,9 @@ class SystemMenu(ListBase):
     async def push_handler(self,button = '*'):
         if self.showqr:
             self.showqr = False
+            self.timeout = True
+            self.contrasthandle = True
+
             return
 
         self.cmd = ""
@@ -212,6 +218,9 @@ class SystemMenu(ListBase):
             self.cmd = "echo \"enabled\" > /home/pi/oledctrl/oled/config/hotspot"
         elif self.position == 24:
             self.showqr = True
+            self.timeout = False
+            self.contrasthandle = False
+
             self.qrimage = self.create_qr()
 
         elif self.position == 25:
@@ -244,6 +253,6 @@ class SystemMenu(ListBase):
         else:
             try:
                 with canvas(self.device) as draw:
-                    draw.bitmap((0,0), self.qrimage)
+                    draw.bitmap(((settings.DISPLAY_WIDTH - self.qr_width) // 2,0), self.qrimage)
             except:
                 self.showqr = False
