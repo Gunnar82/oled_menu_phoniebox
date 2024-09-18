@@ -4,6 +4,8 @@ import settings
 import config.colors as colors
 import config.symbols as symbols
 
+from luma.core.render import canvas
+
 import re
 import imp
 import time
@@ -13,6 +15,7 @@ import subprocess,os
 import asyncio
 import shutil
 import importlib
+import qrcode
 
 from ui.listbase import ListBase
 import time
@@ -30,6 +33,20 @@ import config.firewall
 
 
 class SystemMenu(ListBase):
+
+
+
+    def show_qr(self):
+
+        ssid = self.hostapd_ssid.split('=',1)[1]
+        psk = self.hostapd_psk.split('=',1)[1]
+        wifi_format = f"WIFI:T:WPA;S:{ssid};P:{psk};H:false;;"
+        self.qr.add_data(wifi_format)
+        self.qr.make(fit=True)
+        img = self.qr.make_image(fill='black', back_color='white')
+        img.resize((settings.DISPLAY_WIDTH, settings.DISPLAY_HEIGHT))
+        return img
+
     def refresh_values(self):
         self.hostapd_status = get_hostapd_file_status()
         self.hostapd_ssid = get_hostapd_ssid()
@@ -40,10 +57,20 @@ class SystemMenu(ListBase):
         super().__init__(windowmanager, loop, title)
         self.refresh_values()
         self.loop = loop
+        self.showqr = False
         self.timeout = False
         self.handle_left_key = False
         self.processing = False
         self.totalsize = 0
+
+        # QR-Code generieren
+        self.qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=12,
+            border=1,
+        )
+
         self.menu.append(["Update Radiosender"])
         self.menu.append(["Lösche Online-Ordner"])
         self.menu.append(["Lösche Online-Status Online"])
@@ -59,27 +86,28 @@ class SystemMenu(ListBase):
         self.menu.append(["WLAN: an"])
 
         self.menu.append([""])
-        self.menu.append(["> aktivieren"])
-        self.menu.append(["> deaktivieren"])
+        self.menu.append(["aktivieren"])
+        self.menu.append(["deaktivieren"])
 
         self.menu.append([""])
-        self.menu.append(["> EIN"])
-        self.menu.append(["> AUS"])
+        self.menu.append(["EIN"])
+        self.menu.append(["AUS"])
 
         self.menu.append([""])
-        self.menu.append(["> aktivieren"])
-        self.menu.append(["> deaktivieren"])
+        self.menu.append(["aktivieren"])
+        self.menu.append(["deaktivieren"])
 
         self.menu.append([""])
 
-        self.menu.append([" beenden"])
-        self.menu.append([" starten"])
-        self.menu.append([" deaktivieren"])
-        self.menu.append([" aktivieren"])
+        self.menu.append(["beenden"])
+        self.menu.append(["starten"])
+        self.menu.append(["deaktivieren"])
+        self.menu.append(["aktivieren"])
 
+        self.menu.append(["WLAN QR anzeigen"])
         self.menu.append(["ssid"])
         self.menu.append(["psk"])
-        self.menu.append(["> Dienste neustarten:", "h"])
+        self.menu.append(["Dienste neustarten:", "h"])
 
         for srv in cfg_services.RESTART_LIST:
             self.menu.append(["%s" % (srv)])
@@ -109,6 +137,10 @@ class SystemMenu(ListBase):
 
 
     async def push_handler(self,button = '*'):
+        if self.showqr:
+            self.showqr = False
+            return
+
         self.cmd = ""
         self.set_busy("Verarbeite...",busytext2=self.menu[self.position][0],busyrendertime=5)
 
@@ -173,15 +205,17 @@ class SystemMenu(ListBase):
 
         elif self.position == 23:
             self.cmd = "echo \"enabled\" > /home/pi/oledctrl/oled/config/hotspot"
-
-
         elif self.position == 24:
-            self.cmd = "sudo sed -i \"s/^ssid=.*/ssid=pb_`tr -dc 'A-Za-z0-9' </dev/urandom | head -c 7`/\" \"/etc/hostapd/hostapd.conf\""
+            self.showqr = True
+            self.qrimage = self.show_qr()
 
         elif self.position == 25:
+            self.cmd = "sudo sed -i \"s/^ssid=.*/ssid=pb_`tr -dc 'A-Za-z0-9' </dev/urandom | head -c 7`/\" \"/etc/hostapd/hostapd.conf\""
+
+        elif self.position == 26:
             self.cmd = "sudo sed -i \"s/^wpa_passphrase=.*/wpa_passphrase=`tr -dc 'A-Za-z0-9' </dev/urandom | head -c 10`/\" \"/etc/hostapd/hostapd.conf\""
 
-        elif self.position > 26:
+        elif self.position > 27:
             self.cmd = "sudo systemctl restart %s" % (self.menu[self.position][0])
 
 
@@ -189,15 +223,22 @@ class SystemMenu(ListBase):
 
 
     def render(self):
-        self.menu[10] = [f"Firewall AUTO_ENABLED ({config.firewall.AUTO_ENABLED}):","h"]
-        self.menu[13] = ["Firewall Status: %s " % ("AUS" if "deny" not in self.firewall_status else "EIN"),"h"]
-        self.menu[16] = [f"Bluetooth_Autoconnect ({config.bluetooth.BLUETOOTH_AUTOCONNECT}):","h"]
-        self.menu[19] = [f"hostapd (aktiviert: {self.hostapd_status}):", "h"]
-        self.menu[24] = [self.hostapd_ssid]
-        self.menu[25] = [self.hostapd_psk]
+        if not self.showqr:
+            self.menu[10] = [f"Firewall AUTO_ENABLED ({config.firewall.AUTO_ENABLED}):","h"]
+            self.menu[13] = ["Firewall Status: %s " % ("AUS" if "deny" not in self.firewall_status else "EIN"),"h"]
+            self.menu[16] = [f"Bluetooth_Autoconnect ({config.bluetooth.BLUETOOTH_AUTOCONNECT}):","h"]
+            self.menu[19] = [f"hostapd (aktiviert: {self.hostapd_status}):", "h"]
+            self.menu[25] = [self.hostapd_ssid]
+            self.menu[26] = [self.hostapd_psk]
 
 
-        if self.processing:
-            self.renderbusy()
+            if self.processing:
+                self.renderbusy()
+            else:
+                super().render()
         else:
-            super().render()
+            try:
+                with canvas(self.device) as draw:
+                    draw.bitmap((0,0), self.qrimage)
+            except:
+                self.showqr = False

@@ -2,6 +2,7 @@ import os
 import subprocess, re
 import datetime
 import settings
+import qrcode
 import logging
 
 from integrations.logging_config import setup_logger
@@ -292,3 +293,4 @@ def get_hostapd_ssid():
 
 def get_hostapd_psk():
     return finde_zeile_nach_wert("/etc/hostapd/hostapd.conf","wpa_passphrase")
+

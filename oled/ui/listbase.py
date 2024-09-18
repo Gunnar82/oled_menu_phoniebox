@@ -100,10 +100,19 @@ class ListBase(WindowBase):
                 scrolling = False
 
                 current_y = self.titlelineheight + i * self.entrylineheight
+                selected_element = self.menu[seite * self.displaylines + i]
+
+                try:
+                    if selected_element[1] in ["h","c"]:
+                        drawtext = symbols.SYMBOL_HEADING
+                except Exception as e:
+                    drawtext = ""
+
+                drawtext += selected_element[0]
 
                 if self.position  == seite * self.displaylines+ i : #selected
                     progresscolor = colors.COLOR_SELECTED
-                    drawtext = self.menu[seite * self.displaylines + i][0]
+
                     if (datetime.now()-settings.lastinput).total_seconds() > 2:
                         if self.font.getsize(drawtext[self.drawtextx:])[0] > settings.DISPLAY_WIDTH -1 - self.startleft:
                             self.drawtextx += 1
@@ -119,7 +128,7 @@ class ListBase(WindowBase):
                 else:
                     progresscolor = colors.COLOR_GREEN
 
-                    draw.text((self.startleft, current_y), self.menu[seite *self.displaylines + i][0], font=self.font, fill="white")
+                    draw.text((self.startleft, current_y), drawtext, font=self.font, fill="white")
 
                 try:
                     if not scrolling:
