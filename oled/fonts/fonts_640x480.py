@@ -4,8 +4,8 @@ settings.FONT_SIZE_XXXL = 120
 settings.FONT_SIZE_XXL = 100
 settings.FONT_SIZE_XL = 60
 settings.FONT_SIZE_L = 40
-settings.FONT_SIZE_NORMAL = 48
-settings.FONT_SIZE_SMALL = 36
+settings.FONT_SIZE_NORMAL = 30
+settings.FONT_SIZE_SMALL = 25
 
 
 settings.DISPLAY_WIDTH = 640

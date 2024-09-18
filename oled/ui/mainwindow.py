@@ -27,9 +27,6 @@ import integrations.playout as playout
 from integrations.functions import get_battload_color, to_min_sec, get_folder, get_folder_of_livestream, get_folder_from_file
 
 
-
-
-
 class MainWindow(WindowBase):
     bigfont = ImageFont.truetype(settings.FONT_CLOCK, size=22)
     font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_NORMAL)
@@ -51,7 +48,6 @@ class MainWindow(WindowBase):
     def render(self,draw):
         now = datetime.datetime.now()
 
-
         #Trennleiste waagerecht
         lineposy = settings.MAINWINDOW_LINEPOS_Y
         draw.rectangle((0,lineposy,settings.DISPLAY_WIDTH,lineposy),outline="white",fill="white")
@@ -68,7 +64,11 @@ class MainWindow(WindowBase):
         try:
             if self.nowplaying._state == "play":
                 #elapsed
-                _spos = to_min_sec(self.nowplaying._elapsed)
+                if settings.DISPLAY_WIDTH > 600:
+                    _spos = to_min_sec(self.nowplaying._elapsed) + "|" + to_min_sec(self.nowplaying._duration)
+                else:
+                    _spos = to_min_sec(self.nowplaying._duration)
+
                 _xpos = int((xpos1 + xpos2) / 2 ) - int(self.fontsmall.getsize(_spos)[0]/2)
 
                 draw.text((_xpos, lineposy + 2 ),_spos, font=self.fontsmall, fill="white")
@@ -87,26 +87,6 @@ class MainWindow(WindowBase):
         #volume
         draw.text((1, lineposy + 2 ), str(self.nowplaying._volume), font=self.fontsmall, fill="white")
         draw.text((settings.MAINWINDOW_OUTPUTSYMBOL_X, lineposy + 2 ), str(self.nowplaying.output_symbol), font=self.faicons, fill="white")
-
-        #Zeitanzeige
-        try:
-            if self.nowplaying._state == "play":
-                #elapsed
-                _spos = to_min_sec(self.nowplaying._elapsed)
-                _xpos = int((xpos1 + xpos2) / 2 ) - int(self.fontsmall.getsize(_spos)[0]/2)
-
-                draw.text((_xpos, lineposy + 2 ),_spos, font=self.fontsmall, fill="white")
-            else:
-                _spos = self.nowplaying._state
-                _xpos = int((xpos1 + xpos2) / 2 ) - int(self.fontsmall.getsize(_spos)[0]/2)
-
-                draw.text((_xpos, lineposy + 2), _spos, font=self.fontsmall, fill="white") #other than play
-                if self.nowplaying._statex != self.nowplaying._state:
-                    self.nowplaying._statex = self.nowplaying._state
-
-        except KeyError:
-            pass
-
 
 
         if "x728" in settings.INPUTS:
