@@ -22,26 +22,27 @@ class WindowBase():
     fontheading = ImageFont.truetype(settings.FONT_TEXT, size=settings.WINDOWBASE_HEADING_SIZE)
     timeout = True
     contrasthandle = True
+    windowtitle = "untitled"
+    timeoutwindow="idle"
+    window_on_back = "mainmenu"
+    busysymbol = symbols.SYMBOL_SANDCLOCK
+    busytext1 = settings.PLEASE_WAIT
+    busytext2 = ""
+    busytext3 = ""
+    busytext4 = ""
+    busyrendertime = 3
+    _rendertime = 0.25
+    counter = 0
+    page = 0
+
 
     def __init__(self, windowmanager,loop):
         self.start_busyrendertime = datetime.now()
         self.loop = loop
-        self.windowtitle = "untitled"
         self.windowmanager = windowmanager
-        self.counter = 0
-        self.page = 0
         self.device = self.windowmanager.device
         self.loop = self.windowmanager.loop
 
-        self.timeoutwindow="idle"
-        self.window_on_back = "mainmenu"
-        self.busysymbol = symbols.SYMBOL_SANDCLOCK
-        self.busytext1 = settings.PLEASE_WAIT
-        self.busytext2 = ""
-        self.busytext3 = ""
-        self.busytext4 = ""
-        self.busyrendertime = 3
-        self._rendertime = 0.25
 
     def clear_window(self):
         self.device.clear()
