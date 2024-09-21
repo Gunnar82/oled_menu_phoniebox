@@ -21,6 +21,8 @@ from datetime import datetime
 
 class SnakeGame(WindowBase):
 
+    font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_SMALL)
+
     def __init__(self, windowmanager, loop):
         super().__init__(windowmanager, loop)
 #        self.font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_L)
@@ -29,7 +31,7 @@ class SnakeGame(WindowBase):
 
 
         self.width = settings.DISPLAY_WIDTH
-        self.height = settings.DISPLAY_HEIGHT
+        self.height = settings.DISPLAY_HEIGHT - 50
         self.snake_size = 20  # Größe der Schlange (5x5 Pixel)
         self.moving_size = 2
 
@@ -39,6 +41,7 @@ class SnakeGame(WindowBase):
             self.direction = (self.moving_size, 0)  # Startbewegung: Nach rechts
             self.food = self.random_food_position()  # Position des Essens
             self.score = 0
+            self.speed = 0.1
             self.game_over = False
             self.loop.create_task(self.play_game())
         except Exception as e:
@@ -47,6 +50,7 @@ class SnakeGame(WindowBase):
 
     def activate(self):
         self.init_game()
+        self.game_over = True
 
     async def play_game(self):
         while not self.game_over:
@@ -65,38 +69,45 @@ class SnakeGame(WindowBase):
                         new_head in self.snake):
                         self.game_over = True
                         return
-                    print (new_head)
+
                     # Bewegen der Schlange
                     self.snake.insert(0, new_head)
 
                     # Überprüfen, ob die Schlange das Essen erreicht hat
-                    if new_head == self.food:
+                    if self.check_food_collision(new_head):
                         self.score += 1
                         self.food = self.random_food_position()  # Neues Essen
+                        self.speed = max(0.05, self.speed * 0.9) 
                     else:
                         self.snake.pop()  # Das letzte Segment der Schlange wird entfernt
             except Exception as e:
                 print (e)
 
-            await asyncio.sleep (0.1)
+            await asyncio.sleep (self.speed)
 
     def render(self):
         with canvas(self.device) as draw:
+            if self.game_over:
+                draw.text((20, self.height // 2), "Game Over -  A to start", font=self.font, fill="white")
 
-            # Zeichne die Schlange
-            for segment in self.snake:
-                x, y = segment
-                draw.rectangle((x, y, x + self.snake_size - 1, y + self.snake_size - 1), outline="white", fill="white")
+            else:
 
-
-            # Zeichne das Essen (5x5 Pixel großes Rechteck)
-            food_x, food_y = self.food
-            draw.rectangle((food_x, food_y, food_x + self.snake_size - 1, food_y + self.snake_size - 1), outline="red", fill="red")
-
-            # Optional: Zeige den Punktestand an (z.B. in der Konsole)
-            print(f"Score: {self.score}")
+                # Zeichne die Schlange
+                for segment in self.snake:
+                    x, y = segment
+                    draw.rectangle((x, y, x + self.snake_size - 1, y + self.snake_size - 1), outline="white", fill="white")
 
 
+                # Zeichne das Essen (5x5 Pixel großes Rechteck)
+                food_x, food_y = self.food
+                draw.rectangle((food_x, food_y, food_x + self.snake_size - 1, food_y + self.snake_size - 1), outline="red", fill="red")
+
+                draw.text((0, self.height+20), f"Score: {self.score}", font=self.font, fill="white")
+                draw.text((200, self.height+20), f"Speed: {self.speed:.2f}", font=self.font, fill="white")
+
+    def push_callback(self, lp=False):
+        if self.game_over:
+            self.init_game()
 
     def turn_callback(self, direction, key=None):
         if key == 'up':
@@ -109,10 +120,9 @@ class SnakeGame(WindowBase):
             self.change_direction((self.moving_size, 0))
         elif key == 'q':
             pass
-        print (self.direction)
 
     def deactivate(self):
-        pass
+        self.game_over = True
 
 
     # Snake-Spiel
@@ -135,3 +145,15 @@ class SnakeGame(WindowBase):
             self.direction = direction
 
 
+    def check_food_collision(self, head):
+        """Überprüft, ob die Schlange das Essen berührt (unter Berücksichtigung der Schlangengröße)."""
+        head_x, head_y = head
+        food_x, food_y = self.food
+
+        # Prüfe, ob das Essen innerhalb des Bereichs des Kopfsegments liegt (inklusive seiner Größe)
+        if (food_x < head_x + self.snake_size and
+            food_x + self.snake_size > head_x and
+            food_y < head_y + self.snake_size and
+            food_y + self.snake_size > head_y):
+            return True
+        return False

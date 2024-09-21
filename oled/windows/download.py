@@ -12,6 +12,10 @@ import os
 import asyncio
 import shutil
 
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin, urlparse
+
+
 from ui.listbase import ListBase
 import time
 import integrations.playout as playout
@@ -161,18 +165,16 @@ class DownloadMenu(ListBase):
 
                 url = self.baseurl + requests.utils.quote(self.cwd + '/' + self.stripitem(item))
                 destination = os.path.join(destdir, self.stripitem(item))
+                self.download_file(url,destination)
                 self.busyrendertime = 1
                 self.busytext1="Download %2.2d von %2.2d" %(self.items.index(item) + 1,len(self.items) )
                 self.busytext2=item
                 self.busytext3="Abbruch mit beliebiger Taste"
                 self.busysymbol = "\uf0ed"
-                r = requests.get(url)
-                if r.status_code == 200:
-                    if self.canceled: break;
 
-                    with open(destination,'wb') as f:
-                        f.write(r.content)
+
         except Exception as error:
+            print (error)
             self.canceled = True
             self.set_busy(error)
         finally:
@@ -384,3 +386,42 @@ class DownloadMenu(ListBase):
             self.renderbusy()
         else:
             super().render()
+
+
+    def get_files_from_listing(self,url, allowed_extensions):
+        # HTTP-Listing abrufen
+        response = requests.get(url)
+        response.raise_for_status()  # Überprüfen, ob die Anfrage erfolgreich war
+
+        # HTML mit BeautifulSoup analysieren
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        # Liste der Dateien extrahieren
+        files = []
+        for link in soup.find_all('a'):
+            href = link.get('href')
+            if href and any(href.endswith(ext) for ext in allowed_extensions):
+                files.append(href)
+
+        return files
+
+    def download_file(self,url, local_path):
+        # Den Inhalt der Datei herunterladen und den Fortschritt anzeigen
+        response = requests.get(url, stream=True)
+        response.raise_for_status()  # Überprüfen, ob die Anfrage erfolgreich war
+
+        # Dateigröße ermitteln
+        total_size_in_bytes = int(response.headers.get('content-length', 0))
+        block_size = 1024  # 1 Kibibyte
+        
+
+        # Datei speichern
+        totaldl = 0
+        with open(local_path, 'wb') as file:
+            for data in response.iter_content(block_size):
+                totaldl += len(data)
+                dl_progress = totaldl / total_size_in_bytes * 100
+                self.busytext4 = "%s von %s : %2.2d%%" % ( get_size(totaldl), get_size(total_size_in_bytes), dl_progress)
+                file.write(data)
+
+
