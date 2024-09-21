@@ -1,3 +1,3 @@
 #BluetoothKopfhoerer
-AUTO_ENABLED=False
+AUTO_ENABLED=True
 

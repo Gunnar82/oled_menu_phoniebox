@@ -74,6 +74,7 @@ import windows.ende
 import windows.download as wdownload
 import windows.lock as wlock
 import windows.system as wsystem
+import windows.snake as wsnake
 import integrations.bluetooth as bluetooth
 
 #Systemd exit
@@ -142,6 +143,7 @@ def main():
     loadedwins.append(shutdownscreen)
     loadedwins.append(windows.start.Start(windowmanager, loop, mopidy,objbluetooth))
     loadedwins.append(wdownload.DownloadMenu(windowmanager,loop))
+    loadedwins.append(wsnake.SnakeGame(windowmanager,loop))
     loadedwins.append(wlock.Lock(windowmanager,loop,_nowplaying))
     loadedwins.append(wsystem.SystemMenu(windowmanager,loop,"Systemeinstellungen"))
     for window in loadedwins:

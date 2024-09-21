@@ -41,7 +41,6 @@ class WindowBase():
         self.loop = loop
         self.windowmanager = windowmanager
         self.device = self.windowmanager.device
-        self.loop = self.windowmanager.loop
 
 
     def clear_window(self):

@@ -26,6 +26,7 @@ class Mainmenu(MenuBase):
         self.descr.append([ "Systemmenu", "\uf013", "systemmenu" ])
         self.descr.append([ "Tastensperre", symbols.SYMBOL_LOCKED, "lock" ])
         self.descr.append([ "Ausschaltmenü", "\uf011", "shutdownmenu"])
+        self.descr.append([ "Snake", "\uf011", "snakegame"])
 
         self.window_on_back = "idle"
 
