@@ -61,6 +61,7 @@ class ListBase(WindowBase):
             self.title = self.basetitle
 
         with canvas(self.device) as draw:
+
             #progressbar
             try:
                 mypos = int((self.position + 1) / len(self.menu) * settings.DISPLAY_WIDTH)
@@ -103,12 +104,12 @@ class ListBase(WindowBase):
                 selected_element = self.menu[seite * self.displaylines + i]
 
                 try:
-                    if selected_element[1] in ["h","c"]:
-                        drawtext = symbols.SYMBOL_HEADING
+                    drawtext = symbols.SYMBOL_HEADING if isinstance(selected_element,list) and selected_element[1] in ["h","c"] else ""
                 except Exception as e:
                     drawtext = ""
 
-                drawtext += selected_element[0]
+                drawtext += selected_element[0] if isinstance(selected_element,list) else selected_element
+
 
                 if self.position  == seite * self.displaylines+ i : #selected
                     progresscolor = colors.COLOR_SELECTED
@@ -132,7 +133,8 @@ class ListBase(WindowBase):
 
                 try:
                     if not scrolling:
-                        drawtext = self.progress[self.menu[seite * self.displaylines + i][0]]
+                        selected_element = self.menu[seite * self.displaylines + i]
+                        drawtext = self.progress[selected_element[0]] if isinstance(selected_element,list) else self.progress[selected_element]
                         linewidth1, lineheight1 = self.font.getsize(drawtext)
                         logger.debug("listbase: percent:%s:" %(drawtext))
                         draw.rectangle((settings.DISPLAY_WIDTH - linewidth1 - 15  , current_y , settings.DISPLAY_WIDTH , current_y + self.entrylineheight ), outline="black", fill="black")
@@ -159,7 +161,8 @@ class ListBase(WindowBase):
         else:
             if not self.is_comment():
                 try:
-                    self.set_busy("Verarbeite...", self.menu[self.position][1],self.menu[self.position][0])
+                    selected_element = self.menu[self.position]
+                    self.set_busy("Verarbeite...", selected_element[1] if isinstance(selected_element,list) else "" ,selected_element[0] if isinstance(selected_element,list) else selected_element)
                 except:
                     self.set_busy("Verarbeite...", symbols.SYMBOL_SANDCLOCK)
 

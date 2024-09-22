@@ -74,20 +74,20 @@ class WindowBase():
             self.renderbusydraw(draw,symbolcolor,textcolor1,textcolor2)
 
     def renderbusydraw(self, draw, symbolcolor = colors.COLOR_RED, textcolor1=colors.COLOR_WHITE, textcolor2=colors.COLOR_WHITE):
-        mwidth,mheight = busyfont.getsize(self.busytext1)
-        draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, 5), text=self.busytext1, font=busyfont, fill=textcolor1)
+        mwidth1,mheight1 = busyfont.getsize(self.busytext1)
+        draw.text(((settings.DISPLAY_WIDTH - mwidth1) / 2, 5), text=self.busytext1, font=busyfont, fill=textcolor1)
 
         if (self.busytext3 != ""):
-            mwidth,mheight = busyfont.getsize(self.busytext3)
-            draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, mheight + 2), text=self.busytext3, font=busyfont, fill=textcolor2) #sanduhr
+            mwidth3,mheight3 = busyfont.getsize(self.busytext3)
+            draw.text(((settings.DISPLAY_WIDTH - mwidth3) / 2, mheight1 + 3), text=self.busytext3, font=busyfont, fill=textcolor2) #sanduhr
 
         if (self.busytext2 != ""):
-            mwidth,mheight = busyfont.getsize(self.busytext2)
-            draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, settings.DISPLAY_HEIGHT - mheight - 2), text=self.busytext2, font=busyfont, fill=textcolor2) #sanduhr
+            mwidth2,mheight2 = busyfont.getsize(self.busytext2)
+            draw.text(((settings.DISPLAY_WIDTH - mwidth2) / 2, settings.DISPLAY_HEIGHT - mheight2 - 3), text=self.busytext2, font=busyfont, fill=textcolor2) #sanduhr
 
         if (self.busytext4 != ""):
-            mwidth,mheight = busyfont.getsize(self.busytext4)
-            draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, settings.DISPLAY_HEIGHT - 2 * (mheight + 2)), text=self.busytext4, font=busyfont, fill=textcolor2) #sanduhr
+            mwidth4,mheight4 = busyfont.getsize(self.busytext4)
+            draw.text(((settings.DISPLAY_WIDTH - mwidth4) / 2, settings.DISPLAY_HEIGHT - mheight2 - 3  - mheight4 - 3), text=self.busytext4, font=busyfont, fill=textcolor2) #sanduhr
 
         mwidth,mheight = busyfaiconsbig.getsize(self.busysymbol)
         draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, (settings.DISPLAY_HEIGHT - mheight) / 2), text=self.busysymbol, font=busyfaiconsbig, fill=symbolcolor) #sanduhr

@@ -9,4 +9,4 @@ qrcode
 pygame==2.5.1
 watchdog
 pexpect
-aiohttp
+bs4

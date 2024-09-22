@@ -42,7 +42,7 @@ class MyHandler(FileSystemEventHandler):
                 out.close()
 
             except:
-                logger.errir("Error on Latest_Played handling")
+                logger.error("Error on Latest_Played handling")
 
 
 class LatestPlayed:

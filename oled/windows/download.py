@@ -4,16 +4,15 @@ import settings
 import config.colors as colors
 import config.symbols as symbols
 
-import aiohttp
 import time
 import requests
-import htmllistparse
+
 import os
 import asyncio
 import shutil
 
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin, urlparse, quote, unquote
 
 
 from ui.listbase import ListBase
@@ -25,6 +24,10 @@ import config.online as cfg_online
 import config.file_folder as cfg_file_folder
 
 
+# SSL-Zertifikatswarnungen deaktivieren, nur für HTTPS-URLs
+requests.packages.urllib3.disable_warnings(requests.packages.urllib3.exceptions.InsecureRequestWarning)
+
+
 class DownloadMenu(ListBase):
     def __init__(self, windowmanager,loop):
         super().__init__(windowmanager, loop, "Download")
@@ -32,123 +35,64 @@ class DownloadMenu(ListBase):
 
         self.timeout = False
         self.contrasthandle = False
-        self.canceled = False
+
         self.downloading = False
         self.totalsize = 0
         self.lastplayedfile = ""
 
     def activate(self):
+        self.canceled = False
         self.progress = {}
         self.items = []
         self.selector = False
         self.download = False
-        self.website = cfg_online.ONLINE_URL
-        self.baseurl = self.website[:cfg_online.ONLINE_URL.find('/',9)]
-        self.basecwd= self.website[cfg_online.ONLINE_URL.find('/',9):]
+
+        try:
+            with open(cfg_file_folder.FILE_LAST_ONLINE,"r") as f:
+                self.website = f.read()
+
+            if not self.website.startswith(cfg_online.ONLINE_URL): #Basis-Website geändert
+                self.website = cfg_online.ONLINE_URL
+
+        except Exception as error:
+            self.set_busy("Dateifehler",symbols.SYMBOL_NOCLOUD,str(error))
+            time.sleep(3)
+            self.position = -1
 
         self.set_busy("Verbinde Online",symbols.SYMBOL_CLOUD,self.website,busyrendertime=60)
         self.renderbusy()
         self.loop.run_in_executor(None,self.execute_init)
 
+    def deactivate(self):
+        self.canceled = True
+
 
     def execute_init(self):
 
         try:
-            with open(cfg_file_folder.FILE_LAST_ONLINE,"r") as f:
-                self.website = f.read()
-                self.cwd = self.website[len(self.baseurl):]
-            if not self.website.startswith(cfg_online.ONLINE_URL): raise "Website geändert"
+            r = check_url_reachability(self.website)
 
-        except Exception as error:
-            self.set_busy("Dateifehler",symbols.SYMBOL_NOCLOUD,str(error))
-            time.sleep(3)
-
-            self.position = -1
-            self.website = cfg_online.ONLINE_URL
-            self.cwd = self.basecwd
-
-        try:
-            r = requests.get(self.website)
-            if r.status_code == 404:
-                print("URL nicht gefunden")
+            if r == 0:
+                self.set_busy("Verbindungsfehler",symbols.SYMBOL_NOCLOUD,self.website,set_window_to="idle")
+                return
+            elif r != 200:
                 self.website = cfg_online.ONLINE_URL
-                self.cwd = self.basecwd
-                r = requests.get(self.website)
-                if r.status_code != 200:
-                    raise Exception( "Keine Verbindung, Code: %d" % (r.status_code))
-            elif r.status_code != 200:
-                raise Exception("Keine Verbindung, Code: %d" % (r.status_code))
-        except requests.exceptions.RequestException as error:
-            self.set_busy("Verbindungsfehler",symbols.SYMBOL_NOCLOUD,self.website,set_window_to="idle")
-            return
-        except requests.exceptions.HTTPError as error:
-            self.set_busy("HTTP-Fehler",symbols.SYMBOL_NOCLOUD,str(error),set_window_to="idle")
-            return
-        finally:
-            self.set_busy("Verbinde Online",symbols.SYMBOL_CLOUD,self.website,busyrendertime=0)
+        except:
+            self.website = cfg_online.ONLINE_URL
+
+        self.baseurl, self.basecwd = self.split_url(self.website)
+        self.cwd = self.basecwd
+
+        self.set_busy("Verbinde Online",symbols.SYMBOL_CLOUD,self.website,busyrendertime=0)
 
         if self.direct_play_last_folder:
             self.direct_play_last_folder = False
             self.url = self.baseurl + self.cwd
-            folders, self.items = self.get_content()
+            self.items, directories = self.get_files_and_dirs_from_listing(self.url)
             if not folders:
                 self.playfolder()
         else:
             self.on_key_left()
-
-    def get_content(self):
-        liste = []
-        local_exists = []
-        hasfolder = False
-
-        if not self.cwd.endswith('/'): self.cwd += '/'
-
-        try:
-            url = self.baseurl + requests.utils.quote(self.cwd)
-
-            temp, listing = htmllistparse.fetch_listing(url, timeout=30)
-            self.totalsize = 0
-
-            for listobj in listing:
-                if '/' in listobj.name and not hasfolder: hasfolder = True
-
-
-                current_folder = os.path.join(cfg_file_folder.AUDIO_BASEPATH_ONLINE,self.cwd)
-                current_folder = current_folder[len(self.basecwd):]
-                selected_folder = os.path.join(current_folder,listobj.name)
-                local_folder = os.path.join(cfg_file_folder.AUDIO_BASEPATH_BASE,selected_folder)
-                selected_folder = os.path.join(cfg_file_folder.AUDIO_BASEPATH_ONLINE,selected_folder)
-
-                liste.append(listobj.name.strip('/'))
-
-                progress = ' \u2302' if os.path.exists(local_folder) else ''
-
-                try:
-                    size = listobj.size
-                    self.totalsize += size
-                    self.progress[listobj.name] = get_size(size)
-                except Exception as error:
-                    pass
-
-                try:
-                    onlinepath = os.path.join(self.cwd,listobj.name)
-                    if onlinepath.endswith('/'):
-                        folderinfo = playout.getpos_online(self.baseurl,onlinepath)
-                        if len(folderinfo) >= 6 and folderinfo[0] == "POS":
-                            song = int(float(folderinfo[3]))
-                            length = int(float(folderinfo[4]))
-                            prozent = (song - 1) / length * 100
-                            progress = "%2.2d%%%s"  % (prozent,progress)
-                        elif folderinfo[0] == "ERR":
-                            progress = "%s%s"  % (folderinfo[0],progress)
-
-                except Exception as error:
-                    print (error)
-                self.progress[listobj.name.strip('/')] = progress
-        except Exception as error:
-            print (error)
-        finally:
-            return hasfolder,liste
 
 
     def downloadfolder(self):
@@ -162,8 +106,8 @@ class DownloadMenu(ListBase):
             for item in self.items:
 
                 if self.canceled: break;
-
-                url = self.baseurl + requests.utils.quote(self.cwd + '/' + self.stripitem(item))
+                filecwd = self.cwd + '/' + self.stripitem(item)
+                url = self.baseurl + quote(filecwd)
                 destination = os.path.join(destdir, self.stripitem(item))
                 self.download_file(url,destination)
                 self.busyrendertime = 1
@@ -236,7 +180,8 @@ class DownloadMenu(ListBase):
             filename = os.path.join(directory,"livestream.txt")
             with open(filename,"w") as ofile:
                 for item in self.items:
-                    additem = self.baseurl + requests.utils.quote(self.cwd + self.stripitem(item)) + '\n'
+                    additem = urljoin(self.baseurl,quote(self.cwd + self.stripitem(item))) + '\n'
+                    print (item)
                     ofile.write(additem)
             foldername = directory[len(cfg_file_folder.AUDIO_BASEPATH_BASE):]
             playout.pc_playfolder(foldername)
@@ -273,16 +218,15 @@ class DownloadMenu(ListBase):
                         except Exception as e:
                             self.set_busy("Fehler!",busytext2=str(e),busyrendertime=5,busysymbol="\uf057")
             else:
-                self.cwd += self.stripitem(self.items[self.position]) + '/'
+                self.cwd += self.stripitem(self.menu[self.position]) + '/'
 
                 self.url = self.baseurl + self.cwd
+                files,directories,self.totalsize = self.get_files_and_dirs_from_listing(self.url, ["mp3"])
 
-                hasfolder, self.items = self.get_content()
-
-                if hasfolder:
-                    self.menu = []
-                    for item in self.items: self.menu.append([item])
+                if directories != []:
+                    self.menu = directories
                 else:
+                    self.items = files
                     self.selector = True
                     try:
                         posstring = playout.getpos_online(self.baseurl,self.cwd)
@@ -313,7 +257,7 @@ class DownloadMenu(ListBase):
                     self.menu.append(["Anzahl Titel :%2.2d " %  (len(self.items))])
                     self.menu.append(["Gesamtgröße %s" % (get_size(self.totalsize))])
                     self.menu.append([current_pos])
-                    self.menu.append(["Datei: %s" % (online_file)])
+                    self.menu.append([f"Datei: {online_file}"])
                     self.menu.append([online_pos])
 
                     return
@@ -331,19 +275,18 @@ class DownloadMenu(ListBase):
         elif (self.position == -1 or  self.position == -2) and not self.selector:
             self.windowmanager.set_window("mainmenu")
         else:
-            if not self.selector or self.position == 0: self.set_busy("Auswahl verarbeiten...",symbols.SYMBOL_CLOUD,self.menu[self.position][0],busyrendertime=2)
+            selected_item = self.menu[self.position]
+
+            if not self.selector or self.position == 0:
+                self.set_busy("Auswahl verarbeiten...",symbols.SYMBOL_CLOUD,selected_item[0] if isinstance(selected_item,list) else selected_item, busyrendertime=2)
             self.loop.create_task(self.push_handler())
 
     def on_key_left(self):
         self.set_busy("Lese Verzeichnis",busyrendertime=60)
 
         self.selector = False
-        self.cwd = self.cwd.rstrip('/')
-        pos = self.cwd.rfind('/')
 
-        last = self.cwd[pos+1:]
-
-        self.cwd = self.cwd[:pos]
+        self.cwd = os.path.dirname(self.cwd)
 
         if len(self.cwd) <= len(self.basecwd):
             self.cwd = self.basecwd
@@ -351,16 +294,15 @@ class DownloadMenu(ListBase):
 
         self.url = self.baseurl + self.cwd
 
-        #pos = self.cwd.rfind("/")
+        files, directories,self.totalsize = self.get_files_and_dirs_from_listing(self.url, ["mp3"])
 
-        test, self.items = self.get_content()
-        self.menu = []
-        for item in self.items: self.menu.append([item])
         try:
-            self.position =  self.items(last) 
-        except:
+            self.menu = []
+            self.menu += directories
+            self.position =  self.menu.index(last)
+        except Exception as error:
             try:
-                self.position =  self.items.index('%s \u2302'% (last))
+                self.position = self.menu.index('%s \u2302'% (last))
             except:
                 self.position = -1
 
@@ -388,22 +330,49 @@ class DownloadMenu(ListBase):
             super().render()
 
 
-    def get_files_from_listing(self,url, allowed_extensions):
-        # HTTP-Listing abrufen
-        response = requests.get(url)
-        response.raise_for_status()  # Überprüfen, ob die Anfrage erfolgreich war
+    def get_files_and_dirs_from_listing(self,url, allowed_extensions):
+        """Extrahiere Dateien und Verzeichnisse aus dem HTTP-Listing."""
+        try:
+            if not url.endswith('/'): url += '/'
+            parsed_url = urlparse(url)
+            # Zertifikatsprüfung nur bei HTTPS-URLs deaktivieren
+            if parsed_url.scheme == 'https':
+                response = requests.get(url, verify=False)
+            else:
+                response = requests.get(url)  # Keine Zertifikatsprüfung für HTTP
 
-        # HTML mit BeautifulSoup analysieren
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            # Fehler bei der HTTP-Anfrage abfangen
+            print(f"Error fetching {url}: {e}")
+            return [], [], 0
+
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        # Liste der Dateien extrahieren
         files = []
+        directories = []
+        total_size = 0
+
         for link in soup.find_all('a'):
             href = link.get('href')
-            if href and any(href.endswith(ext) for ext in allowed_extensions):
-                files.append(href)
-
-        return files
+            if href and not href.startswith('?') and not href.startswith('/'):
+                if href.endswith('/'):
+                    # Unterverzeichnis gefunden
+                    directories.append(unquote(href).strip('/')) # trailing slash entfernen
+                elif any(href.endswith(ext) for ext in allowed_extensions):
+                    # Datei gefunden
+                    files.append(unquote(href))
+                    file_url = urljoin(url, href)
+                    try:
+                        file_response = requests.head(file_url)
+                        file_response.raise_for_status()
+                        # Dateigröße aus dem Header holen, falls vorhanden
+                        file_size = int(file_response.headers.get('content-length', 0))
+                        total_size += file_size
+                    except requests.RequestException as e:
+                        print(f"Fehler beim Abrufen der Dateigröße für {file_url}: {e}")
+                        continue
+        return files, directories, total_size
 
     def download_file(self,url, local_path):
         # Den Inhalt der Datei herunterladen und den Fortschritt anzeigen
@@ -413,7 +382,7 @@ class DownloadMenu(ListBase):
         # Dateigröße ermitteln
         total_size_in_bytes = int(response.headers.get('content-length', 0))
         block_size = 1024  # 1 Kibibyte
-        
+
 
         # Datei speichern
         totaldl = 0
@@ -424,4 +393,74 @@ class DownloadMenu(ListBase):
                 self.busytext4 = "%s von %s : %2.2d%%" % ( get_size(totaldl), get_size(total_size_in_bytes), dl_progress)
                 file.write(data)
 
+
+    def check_url_reachability(url):
+        try:
+            # Timeout auf 5 Sekunden setzen, um nicht zu lange zu warten
+            response = requests.get(url, timeout=5)
+            # Rückgabewert: Statuscode der Anfrage
+            return response.status_code
+        except requests.exceptions.RequestException as e:
+            # Falls ein Fehler auftritt (z.B. URL nicht erreichbar), Rückgabe 0
+            print(f"Fehler beim Erreichen der URL: {e}")
+            return 0
+
+
+    def split_url(self,url):
+        parsed_url = urlparse(url)
+
+        # Wert 1: Schema und Host (inkl. Port, falls vorhanden)
+        schema_and_host = f"{parsed_url.scheme}://{parsed_url.netloc}"
+
+        # Wert 2: URI (Pfad und Query-Parameter, falls vorhanden)
+        uri = parsed_url.path + ('?' + parsed_url.query if parsed_url.query else '')
+
+        return schema_and_host, uri
+
+
+
+
+####old
+
+    def get_content(self):
+        liste = []
+        local_exists = []
+
+
+        try:
+                current_folder = os.path.join(cfg_file_folder.AUDIO_BASEPATH_ONLINE,self.cwd)
+                current_folder = current_folder[len(self.basecwd):]
+                selected_folder = os.path.join(current_folder,listobj.name)
+                local_folder = os.path.join(cfg_file_folder.AUDIO_BASEPATH_BASE,selected_folder)
+                selected_folder = os.path.join(cfg_file_folder.AUDIO_BASEPATH_ONLINE,selected_folder)
+
+
+                progress = ' \u2302' if os.path.exists(local_folder) else ''
+
+                try:
+                    size = listobj.size
+                    self.totalsize += size
+                    self.progress[listobj.name] = get_size(size)
+                except Exception as error:
+                    pass
+
+                try:
+                    onlinepath = os.path.join(self.cwd,listobj.name)
+                    if onlinepath.endswith('/'):
+                        folderinfo = playout.getpos_online(self.baseurl,onlinepath)
+                        if len(folderinfo) >= 6 and folderinfo[0] == "POS":
+                            song = int(float(folderinfo[3]))
+                            length = int(float(folderinfo[4]))
+                            prozent = (song - 1) / length * 100
+                            progress = "%2.2d%%%s"  % (prozent,progress)
+                        elif folderinfo[0] == "ERR":
+                            progress = "%s%s"  % (folderinfo[0],progress)
+
+                except Exception as error:
+                    print (error)
+                self.progress[listobj.name.strip('/')] = progress
+        except Exception as error:
+            print (error)
+        finally:
+            return hasfolder,liste
 
