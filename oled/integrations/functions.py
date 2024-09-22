@@ -165,7 +165,7 @@ def get_size(size):
         number += 1
         size = size / 1024
 
-    return "%d %s" % (size,mb[number])
+    return "%.1f %s" % (size,mb[number])
 
 
 def get_oledversion():

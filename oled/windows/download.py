@@ -88,7 +88,7 @@ class DownloadMenu(ListBase):
         if self.direct_play_last_folder:
             self.direct_play_last_folder = False
             self.url = self.baseurl + self.cwd
-            self.items, directories = self.get_files_and_dirs_from_listing(self.url)
+            self.items, directories, self.totalsize = self.get_files_and_dirs_from_listing(self.url)
             if not folders:
                 self.playfolder()
         else:
@@ -98,6 +98,7 @@ class DownloadMenu(ListBase):
     def downloadfolder(self):
         try:
             self.downloading = True
+            self.totaldownloaded = 0
             settings.callback_active = True
             destdir = os.path.join(cfg_file_folder.AUDIO_BASEPATH_BASE,self.url[len(cfg_online.ONLINE_URL):])
 
@@ -385,12 +386,15 @@ class DownloadMenu(ListBase):
 
 
         # Datei speichern
-        totaldl = 0
+        totaldlfile = 0
         with open(local_path, 'wb') as file:
             for data in response.iter_content(block_size):
-                totaldl += len(data)
-                dl_progress = totaldl / total_size_in_bytes * 100
-                self.busytext4 = "%s von %s : %2.2d%%" % ( get_size(totaldl), get_size(total_size_in_bytes), dl_progress)
+                totaldlfile += len(data)
+                self.totaldownloaded += len(data)
+                #dl_progress = totaldlfile / total_size_in_bytes * 100
+                total_progress = self.totaldownloaded / self.totalsize * 100
+
+                self.busytext4 = "%s / %s, %s / %s %2.2d%%" % ( get_size(totaldlfile), get_size(total_size_in_bytes), get_size(self.totaldownloaded), get_size(self.totalsize), total_progress)
                 file.write(data)
 
 
@@ -416,9 +420,6 @@ class DownloadMenu(ListBase):
         uri = parsed_url.path + ('?' + parsed_url.query if parsed_url.query else '')
 
         return schema_and_host, uri
-
-
-
 
 ####old
 
