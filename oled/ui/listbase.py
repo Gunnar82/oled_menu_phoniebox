@@ -9,7 +9,7 @@ import settings
 import config.colors as colors
 import config.symbols as symbols
 
-from integrations.logging_config import setup_logger
+from integrations.logging_config import *
 
 logger = setup_logger(__name__)
 

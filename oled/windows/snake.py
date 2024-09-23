@@ -9,7 +9,7 @@ import time
 import settings
 import integrations.playout as playout
 
-from integrations.logging_config import setup_logger
+from integrations.logging_config import *
 
 logger = setup_logger(__name__)
 

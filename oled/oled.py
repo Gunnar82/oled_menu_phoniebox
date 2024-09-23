@@ -16,7 +16,7 @@ import settings
 import config.file_folder as cfg_file_folder
 
 
-from integrations.logging_config import setup_logger
+from integrations.logging_config import *
 
 logger = setup_logger(__name__)
 

@@ -6,8 +6,7 @@ import time
 
 import integrations.functions as fn
 
-from integrations.logging_config import setup_logger
-
+from integrations.logging_config import *
 logger = setup_logger(__name__)
 
 

@@ -19,7 +19,7 @@ import integrations.playout as playout
 
 from integrations.functions import get_battload_color, to_min_sec, get_folder, get_folder_of_livestream, get_folder_from_file
 
-from integrations.logging_config import setup_logger
+from integrations.logging_config import *
 
 logger = setup_logger(__name__)
 

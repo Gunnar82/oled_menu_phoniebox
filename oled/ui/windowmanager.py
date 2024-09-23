@@ -10,7 +10,7 @@ import integrations.functions as fn
 from integrations.rfidwatcher import RfidWatcher
 from integrations.latestplayed import LatestPlayed
 
-from integrations.logging_config import setup_logger
+from integrations.logging_config import *
 
 logger = setup_logger(__name__)
 

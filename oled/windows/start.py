@@ -6,7 +6,7 @@ from datetime import datetime
 
 import settings
 
-from integrations.logging_config import setup_logger
+from integrations.logging_config import *
 
 logger = setup_logger(__name__)
 

@@ -8,7 +8,7 @@ import config.file_folder as cfg_file_folder
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-from integrations.logging_config import setup_logger
+from integrations.logging_config import *
 
 logger = setup_logger(__name__)
 
