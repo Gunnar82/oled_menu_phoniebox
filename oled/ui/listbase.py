@@ -59,11 +59,11 @@ class ListBase(WindowBase):
 
             #progressbar
             try:
-                mypos = int((self.position + 1) / len(self.menu) * settings.DISPLAY_WIDTH)
+                mypos = int(self.progessbarpos * settings.DISPLAY_WIDTH)
                 draw.rectangle((0, settings.DISPLAY_HEIGHT - 1, settings.DISPLAY_WIDTH, settings.DISPLAY_HEIGHT - 1),outline=colors.COLOR_SELECTED, fill=colors.COLOR_SELECTED)
                 draw.rectangle((mypos - 5, settings.DISPLAY_HEIGHT - 1, mypos + 5, settings.DISPLAY_HEIGHT - 1),outline="black", fill="black")
-            except:
-                pass
+            except Exception as error:
+                logger.debug(f"{error}")
 
             #Back button and selection arrow
             if self.position == -2:
@@ -200,5 +200,6 @@ class ListBase(WindowBase):
 
         logger.debug("self.position: %d" % (self.position))
 
-
+        self.progessbarpos = (self.position + 1) / len(self.menu)
+        
 

@@ -8,7 +8,7 @@ import settings
 
 from integrations.logging_config import *
 
-logger = setup_logger(__name__)
+logger = setup_logger(__name__,lvlDEBUG)
 
 
 
@@ -85,9 +85,11 @@ def get_files_and_dirs_from_listing(url, allowed_extensions,get_filesize=True):
                         continue
     return files, directories, total_size
 
-def construct_url(cwd, base_url):
+def construct_url(cwd, base_url,is_folder=True):
     # cwd kodieren und an die URL anhängen
+    if is_folder and not base_url.endswith('/'): base_url += '/'
     encoded_cwd = quote(cwd)
+    logger.debug(f"construct_url: base_url: {base_url}, cwd: {cwd}")
     return urljoin(base_url, encoded_cwd)
 
 def get_unquoted_uri(url):
@@ -95,7 +97,9 @@ def get_unquoted_uri(url):
     return unquote(parsed_url.path)
 
 def stripitem(rawitem):
-    return rawitem.rstrip('\u2302').rstrip()
+    stripitem = rawitem.rstrip('\u2302').strip()
+    logger.debug(f"stripitem: raw:{rawitem}, strip: {stripitem}")
+    return stripitem
 
 
 def construct_url_from_local_path(base_url, local_path, filename=""):
@@ -167,3 +171,44 @@ def get_relative_path(base_path, absolute_path):
     rel_path = os.path.relpath(absolute_path, start=base_path)
     logger.debug(f"relpath of abspath {absolute_path}is {rel_path}")
     return rel_path
+
+def uri_exists_locally(url, base_url, base_path):
+    parsed_url = urlparse(url)
+    uri_path = unquote(parsed_url.path)
+    logger.debug(f"check {url} in {base_path}")
+
+    # Entferne den Basis-Pfad von der URI
+    base_path_from_url = urlparse(base_url).path
+    if uri_path.startswith(base_path_from_url):
+        uri_path = uri_path[len(base_path_from_url):]
+
+    # Erstelle den lokalen Pfad mit dem Basis-Pfad
+    local_path = os.path.join(base_path, uri_path.lstrip('/'))
+    logger.debug(f"local path: {local_path}")
+    
+    return os.path.exists(local_path)
+
+
+def directories_to_list(directories):
+    return [[directory] for directory in directories]
+
+def get_first_or_self(selected_item):
+
+    if isinstance(selected_item, list):
+        logger.debug(f"get_first_or_self: list {selected_item}")
+        return selected_item[0] if selected_item else ""  # Gibt das erste Feld zurück, wenn Liste nicht leer
+    else:
+        logger.debug(f"get_first_or_self: string {selected_item}")
+        return selected_item
+
+def find_element_or_formatted_position(nested_list, element):
+    formatted_element = f"{element} \u2302"  # Erstelle den formatierten String
+    logger.debug(f"Suche nach {element} oder {formatted_element}")
+    for outer_index, inner_list in enumerate(nested_list):
+        if element in inner_list or formatted_element in inner_list:
+            inner_index = inner_list.index(element) if element in inner_list else inner_list.index(formatted_element)
+            logger.debug(f"gefunden in {outer_index}, {inner_index}")
+            return outer_index, inner_index
+    logger.debug(f"nicht gefunden")
+
+    return -1, -1  # Element nicht gefunden

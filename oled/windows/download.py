@@ -11,6 +11,8 @@ import os
 import asyncio
 import shutil
 
+from luma.core.render import canvas
+
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse, quote, unquote
 
@@ -28,7 +30,7 @@ from integrations.download import *
 
 from integrations.logging_config import *
 
-logger = setup_logger(__name__)
+logger = setup_logger(__name__,lvlDEBUG)
 
 
 # SSL-Zertifikatswarnungen deaktivieren, nur für HTTPS-URLs
@@ -56,7 +58,6 @@ class DownloadMenu(ListBase):
         self.website = cfg_online.ONLINE_URL
         self.url = self.website
         self.baseurl, self.basecwd = split_url(self.website)
-
 
         try:
             with open(cfg_file_folder.FILE_LAST_ONLINE,"r") as f:
@@ -124,18 +125,31 @@ class DownloadMenu(ListBase):
 
     def downloadfolder(self):
         try:
+            logger.debug(f"start downloadfolder")
             self.downloading = True
             self.totaldownloaded = 0
             settings.callback_active = True
-            destdir = os.path.join(cfg_file_folder.AUDIO_BASEPATH_BASE,get_unquoted_uri(self.url))
+            uri = get_relative_path(self.basecwd,get_unquoted_uri(self.url))
+            logger.debug(f"downloadfolder: uri: {uri}")
+            destdir = os.path.join(cfg_file_folder.AUDIO_BASEPATH_BASE,uri)
+            logger.debug(f"downloadfolder: destdir: {destdir}")
 
-            if not os.path.exists(destdir): os.makedirs(destdir)
-
+            try:
+                if not os.path.exists(destdir): os.makedirs(destdir)
+            except Exception as error:
+                logger.error(f"downloadfolder: error {error}")
             for item in self.items:
 
-                if self.canceled: break;
+                if self.canceled:
+                    logger.info("downloadfolder: Abbruch")
+                    break;
                 url = construct_url_from_local_path(self.baseurl,self.cwd,item)
+                logger.debug(f"downloadfolder: url: {url}")
+
                 destination = os.path.join(destdir, stripitem(item))
+
+                logger.debug(f"downloadfolder: destination: {destination}")
+
                 self.download_file(url,destination)
                 self.busyrendertime = 1
                 self.busytext1="Download %2.2d von %2.2d" %(self.items.index(item) + 1,len(self.items) )
@@ -145,7 +159,7 @@ class DownloadMenu(ListBase):
 
 
         except Exception as error:
-            print (error)
+            logger.error(f"downloadfolder: {error}")
             self.canceled = True
             self.set_busy(error)
         finally:
@@ -193,8 +207,10 @@ class DownloadMenu(ListBase):
             if self.selector:
                 logger.debug(f"Untermenü aktiv: {self.position}")
                 if self.position == 0:
+                    logger.debug(f"Untermenü aktiv: {self.position}, abspielen")
                     self.playfolder()
                 elif self.position == 1:
+                    logger.debug(f"Untermenü aktiv: {self.position}, starte download")
                     self.loop.run_in_executor(None, self.downloadfolder)
                 elif self.position == 2 and self.selector:
                     self.menu = []
@@ -217,21 +233,24 @@ class DownloadMenu(ListBase):
                             self.set_busy("Fehler!",busytext2=str(e),busyrendertime=5,busysymbol="\uf057")
             else:
                 if not self.cwd.endswith('/'): self.cwd += '/'
-                self.cwd += stripitem(self.menu[self.position])
+
+                selected_item = get_first_or_self(self.menu[self.position])
+                logger.debug(f"push_callback {selected_item}")
+
+                self.cwd += stripitem(selected_item)
 
                 if not self.cwd.endswith('/'): self.cwd += '/'
 
                 self.url = construct_url_from_local_path(self.baseurl,self.cwd)
 
                 logger.info(f"Wechsle zu {self.url}")
-                files,directories,self.totalsize = get_files_and_dirs_from_listing(self.url, ["mp3"])
+                self.items,directories,self.totalsize = get_files_and_dirs_from_listing(self.url, ["mp3"])
 
                 if directories != []:
                     logger.debug(f"Verzeichnisse gefunden: {directories}")
-                    self.menu = directories
+                    self.create_menu_from_directories(directories)
                 else:
                     logger.debug(f"Verzeichnis ausgewählt: {self.cwd}")
-                    self.items = files
                     self.selector = True
                     try:
                         posstring = playout.getpos_online(self.baseurl,self.cwd)
@@ -281,20 +300,21 @@ class DownloadMenu(ListBase):
         elif (self.position == -1 or  self.position == -2) and not self.selector:
             self.windowmanager.set_window("mainmenu")
         else:
-            selected_item = self.menu[self.position]
+            selected_item = get_first_or_self(self.menu[self.position])
 
             if not self.selector or self.position == 0:
-                self.set_busy("Auswahl verarbeiten...",symbols.SYMBOL_CLOUD,selected_item[0] if isinstance(selected_item,list) else selected_item, busyrendertime=2)
+                self.set_busy("Auswahl verarbeiten...",symbols.SYMBOL_CLOUD,selected_item, busyrendertime=2)
             self.loop.create_task(self.push_handler())
 
     def on_key_left(self):
         self.set_busy("Lese Verzeichnis",busyrendertime=60)
 
         self.selector = False
-
+        logger.debug(f"derzeitiges Verzeichnis: {self.cwd}")
         last = get_current_directory(self.cwd)
 
         self.cwd = get_parent_directory(self.cwd)
+        logger.debug(f"neues Verzeichnis: {self.cwd}")
 
         if len(self.cwd) <= len(self.basecwd):
             self.cwd = self.basecwd
@@ -303,16 +323,10 @@ class DownloadMenu(ListBase):
         self.url = construct_url(self.cwd,self.baseurl)
 
         files, directories,self.totalsize = get_files_and_dirs_from_listing(self.url, ["mp3"])
-        
-        try:
-            self.menu = []
-            self.menu += directories
-            self.position =  self.menu.index(last)
-        except Exception as error:
-            try:
-                self.position = self.menu.index('%s \u2302'% (last))
-            except:
-                self.position = -1
+
+        self.create_menu_from_directories(directories)
+
+        self.position = find_element_or_formatted_position(self.menu,last)[0]
 
         try:
             if len(self.cwd) > len (self.basecwd):
@@ -351,53 +365,47 @@ class DownloadMenu(ListBase):
                 totaldlfile += len(data)
                 self.totaldownloaded += len(data)
                 #dl_progress = totaldlfile / total_size_in_bytes * 100
-                total_progress = self.totaldownloaded / self.totalsize * 100
+                try:
+                    self.progessbarpos = self.totaldownloaded / self.totalsize # float zahl
+                except:
+                    pass
 
-                self.busytext4 = "%s / %s, %s / %s %2.2d%%" % ( get_size(totaldlfile), get_size(total_size_in_bytes), get_size(self.totaldownloaded), get_size(self.totalsize), total_progress)
+                self.busytext4 = "%s / %s, %s / %s" % ( get_size(totaldlfile), get_size(total_size_in_bytes), get_size(self.totaldownloaded), get_size(self.totalsize))
                 file.write(data)
+
+
+    def create_menu_from_directories(self,directories):
+        for i in range(len(directories)): 
+            url = construct_url(directories[i],self.url)
+            logger.debug(f"prüfe {directories[i]} {self.url}: {url}")
+
+            if uri_exists_locally(url,self.website,cfg_file_folder.AUDIO_BASEPATH_BASE):
+                directories[i] = f"{directories[i]} \u2302"
+        self.menu = directories_to_list(directories)
+        #TODO progress
 
 
 ####old
 
     def get_content(self):
-        liste = []
-        local_exists = []
+        folderinfo = playout.getpos_online(self.baseurl,onlinepath)
+        if len(folderinfo) >= 6 and folderinfo[0] == "POS":
+            song = int(float(folderinfo[3]))
+            length = int(float(folderinfo[4]))
+            prozent = (song - 1) / length * 100
+            progress = "%2.2d%%%s"  % (prozent,progress)
+        elif folderinfo[0] == "ERR":
+            progress = "%s%s"  % (folderinfo[0],progress)
 
 
-        try:
-                current_folder = os.path.join(cfg_file_folder.AUDIO_BASEPATH_ONLINE,self.cwd)
-                current_folder = current_folder[len(self.basecwd):]
-                selected_folder = os.path.join(current_folder,listobj.name)
-                local_folder = os.path.join(cfg_file_folder.AUDIO_BASEPATH_BASE,selected_folder)
-                selected_folder = os.path.join(cfg_file_folder.AUDIO_BASEPATH_ONLINE,selected_folder)
 
+    def renderbusy(self,symbolcolor = colors.COLOR_RED, textcolor1=colors.COLOR_WHITE, textcolor2=colors.COLOR_WHITE):
+        with canvas(self.device) as draw:
+            try:
+                mypos = int(self.progessbarpos * settings.DISPLAY_WIDTH)
+                draw.rectangle((mypos, settings.DISPLAY_HEIGHT - 1, settings.DISPLAY_WIDTH, settings.DISPLAY_HEIGHT - 1),outline="red", fill="red")
+                draw.rectangle((0, settings.DISPLAY_HEIGHT - 1, mypos, settings.DISPLAY_HEIGHT - 1),outline=colors.COLOR_SELECTED, fill=colors.COLOR_SELECTED)
+            except Exception as error:
+                logger.debug(f"{error}")
 
-                progress = ' \u2302' if os.path.exists(local_folder) else ''
-
-                try:
-                    size = listobj.size
-                    self.totalsize += size
-                    self.progress[listobj.name] = get_size(size)
-                except Exception as error:
-                    pass
-
-                try:
-                    onlinepath = os.path.join(self.cwd,listobj.name)
-                    if onlinepath.endswith('/'):
-                        folderinfo = playout.getpos_online(self.baseurl,onlinepath)
-                        if len(folderinfo) >= 6 and folderinfo[0] == "POS":
-                            song = int(float(folderinfo[3]))
-                            length = int(float(folderinfo[4]))
-                            prozent = (song - 1) / length * 100
-                            progress = "%2.2d%%%s"  % (prozent,progress)
-                        elif folderinfo[0] == "ERR":
-                            progress = "%s%s"  % (folderinfo[0],progress)
-
-                except Exception as error:
-                    print (error)
-                self.progress[listobj.name.strip('/')] = progress
-        except Exception as error:
-            print (error)
-        finally:
-            return hasfolder,liste
-
+            self.renderbusydraw(draw,symbolcolor,textcolor1,textcolor2)
