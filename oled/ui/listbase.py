@@ -5,18 +5,13 @@ from PIL import ImageFont
 from datetime import datetime
 
 import settings
-import logging
-
-from integrations.logging_config import setup_logger
-
-
-setup_logger()
-logger = logging.getLogger(__name__)
-
 
 import config.colors as colors
 import config.symbols as symbols
 
+from integrations.logging_config import setup_logger
+
+logger = setup_logger(__name__)
 
 class ListBase(WindowBase):
     font = ImageFont.truetype(settings.FONT_TEXT, size=settings.LISTBASE_ENTRY_SIZE)

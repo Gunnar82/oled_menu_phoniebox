@@ -1,12 +1,6 @@
 """ Playlist menu """
 from ui.listbase import ListBase
 import settings
-import logging
-
-from integrations.logging_config import setup_logger
-
-setup_logger()
-logger = logging.getLogger(__name__)
 
 import config.colors as colors
 import config.symbols as symbols
@@ -18,6 +12,9 @@ import asyncio
 
 import config.file_folder as cfg_file_folder
 
+from integrations.logging_config import setup_logger
+
+logger = setup_logger(__name__)
 
 
 class Foldermenu(ListBase):

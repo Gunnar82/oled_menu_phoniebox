@@ -8,11 +8,10 @@ import config.file_folder as cfg_file_folder
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-import logging
 from integrations.logging_config import setup_logger
 
-setup_logger()
-logger = logging.getLogger(__name__)
+logger = setup_logger(__name__)
+
 
 latest_played_changed = False
 
@@ -34,15 +33,16 @@ class MyHandler(FileSystemEventHandler):
                     outfile = cfg_file_folder.FILE_LAST_RADIO
                 elif line.startswith("/Hörspiel")or line.startswith("Hörspiel"):
                     outfile = cfg_file_folder.FILE_LAST_HOERBUCH
+                else:
+                    return
 
                 logger.debug("LastPlayed: outfile: %s" % (outfile))
 
-                out = open(outfile,"w")
-                out.write(line)
-                out.close()
+                with open(outfile,"w") as out:
+                    out.write(line)
 
-            except:
-                logger.error("Error on Latest_Played handling")
+            except Exception as error:
+                logger.error(f"on_modified: {error}")
 
 
 class LatestPlayed:

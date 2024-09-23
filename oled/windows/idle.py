@@ -3,13 +3,6 @@ import datetime
 import asyncio
 from ui.mainwindow import MainWindow
 import settings
-import logging
-
-from integrations.logging_config import setup_logger
-
-setup_logger()
-logger = logging.getLogger(__name__)
-
 
 import config.colors as colors
 import config.symbols as symbols
@@ -26,6 +19,10 @@ import integrations.bluetooth
 import integrations.playout as playout
 
 from integrations.functions import get_battload_color, to_min_sec, get_folder, get_folder_of_livestream, get_folder_from_file
+
+from integrations.logging_config import setup_logger
+
+logger = setup_logger(__name__)
 
 
 class Idle(MainWindow):

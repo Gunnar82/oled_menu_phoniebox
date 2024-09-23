@@ -3,15 +3,12 @@ import asyncio
 import threading
 import settings # pylint: disable=import-error
 import time
-import logging
-
-from integrations.logging_config import setup_logger
-
-setup_logger()
-logger = logging.getLogger(__name__)
 
 import integrations.functions as fn
 
+from integrations.logging_config import setup_logger
+
+logger = setup_logger(__name__)
 
 
 try:

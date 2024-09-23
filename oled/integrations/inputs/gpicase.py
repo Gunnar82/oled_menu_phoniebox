@@ -3,15 +3,12 @@ import threading
 import settings
 import pygame
 import time
-import logging
+import integrations.playout as playout
+
 
 from integrations.logging_config import setup_logger
 
-
-setup_logger()
-logger = logging.getLogger(__name__)
-
-import integrations.playout as playout
+logger = setup_logger(__name__)
 
 
 try:

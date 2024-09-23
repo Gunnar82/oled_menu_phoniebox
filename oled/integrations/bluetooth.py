@@ -3,17 +3,13 @@ import  re
 import subprocess
 import pexpect
 import time
-import logging
 
 
 from integrations.functions import run_command
 
-from integrations.logging_config import setup_logger
+from integrations.logging_config import *
 
-
-setup_logger()
-logger = logging.getLogger(__name__)
-
+logger = setup_logger(__name__)
 
 bt_dev_1="bt_dev_1"
 

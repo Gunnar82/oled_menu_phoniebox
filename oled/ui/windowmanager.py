@@ -3,20 +3,17 @@ import settings
 from datetime import datetime
 
 import asyncio
-import logging
-
-from integrations.logging_config import setup_logger
-
-
-setup_logger()
-logger = logging.getLogger(__name__)
-
 import config.symbols as symbols
 import integrations.functions as fn
 
 
 from integrations.rfidwatcher import RfidWatcher
 from integrations.latestplayed import LatestPlayed
+
+from integrations.logging_config import setup_logger
+
+logger = setup_logger(__name__)
+
 
 class WindowManager():
     def __init__(self, loop, device):

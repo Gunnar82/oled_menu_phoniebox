@@ -3,13 +3,6 @@ from ui.listbase import ListBase
 from luma.core.render import canvas
 
 import settings
-import logging
-
-from integrations.logging_config import setup_logger
-
-setup_logger()
-logger = logging.getLogger(__name__)
-
 
 import config.colors as colors
 import config.symbols as symbols
@@ -18,6 +11,10 @@ import os
 
 import time
 import asyncio
+
+from integrations.logging_config import setup_logger
+
+logger = setup_logger(__name__)
 
  
 class Bluetoothmenu(ListBase):

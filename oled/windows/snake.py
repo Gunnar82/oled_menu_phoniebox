@@ -8,11 +8,10 @@ import asyncio
 import time
 import settings
 import integrations.playout as playout
-import logging
+
 from integrations.logging_config import setup_logger
 
-setup_logger()
-logger = logging.getLogger(__name__)
+logger = setup_logger(__name__)
 
 
 import config.colors as colors

@@ -6,14 +6,6 @@ import sys
 import os
 import time
 import importlib
-import logging
-
-from integrations.logging_config import setup_logger
-
-
-setup_logger()
-logger = logging.getLogger(__name__)
-
 from subprocess import call
 import integrations.bluetooth
 import integrations.functions as fn
@@ -22,6 +14,12 @@ import integrations.playout as playout
 import settings
 
 import config.file_folder as cfg_file_folder
+
+
+from integrations.logging_config import setup_logger
+
+logger = setup_logger(__name__)
+
 
 ######
 from datetime import datetime

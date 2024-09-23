@@ -2,15 +2,10 @@ import os
 import subprocess, re
 import datetime
 import settings
-import logging
 
 from integrations.logging_config import setup_logger
 
-
-setup_logger()
-logger = logging.getLogger(__name__)
-
-
+logger = setup_logger(__name__)
 
 import config.colors as colors
 import config.symbols as symbols
