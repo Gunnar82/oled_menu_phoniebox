@@ -20,7 +20,7 @@ class Lock(MainWindow):
         super().__init__(windowmanager, loop,nowplaying)
 
         self.timeout = False
-        self.window_on_back = "none"
+        self.window_on_back = "idle"
         self.busyrendertime = 0.25
 
         self.timeout = False
@@ -46,7 +46,7 @@ class Lock(MainWindow):
         elif "keypad4x4" in settings.INPUTS: self.unlockindex = 1
 
         if self.unlockindex == -1:
-            self.set_busy("Kein kompatibler INPUT",symbols.SYMBOL_ERROR,set_window_to="idle")
+            self.set_busy("Kein kompatibler INPUT",symbols.SYMBOL_ERROR,set_window=True)
         else:
             try:
                 for r in range(0,4):
@@ -86,7 +86,7 @@ class Lock(MainWindow):
 
         if self.currentkey >= len(self.unlockcode):
              self.currentkey = 0 
-             self.set_busy("Gerät entsperrt",symbols.SYMBOL_UNLOCKED,set_window_to="idle")
+             self.set_busy("Gerät entsperrt",symbols.SYMBOL_UNLOCKED,set_window=True)
         else:
             self.genhint()
 
