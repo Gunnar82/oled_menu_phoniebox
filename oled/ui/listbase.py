@@ -66,12 +66,10 @@ class ListBase(WindowBase):
             #progressbar
             try:
                 self.progessbarpos = (self.position + 1) / len(self.menu)
-
-                mypos = int(self.progessbarpos * settings.DISPLAY_HEIGHT)
-                draw.rectangle((settings.DISPLAY_WIDTH - 2, 0 , settings.DISPLAY_WIDTH, mypos - 3),outline=colors.COLOR_SELECTED, fill=colors.COLOR_SELECTED)
-                draw.rectangle((settings.DISPLAY_WIDTH - 2, mypos + 3 , settings.DISPLAY_WIDTH, settings.DISPLAY_HEIGHT),outline=colors.COLOR_RED, fill=colors.COLOR_RED)
             except Exception as error:
                 logger.debug(f"{error}")
+
+            self.render_progressbar_draw(draw)
 
             #Back button and selection arrow
             if not self.hide_buttons:

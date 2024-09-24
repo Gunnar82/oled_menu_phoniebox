@@ -12,6 +12,11 @@ from luma.core.render import canvas
 
 import time
 
+from integrations.logging_config import *
+
+logger = setup_logger(__name__)
+
+
 busyfont = ImageFont.truetype(settings.FONT_TEXT, size=settings.WINDOWBASE_BUSYFONT)
 busyfaicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.WINDOWBASE_BUSYFAICONS)
 busyfaiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=settings.WINDOWBASE_BUSYFAICONSBIG)
@@ -29,6 +34,7 @@ class WindowBase():
     busytext1 = settings.PLEASE_WAIT
     busytext2 = ""
     busytext3 = ""
+    render_progressbar = False
     busytext4 = ""
     busyrendertime = 3
     _rendertime = 0.25
@@ -46,7 +52,7 @@ class WindowBase():
     def clear_window(self):
         self.device.clear()
 
-    def set_busy(self,busytext1,busysymbol=symbols.SYMBOL_SANDCLOCK,busytext2="", busyrendertime=3,busytext3="",set_window=False):
+    def set_busy(self,busytext1,busysymbol=symbols.SYMBOL_SANDCLOCK,busytext2="", busyrendertime=3,busytext3="",set_window=False, render_progressbar = False):
 
         self.busytext1 = busytext1
         self.busysymbol = busysymbol
@@ -61,6 +67,7 @@ class WindowBase():
             self.busytext4 = ""
             self.busytext2 = busytext2
 
+        self.render_progressbar = render_progressbar
         self.busyrendertime = busyrendertime
 
         self.start_busyrendertime = time.monotonic()
@@ -72,6 +79,7 @@ class WindowBase():
     def renderbusy(self,symbolcolor = colors.COLOR_RED, textcolor1=colors.COLOR_WHITE, textcolor2=colors.COLOR_WHITE):
         with canvas(self.device) as draw:
             self.renderbusydraw(draw,symbolcolor,textcolor1,textcolor2)
+            if self.render_progressbar: self.render_progressbar_draw(draw)
 
     def renderbusydraw(self, draw, symbolcolor = colors.COLOR_RED, textcolor1=colors.COLOR_WHITE, textcolor2=colors.COLOR_WHITE):
         mwidth1,mheight1 = busyfont.getsize(self.busytext1)
@@ -91,6 +99,15 @@ class WindowBase():
 
         mwidth,mheight = busyfaiconsbig.getsize(self.busysymbol)
         draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, (settings.DISPLAY_HEIGHT - mheight) / 2), text=self.busysymbol, font=busyfaiconsbig, fill=symbolcolor) #sanduhr
+
+    def render_progressbar_draw(self,draw):
+        try:
+            mypos = int(self.progessbarpos * settings.DISPLAY_HEIGHT)
+            draw.rectangle((settings.DISPLAY_WIDTH - 2, 0 , settings.DISPLAY_WIDTH, mypos - 3),outline=colors.COLOR_SELECTED, fill=colors.COLOR_SELECTED)
+            draw.rectangle((settings.DISPLAY_WIDTH - 2, mypos + 3 , settings.DISPLAY_WIDTH, settings.DISPLAY_HEIGHT),outline=colors.COLOR_RED, fill=colors.COLOR_RED)
+        except Exception as error:
+            logger.debug(f"{error}")
+
 
     async def set_window(self,windowid):
         await asyncio.sleep(3)

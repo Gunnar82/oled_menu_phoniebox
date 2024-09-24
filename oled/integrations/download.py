@@ -11,7 +11,6 @@ from integrations.logging_config import *
 logger = setup_logger(__name__)
 
 
-
 def check_url_reachability(url):
     try:
         logger.debug(f"Check URL: {url}")

@@ -156,12 +156,16 @@ class DownloadMenu(ListBase):
 
                 logger.debug(f"downloadfolder: destination: {destination}")
 
-                self.download_file(url,destination)
                 self.busyrendertime = 1
-                self.busytext1="Download %2.2d von %2.2d" %(self.items.index(item) + 1,len(self.items) )
+                self.busytext1="Download %2.2d von %2.2d" % (self.items.index(item) + 1,len(self.items)) 
                 self.busytext2=item
-                self.busytext3="Abbruch mit beliebiger Taste"
+                self.busytext3="Abbruch mit beliebiger Taste" 
                 self.busysymbol = "\uf0ed"
+                self.render_progressbar = True
+                try:
+                    self.download_file(url,destination)
+                except Exception as error:
+                    logger.error(f"downloadfolder: {error}")
 
 
         except Exception as error:
@@ -363,7 +367,6 @@ class DownloadMenu(ListBase):
         total_size_in_bytes = int(response.headers.get('content-length', 0))
         block_size = 1024  # 1 Kibibyte
 
-
         # Datei speichern
         totaldlfile = 0
         with open(local_path, 'wb') as file:
@@ -403,15 +406,3 @@ class DownloadMenu(ListBase):
         elif folderinfo[0] == "ERR":
             progress = "%s%s"  % (folderinfo[0],progress)
 
-
-
-    def renderbusy(self,symbolcolor = colors.COLOR_RED, textcolor1=colors.COLOR_WHITE, textcolor2=colors.COLOR_WHITE):
-        with canvas(self.device) as draw:
-            try:
-                mypos = int(self.progessbarpos * settings.DISPLAY_HEIGHT)
-                draw.rectangle((settings.DISPLAY_WIDTH - 2, 0 , settings.DISPLAY_WIDTH, mypos - 3),outline=colors.COLOR_SELECTED, fill=colors.COLOR_SELECTED)
-                draw.rectangle((settings.DISPLAY_WIDTH - 2, mypos + 3 , settings.DISPLAY_WIDTH, settings.DISPLAY_HEIGHT),outline=colors.COLOR_RED, fill=colors.COLOR_RED)
-            except Exception as error:
-                logger.debug(f"{error}")
-
-            self.renderbusydraw(draw,symbolcolor,textcolor1,textcolor2)
