@@ -1,11 +1,11 @@
 import settings
 
-settings.FONT_SIZE_XXXL = 60
-settings.FONT_SIZE_XXL = 50
-settings.FONT_SIZE_XL = 30
+settings.FONT_SIZE_XXXL = 50
+settings.FONT_SIZE_XXL = 40
+settings.FONT_SIZE_XL = 25
 settings.FONT_SIZE_L = 20
-settings.FONT_SIZE_NORMAL = 24
-settings.FONT_SIZE_SMALL = 18
+settings.FONT_SIZE_NORMAL = 18
+settings.FONT_SIZE_SMALL = 16
 
 
 settings.DISPLAY_WIDTH = 320
@@ -24,13 +24,13 @@ settings.WINDOWBASE_BUSYFAICONSBIG = 60
 
 ### listbase.py
 
-settings.LISTBASE_ENTRY_SIZE = 20
+settings.LISTBASE_ENTRY_SIZE = 18
 
 
 
 ### menubase
 
-settings.MENUBASE_ICON_SIZE = 40
+settings.MENUBASE_ICON_SIZE = 20
 settings.MENUBASE_START_Y = 40
 
 

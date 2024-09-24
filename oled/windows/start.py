@@ -9,7 +9,7 @@ import time
 
 from integrations.logging_config import *
 
-logger = setup_logger(__name__,lvlDEBUG)
+logger = setup_logger(__name__)
 
 
 import config.colors as colors
@@ -79,6 +79,7 @@ class Start(ListBase):
             self.init_finished = True
 
     def render(self):
+        self.position = len(self.menu) - 1
         super().render()
         if "x728" in settings.INPUTS:
             color = get_battload_color()
