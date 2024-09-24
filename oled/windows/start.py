@@ -1,14 +1,15 @@
 """ Start screen """
-from ui.windowbase import WindowBase
+from ui.listbase import ListBase
 from luma.core.render import canvas
 
 from datetime import datetime
 
 import settings
+import time
 
 from integrations.logging_config import *
 
-logger = setup_logger(__name__)
+logger = setup_logger(__name__,lvlDEBUG)
 
 
 import config.colors as colors
@@ -20,41 +21,64 @@ from integrations.functions import get_oledversion, get_battload_color, enable_f
 
 
 
-class Start(WindowBase):
-
+class Start(ListBase):
+    icon = "\uf001 \uf02d \uf02c"
     def __init__(self, windowmanager,loop, mopidyconnection,bluetooth):
-        super().__init__(windowmanager, loop)
+        super().__init__(windowmanager, loop, "Programmstart")
         self.bluetooth = bluetooth
         self.mopidyconnection = mopidyconnection
         self.timeout = False
         self.startup = datetime.now()
         self.conrasthandle = False
         self.check_bt = 0
+        self.hide_buttons = True
+        self.init_finished = False
+        self.symbolentrylinewidth,self.symbolentrylineheight = self.faiconsbig.getsize(self.icon)
 
 
     def activate(self):
+
+        logger.debug("activate: startet")
         self.clear_window()
         self.bluetooth.enable_dev_local()
+        self.loop.run_in_executor(None,self.exec_init)
 
-        if (cfirewall.AUTO_ENABLED):
-            logger.info("auto_enable firewall")
-            self.set_busy("Aktiviere Firewall", busyrendertime = 5)
-            self.busy = True
-            self.renderbusy()
 
-            enable_firewall()
+    def exec_init(self):
+        try:
+            logger.debug("exec_init: startet")
+            self.menu.append([self.icon,self.symbol])
+            self.menu.append("Wird gestartet...")
+            oled_version = get_oledversion()
+            logger.info(f"exec_init: oled_version: {oled_version}")
+            self.menu.append(f"Version: {oled_version}")
 
-        if (cbluetooth.BLUETOOTH_AUTOCONNECT):
-            logger.info("bluetooth autoconnect")
-            self.set_busy("Verbinde...",symbols.SYMBOL_BLUETOOTH_OFF,self.bluetooth.selected_bt_name, busyrendertime = 5)
-            self.busy = True
-            self.renderbusy()
+            if (cfirewall.AUTO_ENABLED):
 
-            self.bluetooth.enable_dev_bt()
+                enable_firewall()
+            else:
+                logger.info("auto_enable firewall False")
+                self.menu.append("Übespringe Firewall...")
+
+            if (cbluetooth.BLUETOOTH_AUTOCONNECT):
+                logger.info("bluetooth autoconnect")
+                self.menu.append("Verbinde Bluetooth...")
+                self.menu.append(self.bluetooth.selected_bt_name)
+
+                self.bluetooth.enable_dev_bt()
+            else:
+                logger.info("bluetooth autoconnect AUS")
+                self.menu.append("Überspringe Bluetooth...")
+
+        except Exception as error:
+            logger.error(f"exec_init: {error}")
+            self.menu.append(f"Fehler {error}")
+        finally:
+            time.sleep(5)
+            self.init_finished = True
 
     def render(self):
-        self.set_busy("Wird gestartet...",busytext2=get_oledversion())
-
+        super().render()
         if "x728" in settings.INPUTS:
             color = get_battload_color()
             self.busysymbol = symbols.SYMBOL_BATTERY
@@ -62,13 +86,9 @@ class Start(WindowBase):
         else:
             color = colors.COLOR_WHITE
 
-        self.renderbusy(symbolcolor=color, textcolor2=color)
-
-
-        if self.mopidyconnection.connected and ((datetime.now() - self.startup).total_seconds() >= settings.START_TIMEOUT):
+        if self.mopidyconnection.connected and ((datetime.now() - self.startup).total_seconds() >= settings.START_TIMEOUT) and self.init_finished:
             logger.debug("start: init")
             self.windowmanager.set_window("idle")
-
 
 
 

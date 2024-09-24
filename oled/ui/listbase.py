@@ -16,8 +16,10 @@ logger = setup_logger(__name__)
 class ListBase(WindowBase):
     font = ImageFont.truetype(settings.FONT_TEXT, size=settings.LISTBASE_ENTRY_SIZE)
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.LISTBASE_ENTRY_SIZE)
+    faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_L)
 
     comment = ["c", "h"]
+    symbol = ["s"]
 
     def __init__(self, windowmanager, loop, title):
         super().__init__(windowmanager, loop)
@@ -31,9 +33,12 @@ class ListBase(WindowBase):
         self.progressbarpos = 0
         self.selection_changed = True
         self.handle_left_key = True
+        self.hide_buttons = False
         self.titlelineheight = self.font.getsize(self.basetitle)[1] + 3
 
         self.entrylinewidth,self.entrylineheight = self.font.getsize("000")
+        self.symbolentrylinewidth,self.symbolentrylineheight = self.faiconsbig.getsize(symbols.SYMBOL_SANDCLOCK)
+
         self.displaylines = (settings.DISPLAY_HEIGHT - self.titlelineheight) // self.entrylineheight # - title (height)
 
         self.startleft, self.selected_symbol_height = self.faicons.getsize(symbols.SYMBOL_LIST_SELECTED)
@@ -69,16 +74,17 @@ class ListBase(WindowBase):
                 logger.debug(f"{error}")
 
             #Back button and selection arrow
-            if self.position == -2:
-                draw.text((1, 1), text="\uf137", font=self.faicons, fill=colors.COLOR_SELECTED)
-                draw.text((settings.DISPLAY_WIDTH - settings.FONT_SIZE_NORMAL, 1), text="\uf106", font=self.faicons, fill="white")
-            elif self.position == -1:
-                draw.text((1, 1), text="\uf104", font=self.faicons, fill="white")
-                draw.text((settings.DISPLAY_WIDTH - settings.FONT_SIZE_NORMAL, 1), text="\uf139", font=self.faicons, fill=colors.COLOR_SELECTED)
+            if not self.hide_buttons:
+                if self.position == -2:
+                    draw.text((1, 1), text="\uf137", font=self.faicons, fill=colors.COLOR_SELECTED)
+                    draw.text((settings.DISPLAY_WIDTH - settings.FONT_SIZE_NORMAL, 1), text="\uf106", font=self.faicons, fill="white")
+                elif self.position == -1:
+                    draw.text((1, 1), text="\uf104", font=self.faicons, fill="white")
+                    draw.text((settings.DISPLAY_WIDTH - settings.FONT_SIZE_NORMAL, 1), text="\uf139", font=self.faicons, fill=colors.COLOR_SELECTED)
 
-            else:
-                draw.text((1, 1), text="\uf104", font=self.faicons, fill="white")
-                draw.text((settings.DISPLAY_WIDTH - settings.FONT_SIZE_NORMAL, 1), text="\uf106", font=self.faicons, fill="white")
+                else:
+                    draw.text((1, 1), text="\uf104", font=self.faicons, fill="white")
+                    draw.text((settings.DISPLAY_WIDTH - settings.FONT_SIZE_NORMAL, 1), text="\uf106", font=self.faicons, fill="white")
 
             #Calculate title coordinate from text lenght
 
@@ -93,12 +99,12 @@ class ListBase(WindowBase):
             pos = 0 if self.position < 0 else self.position % self.displaylines 
 
             maxpos = (self.displaylines if (seite + 1) * self.displaylines <= menulen else (menulen % self.displaylines))
- 
+
+            current_y = self.titlelineheight
 
             for i in range(maxpos):
                 scrolling = False
 
-                current_y = self.titlelineheight + i * self.entrylineheight
                 selected_element = self.menu[seite * self.displaylines + i]
 
                 try:
@@ -106,10 +112,21 @@ class ListBase(WindowBase):
                 except Exception as e:
                     drawtext = ""
 
-                drawtext += selected_element[0] if isinstance(selected_element,list) else selected_element
+                is_symbol = False
+
+                if isinstance(selected_element,list):
+                    drawtext += selected_element[0]
+
+                    try:
+                        if selected_element[1] == self.symbol:
+                            is_symbol = True
+                    except:
+                        pass
+                else:
+                    drawtext += selected_element
 
 
-                if self.position  == seite * self.displaylines+ i : #selected
+                if self.position  == seite * self.displaylines+ i and not is_symbol: #selected
                     progresscolor = colors.COLOR_SELECTED
 
                     if (datetime.now()-settings.lastinput).total_seconds() > 2:
@@ -126,8 +143,10 @@ class ListBase(WindowBase):
 
                 else:
                     progresscolor = colors.COLOR_GREEN
-
-                    draw.text((self.startleft, current_y), drawtext, font=self.font, fill="white")
+                    if is_symbol:
+                        draw.text(((settings.DISPLAY_WIDTH - self.symbolentrylinewidth) / 2, current_y), drawtext, font=self.faiconsbig, fill=colors.COLOR_RED)
+                    else:
+                        draw.text((self.startleft, current_y), drawtext, font=self.font, fill="white")
 
                 try:
                     if not scrolling:
@@ -139,6 +158,12 @@ class ListBase(WindowBase):
                         draw.text((settings.DISPLAY_WIDTH - linewidth1 - self.startleft, current_y), drawtext, font=self.font, fill=progresscolor)
                 except Exception as error:
                     logger.debug("no percentage")
+
+                if is_symbol:
+                    current_y += self.symbolentrylineheight
+                else:
+                    current_y += self.entrylineheight
+
 
     def is_comment(self):
         try:
