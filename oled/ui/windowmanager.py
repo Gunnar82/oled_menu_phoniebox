@@ -1,6 +1,6 @@
 """Manages the currently shown activewindow on screen and passes callbacks for the rotary encoder"""
 import settings
-from datetime import datetime
+import time
 
 import asyncio
 import config.symbols as symbols
@@ -25,10 +25,10 @@ class WindowManager():
         self.windows = {}
         self.activewindow = []
         self.loop = loop
-        settings.lastinput = datetime.now()
+        fn.set_lastinput()
         self._lastcontrast = settings.CONTRAST_FULL
         self.loop.create_task(self._render())
-        self.lastrfidate = datetime(2000,1,1)
+        self.lastrfidate = 0
 
         self.rfidwatcher = RfidWatcher()
         self.rfidwatcher.start()
@@ -64,7 +64,7 @@ class WindowManager():
 
 
     def show_window(self):
-        settings.lastinput = datetime.now()
+        fn.set_lastinput()
         settings.screenpower = True
         self.device.show()
 
@@ -80,7 +80,7 @@ class WindowManager():
 
         while self.loop.is_running():
 
-            seconds_since_last_input = (datetime.now() - settings.lastinput).total_seconds()
+            seconds_since_last_input = (time.monotonic() - settings.lastinput)
 
             if (seconds_since_last_input >= settings.MENU_TIMEOUT) and self.activewindow.timeout:
                 self.set_window(self.activewindow.timeoutwindow)
@@ -124,7 +124,7 @@ class WindowManager():
                     await asyncio.sleep(0.25)
 
                 if self.rfidwatcher.get_state():
-                    self.lastrfidate = datetime.now()
+                    self.lastrfidate = time.monotonic()
                     self.show_window()
 
                 if self.activewindow.windowtitle in ['start']:
@@ -133,14 +133,14 @@ class WindowManager():
                 if settings.screenpower:
                     try:
                         logger.debug("busy State of %s:  %s" %(self.activewindow.windowtitle,self.activewindow.busy))
-                        if (datetime.now() - self.lastrfidate).total_seconds() < 3:
+                        if (time.monotonic() - self.lastrfidate) < 3:
                             logger.debug("render rfid symbol")
                             self.activewindow.busysymbol = symbols.SYMBOL_CARD_READ
                             #self.rendertime = self.activewindow.busyrendertime
                             self.activewindow.renderbusy()
                             self.activewindow.busysymbol = symbols.SYMBOL_SANDCLOCK
 
-                        elif ((datetime.now() - self.activewindow.start_busyrendertime).total_seconds() < self.activewindow.busyrendertime and self.activewindow.busy) or (settings.callback_active and self.activewindow.changerender):
+                        elif ((time.monotonic() - self.activewindow.start_busyrendertime) < self.activewindow.busyrendertime and self.activewindow.busy) or (settings.callback_active and self.activewindow.changerender):
 
                                 self.activewindow.renderbusy()
                                 logger.debug("rendering busy of window %s, busyrendertime: %d" %(self.activewindow.windowtitle,self.rendertime))
@@ -167,7 +167,7 @@ class WindowManager():
 
 
     def push_callback(self,lp=False):
-        settings.lastinput = datetime.now()
+        fn.set_lastinput()
         settings.staywake = False
         if settings.screenpower:
             settings.callback_active = True
@@ -189,7 +189,7 @@ class WindowManager():
                 self.set_window("idle")
 
     def turn_callback(self, direction, key=None):
-        settings.lastinput = datetime.now()
+        fn.set_lastinput()
         settings.staywake = False
         if key == '0' and self.activewindow.windowtitle not in ["idle"]:
             try:

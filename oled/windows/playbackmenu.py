@@ -12,7 +12,7 @@ import os
 
 from ui.mainwindow import MainWindow
 import integrations.playout as playout
-from integrations.functions import to_min_sec,get_folder_of_livestream, get_folder, run_command
+from integrations.functions import *
 
 import RPi.GPIO as GPIO
 

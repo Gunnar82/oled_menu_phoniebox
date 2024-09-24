@@ -2,7 +2,7 @@
 from ui.windowbase import WindowBase
 from luma.core.render import canvas
 from PIL import ImageFont
-from datetime import datetime
+import time
 
 import settings
 
@@ -129,7 +129,7 @@ class ListBase(WindowBase):
                 if self.position  == seite * self.displaylines+ i and not is_symbol: #selected
                     progresscolor = colors.COLOR_SELECTED
 
-                    if (datetime.now()-settings.lastinput).total_seconds() > 2:
+                    if (time.monotonic()-settings.lastinput) > 2:
                         if self.font.getsize(drawtext[self.drawtextx:])[0] > settings.DISPLAY_WIDTH -1 - self.startleft:
                             self.drawtextx += 1
                             scrolling = True

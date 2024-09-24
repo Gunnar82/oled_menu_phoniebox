@@ -10,7 +10,7 @@ import asyncio
 from PIL import ImageFont
 from luma.core.render import canvas
 
-from datetime import datetime
+import time
 
 busyfont = ImageFont.truetype(settings.FONT_TEXT, size=settings.WINDOWBASE_BUSYFONT)
 busyfaicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.WINDOWBASE_BUSYFAICONS)
@@ -37,7 +37,7 @@ class WindowBase():
 
 
     def __init__(self, windowmanager,loop):
-        self.start_busyrendertime = datetime.now()
+        self.start_busyrendertime = time.monotonic()
         self.loop = loop
         self.windowmanager = windowmanager
         self.device = self.windowmanager.device
@@ -63,7 +63,7 @@ class WindowBase():
 
         self.busyrendertime = busyrendertime
 
-        self.start_busyrendertime = datetime.now()
+        self.start_busyrendertime = time.monotonic()
         self.busy = True
 
         if set_window:

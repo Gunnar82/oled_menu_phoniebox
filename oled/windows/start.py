@@ -28,7 +28,7 @@ class Start(ListBase):
         self.bluetooth = bluetooth
         self.mopidyconnection = mopidyconnection
         self.timeout = False
-        self.startup = datetime.now()
+        self.startup = time.monotonic()
         self.conrasthandle = False
         self.check_bt = 0
         self.hide_buttons = True
@@ -88,7 +88,7 @@ class Start(ListBase):
         else:
             color = colors.COLOR_WHITE
 
-        if self.mopidyconnection.connected and ((datetime.now() - self.startup).total_seconds() >= settings.START_TIMEOUT) and self.init_finished:
+        if self.mopidyconnection.connected and ((time.monotonic() - self.startup) >= settings.START_TIMEOUT) and self.init_finished:
             logger.debug("start: init")
             self.windowmanager.set_window("idle")
 

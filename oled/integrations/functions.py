@@ -2,6 +2,8 @@ import os
 import subprocess, re
 import datetime
 import settings
+import time
+
 
 from integrations.logging_config import *
 
@@ -288,3 +290,6 @@ def get_hostapd_ssid():
 def get_hostapd_psk():
     return finde_zeile_nach_wert("/etc/hostapd/hostapd.conf","wpa_passphrase")
 
+
+def set_lastinput():
+    settings.lastinput = time.monotonic()

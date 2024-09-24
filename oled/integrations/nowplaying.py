@@ -7,7 +7,7 @@ import settings
 import asyncio
 from  integrations.functions import get_timeouts
 import integrations.playout as playout
-import datetime
+import time
 
 import config.symbols as symbols
 import config.file_folder as cfg_file_folder
@@ -19,7 +19,7 @@ class nowplaying:
     output_symbol = symbols.SYMBOL_SPEAKER
     input_is_stream = False
     input_is_online = False
-    lasttitlechange = datetime.datetime.now()
+    lasttitlechange = time.monotonic()
 
     async def _generatenowplaying(self):
         try:
@@ -40,8 +40,8 @@ class nowplaying:
 
                 if title != self.oldtitle:
                     if self.oldtitle != "":
-                        if (datetime.datetime.now() - settings.lastinput).total_seconds() >= settings.DARK_TIMEOUT:
-                            settings.lastinput = datetime.datetime.now() - datetime.timedelta(seconds=settings.CONTRAST_TIMEOUT)
+                        if (time.monotonic() - settings.lastinput) >= settings.DARK_TIMEOUT:
+                            settings.lastinput = time.monotonic() - settings.CONTRAST_TIMEOUT
                     self.oldtitle = title
                     
 
@@ -132,7 +132,7 @@ class nowplaying:
                         oldfilename = self.filename
                         oldstate = self._state
 
-                        self.lasttitlechange = datetime.datetime.now()
+                        self.lasttitlechange = time.monotonic()
             except Exception as error:
                 print (error)
 

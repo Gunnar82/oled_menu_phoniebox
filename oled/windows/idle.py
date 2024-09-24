@@ -1,5 +1,5 @@
 """ IDLE screen """
-import datetime
+from datetime import datetime
 import asyncio
 from ui.mainwindow import MainWindow
 import settings
@@ -49,19 +49,19 @@ class Idle(MainWindow):
         with canvas(self.device) as draw:
             super().render(draw)
 
-            now = datetime.datetime.now()
+            now = time.monotonic()
 
             #####IDLE RENDER
 
             if (settings.battcapacity >= 0 and settings.battcapacity <= settings.X728_BATT_EMERG and not settings.battloading):
-                self.set_busy("Batterie leer", busytext2 = "AUS in %ds" % ((settings.lastinput - now).total_seconds() + 120))
+                self.set_busy("Batterie leer", busytext2 = "AUS in %ds" % ((settings.lastinput - now) + 120))
                 self.busy = True
                 self.contrasthandle = False
                 self.rendertime = self._rendertime
                 self.keep_busy = True
                 self.busyrendertime = 0.5
 
-                if ((datetime.datetime.now() - settings.lastinput).total_seconds() > 120):
+                if ((now - settings.lastinput) > 120):
                     logger.info("X728: Shutting down: Low Battery (EMERG)")
                     playout.savepos_online(self.nowplaying)
                     playout.savepos()
@@ -76,7 +76,7 @@ class Idle(MainWindow):
 
             ####setting idle text / Icon on Song Number Changed
             try:
-                if ((now - self.nowplaying.lasttitlechange ).total_seconds() < 3):
+                if ((now - self.nowplaying.lasttitlechange ) < 3):
                     logger.debug("Titelwechsel erkannt")
                     self.set_busy ("Titelwechsel", symbols.SYMBOL_CHANGING_SONG, "%2.2d von %2.2d " % (int(self.nowplaying._song), int(self.nowplaying._playlistlength)))
                     self.busy = True
@@ -98,7 +98,7 @@ class Idle(MainWindow):
 
                     text = "AUS in %2.2d min" %(aus)
                 else:
-                    text = now.strftime("%a, %d.%m.%y %H:%M")
+                    text = datetime.now().strftime("%a, %d.%m.%y %H:%M")
 
                 mwidth = Idle.font.getsize(text)
 

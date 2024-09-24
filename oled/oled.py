@@ -26,7 +26,7 @@ from datetime import datetime
 ###########################
 settings.screenpower = True
 settings.shutdown_reason = "changeme"
-settings.lastinput = datetime.now()
+fn.set_lastinput()
 settings.job_t = -1
 settings.job_i = -1
 settings.job_s = -1
