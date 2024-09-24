@@ -30,6 +30,7 @@ class WindowBase():
     windowtitle = "untitled"
     timeoutwindow="idle"
     window_on_back = "mainmenu"
+    
     busysymbol = symbols.SYMBOL_SANDCLOCK
     busytext1 = settings.PLEASE_WAIT
     busytext2 = ""
@@ -40,6 +41,7 @@ class WindowBase():
     _rendertime = 0.25
     counter = 0
     page = 0
+    handle_key_back = True
 
 
     def __init__(self, windowmanager,loop):
@@ -47,7 +49,6 @@ class WindowBase():
         self.loop = loop
         self.windowmanager = windowmanager
         self.device = self.windowmanager.device
-
 
     def clear_window(self):
         self.device.clear()
@@ -83,21 +84,22 @@ class WindowBase():
 
     def renderbusydraw(self, draw, symbolcolor = colors.COLOR_RED, textcolor1=colors.COLOR_WHITE, textcolor2=colors.COLOR_WHITE):
         mwidth1,mheight1 = busyfont.getsize(self.busytext1)
+        mwidth2,mheight2 = busyfont.getsize(self.busytext2)
+        mwidth3,mheight3 = busyfont.getsize(self.busytext3)
+        mwidth4,mheight4 = busyfont.getsize(self.busytext4)
+        mwidth,mheight = busyfaiconsbig.getsize(self.busysymbol)
+
         draw.text(((settings.DISPLAY_WIDTH - mwidth1) / 2, 5), text=self.busytext1, font=busyfont, fill=textcolor1)
 
         if (self.busytext3 != ""):
-            mwidth3,mheight3 = busyfont.getsize(self.busytext3)
             draw.text(((settings.DISPLAY_WIDTH - mwidth3) / 2, mheight1 + 3), text=self.busytext3, font=busyfont, fill=textcolor2) #sanduhr
 
         if (self.busytext2 != ""):
-            mwidth2,mheight2 = busyfont.getsize(self.busytext2)
             draw.text(((settings.DISPLAY_WIDTH - mwidth2) / 2, settings.DISPLAY_HEIGHT - mheight2 - 3), text=self.busytext2, font=busyfont, fill=textcolor2) #sanduhr
 
         if (self.busytext4 != ""):
-            mwidth4,mheight4 = busyfont.getsize(self.busytext4)
             draw.text(((settings.DISPLAY_WIDTH - mwidth4) / 2, settings.DISPLAY_HEIGHT - mheight2 - 3  - mheight4 - 3), text=self.busytext4, font=busyfont, fill=textcolor2) #sanduhr
 
-        mwidth,mheight = busyfaiconsbig.getsize(self.busysymbol)
         draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, (settings.DISPLAY_HEIGHT - mheight) / 2), text=self.busysymbol, font=busyfaiconsbig, fill=symbolcolor) #sanduhr
 
     def render_progressbar_draw(self,draw):

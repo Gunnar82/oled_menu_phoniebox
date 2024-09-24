@@ -39,9 +39,9 @@ class Playbackmenu(MainWindow):
         self.descr.append([ "Hauptmenü", "\uf062" ])
         self.descr.append([ "Zurück", "\uf0a8" ])
         self.descr.append([ "Wiedergabeliste", "\uf03c" ])
+        self.window_on_back = "idle"
 
         self.symwidth,self.symheight = self.faiconsbig.getsize(self.descr[1][1])
-        self.window_on_back = "idle"
         temp,self.descrheight = self.font.getsize("000")
 
     def activate(self):

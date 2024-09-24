@@ -93,6 +93,11 @@ class DownloadMenu(ListBase):
         logger.info("deactivate")
         self.canceled = True
 
+    def turn_callback(self, direction, key=None):
+        super().turn_callback(direction,key)
+
+        #Download abbrechen, falls aktiv
+        if self.downloading: self.canceled = True
 
     def execute_init(self):
 
@@ -133,6 +138,7 @@ class DownloadMenu(ListBase):
         try:
             logger.debug(f"start downloadfolder")
             self.downloading = True
+            self.handle_key_back = False
             self.totaldownloaded = 0
             settings.callback_active = True
             uri = get_relative_path(self.basecwd,get_unquoted_uri(self.url))
@@ -170,17 +176,16 @@ class DownloadMenu(ListBase):
 
         except Exception as error:
             logger.error(f"downloadfolder: {error}")
-            self.canceled = True
             self.set_busy(error)
         finally:
             time.sleep(3)
-            self.canceled = False
             self.downloading = False
+            self.canceled = False
+            self.handle_key_back = True
             settings.callback_active = False
 
 
     def playfolder(self):
-
 
         try:
             directory = os.path.join(cfg_file_folder.AUDIO_BASEPATH_ONLINE,get_relative_path(self.basecwd,self.cwd))
@@ -215,6 +220,9 @@ class DownloadMenu(ListBase):
         await asyncio.sleep(1)
         try:
             if self.selector:
+                if self.downloading:
+                    self.canceled = True
+                    return
                 logger.debug(f"Untermenü aktiv: {self.position}")
                 if self.position == 0:
                     logger.debug(f"Untermenü aktiv: {self.position}, abspielen")
@@ -242,10 +250,14 @@ class DownloadMenu(ListBase):
                         except Exception as e:
                             self.set_busy("Fehler!",busytext2=str(e),busyrendertime=5,busysymbol="\uf057")
             else:
+                if self.downloading:
+                    self.canceled = True
+                    return
+
                 if not self.cwd.endswith('/'): self.cwd += '/'
 
                 selected_item = get_first_or_self(self.menu[self.position])
-                logger.debug(f"push_callback {selected_item}")
+                logger.debug(f"push_handler {selected_item}")
 
                 self.cwd += stripitem(selected_item)
 
@@ -254,6 +266,7 @@ class DownloadMenu(ListBase):
                 self.url = construct_url_from_local_path(self.baseurl,self.cwd)
 
                 logger.info(f"Wechsle zu {self.url}")
+
                 self.items,directories,self.totalsize = get_files_and_dirs_from_listing(self.url, ["mp3"])
 
                 if directories != []:
@@ -261,7 +274,9 @@ class DownloadMenu(ListBase):
                     self.create_menu_from_directories(directories)
                 else:
                     logger.debug(f"Verzeichnis ausgewählt: {self.cwd}")
+
                     self.selector = True
+
                     try:
                         posstring = playout.getpos_online(self.baseurl,self.cwd)
                         if posstring[0] == "POS":
@@ -302,19 +317,6 @@ class DownloadMenu(ListBase):
             time.sleep(3)
         finally:
             self.position = -1
-
-    def push_callback(self,lp=False):
-        if self.downloading:
-            self.set_busy("Abbruch",busysymbol = "\uf05e")
-            self.canceled = True
-        elif (self.position == -1 or  self.position == -2) and not self.selector:
-            self.windowmanager.set_window("mainmenu")
-        else:
-            selected_item = get_first_or_self(self.menu[self.position])
-
-            if not self.selector or self.position == 0:
-                self.set_busy("Auswahl verarbeiten...",symbols.SYMBOL_CLOUD,selected_item, busyrendertime=2)
-            self.loop.create_task(self.push_handler())
 
     def on_key_left(self):
         self.set_busy("Lese Verzeichnis",busyrendertime=60)
@@ -381,6 +383,7 @@ class DownloadMenu(ListBase):
 
                 self.busytext4 = "%s / %s, %s / %s" % ( get_size(totaldlfile), get_size(total_size_in_bytes), get_size(self.totaldownloaded), get_size(self.totalsize))
                 file.write(data)
+                if self.canceled: break
 
 
     def create_menu_from_directories(self,directories):

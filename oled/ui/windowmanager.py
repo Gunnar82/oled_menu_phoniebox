@@ -203,13 +203,13 @@ class WindowManager():
 
             try:
                 self.device.contrast(settings.CONTRAST_FULL)
-                if key == '#':
+                if key == '#' and self.activewindow.handle_key_back:
                     logger.info("activate window_on_back: %s" % (self.activewindow.window_on_back))
-                    if self.activewindow.window_on_back not in ["","none","n/a"] and self.activewindow.title != "lock" : self.set_window(self.activewindow.window_on_back)
+                    if self.activewindow.window_on_back not in ["","none","n/a"] and self.activewindow.windowtitle != "lock" : self.set_window(self.activewindow.window_on_back)
                 else:
                     self.activewindow.turn_callback(direction,key=key)
             except Exception as error:
-                logger.error("window_manager: turn_callback: {error}")
+                logger.error(f"window_manager: turn_callback: {error}")
             finally:
                 settings.callback_active = False
                 logger.debug("turn_callback: ended")
