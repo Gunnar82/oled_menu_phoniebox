@@ -16,9 +16,9 @@ settings.DISPLAY_RGB = True
 ###windowbase
 
 settings.WINDOWBASE_HEADING_SIZE = 18
-settings.WINDOWBASE_BUSYFONT = 24
+settings.WINDOWBASE_BUSYFONT = 18
 settings.WINDOWBASE_BUSYFAICONS = 20
-settings.WINDOWBASE_BUSYFAICONSBIG = 60
+settings.WINDOWBASE_BUSYFAICONSBIG = 40
 
 
 
@@ -30,7 +30,7 @@ settings.LISTBASE_ENTRY_SIZE = 18
 
 ### menubase
 
-settings.MENUBASE_ICON_SIZE = 20
+settings.MENUBASE_ICON_SIZE = 30
 settings.MENUBASE_START_Y = 40
 
 
