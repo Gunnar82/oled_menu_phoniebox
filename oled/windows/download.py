@@ -59,6 +59,10 @@ class DownloadMenu(ListBase):
         self.url = self.website
         self.baseurl, self.basecwd = split_url(self.website)
 
+        self.set_busy("Verbinde Online",symbols.SYMBOL_CLOUD)
+        self.renderbusy()
+
+
         try:
             with open(cfg_file_folder.FILE_LAST_ONLINE,"r") as f:
                 self.url = f.read()
@@ -73,6 +77,8 @@ class DownloadMenu(ListBase):
             if not self.url.startswith(self.website): #Basis-Website geändert
                 logger.warning(f"{self.website} nicht in {self.url}")
                 self.url = self.website
+            self.set_busy("Verbinde Online",symbols.SYMBOL_CLOUD,self.url,busyrendertime=60)
+            self.renderbusy()
 
 
         except Exception as error:
@@ -81,8 +87,6 @@ class DownloadMenu(ListBase):
             time.sleep(3)
             self.position = -1
 
-        self.set_busy("Verbinde Online",symbols.SYMBOL_CLOUD,self.website,busyrendertime=60)
-        self.renderbusy()
         self.loop.run_in_executor(None,self.execute_init)
 
     def deactivate(self):
@@ -97,21 +101,23 @@ class DownloadMenu(ListBase):
 
             if r == 0:
                 logger.error(f"Verbindungsfehler {r}")
-                self.set_busy("Verbindungsfehler",symbols.SYMBOL_NOCLOUD,self.url,set_window_to="mainmenu")
+                self.set_busy("Verbindungsfehler",symbols.SYMBOL_NOCLOUD,self.url,set_window=True)
                 return
             elif r != 200:
                 logger.info(f"Verbindungsfehler {r}: {self.url}")
+                self.set_busy(f"Verbindungsfehler {r}",symbols.SYMBOL_NOCLOUD,self.url)
                 self.url = self.website
             elif r == 200:
                 logger.info(f"erfolg {r}: {self.url}")
         except Exception as error:
             logger.error(f"Verbindungsfehler {error}")
+            self.set_busy(f"Verbindungsfehler {error}",symbols.SYMBOL_NOCLOUD,self.url,set_window=True)
 
             self.url = self.website
 
         temp, self.cwd = split_url(self.url)
 
-        self.set_busy("Verbinde Online",symbols.SYMBOL_CLOUD,self.url,busyrendertime=0)
+        self.set_busy("Verbinde Online",symbols.SYMBOL_CLOUD,self.url)
 
         if self.direct_play_last_folder:
             self.direct_play_last_folder = False
@@ -402,9 +408,9 @@ class DownloadMenu(ListBase):
     def renderbusy(self,symbolcolor = colors.COLOR_RED, textcolor1=colors.COLOR_WHITE, textcolor2=colors.COLOR_WHITE):
         with canvas(self.device) as draw:
             try:
-                mypos = int(self.progessbarpos * settings.DISPLAY_WIDTH)
-                draw.rectangle((mypos, settings.DISPLAY_HEIGHT - 1, settings.DISPLAY_WIDTH, settings.DISPLAY_HEIGHT - 1),outline="red", fill="red")
-                draw.rectangle((0, settings.DISPLAY_HEIGHT - 1, mypos, settings.DISPLAY_HEIGHT - 1),outline=colors.COLOR_SELECTED, fill=colors.COLOR_SELECTED)
+                mypos = int(self.progessbarpos * settings.DISPLAY_HEIGHT)
+                draw.rectangle((settings.DISPLAY_WIDTH - 2, 0 , settings.DISPLAY_WIDTH, mypos - 3),outline=colors.COLOR_SELECTED, fill=colors.COLOR_SELECTED)
+                draw.rectangle((settings.DISPLAY_WIDTH - 2, mypos + 3 , settings.DISPLAY_WIDTH, settings.DISPLAY_HEIGHT),outline=colors.COLOR_RED, fill=colors.COLOR_RED)
             except Exception as error:
                 logger.debug(f"{error}")
 

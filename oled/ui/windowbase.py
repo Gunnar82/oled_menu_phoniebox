@@ -46,7 +46,7 @@ class WindowBase():
     def clear_window(self):
         self.device.clear()
 
-    def set_busy(self,busytext1,busysymbol=symbols.SYMBOL_SANDCLOCK,busytext2="", busyrendertime=3,busytext3="",set_window_to="none"):
+    def set_busy(self,busytext1,busysymbol=symbols.SYMBOL_SANDCLOCK,busytext2="", busyrendertime=3,busytext3="",set_window=False):
 
         self.busytext1 = busytext1
         self.busysymbol = busysymbol
@@ -66,8 +66,8 @@ class WindowBase():
         self.start_busyrendertime = datetime.now()
         self.busy = True
 
-        if set_window_to != "none":
-            self.loop.create_task(self.set_window(set_window_to))
+        if set_window:
+            self.loop.create_task(self.set_window(self.window_on_back))
 
     def renderbusy(self,symbolcolor = colors.COLOR_RED, textcolor1=colors.COLOR_WHITE, textcolor2=colors.COLOR_WHITE):
         with canvas(self.device) as draw:

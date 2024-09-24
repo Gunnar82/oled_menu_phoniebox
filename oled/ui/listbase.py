@@ -28,6 +28,7 @@ class ListBase(WindowBase):
         self.drawtextx = 0
         self.position = -2
         self.progress = {}
+        self.progressbarpos = 0
         self.selection_changed = True
         self.handle_left_key = True
         self.titlelineheight = self.font.getsize(self.basetitle)[1] + 3
@@ -59,9 +60,11 @@ class ListBase(WindowBase):
 
             #progressbar
             try:
-                mypos = int(self.progessbarpos * settings.DISPLAY_WIDTH)
-                draw.rectangle((0, settings.DISPLAY_HEIGHT - 1, settings.DISPLAY_WIDTH, settings.DISPLAY_HEIGHT - 1),outline=colors.COLOR_SELECTED, fill=colors.COLOR_SELECTED)
-                draw.rectangle((mypos - 5, settings.DISPLAY_HEIGHT - 1, mypos + 5, settings.DISPLAY_HEIGHT - 1),outline="black", fill="black")
+                self.progessbarpos = (self.position + 1) / len(self.menu)
+
+                mypos = int(self.progessbarpos * settings.DISPLAY_HEIGHT)
+                draw.rectangle((settings.DISPLAY_WIDTH - 2, 0 , settings.DISPLAY_WIDTH, mypos - 3),outline=colors.COLOR_SELECTED, fill=colors.COLOR_SELECTED)
+                draw.rectangle((settings.DISPLAY_WIDTH - 2, mypos + 3 , settings.DISPLAY_WIDTH, settings.DISPLAY_HEIGHT),outline=colors.COLOR_RED, fill=colors.COLOR_RED)
             except Exception as error:
                 logger.debug(f"{error}")
 
@@ -132,7 +135,7 @@ class ListBase(WindowBase):
                         drawtext = self.progress[selected_element[0]] if isinstance(selected_element,list) else self.progress[selected_element]
                         linewidth1, lineheight1 = self.font.getsize(drawtext)
                         logger.debug("listbase: percent:%s:" %(drawtext))
-                        draw.rectangle((settings.DISPLAY_WIDTH - linewidth1 - 15  , current_y , settings.DISPLAY_WIDTH , current_y + self.entrylineheight ), outline="black", fill="black")
+                        draw.rectangle((settings.DISPLAY_WIDTH - linewidth1 - 15  , current_y , settings.DISPLAY_WIDTH - 3 , current_y + self.entrylineheight ), outline="black", fill="black")
                         draw.text((settings.DISPLAY_WIDTH - linewidth1 - self.startleft, current_y), drawtext, font=self.font, fill=progresscolor)
                 except Exception as error:
                     logger.debug("no percentage")
@@ -200,6 +203,5 @@ class ListBase(WindowBase):
 
         logger.debug("self.position: %d" % (self.position))
 
-        self.progessbarpos = (self.position + 1) / len(self.menu)
         
 
