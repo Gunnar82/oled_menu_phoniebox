@@ -54,7 +54,8 @@ class Start(ListBase):
             self.menu.append(f"Version: {oled_version}")
 
             if (cfirewall.AUTO_ENABLED):
-
+                logger.info("auto_enable firewall EIN")
+                self.menu.append("Aktiviere Firewall...")
                 enable_firewall()
             else:
                 logger.info("auto_enable firewall False")
@@ -63,7 +64,7 @@ class Start(ListBase):
             if (cbluetooth.BLUETOOTH_AUTOCONNECT):
                 logger.info("bluetooth autoconnect")
                 self.menu.append("Verbinde Bluetooth...")
-                self.menu.append(self.bluetooth.selected_bt_name)
+                self.menu.append(f"Suche Gerät: {self.bluetooth.selected_bt_name}")
 
                 self.bluetooth.enable_dev_bt()
             else:

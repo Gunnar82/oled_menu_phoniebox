@@ -100,6 +100,7 @@ class MainWindow(WindowBase):
             timelinepos = int(float(self.nowplaying._elapsed) / float(self.nowplaying._duration)  * settings.DISPLAY_WIDTH) # TODO Device.with
         else:
             timelinepos = settings.DISPLAY_WIDTH # device.width
+
         #Fortschritssleiste Wiedergabe
         draw.rectangle((0,0,timelinepos,1),outline=colors.COLOR_BLUE, fill=colors.COLOR_BLUE)
 
@@ -108,6 +109,7 @@ class MainWindow(WindowBase):
         _xpos = int((xpos3 + xpos2) / 2) - int(self.fontsmall.getsize(_spos)[0]/2)
 
         draw.text((_xpos, lineposy + 2 ),_spos , font=self.fontsmall, fill="white")
+
         #shutdowntimer ? aktiv dann Zeit anzeigen
         xpause = 0
         if 'http://' in self.nowplaying.filename or 'https://' in self.nowplaying.filename:
