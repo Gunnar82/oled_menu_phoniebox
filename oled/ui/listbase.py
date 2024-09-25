@@ -18,7 +18,8 @@ class ListBase(WindowBase):
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.LISTBASE_ENTRY_SIZE)
     faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_L)
 
-    comment = ["c", "h"]
+    comment = ["c"]
+    heading = ["h"]
     symbol = ["s"]
     render_progressbar = True
     show_position = True
@@ -108,7 +109,7 @@ class ListBase(WindowBase):
                 selected_element = self.menu[seite * self.displaylines + i]
 
                 try:
-                    drawtext = symbols.SYMBOL_HEADING if isinstance(selected_element,list) and selected_element[1] in ["h","c"] else ""
+                    drawtext = symbols.SYMBOL_HEADING if isinstance(selected_element,list) and selected_element[1] in self.heading else ""
                 except Exception as e:
                     drawtext = ""
 
@@ -164,6 +165,12 @@ class ListBase(WindowBase):
                 else:
                     current_y += self.entrylineheight
 
+    def is_heading(self):
+        try:
+            return self.menu[self.position][1] in self.heading
+        except:
+            return False
+
 
     def is_comment(self):
         try:
@@ -175,7 +182,7 @@ class ListBase(WindowBase):
         raise NotImplementedError()
 
     def on_key_right(self):
-        if not self.is_comment():
+        if not self.is_comment() and not self.is_heading():
             self.push_callback()
 
     def push_callback(self,lp=False):
@@ -228,5 +235,32 @@ class ListBase(WindowBase):
 
         logger.debug("self.position: %d" % (self.position))
 
-        
 
+    def appenditem(self,item):
+        logger.debug(f"append item: {item}")
+        self.menu.append(item)
+
+    def appendheading(self,item):
+        logger.debug(f"appendheading: {item}")
+        self.menu.append([item,"h"])
+
+    def appendcomment(self,item):
+        logger.debug(f"appendheading: {item}")
+        self.menu.append([item,"c"])
+
+    def appendsymbol(self,item):
+        logger.debug(f"appendsymbol: {item}")
+        self.menu.append([item,self.symbol])
+
+
+    def change_type_info(self, info=True):
+        self.hide_buttons = info
+        self.show_position = not info
+        self.render_progressbar = not info
+
+    def clearmenu(self):
+        self.menu = []
+
+
+    def set_last_position(self):
+        self.position = len(self.menu) - 1

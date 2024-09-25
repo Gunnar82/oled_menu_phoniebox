@@ -50,6 +50,8 @@ class DownloadMenu(ListBase):
         self.lastplayedfile = ""
 
     def activate(self):
+
+        self.init_finished = False
         self.canceled = False
         self.progress = {}
         self.items = []
@@ -58,12 +60,12 @@ class DownloadMenu(ListBase):
         self.website = cfg_online.ONLINE_URL
         self.url = self.website
         self.baseurl, self.basecwd = split_url(self.website)
-
-        self.set_busy("Verbinde Online",symbols.SYMBOL_CLOUD)
-        self.renderbusy()
-
+        self.clearmenu()
+        self.appendsymbol(symbols.SYMBOL_CLOUD)
+        self.change_type_info()
 
         try:
+            self.appendcomment("Suche letzten Onlinetitel...")
             with open(cfg_file_folder.FILE_LAST_ONLINE,"r") as f:
                 self.url = f.read()
 
@@ -73,17 +75,14 @@ class DownloadMenu(ListBase):
                     logger.info(f"letztes online {self.url}")
                     self.url = get_parent_directory_of_url(self.url)
 
-
-            if not self.url.startswith(self.website): #Basis-Website geändert
+            if not self.url.startswith(self.website): 
+                self.appendcomment(f"Basis-Website geändert, setze auf {self.website}")
                 logger.warning(f"{self.website} nicht in {self.url}")
                 self.url = self.website
-            self.set_busy("Verbinde Online",symbols.SYMBOL_CLOUD,self.url,busyrendertime=60)
-            self.renderbusy()
-
 
         except Exception as error:
             logger.error(f"activate: {error}")
-            self.set_busy("Dateifehler",symbols.SYMBOL_NOCLOUD,str(error))
+            self.appendcomment(f"Fehler: {error}")
             time.sleep(3)
             self.position = -1
 
@@ -96,33 +95,54 @@ class DownloadMenu(ListBase):
     def turn_callback(self, direction, key=None):
         super().turn_callback(direction,key)
 
+        #wenn initialisierung nicht abgeschlossen, letzter Eintrag
+        if not self.init_finished: self.set_last_position()
+
         #Download abbrechen, falls aktiv
         if self.downloading: self.canceled = True
 
     def execute_init(self):
-
+        # Verbinungsversuch mit zuletzt abgespieltem Titel, ob vorhanden
         try:
             r = check_url_reachability(self.url)
 
-            if r == 0:
-                logger.error(f"Verbindungsfehler {r}")
-                self.set_busy("Verbindungsfehler",symbols.SYMBOL_NOCLOUD,self.url,set_window=True)
-                return
-            elif r != 200:
-                logger.info(f"Verbindungsfehler {r}: {self.url}")
-                self.set_busy(f"Verbindungsfehler {r}",symbols.SYMBOL_NOCLOUD,self.url)
-                self.url = self.website
-            elif r == 200:
-                logger.info(f"erfolg {r}: {self.url}")
+            if r != 200:
+                logger.error(f"execute_init: Verbindungsfehler letzter Onlinetitel {r}: {self.url}")
+                self.appendcomment(f"Verbindungsfehler {r} bei {self.url}")
+
+                if r > 200:
+                    self.appendcomment(f"Setze auf default: {self.website}")
+                    self.url = self.website
+                    if not self.check_website_return(self.url):
+                        self.appenditem(f"Gebe auf! Taste! drücken")
+                        self.set_last_position()
+                        return
+                else:
+                    return
+
+            else: #r == 200:
+                logger.info(f"execute_init: erfolg {r}: {self.url}")
+
         except Exception as error:
-            logger.error(f"Verbindungsfehler {error}")
-            self.set_busy(f"Verbindungsfehler {error}",symbols.SYMBOL_NOCLOUD,self.url,set_window=True)
+            logger.error(f"execute_init: exception: Verbindungsfehler {error}")
+            self.appendcomment(f"Verbindungsfehler {error} bei {self.url}")
 
             self.url = self.website
 
+            # Verbindungsversuch mit Website
+            if not self.check_website_return(self.url):
+                self.appenditem(f"Gebe auf! Taste drücken!")
+                self.set_last_position()
+                return
+
         temp, self.cwd = split_url(self.url)
 
-        self.set_busy("Verbinde Online",symbols.SYMBOL_CLOUD,self.url)
+        self.appendcomment(f"Erfolgreich: {self.url}")
+
+        time.sleep(5)
+        self.init_finished = True
+
+        self.change_type_info(False)
 
         if self.direct_play_last_folder:
             self.direct_play_last_folder = False
@@ -132,6 +152,19 @@ class DownloadMenu(ListBase):
                 self.playfolder()
         else:
             self.on_key_left()
+
+    def check_website_return(self,url):
+        try:
+            self.appendcomment(f"Prüfe {url}")
+            r1 = check_url_reachability(url)
+            if r1 != 200:
+                raise Exception(f"Keine Verbindung! Fehler {r1})")
+            else:
+                return True
+        except Exception as error:
+            logger.info(f"check_website_return: exception: {error}")
+            self.appendcomment(f"Fehler: {error}")
+            return False
 
 
     def downloadfolder(self):
@@ -219,6 +252,10 @@ class DownloadMenu(ListBase):
     async def push_handler(self,button = '*'):
         await asyncio.sleep(1)
         try:
+            if not self.init_finished:
+                self.windowmanager.set_window(self.window_on_back)
+                return
+
             if self.selector:
                 if self.downloading:
                     self.canceled = True

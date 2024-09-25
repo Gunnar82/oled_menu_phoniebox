@@ -134,22 +134,24 @@ class WindowManager():
                     try:
                         logger.debug("busy State of %s:  %s" %(self.activewindow.windowtitle,self.activewindow.busy))
                         if (time.monotonic() - self.lastrfidate) < 3:
-                            logger.debug("render rfid symbol")
+                            #RFID Karte wurde gelesen
+                            logger.debug("render: rfid symbol")
                             self.activewindow.busysymbol = symbols.SYMBOL_CARD_READ
                             #self.rendertime = self.activewindow.busyrendertime
                             self.activewindow.renderbusy()
                             self.activewindow.busysymbol = symbols.SYMBOL_SANDCLOCK
 
                         elif ((time.monotonic() - self.activewindow.start_busyrendertime) < self.activewindow.busyrendertime and self.activewindow.busy) or (settings.callback_active and self.activewindow.changerender):
-
-                                self.activewindow.renderbusy()
-                                logger.debug("rendering busy of window %s, busyrendertime: %d" %(self.activewindow.windowtitle,self.rendertime))
-                                await asyncio.sleep(self._RENDERTIME)
+                            #window busy
+                            logger.debug(f"render: start renderbusy - time: {self.activewindow.busyrendertime}s: {self.activewindow.windowtitle}")
+                            self.activewindow.renderbusy()
+                            logger.debug(f"render: end renderbusy: {self.activewindow.windowtitle}")
+                            await asyncio.sleep(self._RENDERTIME)
                         else:
-                            logger.debug("general rendering")
+                            logger.debug("render: start render")
                             self.activewindow.render()
                     except Exception as error:
-                        logger.error(error)
+                        logger.error(f"render: exception: {error}")
 
             iTimerCounter = 0 
 

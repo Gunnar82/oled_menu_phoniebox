@@ -112,7 +112,7 @@ class WindowBase():
 
 
     async def set_window(self,windowid):
-        await asyncio.sleep(3)
+        await asyncio.sleep(self.busyrendertime)
         self.windowmanager.set_window(windowid)
 
     def activate(self):
