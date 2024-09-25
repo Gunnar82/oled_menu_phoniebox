@@ -153,7 +153,7 @@ class ListBase(WindowBase):
                     if is_symbol:
                         draw.text(((settings.DISPLAY_WIDTH - self.symbolentrylinewidth) / 2, current_y), drawtext, font=self.faiconsbig, fill=colors.COLOR_RED)
                     else:
-                        draw.text((self.startleft, current_y), drawtext, font=self.font, fill="white")
+                        draw.text((self.startleft, current_y), drawtext, font=self.font, fill="white" if not self.is_type_info else colors.COLOR_GREEN)
 
                 try:
                     if not scrolling:
