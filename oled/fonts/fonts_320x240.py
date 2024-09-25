@@ -24,7 +24,7 @@ settings.WINDOWBASE_BUSYFAICONSBIG = 40
 
 ### listbase.py
 
-settings.LISTBASE_ENTRY_SIZE = 18
+settings.LISTBASE_ENTRY_SIZE = 14
 
 
 
