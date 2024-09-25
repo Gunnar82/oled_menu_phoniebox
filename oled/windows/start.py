@@ -31,12 +31,11 @@ class Start(ListBase):
         self.timeout = False
         self.conrasthandle = False
         self.check_bt = 0
-        self.hide_buttons = True
+
         self.init_finished = False
         self.handle_key_back = False
-        self.render_progressbar = False
-        self.show_position = False
         self.startup = time.monotonic()
+        self.change_type_info()
 
         self.symbolentrylinewidth,self.symbolentrylineheight = self.faiconsbig.getsize(self.icon)
 
@@ -52,52 +51,52 @@ class Start(ListBase):
     def exec_init(self):
         try:
             logger.debug("exec_init: startet")
-            self.menu.append([self.icon,self.symbol])
-            self.menu.append("Wird gestartet...")
+            self.appendsymbol(self.icon)
+            self.appendcomment("Wird gestartet...")
             oled_version = get_oledversion()
             logger.info(f"exec_init: oled_version: {oled_version}")
-            self.menu.append(f"Version: {oled_version}")
+            self.appendcomment(f"Version: {oled_version}")
 
             if (cfirewall.AUTO_ENABLED):
                 logger.info("auto_enable firewall EIN")
-                self.menu.append("Aktiviere Firewall...")
+                self.appendcomment("Aktiviere Firewall...")
                 enable_firewall()
             else:
                 logger.info("auto_enable firewall False")
-                self.menu.append("Übespringe Firewall...")
+                self.appendcomment("Übespringe Firewall...")
 
             if (cbluetooth.BLUETOOTH_AUTOCONNECT):
                 logger.info("bluetooth autoconnect")
-                self.menu.append("Verbinde Bluetooth...")
-                self.menu.append(f"Suche Gerät: {self.bluetooth.selected_bt_name}")
+                self.appendcomment("Verbinde Bluetooth...")
+                self.appendcomment(f"Suche Gerät: {self.bluetooth.selected_bt_name}")
 
                 self.bluetooth.enable_dev_bt()
             else:
                 logger.info("bluetooth autoconnect AUS")
-                self.menu.append("Überspringe Bluetooth...")
+                self.appendcomment("Überspringe Bluetooth...")
 
             if "x728" in settings.INPUTS:
-                self.menu.append(f"Batterie {settings.battcapacity}% geladen")
+                self.appendcomment(f"Batterie {settings.battcapacity}% geladen")
 
             while not  self.mopidyconnection.connected:
-                self.menu.append(f"modipy verbinden...")
+                self.appendcomment(f"modipy verbinden...")
                 time.sleep(1)
-            self.menu.append(f"modipy verbunden.")
+            self.appendcomment(f"modipy verbunden.")
 
 
 
         except Exception as error:
             logger.error(f"exec_init: {error}")
-            self.menu.append(f"Fehler {error}")
+            self.appendcomment(f"Fehler {error}")
         finally:
 
-            self.menu.append(f"Initialisierung beendet.")
+            self.appendcomment(f"Initialisierung beendet.")
             self.startup = time.monotonic()
 
             self.init_finished = True
 
     def render(self):
-        self.position = len(self.menu) - 1
+        self.set_last_position()
         super().render()
 
         if (time.monotonic() - self.startup) >= settings.START_TIMEOUT and self.init_finished:
