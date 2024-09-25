@@ -33,6 +33,7 @@ class ListBase(WindowBase):
         super().__init__(windowmanager, loop)
         self.menu = []
         self.basetitle = title
+        self.title = title
         self.left_pressed = False
         self.right_pressed = False
         self.drawtextx = 0
@@ -65,9 +66,9 @@ class ListBase(WindowBase):
             return
 
         if self.position >= 0 and self.show_position:
-            self.title = "%s %2.2d / %2.2d" %(self.basetitle, self.position + 1,len(self.menu))
+            title = "%s %2.2d / %2.2d" %(self.title, self.position + 1,len(self.menu))
         else:
-            self.title = self.basetitle
+            title = self.title
 
         with canvas(self.device) as draw:
 
@@ -94,8 +95,8 @@ class ListBase(WindowBase):
 
             #Calculate title coordinate from text lenght
 
-            titlelinewidth = self.font.getsize(self.title)[0]
-            draw.text(((settings.DISPLAY_WIDTH-titlelinewidth)/2, 1), text=self.title, font=self.fontheading, fill="white")
+            titlelinewidth = self.font.getsize(title)[0]
+            draw.text(((settings.DISPLAY_WIDTH-titlelinewidth)/2, 1), text=title, font=self.fontheading, fill="white")
 
             #Playlists
             menulen = len(self.menu)

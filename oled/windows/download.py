@@ -311,6 +311,8 @@ class DownloadMenu(ListBase):
                 if not self.cwd.endswith('/'): self.cwd += '/'
 
                 selected_item = get_first_or_self(self.menu[self.position])
+                self.title = stripitem(selected_item)
+
                 self.clearmenu()
                 self.appendcomment("Verarbeite...")
                 self.appendheading(selected_item)
@@ -396,6 +398,9 @@ class DownloadMenu(ListBase):
             last = get_current_directory(self.cwd)
 
             self.cwd = get_parent_directory(self.cwd)
+
+            self.title = get_current_directory(self.cwd)
+
             self.appendheading(self.cwd)
 
             logger.debug(f"neues Verzeichnis: {self.cwd}")
