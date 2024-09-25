@@ -25,6 +25,7 @@ class Start(ListBase):
     icon = "\uf001 \uf02d \uf02c"
     def __init__(self, windowmanager,loop, mopidyconnection,bluetooth):
         super().__init__(windowmanager, loop, "Programmstart")
+
         self.bluetooth = bluetooth
         self.mopidyconnection = mopidyconnection
         self.timeout = False
@@ -35,6 +36,8 @@ class Start(ListBase):
         self.init_finished = False
         self.handle_key_back = False
         self.render_progressbar = False
+        self.show_position = False
+
         self.symbolentrylinewidth,self.symbolentrylineheight = self.faiconsbig.getsize(self.icon)
 
 

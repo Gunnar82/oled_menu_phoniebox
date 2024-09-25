@@ -21,6 +21,7 @@ class ListBase(WindowBase):
     comment = ["c", "h"]
     symbol = ["s"]
     render_progressbar = True
+    show_position = True
 
     def __init__(self, windowmanager, loop, title):
         super().__init__(windowmanager, loop)
@@ -57,7 +58,7 @@ class ListBase(WindowBase):
             self.on_key_right()
             return
 
-        if self.position >= 0:
+        if self.position >= 0 and self.show_position:
             self.title = "%s %2.2d / %2.2d" %(self.basetitle, self.position + 1,len(self.menu))
         else:
             self.title = self.basetitle
