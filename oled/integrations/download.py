@@ -35,54 +35,6 @@ def split_url(url):
 
     return schema_and_host, unquote(uri)
 
-def get_files_and_dirs_from_listing(url, allowed_extensions,get_filesize=True):
-    """Extrahiere Dateien und Verzeichnisse aus dem HTTP-Listing."""
-    try:
-        logger.debug(f"Verzeichnis-URL: {url}")
-        if not url.endswith('/'): url += '/'
-        parsed_url = urlparse(url)
-
-        # Zertifikatsprüfung nur bei HTTPS-URLs deaktivieren
-        if parsed_url.scheme == 'https':
-            response = requests.get(url, verify=False)
-        else:
-            response = requests.get(url)  # Keine Zertifikatsprüfung für HTTP
-
-        response.raise_for_status()
-    except requests.exceptions.RequestException as e:
-        # Fehler bei der HTTP-Anfrage abfangen
-        logger.info(f"Error fetching {url}: {e}")
-        return [], [], 0
-
-    soup = BeautifulSoup(response.text, 'html.parser')
-
-    files = []
-    directories = []
-    total_size = 0
-
-    for link in soup.find_all('a'):
-        href = link.get('href')
-        if href and not href.startswith('?') and not href.startswith('/'):
-            if href.endswith('/'):
-                # Unterverzeichnis gefunden
-                directories.append(unquote(href).strip('/')) # trailing slash entfernen
-            elif any(href.endswith(ext) for ext in allowed_extensions):
-                # Datei gefunden
-                files.append(unquote(href))
-
-                #Wenn Dateigröße abgefragt werden soll
-                if get_filesize:
-                    file_url = urljoin(url, href)
-                    try:
-                        file_response = requests.head(file_url)
-                        file_response.raise_for_status()
-                        # Dateigröße aus dem Header holen, falls vorhanden
-                        file_size = int(file_response.headers.get('content-length', 0))
-                        total_size += file_size
-                    except requests.RequestException as e:
-                        logger.info(f"Fehler beim Abrufen der Dateigröße für {file_url}: {e}")
-                        continue
-    return files, directories, total_size
 
 def construct_url(cwd, base_url,is_folder=True):
     # cwd kodieren und an die URL anhängen

@@ -30,7 +30,7 @@ from integrations.download import *
 
 from integrations.logging_config import *
 
-logger = setup_logger(__name__,lvlDEBUG)
+logger = setup_logger(__name__)
 
 
 # SSL-Zertifikatswarnungen deaktivieren, nur für HTTPS-URLs
@@ -44,6 +44,8 @@ class DownloadMenu(ListBase):
 
         self.timeout = False
         self.contrasthandle = False
+
+        self.info_key_left = False
 
         self.downloading = False
         self.totalsize = 0
@@ -68,15 +70,17 @@ class DownloadMenu(ListBase):
             self.appendcomment("Suche letzten Onlinetitel...")
             with open(cfg_file_folder.FILE_LAST_ONLINE,"r") as f:
                 self.url = f.read()
+            self.appendheading(self.url)
 
-                files,directories, temp = get_files_and_dirs_from_listing(self.website, ["mp3"],False)
+            files,directories, temp = self.get_files_and_dirs_from_listing(self.website, ["mp3"],False)
 
-                if files != []:
-                    logger.info(f"letztes online {self.url}")
-                    self.url = get_parent_directory_of_url(self.url)
+            if files != []:
+                logger.info(f"letztes online: {self.url}")
+                self.url = get_parent_directory_of_url(self.url)
 
             if not self.url.startswith(self.website): 
-                self.appendcomment(f"Basis-Website geändert, setze auf {self.website}")
+                self.appendcomment(f"Basis-Website geändert, setze auf Standard")
+                self.addheading(self.website)
                 logger.warning(f"{self.website} nicht in {self.url}")
                 self.url = self.website
 
@@ -92,11 +96,18 @@ class DownloadMenu(ListBase):
         logger.info("deactivate")
         self.canceled = True
 
+    def push_callback(self,lp=False):
+        if self.counter in [ -1, -2]:
+            self.windowmanager.set_window(self.window_on_back)
+        else:
+            if not self.is_comment() and not self.is_heading():
+
+                self.loop.run_in_executor(None,self.push_handler)
+
+
+
     def turn_callback(self, direction, key=None):
         super().turn_callback(direction,key)
-
-        #wenn initialisierung nicht abgeschlossen, letzter Eintrag
-        if not self.init_finished: self.set_last_position()
 
         #Download abbrechen, falls aktiv
         if self.downloading: self.canceled = True
@@ -108,14 +119,15 @@ class DownloadMenu(ListBase):
 
             if r != 200:
                 logger.error(f"execute_init: Verbindungsfehler letzter Onlinetitel {r}: {self.url}")
-                self.appendcomment(f"Verbindungsfehler {r} bei {self.url}")
+                self.appendcomment(f"Verbindungsfehler {r}:")
+                self.appendheading(self.url)
 
                 if r > 200:
-                    self.appendcomment(f"Setze auf default: {self.website}")
+                    self.appendcomment("Setze auf Standard:")
+                    self.appendheading(self.website)
                     self.url = self.website
                     if not self.check_website_return(self.url):
                         self.appenditem(f"Gebe auf! Taste! drücken")
-                        self.set_last_position()
                         return
                 else:
                     return
@@ -125,21 +137,22 @@ class DownloadMenu(ListBase):
 
         except Exception as error:
             logger.error(f"execute_init: exception: Verbindungsfehler {error}")
-            self.appendcomment(f"Verbindungsfehler {error} bei {self.url}")
+            self.appendcomment(f"Verbindungsfehler {error}:")
+            self.appendheading(self.url)
 
             self.url = self.website
 
             # Verbindungsversuch mit Website
             if not self.check_website_return(self.url):
                 self.appenditem(f"Gebe auf! Taste drücken!")
-                self.set_last_position()
                 return
 
         temp, self.cwd = split_url(self.url)
 
-        self.appendcomment(f"Erfolgreich: {self.url}")
+        self.appendcomment(f"Erfolgreich:")
+        self.appendheading(self.url)
 
-        time.sleep(5)
+        time.sleep(3)
         self.init_finished = True
 
         self.change_type_info(False)
@@ -147,7 +160,7 @@ class DownloadMenu(ListBase):
         if self.direct_play_last_folder:
             self.direct_play_last_folder = False
             self.url = construct_url(self.cwd,self.baseurl)
-            self.items, directories, self.totalsize = get_files_and_dirs_from_listing(self.url)
+            self.items, directories, self.totalsize = self.get_files_and_dirs_from_listing(self.url)
             if not folders:
                 self.playfolder()
         else:
@@ -155,7 +168,8 @@ class DownloadMenu(ListBase):
 
     def check_website_return(self,url):
         try:
-            self.appendcomment(f"Prüfe {url}")
+            self.appendcomment("Prüfe URL:")
+            self.appendheading(url)
             r1 = check_url_reachability(url)
             if r1 != 200:
                 raise Exception(f"Keine Verbindung! Fehler {r1})")
@@ -249,9 +263,12 @@ class DownloadMenu(ListBase):
             print (error)
 
 
-    async def push_handler(self,button = '*'):
-        await asyncio.sleep(1)
+    def push_handler(self,button = '*'):
+        time.sleep(0.3)
+
         try:
+            self.change_type_info()
+
             if not self.init_finished:
                 self.windowmanager.set_window(self.window_on_back)
                 return
@@ -294,6 +311,10 @@ class DownloadMenu(ListBase):
                 if not self.cwd.endswith('/'): self.cwd += '/'
 
                 selected_item = get_first_or_self(self.menu[self.position])
+                self.clearmenu()
+                self.appendcomment("Verarbeite...")
+                self.appendheading(selected_item)
+
                 logger.debug(f"push_handler {selected_item}")
 
                 self.cwd += stripitem(selected_item)
@@ -303,14 +324,20 @@ class DownloadMenu(ListBase):
                 self.url = construct_url_from_local_path(self.baseurl,self.cwd)
 
                 logger.info(f"Wechsle zu {self.url}")
+                self.appendcomment("Neue URL:")
+                self.appendheading(self.url)
 
-                self.items,directories,self.totalsize = get_files_and_dirs_from_listing(self.url, ["mp3"])
+                self.items,directories,self.totalsize = self.get_files_and_dirs_from_listing(self.url, ["mp3"])
+
+                time.sleep(0.5)
 
                 if directories != []:
                     logger.debug(f"Verzeichnisse gefunden: {directories}")
+                    self.change_type_info(False)
                     self.create_menu_from_directories(directories)
                 else:
                     logger.debug(f"Verzeichnis ausgewählt: {self.cwd}")
+                    self.appendcomment("Deteien gefunden")
 
                     self.selector = True
 
@@ -339,53 +366,67 @@ class DownloadMenu(ListBase):
                     self.menu.append(["informationen"])
                     self.menu.append(["Lokal löschen"])
                     self.menu.append([""])
-                    if online_file in self.items:
-                        self.menu.append(["Aktueller Titel :%2.2d " %  (self.items.index(online_file) + 1)])
+                    #if online_file in self.items:
+                    #    self.menu.append(["Aktueller Titel :%2.2d " %  (self.items.index(online_file) + 1)])
                     self.menu.append(["Anzahl Titel :%2.2d " %  (len(self.items))])
                     self.menu.append(["Gesamtgröße %s" % (get_size(self.totalsize))])
-                    self.menu.append([current_pos])
-                    self.menu.append([f"Datei: {online_file}"])
-                    self.menu.append([online_pos])
+                    #self.menu.append([current_pos])
+                    #self.menu.append([f"Datei: {online_file}"])
+                    #self.menu.append([online_pos])
 
-                    return
+                time.sleep(0.5)
+
 
         except Exception as error:
+            logger.error(f"push_handler: exception: {error}")
             self.set_busy(error)
-            time.sleep(3)
         finally:
+            self.change_type_info(False)
+            time.sleep(0.5)
             self.position = -1
 
     def on_key_left(self):
-        self.set_busy("Lese Verzeichnis",busyrendertime=60)
-
-        self.selector = False
-        logger.debug(f"derzeitiges Verzeichnis: {self.cwd}")
-        last = get_current_directory(self.cwd)
-
-        self.cwd = get_parent_directory(self.cwd)
-        logger.debug(f"neues Verzeichnis: {self.cwd}")
-
-        if len(self.cwd) <= len(self.basecwd):
-            self.cwd = self.basecwd
-            last = "_-__"
-
-        self.url = construct_url(self.cwd,self.baseurl)
-
-        files, directories,self.totalsize = get_files_and_dirs_from_listing(self.url, ["mp3"])
-
-        self.create_menu_from_directories(directories)
-
-        self.position = find_element_or_formatted_position(self.menu,last)[0]
-
         try:
-            if len(self.cwd) > len (self.basecwd):
-                self.basetitle = self.cwd[pos+1:]
-            else:
-                self.basetitle = "Online"
-        except Exception as error:
-            self.basetitle = self.windowtitle
+            self.change_type_info()
+            self.clearmenu()
+            self.appendcomment("Lese Verzeichnis")
+
+            self.selector = False
+            logger.debug(f"derzeitiges Verzeichnis: {self.cwd}")
+            last = get_current_directory(self.cwd)
+
+            self.cwd = get_parent_directory(self.cwd)
+            self.appendheading(self.cwd)
+
+            logger.debug(f"neues Verzeichnis: {self.cwd}")
+
+            if len(self.cwd) <= len(self.basecwd):
+                self.cwd = self.basecwd
+                last = "_-__"
+
+            self.url = construct_url(self.cwd,self.baseurl)
+
+            self.appendcomment("Prüfe URL")
+            self.appendheading(self.url)
+
+            files, directories,self.totalsize = self.get_files_and_dirs_from_listing(self.url, ["mp3"])
+
+            time.sleep(1)
+
+            self.create_menu_from_directories(directories)
+
+            self.position = find_element_or_formatted_position(self.menu,last)[0]
+
+            try:
+                if len(self.cwd) > len (self.basecwd):
+                    self.basetitle = self.cwd[pos+1:]
+                else:
+                    self.basetitle = "Online"
+            except Exception as error:
+                self.basetitle = self.windowtitle
         finally:
-            self.set_busy("",busyrendertime=0)
+                time.sleep(1)
+                self.change_type_info(False)
 
     def render(self):
         if self.canceled:
@@ -432,6 +473,61 @@ class DownloadMenu(ListBase):
                 directories[i] = f"{directories[i]} \u2302"
         self.menu = directories_to_list(directories)
         #TODO progress
+
+    def get_files_and_dirs_from_listing(self,url, allowed_extensions,get_filesize=True):
+        """Extrahiere Dateien und Verzeichnisse aus dem HTTP-Listing."""
+        try:
+            logger.debug(f"Verzeichnis-URL: {url}")
+            if not url.endswith('/'): url += '/'
+            parsed_url = urlparse(url)
+
+            # Zertifikatsprüfung nur bei HTTPS-URLs deaktivieren
+            if parsed_url.scheme == 'https':
+                response = requests.get(url, verify=False)
+            else:
+                response = requests.get(url)  # Keine Zertifikatsprüfung für HTTP
+
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            # Fehler bei der HTTP-Anfrage abfangen
+            logger.info(f"Error fetching {url}: {e}")
+            return [], [], 0
+
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        files = []
+        directories = []
+        total_size = 0
+
+        for link in soup.find_all('a'):
+            href = link.get('href')
+            if href and not href.startswith('?') and not href.startswith('/'):
+                if href.endswith('/'):
+                    # Unterverzeichnis gefunden
+                    directory = unquote(href).strip('/')
+                    self.appendcomment(f"Ordner: {directory}")
+                    directories.append(unquote(href).strip('/')) # trailing slash entfernen
+                elif any(href.endswith(ext) for ext in allowed_extensions):
+                    # Datei gefunden
+                    filename = unquote(href)
+                    self.appendcomment(f"Datei: {filename}")
+                    files.append(unquote(href))
+
+                    #Wenn Dateigröße abgefragt werden soll
+                    if get_filesize:
+                        file_url = urljoin(url, href)
+                        try:
+                            file_response = requests.head(file_url)
+                            file_response.raise_for_status()
+                            # Dateigröße aus dem Header holen, falls vorhanden
+                            file_size = int(file_response.headers.get('content-length', 0))
+                            self.appendheading(f"Dateigröße: {file_size}")
+                            total_size += file_size
+                        except requests.RequestException as e:
+                            logger.info(f"Fehler beim Abrufen der Dateigröße für {file_url}: {e}")
+                            continue
+        return files, directories, total_size
+
 
 
 ####old

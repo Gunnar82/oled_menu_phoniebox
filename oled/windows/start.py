@@ -96,7 +96,6 @@ class Start(ListBase):
             self.init_finished = True
 
     def render(self):
-        self.set_last_position()
         super().render()
 
         if (time.monotonic() - self.startup) >= settings.START_TIMEOUT and self.init_finished:

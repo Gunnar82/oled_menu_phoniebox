@@ -21,8 +21,13 @@ class ListBase(WindowBase):
     comment = ["c"]
     heading = ["h"]
     symbol = ["s"]
+
+    info_key_left = True
+
     render_progressbar = True
     show_position = True
+    is_type_info = False
+
 
     def __init__(self, windowmanager, loop, title):
         super().__init__(windowmanager, loop)
@@ -201,7 +206,7 @@ class ListBase(WindowBase):
     def turn_callback(self, direction, key=None):
         if key:
             if (key == 'left' or key == '4' or key == 'Y') and self.handle_left_key:
-                self.set_busy("übergeordneter Ordner",busyrendertime=1)
+                if self.info_key_left : self.set_busy("übergeordneter Ordner",busyrendertime=0.2)
                 self.left_pressed = True
                 return
             elif key == 'right' or key == '6' or key == '*':
@@ -239,24 +244,28 @@ class ListBase(WindowBase):
     def appenditem(self,item):
         logger.debug(f"append item: {item}")
         self.menu.append(item)
+        if self.is_type_info: self.set_last_position()
 
     def appendheading(self,item):
         logger.debug(f"appendheading: {item}")
         self.menu.append([item,"h"])
+        if self.is_type_info: self.set_last_position()
 
     def appendcomment(self,item):
         logger.debug(f"appendheading: {item}")
         self.menu.append([item,"c"])
+        if self.is_type_info: self.set_last_position()
 
     def appendsymbol(self,item):
         logger.debug(f"appendsymbol: {item}")
         self.menu.append([item,self.symbol])
-
+        if self.is_type_info: self.set_last_position()
 
     def change_type_info(self, info=True):
         self.hide_buttons = info
         self.show_position = not info
         self.render_progressbar = not info
+        self.is_type_info = info
 
     def clearmenu(self):
         self.menu = []
