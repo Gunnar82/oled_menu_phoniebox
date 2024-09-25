@@ -26,6 +26,7 @@ class Ende(MainWindow):
         self.fontawesome = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XXL)
         self.timeout = False
         self.window_on_back = "none"
+        self.handle_key_back = False
         self.power_timer = False
         self._rendertime = 1
 

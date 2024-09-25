@@ -205,7 +205,7 @@ class WindowManager():
                 self.device.contrast(settings.CONTRAST_FULL)
                 if key == '#' and self.activewindow.handle_key_back:
                     logger.info("activate window_on_back: %s" % (self.activewindow.window_on_back))
-                    if self.activewindow.window_on_back not in ["","none","n/a"] and self.activewindow.windowtitle != "lock" : self.set_window(self.activewindow.window_on_back)
+                    if self.activewindow.window_on_back not in ["","none","n/a"]: self.set_window(self.activewindow.window_on_back)
                 else:
                     self.activewindow.turn_callback(direction,key=key)
             except Exception as error:
@@ -217,7 +217,7 @@ class WindowManager():
         else:
             settings.screenpower = True
             self.device.show()
-            if self.activewindow.windowtitle not in ["ende", "lock"]:
+            if self.activewindow.handle_key_back:
                  self.set_window("idle")
 
 

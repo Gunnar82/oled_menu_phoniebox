@@ -30,7 +30,7 @@ from integrations.download import *
 
 from integrations.logging_config import *
 
-logger = setup_logger(__name__)
+logger = setup_logger(__name__,lvlDEBUG)
 
 
 # SSL-Zertifikatswarnungen deaktivieren, nur für HTTPS-URLs

@@ -27,6 +27,7 @@ class Lock(MainWindow):
         self.unlockindex = -1
 
         self.currentkey = 0
+        self.handle_key_back = False
 
 
 

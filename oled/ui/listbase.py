@@ -20,6 +20,7 @@ class ListBase(WindowBase):
 
     comment = ["c", "h"]
     symbol = ["s"]
+    render_progressbar = True
 
     def __init__(self, windowmanager, loop, title):
         super().__init__(windowmanager, loop)
@@ -69,7 +70,7 @@ class ListBase(WindowBase):
             except Exception as error:
                 logger.debug(f"{error}")
 
-            self.render_progressbar_draw(draw)
+            if self.render_progressbar: self.render_progressbar_draw(draw)
 
             #Back button and selection arrow
             if not self.hide_buttons:

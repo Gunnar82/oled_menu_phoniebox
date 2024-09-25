@@ -33,6 +33,8 @@ class Start(ListBase):
         self.check_bt = 0
         self.hide_buttons = True
         self.init_finished = False
+        self.handle_key_back = False
+        self.render_progressbar = False
         self.symbolentrylinewidth,self.symbolentrylineheight = self.faiconsbig.getsize(self.icon)
 
 
