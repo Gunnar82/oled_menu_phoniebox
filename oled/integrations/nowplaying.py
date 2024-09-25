@@ -21,11 +21,30 @@ class nowplaying:
     input_is_online = False
     lasttitlechange = time.monotonic()
 
+    _playingname = ""
+    _playingtitle = ""
+    _playingalbum = ""
+    _playingfile = ""
+    _volume = -1
+    _time = -1
+    _elapsed = -1
+    _playlistlength = -1
+    _song = -1
+    _duration = -1
+    _state = "starting"
+    _statex = "unknown"
+
+
     async def _generatenowplaying(self):
+        while self.loop.is_running():
+            self.loop.run_in_executor(None,self.generatenowplaying)
+            await asyncio.sleep(self.windowmanager.looptime)
+
+
+    def generatenowplaying(self):
         try:
-            self.filename = ""
-            _playingtitle = ""
-            while self.loop.is_running():
+                self.filename = ""
+                _playingtitle = ""
                 playing = self.musicmanager.nowplaying()
                 status = self.musicmanager.status()
                 self.filename = playing['file'] if ("file" in playing) else ""
@@ -43,7 +62,6 @@ class nowplaying:
                         if (time.monotonic() - settings.lastinput) >= settings.DARK_TIMEOUT:
                             settings.lastinput = time.monotonic() - settings.CONTRAST_TIMEOUT
                     self.oldtitle = title
-                    
 
                 self._playingtitle = title
 
@@ -102,12 +120,10 @@ class nowplaying:
                 self._song = str(int(status['song']) + 1) if ("song" in status) else -1
                 self._duration = status['duration'] if ("duration" in status) else -1
                 self._state = status['state'] if ("state" in status) else "unknown"
-                await asyncio.sleep(self.windowmanager.looptime)
         except:
             pass
 
     async def _linuxjob(self):
-
         while self.loop.is_running():
             get_timeouts()
 
@@ -152,21 +168,10 @@ class nowplaying:
         self.loop = loop
         self.musicmanager = musicmanager
         self.windowmanager = windowmanager
+
         self.loop.create_task(self._generatenowplaying())
         self.loop.create_task(self._linuxjob())
         self.loop.create_task(self._output())
         self.loop.create_task(self._savepos())
-        self._playingname = ""
-        self._playingtitle = ""
-        self._playingalbum = ""
-        self._playingfile = ""
-        self._volume = -1
-        self._time = -1
-        self._elapsed = -1
-        self._playlistlength = -1
-        self._song = -1
-        self._duration = -1
-        self._state = "starting"
-        self._statex = "unknown"
 
 
