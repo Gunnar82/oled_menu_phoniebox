@@ -29,7 +29,6 @@ class Start(ListBase):
         self.bluetooth = bluetooth
         self.mopidyconnection = mopidyconnection
         self.timeout = False
-        self.startup = time.monotonic()
         self.conrasthandle = False
         self.check_bt = 0
         self.hide_buttons = True
@@ -37,6 +36,7 @@ class Start(ListBase):
         self.handle_key_back = False
         self.render_progressbar = False
         self.show_position = False
+        self.startup = time.monotonic()
 
         self.symbolentrylinewidth,self.symbolentrylineheight = self.faiconsbig.getsize(self.icon)
 
@@ -76,24 +76,31 @@ class Start(ListBase):
                 logger.info("bluetooth autoconnect AUS")
                 self.menu.append("Überspringe Bluetooth...")
 
+            if "x728" in settings.INPUTS:
+                self.menu.append(f"Batterie {settings.battcapacity}% geladen")
+
+            while not  self.mopidyconnection.connected:
+                self.menu.append(f"modipy verbinden...")
+                time.sleep(1)
+            self.menu.append(f"modipy verbunden.")
+
+
+
         except Exception as error:
             logger.error(f"exec_init: {error}")
             self.menu.append(f"Fehler {error}")
         finally:
-            time.sleep(5)
+
+            self.menu.append(f"Initialisierung beendet.")
+            self.startup = time.monotonic()
+
             self.init_finished = True
 
     def render(self):
         self.position = len(self.menu) - 1
         super().render()
-        if "x728" in settings.INPUTS:
-            color = get_battload_color()
-            self.busysymbol = symbols.SYMBOL_BATTERY
-            self.busytext2 = "%d%% geladen" % (settings.battcapacity)
-        else:
-            color = colors.COLOR_WHITE
 
-        if self.mopidyconnection.connected and ((time.monotonic() - self.startup) >= settings.START_TIMEOUT) and self.init_finished:
+        if (time.monotonic() - self.startup) >= settings.START_TIMEOUT and self.init_finished:
             logger.debug("start: init")
             self.windowmanager.set_window("idle")
 
