@@ -203,10 +203,7 @@ class DownloadMenu(ListBase):
                 logger.error(f"downloadfolder: error {error}")
             for item in self.items:
                 self.clear_busymenu()
-                if self.canceled:
-                    logger.info("downloadfolder: Abbruch")
 
-                    break;
                 url = construct_url_from_local_path(self.baseurl,self.cwd,item)
                 logger.debug(f"downloadfolder: url: {url}")
 
@@ -218,8 +215,14 @@ class DownloadMenu(ListBase):
                 self.append_busytext(item)
                 self.append_busytext("Abbruch mit beliebiger Taste") 
                 self.render_progressbar = True
+
                 try:
                     self.download_file(url,destination)
+                    if self.canceled:
+                        logger.info("downloadfolder: Abbruch")
+                        self.append_busytext("Abbruch! Bitte warten...")
+                        break
+
                 except Exception as error:
                     logger.error(f"downloadfolder: {error}")
 
@@ -469,7 +472,6 @@ class DownloadMenu(ListBase):
                 self.set_lastbusytextline("%s / %s, %s / %s" % ( get_size(totaldlfile), get_size(total_size_in_bytes), get_size(self.totaldownloaded), get_size(self.totalsize)))
 
                 if self.canceled:
-                    self.append_busytext("Abbruch! Bitte warten...")
                     break
 
 
@@ -536,8 +538,6 @@ class DownloadMenu(ListBase):
                             logger.info(f"Fehler beim Abrufen der Dateigröße für {file_url}: {e}")
                             continue
         return files, directories, total_size
-
-
 
 ####old
 
