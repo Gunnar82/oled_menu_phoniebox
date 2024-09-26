@@ -165,7 +165,7 @@ class DownloadMenu(ListBase):
             if not folders:
                 self.playfolder()
         else:
-            self.on_key_left()
+            self.on_key_left(clear_busymenu = False)
 
     def check_website_return(self,url):
         try:
@@ -263,10 +263,11 @@ class DownloadMenu(ListBase):
             with open(filename,"w") as ofile:
                 for item in self.items:
                     additem = construct_url_from_local_path(self.baseurl,self.cwd,item) + '\n'
-                    self.append_busytext(f"Füge Titel hinzu {item}")
                     ofile.write(additem)
+            self.append_busytext(f"Titelhinzugefügt: {item}")
+
             foldername = directory[len(cfg_file_folder.AUDIO_BASEPATH_BASE):]
-            self.append_busytext("Starte playout")
+            self.append_busytext("Starte playout {foldername}")
             playout.pc_playfolder(foldername)
             self.windowmanager.set_window("idle")
         except Exception as error:
@@ -400,9 +401,9 @@ class DownloadMenu(ListBase):
 
             self.position = -1
 
-    def on_key_left(self):
+    def on_key_left(self, clear_busymenu = True):
         try:
-            self.set_window_busy()
+            self.set_window_busy(clear_busymenu = clear_busymenu, with_symbol = clear_busymenu)
 
             self.append_busytext("Lese Verzeichnis")
 
@@ -532,7 +533,7 @@ class DownloadMenu(ListBase):
                             file_response.raise_for_status()
                             # Dateigröße aus dem Header holen, falls vorhanden
                             file_size = int(file_response.headers.get('content-length', 0))
-                            self.append_busytext(f"Dateigröße: {file_size}")
+                            #self.append_busytext(f"Dateigröße: {file_size}")
                             total_size += file_size
                         except requests.RequestException as e:
                             logger.info(f"Fehler beim Abrufen der Dateigröße für {file_url}: {e}")

@@ -83,7 +83,7 @@ class WindowManager():
 
         while self.loop.is_running():
             #letzte Eingabezeit abfragen
-            seconds_since_last_input = (time.monotonic() - settings.lastinput)
+            seconds_since_last_input = time.monotonic() - settings.lastinput
 
             #wenn in aktivem Fenster aktiviert, setze timeoutwindow
             if (seconds_since_last_input >= csettings.MENU_TIMEOUT) and self.activewindow.timeout:

@@ -162,8 +162,8 @@ class WindowBase():
         self.busymenu = []
         self.set_lastbusytextline()
 
-    def set_window_busy(self, state=True, with_symbol = True):
-        self.clear_busymenu()
+    def set_window_busy(self, state=True, with_symbol = True, clear_busymenu = True):
+        if state and clear_busymenu: self.clear_busymenu()
         if not state and self.new_busyrender: time.sleep(1)
         if with_symbol and state: self.append_busysymbol()
         self.is_busy = state
@@ -176,6 +176,7 @@ class WindowBase():
     def new_renderbusy(self):
         try:
             with canvas (self.device) as draw:
+                if self.render_progressbar: self.render_progressbar_draw(draw)
                 menulen = len(self.busymenu)
                 position = len(self.busymenu)
 
@@ -227,6 +228,7 @@ class WindowBase():
 
                 if self.lastbusytext != "":
                         draw.text((self.startleft, self.busydisplaylines * self.busyentrylineheight), self.lastbusytext, font=busyfont, fill=colors.COLOR_YELLOW)
+
 
         except Exception as error:
              logger.error(f"new_renderbusy: {error}")

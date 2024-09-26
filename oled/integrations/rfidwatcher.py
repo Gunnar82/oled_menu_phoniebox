@@ -4,6 +4,7 @@ from watchdog.events import FileSystemEventHandler
 import settings
 
 import config.file_folder as cfg_file_folder
+import integrations.functions as fn
 
 from datetime import datetime
 
@@ -15,7 +16,7 @@ class MyHandler(FileSystemEventHandler):
         global rfid_watcher_changed
         if event.src_path == cfg_file_folder.LATEST_RFID:
             rfid_watcher_changed = True
-        settings.lastinput = fn.set_lastinput()
+        fn.set_lastinput()
 
 class RfidWatcher:
 
