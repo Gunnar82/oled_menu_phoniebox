@@ -2,7 +2,7 @@
 import settings
 
 def get_display():
-    settings.CONTRAST_HANDLE = True
+    settings.DISPLAY_HANDLE_CONTRAST = True
     from luma.core.interface.serial import spi,i2c
 
     from luma.oled.device import ssd1351

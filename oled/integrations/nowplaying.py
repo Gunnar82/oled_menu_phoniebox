@@ -13,6 +13,8 @@ import config.symbols as symbols
 import config.file_folder as cfg_file_folder
 import config.online as cfg_online
 
+import config.user_settings as csettings
+
 class nowplaying:
     filename = ""
     oldtitle = ""
@@ -59,8 +61,8 @@ class nowplaying:
 
                 if title != self.oldtitle:
                     if self.oldtitle != "":
-                        if (time.monotonic() - settings.lastinput) >= settings.DARK_TIMEOUT:
-                            settings.lastinput = time.monotonic() - settings.CONTRAST_TIMEOUT
+                        if (time.monotonic() - settings.lastinput) >= csettings.DARK_TIMEOUT:
+                            settings.lastinput = time.monotonic() - csettings.CONTRAST_TIMEOUT
                     self.oldtitle = title
 
                 self._playingtitle = title

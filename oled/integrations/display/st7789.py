@@ -2,7 +2,7 @@
 import settings
 
 def get_display():
-    settings.CONTRAST_HANDLE = False
+    settings.DISPLAY_HANDLE_CONTRAST = True
 
     from luma.core.interface.serial import spi
     from luma.lcd.device import st7789

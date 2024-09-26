@@ -12,6 +12,8 @@ from integrations.latestplayed import LatestPlayed
 
 from integrations.logging_config import *
 
+import config.user_settings as csettings
+
 logger = setup_logger(__name__)
 
 
@@ -26,7 +28,7 @@ class WindowManager():
         self.activewindow = []
         self.loop = loop
         fn.set_lastinput()
-        self._lastcontrast = settings.CONTRAST_FULL
+        self._lastcontrast = csettings.CONTRAST_FULL
         self.loop.create_task(self._render())
         self.lastrfidate = 0
 
@@ -83,7 +85,7 @@ class WindowManager():
             seconds_since_last_input = (time.monotonic() - settings.lastinput)
 
             #wenn in aktivem Fenster aktiviert, setze timeoutwindow
-            if (seconds_since_last_input >= settings.MENU_TIMEOUT) and self.activewindow.timeout:
+            if (seconds_since_last_input >= csettings.MENU_TIMEOUT) and self.activewindow.timeout:
                 logger.info(f"_render: MENU_TIMEOUT: setze auf: {self.activewindow.timeoutwindow}")
                 self.set_window(self.activewindow.timeoutwindow)
 
@@ -91,34 +93,34 @@ class WindowManager():
             if self.activewindow.contrasthandle:
                 logger.debug(f"_render: {self.activewindow.contrasthandle}")
                 #Helligkeit Stufe 2
-                if (seconds_since_last_input >= settings.DARK_TIMEOUT):
-                    self.rendertime = settings.DARK_RENDERTIME
-                    self.looptime = int (settings.DARK_RENDERTIME // 2)
+                if (seconds_since_last_input >= csettings.DARK_TIMEOUT) and settings.DISPLAY_HANDLE_CONTRAST:
+                    self.rendertime = csettings.DARK_RENDERTIME
+                    self.looptime = int (csettings.DARK_RENDERTIME // 2)
 
-                    contrast = settings.CONTRAST_BLACK
+                    contrast = csettings.CONTRAST_BLACK
 
-                elif  (seconds_since_last_input >= settings.CONTRAST_TIMEOUT):
+                elif  (seconds_since_last_input >= csettings.CONTRAST_TIMEOUT):
                     # Helligkeit Stufe 1
-                    self.looptime = settings.CONTRAST_RENDERTIME
-                    self.rendertime = settings.CONTRAST_RENDERTIME
+                    self.looptime = csettings.CONTRAST_RENDERTIME
+                    self.rendertime = csettings.CONTRAST_RENDERTIME
                     logger.debug("contrast_timeout")
-                    if settings.DISABLE_DISPLAY:
+                    if csettings.DISABLE_DISPLAY:
                         #Display ausschalten, wenn unterstützt
                         if settings.screenpower:
                             logger.debug("disable Display")
                             self.clear_window()
-                    else:
+                    elif settings.DISPLAY_HANDLE_CONTRAST:
                         #wenn nicht, Helligkeit auf minimum
-                        contrast = settings.CONTRAST_DARK
+                        contrast = csettings.CONTRAST_DARK
 
                 else:
                     #Eingabe erfolgt, normales render-Verhalten
-                    contrast = settings.CONTRAST_FULL
+                    contrast = csettings.CONTRAST_FULL
                     self.rendertime = self.activewindow._rendertime
                     self.looptime = self._looptime
             else:
                 #wenn keine Kontrast-Anpassung unterstützt wird
-                contrast = settings.CONTRAST_FULL
+                contrast = csettings.CONTRAST_FULL
                 logger.debug(f"_render: contrasthandle: {self.activewindow.contrasthandle}")
 
                 self.rendertime = self.activewindow._rendertime
@@ -132,10 +134,10 @@ class WindowManager():
             if self.activewindow != []:
                 #render abarbeiten
                 count = 0
-                while (contrast == settings.CONTRAST_BLACK) and (count < 4 * settings.DARK_RENDERTIME) and (seconds_since_last_input >= settings.CONTRAST_TIMEOUT):
+                while (contrast == csettings.CONTRAST_BLACK) and (count < 4 * csettings.DARK_RENDERTIME) and (seconds_since_last_input >= csettings.CONTRAST_TIMEOUT):
                     # Render bei Display-Abdunkelung ist verlangsamt
                     # Eingabe prüfen. Bei Eingabe fortsetzen
-                    if seconds_since_last_input <= settings.DARK_TIMEOUT: break
+                    if seconds_since_last_input <= csettings.DARK_TIMEOUT: break
                     count += 1
                     await asyncio.sleep(0.25)
 
@@ -176,7 +178,7 @@ class WindowManager():
                 iTimerCounter += 1
                 await asyncio.sleep(self._RENDERTIME)
                 #logger.debug("self.busytext1: %s" %(self.activewindow.busytext1))
-                if not settings.screenpower and secconds_since_last_input <= settings.DARK_TIMEOUT: break
+                if not settings.screenpower and secconds_since_last_input <= csettings.DARK_TIMEOUT: break
                 if (not settings.callback_active and self.rendered_busy):
                     #logger.debug("render resetting %s.busy to False" %(self.activewindow.windowtitle))
                     self.activewindow.busy = False
@@ -192,7 +194,7 @@ class WindowManager():
             logger.debug("push_callback: started")
 
             try:
-                self.device.contrast(settings.CONTRAST_FULL)
+                self.device.contrast(csettings.CONTRAST_FULL)
                 self.activewindow.push_callback(lp=lp)
             except (NotImplementedError, AttributeError):
                 logger.error("window_manager: push_callback error")
@@ -203,7 +205,7 @@ class WindowManager():
         else: 
             settings.screenpower = True
             self.device.show()
-            if self.activewindow.windowtitle not in ["ende", "lock"]:
+            if self.activewindow.handle_key_back:
                 self.set_window("idle")
 
     def turn_callback(self, direction, key=None):
@@ -220,7 +222,7 @@ class WindowManager():
             logger.debug("turn_callback: started")
 
             try:
-                self.device.contrast(settings.CONTRAST_FULL)
+                self.device.contrast(csettings.CONTRAST_FULL)
                 if key == '#' and self.activewindow.handle_key_back:
                     logger.info("activate window_on_back: %s" % (self.activewindow.window_on_back))
                     if self.activewindow.window_on_back not in ["","none","n/a"]: self.set_window(self.activewindow.window_on_back)

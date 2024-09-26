@@ -98,7 +98,7 @@ class Start(ListBase):
     def render(self):
         super().render()
 
-        if (time.monotonic() - self.startup) >= settings.START_TIMEOUT and self.init_finished:
+        if (time.monotonic() - self.startup) >= csettings.START_TIMEOUT and self.init_finished:
             logger.debug("start: init")
             self.windowmanager.set_window("idle")
 

@@ -11,7 +11,7 @@ class EmuPygame(luma.emulator.device.pygame):
 
 
 def get_display():
-    settings.CONTRAST_HANDLE = False
+    settings.DISPLAY_HANDLE_CONTRAST = False
 
     print("Using PyGame output")
     #Mode=1: Monochrome
