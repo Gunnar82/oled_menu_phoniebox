@@ -218,7 +218,7 @@ class WindowBase():
                         progresscolor = colors.COLOR_GREEN
                         if is_symbol:
                             draw.text(((settings.DISPLAY_WIDTH - selected_element[2]) / 2, current_y), drawtext, font=busyfaiconsbig, fill=colors.COLOR_RED)
-                            current_y += selected_element[3]
+                            current_y += selected_element[3] # Symbolhöhe
 
                         else:
                             draw.text((self.startleft, current_y), drawtext, font=busyfont, fill=colors.COLOR_GREEN)
