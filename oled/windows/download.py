@@ -153,7 +153,6 @@ class DownloadMenu(ListBase):
         self.append_busytext(f"Erfolgreich:")
         self.append_busytext(self.url)
 
-        time.sleep(3)
         self.init_finished = True
 
         self.set_window_busy(False)
@@ -228,7 +227,6 @@ class DownloadMenu(ListBase):
             logger.error(f"downloadfolder: {error}")
             self.append_busytext(error)
         finally:
-            time.sleep(3)
             self.set_window_busy(False)
             self.downloading = False
             self.canceled = False
@@ -237,7 +235,7 @@ class DownloadMenu(ListBase):
 
 
     def playfolder(self):
-        self.set_busy_window()
+        self.set_window_busy()
 
         try:
             directory = os.path.join(cfg_file_folder.AUDIO_BASEPATH_ONLINE,get_relative_path(self.basecwd,self.cwd))
@@ -271,7 +269,6 @@ class DownloadMenu(ListBase):
         except Exception as error:
             self.append_busytext(error)
         finally:
-            time.sleep(3)
             self.set_window_busy(False)
 
     def push_handler(self,button = '*'):
@@ -390,7 +387,6 @@ class DownloadMenu(ListBase):
                     #self.menu.append([f"Datei: {online_file}"])
                     #self.menu.append([online_pos])
 
-                time.sleep(0.5)
                 self.set_window_busy(False)
 
         except Exception as error:
@@ -444,7 +440,6 @@ class DownloadMenu(ListBase):
             except Exception as error:
                 self.basetitle = self.windowtitle
         finally:
-                time.sleep(1)
                 self.set_window_busy(False)
 
 

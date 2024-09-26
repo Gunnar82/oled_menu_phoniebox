@@ -48,6 +48,7 @@ class WindowManager():
     def set_window(self, windowid):
         if windowid in self.windows:
             try:
+                self.activewindow.set_window_busy(False)
                 self.activewindow.deactivate()
             except (NotImplementedError, AttributeError):
                 pass
@@ -194,43 +195,50 @@ class WindowManager():
             await asyncio.sleep(self._RENDERTIME)
 
 
-    def push_callback(self,lp=False):
+    def init_callback_or_idle(self):
         fn.set_lastinput()
         settings.staywake = False
-        if settings.screenpower:
-            settings.callback_active = True
-            logger.debug("push_callback: started")
+        self.device.contrast(csettings.CONTRAST_FULL)
 
-            try:
-                self.device.contrast(csettings.CONTRAST_FULL)
-                self.activewindow.push_callback(lp=lp)
-            except (NotImplementedError, AttributeError):
-                logger.error("window_manager: push_callback error")
-            finally:
-                settings.callback_active = False
-                logger.debug("push_callback: ended")
-
-        else: 
+        if not settings.screenpower:
             settings.screenpower = True
             self.device.show()
+
+            logger.debug("init_callback: no screenpower: show idle, if handle_key_back")
+
             if self.activewindow.handle_key_back:
                 self.set_window("idle")
+        return settings.screenpower
+
+
+    def push_callback(self,lp=False):
+        if not self.init_callback_or_idle(): return
+
+        settings.callback_active = True
+        logger.debug("push_callback: started")
+
+        try:
+            self.activewindow.push_callback(lp=lp)
+        except (NotImplementedError, AttributeError):
+            logger.error("window_manager: push_callback error")
+        finally:
+            settings.callback_active = False
+            logger.debug("push_callback: ended")
+
 
     def turn_callback(self, direction, key=None):
-        fn.set_lastinput()
-        settings.staywake = False
+        if not self.init_callback_or_idle(): return
+
         if key == '0' and self.activewindow.windowtitle not in ["idle"]:
             try:
                 fn.restart_oled()
             except Exception as error:
                 logger.error("turn_callback: %s" % (str(error)))
-
-        elif settings.screenpower:
+        else:
             settings.callback_active = True
             logger.debug("turn_callback: started")
 
             try:
-                self.device.contrast(csettings.CONTRAST_FULL)
                 if key == '#' and self.activewindow.handle_key_back:
                     logger.info("activate window_on_back: %s" % (self.activewindow.window_on_back))
                     if self.activewindow.window_on_back not in ["","none","n/a"]: self.set_window(self.activewindow.window_on_back)
@@ -242,11 +250,6 @@ class WindowManager():
                 settings.callback_active = False
                 logger.debug("turn_callback: ended")
 
-        else:
-            settings.screenpower = True
-            self.device.show()
-            if self.activewindow.handle_key_back:
-                 self.set_window("idle")
 
 
     def __del__(self):
