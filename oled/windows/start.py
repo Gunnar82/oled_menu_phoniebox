@@ -23,6 +23,8 @@ from integrations.functions import get_oledversion, get_battload_color, enable_f
 
 class Start(ListBase):
     icon = "\uf001 \uf02d \uf02c"
+    contrasthandle = False
+
     def __init__(self, windowmanager,loop, mopidyconnection,bluetooth):
         super().__init__(windowmanager, loop, "Programmstart")
 

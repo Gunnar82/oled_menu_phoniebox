@@ -70,7 +70,7 @@ class WindowManager():
 
 
     def clear_window(self):
-        logger.debug("Show blank screen")
+        logger.debug("clear_window: Show blank screen")
         settings.screenpower = False
         self.device.clear()
         #Low-Power sleep mode
@@ -79,14 +79,18 @@ class WindowManager():
     async def _render(self):
 
         while self.loop.is_running():
-
+            #letzte Eingabezeit abfragen
             seconds_since_last_input = (time.monotonic() - settings.lastinput)
 
+            #wenn in aktivem Fenster aktiviert, setze timeoutwindow
             if (seconds_since_last_input >= settings.MENU_TIMEOUT) and self.activewindow.timeout:
+                logger.info(f"_render: MENU_TIMEOUT: setze auf: {self.activewindow.timeoutwindow}")
                 self.set_window(self.activewindow.timeoutwindow)
 
+            #wenn in aktivem Fenster aktiviert, setze Display-Helligkeit
             if self.activewindow.contrasthandle:
-                logger.debug("contrasthandle")
+                logger.debug(f"_render: {self.activewindow.contrasthandle}")
+                #Helligkeit Stufe 2
                 if (seconds_since_last_input >= settings.DARK_TIMEOUT):
                     self.rendertime = settings.DARK_RENDERTIME
                     self.looptime = int (settings.DARK_RENDERTIME // 2)
@@ -94,32 +98,44 @@ class WindowManager():
                     contrast = settings.CONTRAST_BLACK
 
                 elif  (seconds_since_last_input >= settings.CONTRAST_TIMEOUT):
+                    # Helligkeit Stufe 1
                     self.looptime = settings.CONTRAST_RENDERTIME
                     self.rendertime = settings.CONTRAST_RENDERTIME
                     logger.debug("contrast_timeout")
                     if settings.DISABLE_DISPLAY:
+                        #Display ausschalten, wenn unterstützt
                         if settings.screenpower:
                             logger.debug("disable Display")
                             self.clear_window()
                     else:
+                        #wenn nicht, Helligkeit auf minimum
                         contrast = settings.CONTRAST_DARK
 
                 else:
+                    #Eingabe erfolgt, normales render-Verhalten
                     contrast = settings.CONTRAST_FULL
                     self.rendertime = self.activewindow._rendertime
                     self.looptime = self._looptime
-
             else:
+                #wenn keine Kontrast-Anpassung unterstützt wird
+                contrast = settings.CONTRAST_FULL
+                logger.debug(f"_render: contrasthandle: {self.activewindow.contrasthandle}")
+
                 self.rendertime = self.activewindow._rendertime
 
             if self._lastcontrast != contrast:
+                #wenn sich der Kontrast geändert hat, setze
                 self._lastcontrast = contrast
 
                 self.device.contrast(contrast)
 
             if self.activewindow != []:
+                #render abarbeiten
                 count = 0
                 while (contrast == settings.CONTRAST_BLACK) and (count < 4 * settings.DARK_RENDERTIME) and (seconds_since_last_input >= settings.CONTRAST_TIMEOUT):
+                    # Render bei Display-Abdunkelung ist verlangsamt
+                    # Eingabe prüfen. Bei Eingabe fortsetzen
+                    if seconds_since_last_input <= settings.DARK_TIMEOUT: break
                     count += 1
                     await asyncio.sleep(0.25)
 
@@ -127,8 +143,6 @@ class WindowManager():
                     self.lastrfidate = time.monotonic()
                     self.show_window()
 
-                if self.activewindow.windowtitle in ['start']:
-                    self.show_window()
 
                 if settings.screenpower:
                     try:
@@ -153,6 +167,9 @@ class WindowManager():
                     except Exception as error:
                         logger.error(f"render: exception: {error}")
 
+            logger.debug(f"render: screenpower: {settings.screenpower}, _RENDERTIME: {self._RENDERTIME} ")
+
+            #warte Rendertime ab
             iTimerCounter = 0 
 
             while (iTimerCounter < self.rendertime / self._RENDERTIME  and settings.screenpower):
