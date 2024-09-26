@@ -194,14 +194,14 @@ class SystemMenu(ListBase):
             self.cmd = f"sed -i 's/AUTO_ENABLED=False/AUTO_ENABLED=True/g' {cfg_file_folder.FILE_USER_SETTINGS}"
 
         elif self.position == 12:
-            self.cmd = "sed -i 's/AUTO_ENABLED=True/AUTO_ENABLED=False/g' {cfg_file_folder.FILE_USER_SETTINGS}"
+            self.cmd = f"sed -i 's/AUTO_ENABLED=True/AUTO_ENABLED=False/g' {cfg_file_folder.FILE_USER_SETTINGS}"
 
 
         elif self.position == 17:
-            self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=False/BLUETOOTH_AUTOCONNECT=True/g' {cfg_file_folder.FILE_USER_SETTINGS}"
+            self.cmd = f"sed -i 's/BLUETOOTH_AUTOCONNECT=False/BLUETOOTH_AUTOCONNECT=True/g' {cfg_file_folder.FILE_USER_SETTINGS}"
 
         elif self.position == 18:
-            self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=True/BLUETOOTH_AUTOCONNECT=False/g' {cfg_file_folder.FILE_USER_SETTINGS}"
+            self.cmd = f"sed -i 's/BLUETOOTH_AUTOCONNECT=True/BLUETOOTH_AUTOCONNECT=False/g' {cfg_file_folder.FILE_USER_SETTINGS}"
 
 
         elif self.position == 20:
