@@ -68,12 +68,12 @@ class MainWindow(WindowBase):
 
                 _xpos = int((xpos1 + xpos2) / 2 ) - int(self.fontsmall.getsize(_spos)[0]/2)
 
-                draw.text((_xpos, lineposy + 2 ),_spos, font=self.fontsmall, fill="white")
+                draw.text((_xpos, lineposy + settings.MAINWINDOW_LINESPACE ),_spos, font=self.fontsmall, fill="white")
             else:
                 _spos = self.nowplaying._state
                 _xpos = int((xpos1 + xpos2) / 2 ) - int(self.fontsmall.getsize(_spos)[0]/2)
 
-                draw.text((_xpos, lineposy + 2), _spos, font=self.fontsmall, fill="white") #other than play
+                draw.text((_xpos, lineposy + settings.MAINWINDOW_LINESPACE), _spos, font=self.fontsmall, fill="white") #other than play
                 if self.nowplaying._statex != self.nowplaying._state:
                     self.nowplaying._statex = self.nowplaying._state
 
@@ -82,8 +82,8 @@ class MainWindow(WindowBase):
 
 
         #volume
-        draw.text((1, lineposy + 2 ), str(self.nowplaying._volume), font=self.fontsmall, fill="white")
-        draw.text((settings.MAINWINDOW_OUTPUTSYMBOL_X, lineposy + 2 ), str(self.nowplaying.output_symbol), font=self.faicons, fill="white")
+        draw.text((1, lineposy + settings.MAINWINDOW_LINESPACE ), str(self.nowplaying._volume), font=self.fontsmall, fill="white")
+        draw.text((settings.MAINWINDOW_OUTPUTSYMBOL_X, lineposy + settings.MAINWINDOW_LINESPACE ), str(self.nowplaying.output_symbol), font=self.faicons, fill="white")
 
 
         if "x728" in settings.INPUTS:
@@ -108,18 +108,18 @@ class MainWindow(WindowBase):
         _spos = "%2.2d/%2.2d" % (int(self.nowplaying._song), int(self.nowplaying._playlistlength))
         _xpos = int((xpos3 + xpos2) / 2) - int(self.fontsmall.getsize(_spos)[0]/2)
 
-        draw.text((_xpos, lineposy + 2 ),_spos , font=self.fontsmall, fill="white")
+        draw.text((_xpos, lineposy + settings.MAINWINDOW_LINESPACE ),_spos , font=self.fontsmall, fill="white")
 
         #shutdowntimer ? aktiv dann Zeit anzeigen
         xpause = 0
         if 'http://' in self.nowplaying.filename or 'https://' in self.nowplaying.filename:
-            draw.text((xpos3 + 5, lineposy + 2), symbols.SYMBOL_CLOUD, font=self.faicons, fill="white")
+            draw.text((xpos3 + 5, lineposy + settings.MAINWINDOW_LINESPACE), symbols.SYMBOL_CLOUD, font=self.faicons, fill="white")
             xpause, ypause = self.faicons.getsize(symbols.SYMBOL_CLOUD)
 
         if settings.job_t >= 0:
-            draw.text((xpos3 + 5 + 1.2 * xpause, lineposy + 2 ), "%2.2d" % (int(settings.job_t)), font=self.fontsmall, fill="white")
+            draw.text((xpos3 + 5 + 1.2 * xpause, lineposy + settings.MAINWINDOW_LINESPACE ), "%2.2d" % (int(settings.job_t)), font=self.fontsmall, fill="white")
         elif "x728" in settings.INPUTS:
-            draw.text((xpos3 + 5 + 1.2 * xpause, lineposy + 2), symbols.SYMBOL_BATTERY, font=self.faicons, fill=get_battload_color())
+            draw.text((xpos3 + 5 + 1.2 * xpause, lineposy + settings.MAINWINDOW_LINESPACE), symbols.SYMBOL_BATTERY, font=self.faicons, fill=get_battload_color())
 
 
     async def _find_dev_bt(self):
