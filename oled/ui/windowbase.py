@@ -162,9 +162,10 @@ class WindowBase():
         self.busymenu = []
         self.set_lastbusytextline()
 
-    def set_window_busy(self, state=True):
-        #self.clear_busymenu()
-        if not state and self.new_busyrender: time.sleep(2)
+    def set_window_busy(self, state=True, with_symbol = True):
+        self.clear_busymenu()
+        if not state and self.new_busyrender: time.sleep(1)
+        if with_symbol and not state: self.append_busysymbol()
         self.is_busy = state
         self.set_lastbusytextline()
 

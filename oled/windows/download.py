@@ -39,6 +39,7 @@ requests.packages.urllib3.disable_warnings(requests.packages.urllib3.exceptions.
 
 class DownloadMenu(ListBase):
     new_busyrender = True
+    busysymbol = symbols.SYMBOL_CLOUD
 
     def __init__(self, windowmanager,loop):
         super().__init__(windowmanager, loop, "Download")
@@ -185,7 +186,6 @@ class DownloadMenu(ListBase):
         try:
             self.canceled = False
             self.set_window_busy()
-            #self.append_busysymbol("\uf0ed")
 
             logger.debug(f"start downloadfolder")
             self.downloading = True

@@ -51,7 +51,6 @@ class Start(WindowBase):
         try:
             logger.debug("exec_init: startet")
 
-            self.append_busysymbol()
             self.append_busytext("Wird gestartet...")
             oled_version = get_oledversion()
             logger.info(f"exec_init: oled_version: {oled_version}")
