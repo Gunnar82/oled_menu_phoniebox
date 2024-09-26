@@ -22,22 +22,34 @@ logger = setup_logger(__name__)
 
 
 ###checke user_settings
-try:
-    usersettings = cfg_file_folder.FILE_USER_SETTINGS
-    usersettings_sample = cfg_file_folder.FILE_USER_SETTINGS_SAMPLE
+def check_or_create_config(filename,samplename):
+    try:
 
-    if not os.path.exists(usersettings):
-        logger.info(f"{usersettings} existiert nicht. Erstelle aus der Vorlage.")
-        # Prüfe, ob die Vorlage existiert
-        if os.path.exists(user_settings_sample):
-            # Kopiere die Vorlage in USER_SETTINGS
-            shutil.copy(user_settings_sample, user_settings)
-            logger.info(f"{user_settings} wurde aus {user_settings_sample} erstellt.")
-        else:
-            logger.error(f"Vorlage {user_settings_sample} existiert nicht.")
-except Exception as error:
-   logger.error(f"usersettings Fehler: {error}")
-   sys.exit (-1)
+        if not os.path.exists(filename):
+            logger.info(f"{filename} existiert nicht. Erstelle aus der Vorlage.")
+            # Prüfe, ob die Vorlage existiert
+            if os.path.exists(samplename):
+                # Kopiere die Vorlage in USER_SETTINGS
+                shutil.copy(samplename, filename)
+                logger.info(f"{filename} wurde aus {samplename} erstellt.")
+            else:
+                logger.error(f"Vorlage {samplename} existiert nicht.")
+    except Exception as error:
+       logger.error(f"usersettings Fehler: {error}")
+       sys.exit (-1)
+
+
+online_py = "/home/pi/oledctrl/oled/config/online.py"
+online_py_sample = f"{online_py}.sample"
+
+settings_py = "/home/pi/oledctrl/oled/settings.py"
+settings_py_sample = f"{settings_py}.sample"
+
+check_or_create_config(cfg_file_folder.FILE_USER_SETTINGS,cfg_file_folder.FILE_USER_SETTINGS_SAMPLE)
+check_or_create_config(online_py,online_py_sample)
+check_or_create_config(settings_py,settings_py_sample)
+
+
 
 ######
 from datetime import datetime
