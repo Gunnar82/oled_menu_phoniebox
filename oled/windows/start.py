@@ -22,12 +22,12 @@ from integrations.functions import get_oledversion, get_battload_color, enable_f
 
 
 class Start(WindowBase):
-    busysymbol = "\uf001 \uf02d \uf02c"
     contrasthandle = False
     new_busyrender = True
 
     def __init__(self, windowmanager,loop, mopidyconnection,bluetooth):
         super().__init__(windowmanager, loop)
+        self.busysymbol = "\uf001 \uf02d \uf02c"
 
         self.bluetooth = bluetooth
         self.mopidyconnection = mopidyconnection

@@ -150,9 +150,12 @@ class WindowBase():
         self.busymenu.append(item)
 
 
-    def append_busysymbol(self,item=busysymbol):
+    def append_busysymbol(self,item=None):
         logger.debug(f"append busysymbol: {item}")
-        self.busymenu.append([item,self.symbol])
+        if item is None: item  = self.busysymbol  # Zugriff auf die Klassenvariable via self
+        width,height = busyfaiconsbig.getsize(item)
+
+        self.busymenu.append([item,self.symbol,width,height])
 
 
     def clear_busymenu(self):
@@ -165,7 +168,6 @@ class WindowBase():
         self.is_busy = state
         self.set_lastbusytextline()
 
-        if state: self.busysymbolentrylinewidth,self.busysymbolentrylineheight = busyfaiconsbig.getsize(symbols.SYMBOL_SANDCLOCK)
 
     def set_lastbusytextline(self, text=""):
         self.lastbusytext = text
@@ -215,14 +217,12 @@ class WindowBase():
                     else:
                         progresscolor = colors.COLOR_GREEN
                         if is_symbol:
-                            draw.text(((settings.DISPLAY_WIDTH - self.busysymbolentrylinewidth) / 2, current_y), drawtext, font=busyfaiconsbig, fill=colors.COLOR_RED)
+                            draw.text(((settings.DISPLAY_WIDTH - selected_element[2]) / 2, current_y), drawtext, font=busyfaiconsbig, fill=colors.COLOR_RED)
+                            current_y += selected_element[3]
+
                         else:
                             draw.text((self.startleft, current_y), drawtext, font=busyfont, fill=colors.COLOR_GREEN)
-
-                    if is_symbol:
-                        current_y += self.busysymbolentrylineheight
-                    else:
-                        current_y += self.busyentrylineheight
+                            current_y += self.busyentrylineheight
 
                 if self.lastbusytext != "":
                         draw.text((self.startleft, self.busydisplaylines * self.busyentrylineheight), self.lastbusytext, font=busyfont, fill=colors.COLOR_YELLOW)
