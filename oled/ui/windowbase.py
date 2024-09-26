@@ -38,7 +38,7 @@ class WindowBase():
     busytext1 = settings.PLEASE_WAIT
     busytext2 = ""
     busytext3 = ""
-    render_progressbar = False
+    render_busy_progressbar = False
     busytext4 = ""
     busyrendertime = 3
     _rendertime = 0.25
@@ -82,7 +82,7 @@ class WindowBase():
             self.busytext4 = ""
             self.busytext2 = busytext2
 
-        self.render_progressbar = render_progressbar
+        self.render_busy_progressbar = render_progressbar
         self.busyrendertime = busyrendertime
 
         self.start_busyrendertime = time.monotonic()
@@ -94,7 +94,7 @@ class WindowBase():
     def renderbusy(self,symbolcolor = colors.COLOR_RED, textcolor1=colors.COLOR_WHITE, textcolor2=colors.COLOR_WHITE):
         with canvas(self.device) as draw:
             self.renderbusydraw(draw,symbolcolor,textcolor1,textcolor2)
-            if self.render_progressbar: self.render_progressbar_draw(draw)
+            if self.render_busy_progressbar: self.render_progressbar_draw(draw)
 
     def renderbusydraw(self, draw, symbolcolor = colors.COLOR_RED, textcolor1=colors.COLOR_WHITE, textcolor2=colors.COLOR_WHITE):
         mwidth1,mheight1 = busyfont.getsize(self.busytext1)
@@ -162,7 +162,10 @@ class WindowBase():
         self.busymenu = []
         self.set_lastbusytextline()
 
-    def set_window_busy(self, state=True, with_symbol = True, clear_busymenu = True):
+    def set_window_busy(self, state=True, with_symbol = True, clear_busymenu = True, render_progressbar = False):
+
+        self.render_busy_progressbar = render_progressbar
+
         if state and clear_busymenu: self.clear_busymenu()
         if not state and self.new_busyrender: time.sleep(1)
         if with_symbol and state: self.append_busysymbol()
@@ -176,7 +179,7 @@ class WindowBase():
     def new_renderbusy(self):
         try:
             with canvas (self.device) as draw:
-                if self.render_progressbar: self.render_progressbar_draw(draw)
+                if self.render_busy_progressbar: self.render_progressbar_draw(draw)
                 menulen = len(self.busymenu)
                 position = len(self.busymenu)
 

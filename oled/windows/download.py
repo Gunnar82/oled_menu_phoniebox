@@ -185,7 +185,7 @@ class DownloadMenu(ListBase):
     def downloadfolder(self):
         try:
             self.canceled = False
-            self.set_window_busy()
+            self.set_window_busy(render_progressbar = True)
 
             logger.debug(f"start downloadfolder")
             self.downloading = True
@@ -214,7 +214,7 @@ class DownloadMenu(ListBase):
                 self.append_busytext("Download %2.2d von %2.2d" % (self.items.index(item) + 1,len(self.items))) 
                 self.append_busytext(item)
                 self.append_busytext("Abbruch mit beliebiger Taste") 
-                self.render_progressbar = True
+
 
                 try:
                     self.download_file(url,destination)

@@ -54,7 +54,6 @@ class ListBase(WindowBase):
         self.startleft += 5
 
     def render(self):
-
         if self.left_pressed and self.handle_left_key:
             self.left_pressed = False
             self.loop.run_in_executor(None,self.on_key_left)
