@@ -18,3 +18,6 @@ LATEST_PLAYED_FOLDER="/home/pi/RPi-Jukebox-RFID/settings/Latest_Folder_Played"
 
 PLAYOUT_CONTROLS = "sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh"
 RESUME_PLAY = "sudo /home/pi/RPi-Jukebox-RFID/scripts/resume_play.sh"
+
+FILE_USER_SETTINGS="/home/pi/oledctrl/oled/config/user_settings.py"
+FILE_USER_SETTINGS_SAMPLE="/home/pi/oledctrl/oled/config/user_settings.py.sample"

@@ -14,8 +14,8 @@ logger = setup_logger(__name__)
 
 import config.colors as colors
 import config.symbols as symbols
-import config.bluetooth as cbluetooth
-import config.firewall as cfirewall
+
+import config.user_settings as csettings
 
 from integrations.functions import get_oledversion, get_battload_color, enable_firewall
 
@@ -59,7 +59,7 @@ class Start(ListBase):
             logger.info(f"exec_init: oled_version: {oled_version}")
             self.appendcomment(f"Version: {oled_version}")
 
-            if (cfirewall.AUTO_ENABLED):
+            if (csettings.AUTO_ENABLED):
                 logger.info("auto_enable firewall EIN")
                 self.appendcomment("Aktiviere Firewall...")
                 enable_firewall()
@@ -67,7 +67,7 @@ class Start(ListBase):
                 logger.info("auto_enable firewall False")
                 self.appendcomment("Übespringe Firewall...")
 
-            if (cbluetooth.BLUETOOTH_AUTOCONNECT):
+            if (csettings.BLUETOOTH_AUTOCONNECT):
                 logger.info("bluetooth autoconnect")
                 self.appendcomment("Verbinde Bluetooth...")
                 self.appendcomment(f"Suche Gerät: {self.bluetooth.selected_bt_name}")

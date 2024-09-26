@@ -3,7 +3,7 @@
 import asyncio
 import signal
 import sys
-import os
+import os,shutil
 import time
 import importlib
 from subprocess import call
@@ -20,6 +20,24 @@ from integrations.logging_config import *
 
 logger = setup_logger(__name__)
 
+
+###checke user_settings
+try:
+    usersettings = cfg_file_folder.FILE_USER_SETTINGS
+    usersettings_sample = cfg_file_folder.FILE_USER_SETTINGS_SAMPLE
+
+    if not os.path.exists(usersettings):
+        logger.info(f"{usersettings} existiert nicht. Erstelle aus der Vorlage.")
+        # Prüfe, ob die Vorlage existiert
+        if os.path.exists(user_settings_sample):
+            # Kopiere die Vorlage in USER_SETTINGS
+            shutil.copy(user_settings_sample, user_settings)
+            logger.info(f"{user_settings} wurde aus {user_settings_sample} erstellt.")
+        else:
+            logger.error(f"Vorlage {user_settings_sample} existiert nicht.")
+except Exception as error:
+   logger.error(f"usersettings Fehler: {error}")
+   sys.exit (-1)
 
 ######
 from datetime import datetime

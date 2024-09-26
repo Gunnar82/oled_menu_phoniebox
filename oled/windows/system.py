@@ -28,8 +28,8 @@ import config.file_folder as cfg_file_folder
 import config.services as cfg_services
 
 
-import config.bluetooth
-import config.firewall
+import config.user_settings
+
 
 
 class SystemMenu(ListBase):
@@ -137,8 +137,7 @@ class SystemMenu(ListBase):
                     self.set_busy(self.menu[self.position][0],symbols.SYMBOL_FAIL, busytext2="Fehler")
         finally:
             time.sleep(5)
-            importlib.reload(config.firewall)
-            importlib.reload(config.bluetooth)
+            importlib.reload(config.user_settings)
 
             self.refresh_values()
             self.processing = False
@@ -192,17 +191,17 @@ class SystemMenu(ListBase):
                 self.cmd = "sudo ip link set wlan0 up"
 
         elif self.position == 11:
-            self.cmd = "sed -i 's/AUTO_ENABLED=False/AUTO_ENABLED=True/g' /home/pi/oledctrl/oled/config/firewall.py"
+            self.cmd = "sed -i 's/AUTO_ENABLED=False/AUTO_ENABLED=True/g' /home/pi/oledctrl/oled/config/user_settings.py"
 
         elif self.position == 12:
-            self.cmd = "sed -i 's/AUTO_ENABLED=True/AUTO_ENABLED=False/g' /home/pi/oledctrl/oled/config/firewall.py"
+            self.cmd = "sed -i 's/AUTO_ENABLED=True/AUTO_ENABLED=False/g' /home/pi/oledctrl/oled/config/user_settings.py"
 
 
         elif self.position == 17:
-            self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=False/BLUETOOTH_AUTOCONNECT=True/g' /home/pi/oledctrl/oled/config/bluetooth.py"
+            self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=False/BLUETOOTH_AUTOCONNECT=True/g' /home/pi/oledctrl/oled/config/user_settings.py"
 
         elif self.position == 18:
-            self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=True/BLUETOOTH_AUTOCONNECT=False/g' /home/pi/oledctrl/oled/config/bluetooth.py"
+            self.cmd = "sed -i 's/BLUETOOTH_AUTOCONNECT=True/BLUETOOTH_AUTOCONNECT=False/g' /home/pi/oledctrl/oled/config/user_settings.py"
 
 
         elif self.position == 20:
@@ -238,9 +237,9 @@ class SystemMenu(ListBase):
 
     def render(self):
         if not self.showqr:
-            self.menu[10] = [f"Firewall AUTO_ENABLED ({config.firewall.AUTO_ENABLED}):","h"]
+            self.menu[10] = [f"Firewall AUTO_ENABLED ({config.user_settings.AUTO_ENABLED}):","h"]
             self.menu[13] = ["Firewall Status: %s " % ("AUS" if "deny" not in self.firewall_status else "EIN"),"h"]
-            self.menu[16] = [f"Bluetooth_Autoconnect ({config.bluetooth.BLUETOOTH_AUTOCONNECT}):","h"]
+            self.menu[16] = [f"Bluetooth_Autoconnect ({config.user_settings.BLUETOOTH_AUTOCONNECT}):","h"]
             self.menu[19] = [f"hostapd (aktiviert: {self.hostapd_status}):", "h"]
             self.menu[25] = [self.hostapd_ssid]
             self.menu[26] = [self.hostapd_psk]
