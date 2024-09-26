@@ -157,12 +157,20 @@ class WindowManager():
                             self.activewindow.renderbusy()
                             self.activewindow.busysymbol = symbols.SYMBOL_SANDCLOCK
 
-                        elif ((time.monotonic() - self.activewindow.start_busyrendertime) < self.activewindow.busyrendertime and self.activewindow.busy) or (settings.callback_active and self.activewindow.changerender):
+                        elif ((time.monotonic() - self.activewindow.start_busyrendertime) < self.activewindow.busyrendertime and self.activewindow.busy) or (settings.callback_active and self.activewindow.changerender and not self.activewindow.new_busyrender):
                             #window busy
                             logger.debug(f"render: start renderbusy - time: {self.activewindow.busyrendertime}s: {self.activewindow.windowtitle}")
+
                             self.activewindow.renderbusy()
                             logger.debug(f"render: end renderbusy: {self.activewindow.windowtitle}")
                             await asyncio.sleep(self._RENDERTIME)
+                        elif (self.activewindow.is_busy):
+                            logger.debug(f"render: start new_renderbusy: {self.activewindow.windowtitle}")
+
+                            self.activewindow.new_renderbusy()
+                            logger.debug(f"render: end new_renderbusy: {self.activewindow.windowtitle}")
+
+
                         else:
                             logger.debug("render: start render")
                             self.activewindow.render()

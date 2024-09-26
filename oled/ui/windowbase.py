@@ -12,12 +12,15 @@ from luma.core.render import canvas
 
 import time
 
+from luma.core.render import canvas
+
+
 from integrations.logging_config import *
 
 logger = setup_logger(__name__)
 
-
-busyfont = ImageFont.truetype(settings.FONT_TEXT, size=settings.WINDOWBASE_BUSYFONT)
+font = ImageFont.truetype(settings.FONT_TEXT, size=settings.WINDOWBASE_BUSYFONT)
+busyfont = ImageFont.truetype(settings.FONT_TEXT, size=settings.LISTBASE_ENTRY_SIZE)
 busyfaicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.WINDOWBASE_BUSYFAICONS)
 busyfaiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=settings.WINDOWBASE_BUSYFAICONSBIG)
 
@@ -30,7 +33,7 @@ class WindowBase():
     windowtitle = "untitled"
     timeoutwindow="idle"
     window_on_back = "mainmenu"
-    
+    symbol = "s"
     busysymbol = symbols.SYMBOL_SANDCLOCK
     busytext1 = settings.PLEASE_WAIT
     busytext2 = ""
@@ -42,6 +45,17 @@ class WindowBase():
     counter = 0
     page = 0
     handle_key_back = True
+
+
+    new_busyrender = False
+    is_busy = False
+    busymenu = []
+    busydrawtextx = 0
+    lastbusytext = ""
+    busyentrylinewidth, busyentrylineheight = busyfont.getsize("000")
+    busytitlelineheight = busyfont.getsize("ZZZ")[1] + 3
+    busydisplaylines = (settings.DISPLAY_HEIGHT - busytitlelineheight) // busyentrylineheight - 1# letzte Zeile gesondert
+    startleft, selected_symbol_height = busyfaicons.getsize(symbols.SYMBOL_LIST_SELECTED)
 
 
     def __init__(self, windowmanager,loop):
@@ -129,3 +143,88 @@ class WindowBase():
 
     def turn_callback(self, direction, key=None):
         raise NotImplementedError()
+
+    # new busy handling
+    def append_busytext(self,item="Verarbeite..."):
+        logger.debug(f"append busyitem: {item}")
+        self.busymenu.append(item)
+
+
+    def append_busysymbol(self,item=busysymbol):
+        logger.debug(f"append busysymbol: {item}")
+        self.busymenu.append([item,self.symbol])
+
+
+    def clear_busymenu(self):
+        self.busymenu = []
+        self.set_lastbusytextline()
+
+    def set_window_busy(self, state=True):
+        #self.clear_busymenu()
+        self.is_busy = state
+        self.set_lastbusytextline()
+
+        if state: self.busysymbolentrylinewidth,self.busysymbolentrylineheight = busyfaiconsbig.getsize(symbols.SYMBOL_SANDCLOCK)
+
+    def set_lastbusytextline(self, text=""):
+        self.lastbusytext = text
+
+    def new_renderbusy(self):
+        try:
+            with canvas (self.device) as draw:
+                menulen = len(self.busymenu)
+                position = len(self.busymenu)
+
+                seite = position // self.busydisplaylines
+                pos = position % self.busydisplaylines
+                maxpos = (self.busydisplaylines if (seite + 1) * self.busydisplaylines <= menulen else (menulen % self.busydisplaylines))
+                current_y = 0 # bei 0 beginnen
+
+                for i in range(maxpos):
+                    logger.debug(f"new_renderbusy: pos:{pos}, seite{seite}, position: {position}, i: {i}")
+
+                    scrolling = False
+                    selected_element = self.busymenu[seite * self.busydisplaylines + i]
+                    is_symbol = False
+
+                    if isinstance(selected_element,list):
+                        drawtext = selected_element[0]
+
+                        try:
+                            if selected_element[1] == self.symbol:
+                                is_symbol = True
+                        except:
+                            pass
+                    else:
+                        drawtext = selected_element
+
+
+                    if position  == seite * self.busydisplaylines + i + 1 and not is_symbol: #selected
+                        progresscolor = colors.COLOR_SELECTED
+
+                        if (time.monotonic()-settings.lastinput) > 2:
+                            if busyfont.getsize(drawtext[self.busydrawtextx:])[0] > settings.DISPLAY_WIDTH -1 - self.startleft:
+                                self.busydrawtextx += 1
+                                scrolling = True
+                            else:
+                                self.busydrawtextx = 0
+
+                        draw.text((self.startleft , current_y), drawtext[self.busydrawtextx:], font=busyfont, fill=colors.COLOR_SELECTED)
+
+                    else:
+                        progresscolor = colors.COLOR_GREEN
+                        if is_symbol:
+                            draw.text(((settings.DISPLAY_WIDTH - self.busysymbolentrylinewidth) / 2, current_y), drawtext, font=busyfaiconsbig, fill=colors.COLOR_RED)
+                        else:
+                            draw.text((self.startleft, current_y), drawtext, font=busyfont, fill=colors.COLOR_GREEN)
+
+                    if is_symbol:
+                        current_y += self.busysymbolentrylineheight
+                    else:
+                        current_y += self.busyentrylineheight
+
+                if self.lastbusytext != "":
+                        draw.text((self.startleft, self.busydisplaylines * self.busyentrylineheight), self.lastbusytext, font=busyfont, fill=colors.COLOR_YELLOW)
+
+        except Exception as error:
+             logger.error(f"new_renderbusy: {error}")

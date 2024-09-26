@@ -1,5 +1,5 @@
 """ Start screen """
-from ui.listbase import ListBase
+from ui.listbase import WindowBase
 from luma.core.render import canvas
 
 from datetime import datetime
@@ -21,25 +21,21 @@ from integrations.functions import get_oledversion, get_battload_color, enable_f
 
 
 
-class Start(ListBase):
-    icon = "\uf001 \uf02d \uf02c"
+class Start(WindowBase):
+    busysymbol = "\uf001 \uf02d \uf02c"
     contrasthandle = False
+    new_busyrender = True
 
     def __init__(self, windowmanager,loop, mopidyconnection,bluetooth):
-        super().__init__(windowmanager, loop, "Programmstart")
+        super().__init__(windowmanager, loop)
 
         self.bluetooth = bluetooth
         self.mopidyconnection = mopidyconnection
         self.timeout = False
         self.conrasthandle = False
         self.check_bt = 0
-
-        self.init_finished = False
         self.handle_key_back = False
         self.startup = time.monotonic()
-        self.change_type_info()
-
-        self.symbolentrylinewidth,self.symbolentrylineheight = self.faiconsbig.getsize(self.icon)
 
 
     def activate(self):
@@ -47,17 +43,19 @@ class Start(ListBase):
         logger.debug("activate: startet")
         self.clear_window()
         self.bluetooth.enable_dev_local()
-        self.loop.run_in_executor(None,self.exec_init)
+        self.set_window_busy()
 
+        self.loop.run_in_executor(None,self.exec_init)
 
     def exec_init(self):
         try:
             logger.debug("exec_init: startet")
-            self.appendsymbol(self.icon)
-            self.appendcomment("Wird gestartet...")
+
+            self.append_busysymbol()
+            self.append_busytext("Wird gestartet...")
             oled_version = get_oledversion()
             logger.info(f"exec_init: oled_version: {oled_version}")
-            self.appendcomment(f"Version: {oled_version}")
+            self.append_busytext(f"Version: {oled_version}")
 
             if (csettings.AUTO_ENABLED):
                 logger.info("auto_enable firewall EIN")
@@ -65,43 +63,39 @@ class Start(ListBase):
                 enable_firewall()
             else:
                 logger.info("auto_enable firewall False")
-                self.appendcomment("Übespringe Firewall...")
+                self.append_busytext("Übespringe Firewall...")
 
             if (csettings.BLUETOOTH_AUTOCONNECT):
                 logger.info("bluetooth autoconnect")
-                self.appendcomment("Verbinde Bluetooth...")
-                self.appendcomment(f"Suche Gerät: {self.bluetooth.selected_bt_name}")
+                self.append_busytext("Verbinde Bluetooth...")
+                self.append_busytext(f"Suche Gerät: {self.bluetooth.selected_bt_name}")
 
                 self.bluetooth.enable_dev_bt()
             else:
                 logger.info("bluetooth autoconnect AUS")
-                self.appendcomment("Überspringe Bluetooth...")
+                self.append_busytext("Überspringe Bluetooth...")
 
             if "x728" in settings.INPUTS:
-                self.appendcomment(f"Batterie {settings.battcapacity}% geladen")
+                self.append_busytext(f"Batterie {settings.battcapacity}% geladen")
 
             while not  self.mopidyconnection.connected:
-                self.appendcomment(f"modipy verbinden...")
+                self.append_busytext(f"modipy verbinden...")
                 time.sleep(1)
-            self.appendcomment(f"modipy verbunden.")
+            self.append_busytext(f"modipy verbunden.")
 
         except Exception as error:
             logger.error(f"exec_init: {error}")
-            self.appendcomment(f"Fehler {error}")
+            self.append_busytext(f"Fehler {error}")
         finally:
 
-            self.appendcomment(f"Initialisierung beendet.")
+            self.append_busytext(f"Initialisierung beendet.")
             self.startup = time.monotonic()
 
-            self.init_finished = True
 
-    def render(self):
-        super().render()
-
-        if (time.monotonic() - self.startup) >= csettings.START_TIMEOUT and self.init_finished:
-            logger.debug("start: init")
+            while (time.monotonic() - self.startup) < csettings.START_TIMEOUT:
+                logger.debug("start: wait")
+                time.sleep (1)
             self.windowmanager.set_window("idle")
-
 
 
     def push_callback(self,lp=False):
