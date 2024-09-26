@@ -85,8 +85,6 @@ class Start(ListBase):
                 time.sleep(1)
             self.appendcomment(f"modipy verbunden.")
 
-
-
         except Exception as error:
             logger.error(f"exec_init: {error}")
             self.appendcomment(f"Fehler {error}")

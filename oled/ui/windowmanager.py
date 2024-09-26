@@ -167,17 +167,16 @@ class WindowManager():
                     except Exception as error:
                         logger.error(f"render: exception: {error}")
 
-            logger.debug(f"render: screenpower: {settings.screenpower}, _RENDERTIME: {self._RENDERTIME} ")
+            logger.debug(f"render: screenpower: {settings.screenpower}, _RENDERTIME: {self._RENDERTIME}, rendertime: {self.rendertime} ")
 
             #warte Rendertime ab
             iTimerCounter = 0 
 
             while (iTimerCounter < self.rendertime / self._RENDERTIME  and settings.screenpower):
-                #logger.debug("renderloop: %d, %d, %.2f "%(iTimerCounter+1, self.rendertime / self._RENDERTIME, self._RENDERTIME))
                 iTimerCounter += 1
                 await asyncio.sleep(self._RENDERTIME)
                 #logger.debug("self.busytext1: %s" %(self.activewindow.busytext1))
-
+                if not settings.screenpower and secconds_since_last_input <= settings.DARK_TIMEOUT: break
                 if (not settings.callback_active and self.rendered_busy):
                     #logger.debug("render resetting %s.busy to False" %(self.activewindow.windowtitle))
                     self.activewindow.busy = False
