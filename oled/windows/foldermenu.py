@@ -61,15 +61,22 @@ class Foldermenu(ListBase):
             self.set_window_busy(False)
 
     def on_key_left(self):
+        self.set_window_busy(with_symbol=False,clear_busymenu=False)
+        self.append_busytext("Ebene höher...")
+
         logger.debug("settings.currentfolder:%s " %(settings.currentfolder))
+        self.append_busytext(f"von {settings.currentfolder}")
+
         settings.current_selectedfolder = settings.currentfolder
         settings.currentfolder = functions.get_parent_folder(settings.currentfolder)
         if len(settings.currentfolder) < len(settings.audio_basepath):
             settings.currentfolder = settings.audio_basepath
+        self.append_busytext(f"nach {settings.currentfolder}")
+
         self.generate_folders(settings.currentfolder)
         self.basetitle = os.path.split(settings.currentfolder)[-1]
         logger.debug("self.basetitle: %s" % (self.basetitle))
-
+        self.set_window_busy(False)
 
     def generate_folders_array(self,path):
         self.folders = []
@@ -171,13 +178,13 @@ class Foldermenu(ListBase):
         try:
 
             self.set_window_busy()
-            self.append_busysymbol()
 
             if self.position  == -2:
                 settings.currentfolder = settings.audio_basepath
                 self.windowmanager.set_window("mainmenu")
             elif self.position == -1:
-                self.append_windowtext("Eine Ebene höher...")
+                self.append_busytext("Eine Ebene höher...")
+                set_window = False
                 self.on_key_left()
             else:
                 #folder = self.folders[self.position-1]
@@ -187,8 +194,8 @@ class Foldermenu(ListBase):
                 thefile = os.listdir(settings.current_selectedfolder)
 
                 if (functions.has_subfolders(settings.current_selectedfolder)):
-                    self.appendbusytext("Suche Ordner...")
-                    self.appendbusytext(settings.selected_folder)
+                    self.append_busytext("Suche Ordner...")
+                    self.append_busytext(settings.current_selectedfolder)
                     self.generate_folders(settings.current_selectedfolder)
                     settings.currentfolder = settings.current_selectedfolder
                     self.position = -1
@@ -198,7 +205,7 @@ class Foldermenu(ListBase):
                 else:
                     set_window = False
                     self.append_busytext("Auswahl startet...")
-                    #self.apend_busytext(self.menu[self.position][0])
+                    self.append_busytext(self.menu[self.position][0])
 
                     self.loop.run_in_executor(None,self.playfolder,settings.current_selectedfolder)
         except Exception as error:
