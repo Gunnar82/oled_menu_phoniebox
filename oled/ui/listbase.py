@@ -73,11 +73,10 @@ class ListBase(WindowBase):
 
             #progressbar
             try:
-                self.progessbarpos = (self.position + 1) / len(self.menu)
+                self.progressbarpos = (self.position + 1) / len(self.menu)
             except Exception as error:
                 logger.debug(f"{error}")
 
-            if self.render_progressbar: self.render_progressbar_draw(draw)
 
             #Back button and selection arrow
             if not self.hide_buttons:
@@ -170,6 +169,9 @@ class ListBase(WindowBase):
                 else:
                     current_y += self.entrylineheight
 
+            if self.render_progressbar: self.render_progressbar_draw(draw,self.progressbarpos)
+
+
     def is_heading(self):
         try:
             return self.menu[self.position][1] in self.heading
@@ -231,6 +233,7 @@ class ListBase(WindowBase):
            self.position += direction
 
         self.selection_changed = True
+
 
         logger.debug("self.position: %d" % (self.position))
 

@@ -73,43 +73,43 @@ class SystemMenu(ListBase):
 
         # QR-Code generieren
 
-        self.menu.append(["Update Radiosender"])
-        self.menu.append(["Lösche Online-Ordner"])
-        self.menu.append(["Lösche Online-Status Online"])
+        self.menu.append(["Update Radiosender"])                   # Eintrag 0
+        self.menu.append(["Lösche Online-Ordner"])                 # Eintrag 1
+        self.menu.append(["Lösche Online-Status Online"])          # Eintrag 2
 
-        self.menu.append(["Lösche Hörspielstatus"])
-        self.menu.append(["Lösche Musikstatus"])
-        self.menu.append(["Lösche Radiostatus"])
-        self.menu.append(["Lösche Onlinestatus"])
+        self.menu.append(["Lösche Hörspielstatus"])                # Eintrag 3
+        self.menu.append(["Lösche Musikstatus"])                   # Eintrag 4
+        self.menu.append(["Lösche Radiostatus"])                   # Eintrag 5
+        self.menu.append(["Lösche Onlinestatus"])                  # Eintrag 6
 
-        self.menu.append(["Update OLED"])
+        self.menu.append(["Update OLED"])                          # Eintrag 7
 
-        self.menu.append(["WLAN: aus"])
-        self.menu.append(["WLAN: an"])
+        self.menu.append(["WLAN: aus"])                            # Eintrag 8
+        self.menu.append(["WLAN: an"])                             # Eintrag 9
 
-        self.menu.append([""])
-        self.menu.append(["aktivieren"])
-        self.menu.append(["deaktivieren"])
+        self.menu.append([""])                                     # Eintrag 11
+        self.menu.append(["aktivieren"])                           # Eintrag 12
+        self.menu.append(["deaktivieren"])                         # Eintrag 13
 
-        self.menu.append([""])
-        self.menu.append(["EIN"])
-        self.menu.append(["AUS"])
+        self.menu.append([""])                                     # Eintrag 14
+        self.menu.append(["EIN"])                                  # Eintrag 15
+        self.menu.append(["AUS"])                                  # Eintrag 16
 
-        self.menu.append([""])
-        self.menu.append(["aktivieren"])
-        self.menu.append(["deaktivieren"])
+        self.menu.append([""])                                     # Eintrag 17
+        self.menu.append(["aktivieren"])                           # Eintrag 18
+        self.menu.append(["deaktivieren"])                         # Eintrag 19
 
-        self.menu.append([""])
+        self.menu.append([""])                                     # Eintrag 20
 
-        self.menu.append(["beenden"])
-        self.menu.append(["starten"])
-        self.menu.append(["deaktivieren"])
-        self.menu.append(["aktivieren"])
+        self.menu.append(["beenden"])                              # Eintrag 21
+        self.menu.append(["starten"])                              # Eintrag 22
+        self.menu.append(["deaktivieren"])                         # Eintrag 23
+        self.menu.append(["aktivieren"])                           # Eintrag 24
 
-        self.menu.append(["WLAN QR anzeigen"])
-        self.menu.append(["ssid"])
-        self.menu.append(["psk"])
-        self.menu.append(["Dienste neustarten:", "h"])
+        self.menu.append(["WLAN QR anzeigen"])                     # Eintrag 25
+        self.menu.append(["ssid"])                                 # Eintrag 26
+        self.menu.append(["psk"])                                  # Eintrag 27
+        self.menu.append(["Dienste neustarten:", "h"])             # Eintrag 28
 
         for srv in cfg_services.RESTART_LIST:
             self.menu.append(["%s" % (srv)])
@@ -192,11 +192,11 @@ class SystemMenu(ListBase):
 
             self.cmd = ["git pull", "sudo pip3 install -r requirements.txt", "sudo systemctl restart oled"]
 
-        elif self.position == 8 or self.position == 9:
-            if self.position == 9:
-                self.cmd = "sudo ip link set wlan0 down"
-            else:
-                self.cmd = "sudo ip link set wlan0 up"
+        elif self.position == 8:
+            self.cmd = "sudo ip link set wlan0 down"
+
+        elif self.position == 9:
+            self.cmd = "sudo ip link set wlan0 up"
 
         elif self.position == 11:
             self.cmd = f"sed -i 's/AUTO_ENABLED=False/AUTO_ENABLED=True/g' {cfg_file_folder.FILE_USER_SETTINGS}"
@@ -246,12 +246,12 @@ class SystemMenu(ListBase):
     def render(self):
 
         if not self.showqr:
-#            self.menu[10] = [f"Firewall AUTO_ENABLED ({config.user_settings.AUTO_ENABLED}):","h"]
-#            self.menu[13] = ["Firewall Status: %s " % ("AUS" if "deny" not in self.firewall_status else "EIN"),"h"]
-#            self.menu[16] = [f"Bluetooth_Autoconnect ({config.user_settings.BLUETOOTH_AUTOCONNECT}):","h"]
-#            self.menu[19] = [f"hostapd (aktiviert: {self.hostapd_status}):", "h"]
-#            self.menu[25] = [self.hostapd_ssid]
-#            self.menu[26] = [self.hostapd_psk]
+            self.menu[10] = [f"Firewall AUTO_ENABLED ({config.user_settings.AUTO_ENABLED}):","h"]
+            self.menu[13] = ["Firewall Status: %s " % ("AUS" if "deny" not in self.firewall_status else "EIN"),"h"]
+            self.menu[16] = [f"Bluetooth_Autoconnect ({config.user_settings.BLUETOOTH_AUTOCONNECT}):","h"]
+            self.menu[19] = [f"hostapd (aktiviert: {self.hostapd_status}):", "h"]
+            self.menu[25] = [self.hostapd_ssid]
+            self.menu[26] = [self.hostapd_psk]
 
             super().render()
         else:

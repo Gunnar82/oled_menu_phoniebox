@@ -464,7 +464,7 @@ class DownloadMenu(ListBase):
                 self.totaldownloaded += len(data)
                 #dl_progress = totaldlfile / total_size_in_bytes * 100
                 try:
-                    self.progessbarpos = self.totaldownloaded / self.totalsize # float zahl
+                    self.busyprogressbarpos = self.totaldownloaded / self.totalsize # float zahl
                 except:
                     pass
 

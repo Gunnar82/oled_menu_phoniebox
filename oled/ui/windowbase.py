@@ -17,7 +17,7 @@ from luma.core.render import canvas
 
 from integrations.logging_config import *
 
-logger = setup_logger(__name__,lvlDEBUG)
+logger = setup_logger(__name__)
 
 font = ImageFont.truetype(settings.FONT_TEXT, size=settings.WINDOWBASE_BUSYFONT)
 busyfont = ImageFont.truetype(settings.FONT_TEXT, size=settings.LISTBASE_ENTRY_SIZE)
@@ -53,6 +53,8 @@ class WindowBase():
     busymenu = []
     busydrawtextx = 0
     lastbusytext = ""
+    busyprogressbarpos = 0
+    
     busyentrylinewidth, busyentrylineheight = busyfont.getsize("000")
     busytitlelineheight = busyfont.getsize("ZZZ")[1] + 3
     busydisplaylines = (settings.DISPLAY_HEIGHT - busytitlelineheight) // busyentrylineheight - 1# letzte Zeile gesondert
@@ -68,7 +70,7 @@ class WindowBase():
     def clear_window(self):
         self.device.clear()
 
-    def set_busy(self,busytext1,busysymbol=symbols.SYMBOL_SANDCLOCK,busytext2="", busyrendertime=3,busytext3="",set_window=False, render_progressbar = False):
+    def set_busy(self,busytext1,busysymbol=symbols.SYMBOL_SANDCLOCK,busytext2="", busyrendertime=3,busytext3="",set_window=False):
 
         self.busytext1 = busytext1
         self.busysymbol = busysymbol
@@ -83,7 +85,6 @@ class WindowBase():
             self.busytext4 = ""
             self.busytext2 = busytext2
 
-        self.render_busy_progressbar = render_progressbar
         self.busyrendertime = busyrendertime
 
         self.start_busyrendertime = time.monotonic()
@@ -95,7 +96,6 @@ class WindowBase():
     def renderbusy(self,symbolcolor = colors.COLOR_RED, textcolor1=colors.COLOR_WHITE, textcolor2=colors.COLOR_WHITE):
         with canvas(self.device) as draw:
             self.renderbusydraw(draw,symbolcolor,textcolor1,textcolor2)
-            if self.render_busy_progressbar: self.render_progressbar_draw(draw)
 
     def renderbusydraw(self, draw, symbolcolor = colors.COLOR_RED, textcolor1=colors.COLOR_WHITE, textcolor2=colors.COLOR_WHITE):
         mwidth1,mheight1 = busyfont.getsize(self.busytext1)
@@ -117,13 +117,18 @@ class WindowBase():
 
         draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, (settings.DISPLAY_HEIGHT - mheight) / 2), text=self.busysymbol, font=busyfaiconsbig, fill=symbolcolor) #sanduhr
 
-    def render_progressbar_draw(self,draw):
+    def render_progressbar_draw(self,draw, pos=0):
+        logger.debug(f"render_progressbar_pos: started, pos: {pos}")
         try:
-            mypos = int(self.progessbarpos * settings.DISPLAY_HEIGHT)
+            mypos = int(pos * settings.DISPLAY_HEIGHT)
+            #schwarzer hintergrund
+            draw.rectangle((settings.DISPLAY_WIDTH - 3, 0 , settings.DISPLAY_WIDTH , settings.DISPLAY_HEIGHT),outline="black", fill="black")
+
             draw.rectangle((settings.DISPLAY_WIDTH - 2, 0 , settings.DISPLAY_WIDTH, mypos - 3),outline=colors.COLOR_SELECTED, fill=colors.COLOR_SELECTED)
             draw.rectangle((settings.DISPLAY_WIDTH - 2, mypos + 3 , settings.DISPLAY_WIDTH, settings.DISPLAY_HEIGHT),outline=colors.COLOR_RED, fill=colors.COLOR_RED)
+
         except Exception as error:
-            logger.debug(f"{error}")
+            logger.debug(f"render_progressbarpos_draw: {error}")
 
 
     async def set_window(self,windowid):
@@ -150,7 +155,7 @@ class WindowBase():
         logger.debug(f"append busyitem: {item}")
         self.busymenu.append(item)
 
-    def append_busytext(self,item="Fehler..."):
+    def append_busyerror(self,item="Fehler..."):
         logger.debug(f"append busyitem: {item}")
         self.busymenu.append([item,self.error])
 
@@ -185,7 +190,6 @@ class WindowBase():
     def new_renderbusy(self):
         try:
             with canvas (self.device) as draw:
-                if self.render_busy_progressbar: self.render_progressbar_draw(draw)
                 menulen = len(self.busymenu)
                 position = len(self.busymenu)
 
@@ -223,8 +227,6 @@ class WindowBase():
                     else:
                         drawtext = selected_element
 
-                    progresscolor = colors.COLOR_GREEN
-
                     if position  == seite * self.busydisplaylines + i + 1 and not is_symbol: #selected
                         progresscolor = colors.COLOR_SELECTED
 
@@ -244,11 +246,13 @@ class WindowBase():
                             current_y += selected_element[3] # Symbolhöhe
 
                         else:
-                            draw.text((self.startleft, current_y), drawtext, font=busyfont, fill=colors.COLOR_GREEN)
+                            draw.text((self.startleft, current_y), drawtext, font=busyfont, fill=progresscolor)
                             current_y += self.busyentrylineheight
 
                 if self.lastbusytext != "":
                         draw.text((self.startleft, self.busydisplaylines * self.busyentrylineheight), self.lastbusytext, font=busyfont, fill=colors.COLOR_YELLOW)
+
+                if self.render_busy_progressbar: self.render_progressbar_draw(draw,self.busyprogressbarpos)
 
 
         except Exception as error:

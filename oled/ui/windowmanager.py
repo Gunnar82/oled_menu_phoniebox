@@ -14,7 +14,7 @@ from integrations.logging_config import *
 
 import config.user_settings as csettings
 
-logger = setup_logger(__name__,lvlDEBUG)
+logger = setup_logger(__name__)
 
 
 class WindowManager():
