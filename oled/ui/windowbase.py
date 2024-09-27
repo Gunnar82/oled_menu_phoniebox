@@ -17,7 +17,7 @@ from luma.core.render import canvas
 
 from integrations.logging_config import *
 
-logger = setup_logger(__name__)
+logger = setup_logger(__name__,lvlDEBUG)
 
 font = ImageFont.truetype(settings.FONT_TEXT, size=settings.WINDOWBASE_BUSYFONT)
 busyfont = ImageFont.truetype(settings.FONT_TEXT, size=settings.LISTBASE_ENTRY_SIZE)
@@ -34,6 +34,7 @@ class WindowBase():
     timeoutwindow="idle"
     window_on_back = "mainmenu"
     symbol = "s"
+    error = "err"
     busysymbol = symbols.SYMBOL_SANDCLOCK
     busytext1 = settings.PLEASE_WAIT
     busytext2 = ""
@@ -149,6 +150,11 @@ class WindowBase():
         logger.debug(f"append busyitem: {item}")
         self.busymenu.append(item)
 
+    def append_busytext(self,item="Fehler..."):
+        logger.debug(f"append busyitem: {item}")
+        self.busymenu.append([item,self.error])
+
+
 
     def append_busysymbol(self,item=None):
         logger.debug(f"append busysymbol: {item}")
@@ -195,6 +201,9 @@ class WindowBase():
                     selected_element = self.busymenu[seite * self.busydisplaylines + i]
                     is_symbol = False
 
+                    progresscolor = colors.COLOR_GREEN
+
+
                     if isinstance(selected_element,list):
                         drawtext = selected_element[0]
 
@@ -203,9 +212,18 @@ class WindowBase():
                                 is_symbol = True
                         except:
                             pass
+
+
+                        try:
+                            if selected_element[1] == self.error:
+                                progresscolor = colors.COLOR_ERROR
+
+                        except:
+                            pass
                     else:
                         drawtext = selected_element
 
+                    progresscolor = colors.COLOR_GREEN
 
                     if position  == seite * self.busydisplaylines + i + 1 and not is_symbol: #selected
                         progresscolor = colors.COLOR_SELECTED
@@ -220,7 +238,7 @@ class WindowBase():
                         draw.text((self.startleft , current_y), drawtext[self.busydrawtextx:], font=busyfont, fill=colors.COLOR_SELECTED)
 
                     else:
-                        progresscolor = colors.COLOR_GREEN
+
                         if is_symbol:
                             draw.text(((settings.DISPLAY_WIDTH - selected_element[2]) / 2, current_y), drawtext, font=busyfaiconsbig, fill=colors.COLOR_RED)
                             current_y += selected_element[3] # Symbolhöhe

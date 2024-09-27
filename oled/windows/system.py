@@ -35,8 +35,8 @@ import config.user_settings
 class SystemMenu(ListBase):
 
     qr_width = settings.DISPLAY_HEIGHT if settings.DISPLAY_HEIGHT < settings.DISPLAY_WIDTH else settings.DISPLAY_WIDTH
-
-
+    timeout = False
+    new_busyrender = True
 
     def create_qr(self):
 
@@ -66,9 +66,7 @@ class SystemMenu(ListBase):
     def __init__(self, windowmanager,loop,title):
         super().__init__(windowmanager, loop, title)
         self.refresh_values()
-        self.loop = loop
-        self.showqr = False
-        self.timeout = False
+
         self.handle_left_key = False
         self.processing = False
         self.totalsize = 0
@@ -118,6 +116,7 @@ class SystemMenu(ListBase):
 
     def activate(self):
         self.cmd = ""
+        self.showqr = False
 
     def deactivate(self):
         self.showqr = False
@@ -125,22 +124,29 @@ class SystemMenu(ListBase):
 
     def exec_command(self):
         try:
+
             self.processing = True
             if self.position == 14:
                 enable_firewall()
             elif self.position == 15:
                 disable_firewall()
             else:
+                self.append_busytext(self.menu[self.position][0])
+                self.append_busytext(self.cmd)
                 if run_command(self.cmd) == True:
-                    self.set_busy(self.menu[self.position][0],symbols.SYMBOL_PASS, busytext2="Erfolgreich")
+                    self.append_busytext("Erfolgreich!")
                 else:
-                    self.set_busy(self.menu[self.position][0],symbols.SYMBOL_FAIL, busytext2="Fehler")
+                    self.append_busyerror()
+        except Exception as error:
+            self.appendbusyerror(error)
         finally:
-            time.sleep(5)
+            self.append_busytext("Abgeschlossen!")
+            time.sleep(2)
             importlib.reload(config.user_settings)
 
             self.refresh_values()
             self.processing = False
+            self.set_window_busy(False)
 
 
     async def push_handler(self,button = '*'):
@@ -152,14 +158,16 @@ class SystemMenu(ListBase):
             return
 
         self.cmd = ""
-        self.set_busy("Verarbeite...",busytext2=self.menu[self.position][0],busyrendertime=5)
+
+        self.set_window_busy()
+        self.append_busytext()
 
         if self.position == 0:
             if cfg_online.UPDATE_RADIO:
                 self.cmd = "wget  --no-verbose --no-check-certificate  -r %s  --no-parent -A txt -nH -P %s/" %(cfg_online.ONLINE_RADIO_URL,cfg_file_folder.AUDIO_BASEPATH_BASE)
 
             else:
-                self.set_busy("Online Updates deaktiviert")
+                self.append_busytext("Online Updates deaktiviert!")
 
         elif self.position == 1:
             delete_local_online_folder()
@@ -236,19 +244,16 @@ class SystemMenu(ListBase):
 
 
     def render(self):
+
         if not self.showqr:
-            self.menu[10] = [f"Firewall AUTO_ENABLED ({config.user_settings.AUTO_ENABLED}):","h"]
-            self.menu[13] = ["Firewall Status: %s " % ("AUS" if "deny" not in self.firewall_status else "EIN"),"h"]
-            self.menu[16] = [f"Bluetooth_Autoconnect ({config.user_settings.BLUETOOTH_AUTOCONNECT}):","h"]
-            self.menu[19] = [f"hostapd (aktiviert: {self.hostapd_status}):", "h"]
-            self.menu[25] = [self.hostapd_ssid]
-            self.menu[26] = [self.hostapd_psk]
+#            self.menu[10] = [f"Firewall AUTO_ENABLED ({config.user_settings.AUTO_ENABLED}):","h"]
+#            self.menu[13] = ["Firewall Status: %s " % ("AUS" if "deny" not in self.firewall_status else "EIN"),"h"]
+#            self.menu[16] = [f"Bluetooth_Autoconnect ({config.user_settings.BLUETOOTH_AUTOCONNECT}):","h"]
+#            self.menu[19] = [f"hostapd (aktiviert: {self.hostapd_status}):", "h"]
+#            self.menu[25] = [self.hostapd_ssid]
+#            self.menu[26] = [self.hostapd_psk]
 
-
-            if self.processing:
-                self.renderbusy()
-            else:
-                super().render()
+            super().render()
         else:
             try:
                 with canvas(self.device) as draw:
