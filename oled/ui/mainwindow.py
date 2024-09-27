@@ -97,12 +97,12 @@ class MainWindow(WindowBase):
         #Currently playing song
 
         if float(self.nowplaying._duration) >= 0:
-            timelinepos = int(float(self.nowplaying._elapsed) / float(self.nowplaying._duration)  * settings.DISPLAY_WIDTH) # TODO Device.with
+            timelinepos = float(self.nowplaying._elapsed) / float(self.nowplaying._duration)
         else:
-            timelinepos = settings.DISPLAY_WIDTH # device.width
+            timelinepos = 1 # device.width
 
         #Fortschritssleiste Wiedergabe
-        draw.rectangle((0,0,timelinepos,1),outline=colors.COLOR_BLUE, fill=colors.COLOR_BLUE)
+        self.render_progressbar_draw(draw,timelinepos,color2=colors.COLOR_BLUE)
 
         #Position in Playlist
         _spos = "%2.2d/%2.2d" % (int(self.nowplaying._song), int(self.nowplaying._playlistlength))

@@ -117,15 +117,15 @@ class WindowBase():
 
         draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, (settings.DISPLAY_HEIGHT - mheight) / 2), text=self.busysymbol, font=busyfaiconsbig, fill=symbolcolor) #sanduhr
 
-    def render_progressbar_draw(self,draw, pos=0):
+    def render_progressbar_draw(self,draw, pos=0, color1=colors.COLOR_SELECTED, color2=colors.COLOR_RED):
         logger.debug(f"render_progressbar_pos: started, pos: {pos}")
         try:
             mypos = int(pos * settings.DISPLAY_HEIGHT)
             #schwarzer hintergrund
             draw.rectangle((settings.DISPLAY_WIDTH - 3, 0 , settings.DISPLAY_WIDTH , settings.DISPLAY_HEIGHT),outline="black", fill="black")
 
-            draw.rectangle((settings.DISPLAY_WIDTH - 2, 0 , settings.DISPLAY_WIDTH, mypos - 3),outline=colors.COLOR_SELECTED, fill=colors.COLOR_SELECTED)
-            draw.rectangle((settings.DISPLAY_WIDTH - 2, mypos + 3 , settings.DISPLAY_WIDTH, settings.DISPLAY_HEIGHT),outline=colors.COLOR_RED, fill=colors.COLOR_RED)
+            draw.rectangle((settings.DISPLAY_WIDTH - 2, 0 , settings.DISPLAY_WIDTH, mypos - 3),outline=color1, fill=color1)
+            draw.rectangle((settings.DISPLAY_WIDTH - 2, mypos + 3 , settings.DISPLAY_WIDTH, settings.DISPLAY_HEIGHT),outline=color2, fill=color2)
 
         except Exception as error:
             logger.debug(f"render_progressbarpos_draw: {error}")
