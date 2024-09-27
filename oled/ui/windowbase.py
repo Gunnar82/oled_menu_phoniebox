@@ -159,11 +159,12 @@ class WindowBase():
     def append_busytext(self,item="Verarbeite..."):
         logger.debug(f"append busyitem: {item}")
         self.busymenu.append(item)
+        self.pop_busymenu()
 
     def append_busyerror(self,item="Fehler..."):
         logger.debug(f"append busyitem: {item}")
         self.busymenu.append([item,self.error])
-
+        self.pop_busymenu()
 
 
     def append_busysymbol(self,item=None):
@@ -172,7 +173,14 @@ class WindowBase():
         width,height = busyfaiconsbig.getsize(item)
 
         self.busymenu.append([item,self.symbol,width,height])
+        self.pop_busymenu()
 
+
+    def pop_busymenu(self):
+        try:
+            if len(self.busymenu) >= self.busydisplaylines : del (self.busymenu[0])
+        except Exception as error:
+            pass
 
     def clear_busymenu(self):
         self.busymenu = []
