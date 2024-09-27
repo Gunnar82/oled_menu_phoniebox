@@ -8,6 +8,11 @@ import config.colors as colors
 import config.symbols as symbols
 import time
 
+from integrations.logging_config import *
+
+logger = setup_logger(__name__,lvlDEBUG)
+
+
 class MenuBase(WindowBase):
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.MENUBASE_ICON_SIZE)
 
@@ -78,8 +83,7 @@ class MenuBase(WindowBase):
         if self.counter == 0:
             self.windowmanager.set_window(self.window_on_back)
         else:
-            self.set_busy("Verarbeite...", self.descr[self.counter][1],self.descr[self.counter][0])
-            self.loop.create_task(self.push_handler())
+            self.loop.run_in_executor(None,self.push_handler)
 
     def turn_callback(self, direction, key=None):
         if key:

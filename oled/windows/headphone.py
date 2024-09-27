@@ -20,6 +20,7 @@ logger = setup_logger(__name__)
  
 class Headphonemenu(MenuBase):
 
+    new_busyrender = True
 
     def __init__(self, windowmanager,loop,bluetooth,title):
         super().__init__(windowmanager,loop,title)
@@ -42,21 +43,39 @@ class Headphonemenu(MenuBase):
         self.set_current_bt_name()
 
     #def push_callback(self,lp=False):
-    async def push_handler(self):
-        await asyncio.sleep(1)
+    def push_handler(self):
+
+        self.set_window_busy()
+        self.append_busytext()
+
+
         if self.counter == 1:
+            self.append_busytext("Aktiviere lokale Ausgabe")
+            self.append_busytext("Deaktiviere Bluetoothausgabe")
+
             self.bluetooth.enable_dev_local()
 
+            self.append_busytext("Abgeschlosssen.")
+
         elif self.counter == 2:
+            self.append_busytext("Verbinde Gerät:")
+            self.append_busytext (self.bluetooth.selected_bt_name)
+
             if not self.bluetooth.enable_dev_bt():
-                self.set_busy ("Keine Verbindung!",symbols.SYMBOL_ERROR,self.bluetooth.selected_bt_name)
-                await asyncio.sleep(1)
+                self.append_busyerror ("Keine Verbindung:")
+            else:
+                self.append_busytext("Dektiviere lokale Ausgabe")
+                self.append_busytext("Aktiviere Bluetoothausgabe")
+
 
         elif self.counter == 3:
+            self.append_busytext("Trenne Bluetooth - falls verbunden")
             self.bluetooth.cmd_disconnect()
-            time.sleep(2)
+
             self.windowmanager.set_window("bluetoothmenu")
 
-        await asyncio.sleep(1)
+        self.append_busytext("Beendet.")
+        self.set_window_busy(False)
+
 
 

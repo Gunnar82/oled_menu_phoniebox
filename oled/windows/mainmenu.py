@@ -30,7 +30,7 @@ class Mainmenu(MenuBase):
 
         self.window_on_back = "idle"
 
-    async def push_handler(self):
+    def push_handler(self):
         if self.counter == 1:
             settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_MUSIC
             settings.currentfolder = get_folder_from_file(cfg_file_folder.FILE_LAST_MUSIC)

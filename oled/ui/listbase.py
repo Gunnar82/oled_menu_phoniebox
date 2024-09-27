@@ -197,7 +197,7 @@ class ListBase(WindowBase):
             self.windowmanager.set_window(self.window_on_back)
         else:
             if not self.is_comment():
-                self.loop.create_task(self.push_handler())
+                self.loop.run_in_executor(None,self.push_handler)
 
     def turn_callback(self, direction, key=None):
         if key:
