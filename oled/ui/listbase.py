@@ -169,7 +169,7 @@ class ListBase(WindowBase):
                 else:
                     current_y += self.entrylineheight
 
-            if self.render_progressbar: self.render_progressbar_draw(draw,self.progressbarpos)
+            if self.render_progressbar: self.render_progressbar_draw(draw,self.progressbarpos,buttom_top = False)
 
 
     def is_heading(self):

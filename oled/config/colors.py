@@ -1,6 +1,7 @@
 ####COLOR DEFINITIONS FOR RGB OLED ####
 
 COLOR_WHITE     = "white"
+COLOR_BLACK     = "#000000"
 COLOR_RED       = "#ff0000"
 COLOR_YELLOW    = "#ffff00"
 COLOR_BLUE      = "#000000"

@@ -117,10 +117,15 @@ class WindowBase():
 
         draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, (settings.DISPLAY_HEIGHT - mheight) / 2), text=self.busysymbol, font=busyfaiconsbig, fill=symbolcolor) #sanduhr
 
-    def render_progressbar_draw(self,draw, pos=0, color1=colors.COLOR_SELECTED, color2=colors.COLOR_RED):
+    def render_progressbar_draw(self,draw, pos=0, color1=colors.COLOR_YELLOW, color2=colors.COLOR_RED, buttom_top=True):
         logger.debug(f"render_progressbar_pos: started, pos: {pos}")
         try:
             mypos = int(pos * settings.DISPLAY_HEIGHT)
+
+            if buttom_top:
+                mypos = settings.DISPLAY_HEIGHT - mypos
+                color1, color2 = color2, color1
+
             #schwarzer hintergrund
             draw.rectangle((settings.DISPLAY_WIDTH - 3, 0 , settings.DISPLAY_WIDTH , settings.DISPLAY_HEIGHT),outline="black", fill="black")
 

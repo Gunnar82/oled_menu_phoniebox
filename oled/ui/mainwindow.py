@@ -102,7 +102,7 @@ class MainWindow(WindowBase):
             timelinepos = 1 # device.width
 
         #Fortschritssleiste Wiedergabe
-        self.render_progressbar_draw(draw,timelinepos,color2=colors.COLOR_BLUE)
+        self.render_progressbar_draw(draw,timelinepos,color1=colors.COLOR_BLUE,color2=colors.COLOR_BLACK)
 
         #Position in Playlist
         _spos = "%2.2d/%2.2d" % (int(self.nowplaying._song), int(self.nowplaying._playlistlength))
