@@ -167,7 +167,9 @@ class Foldermenu(ListBase):
                 settings.current_selectedfolder = settings.currentfolder
 
     def push_handler(self):
+        set_window = True
         try:
+
             self.set_window_busy()
             self.append_busysymbol()
 
@@ -194,6 +196,7 @@ class Foldermenu(ListBase):
                     self.append_busyerror("Verzeichnis ist leer")
                     self.append_busyerror(settings.current_selectedfolder)
                 else:
+                    set_window = False
                     self.append_busytext("Auswahl startet...")
                     #self.apend_busytext(self.menu[self.position][0])
 
@@ -201,7 +204,7 @@ class Foldermenu(ListBase):
         except Exception as error:
             self.append_busyerror(error)
         finally:
-            self.set_window_busy(False,wait=5)
+            if set_window: self.set_window_busy(False,wait=5)
 
 
             #self.mopidyconnection.loadplaylist(self.mopidyconnection.playlists[self.counter-1])
