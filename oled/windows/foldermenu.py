@@ -8,7 +8,7 @@ import config.symbols as symbols
 import os 
 import integrations.functions as functions
 import integrations.playout as playout
-import asyncio
+import time
 
 import config.file_folder as cfg_file_folder
 
@@ -19,6 +19,7 @@ logger = setup_logger(__name__)
 
 class Foldermenu(ListBase):
     folders = []
+    new_busyrender = True
 
     def __init__(self, windowmanager,loop):
         super().__init__(windowmanager, loop, "Auswahl")
@@ -36,21 +37,28 @@ class Foldermenu(ListBase):
         self.generate_folders(settings.currentfolder)
         self.on_key_left()
 
-    async def playfolder(self,folder):
-        foldername = folder[len(cfg_file_folder.AUDIO_BASEPATH_BASE) + 1:]
-        await asyncio.sleep(1)
+    def playfolder(self,folder):
+        try:
+            self.set_window_busy(with_symbol = False, clear_busymenu = False)
+            foldername = folder[len(cfg_file_folder.AUDIO_BASEPATH_BASE) + 1:]
 
-        if folder.startswith(cfg_file_folder.AUDIO_BASEPATH_HOERBUCH):
-            playout.pc_enableresume(foldername)
-        elif folder.startswith(cfg_file_folder.AUDIO_BASEPATH_MUSIC):
-            playout.pc_disableresume(foldername)
-        elif folder.startswith(cfg_file_folder.AUDIO_BASEPATH_RADIO):
-            playout.pc_disableresume(foldername)
-        else:
-            print ("UNKNPWN")
+            if folder.startswith(cfg_file_folder.AUDIO_BASEPATH_HOERBUCH):
+                playout.pc_enableresume(foldername)
+            elif folder.startswith(cfg_file_folder.AUDIO_BASEPATH_MUSIC):
+                playout.pc_disableresume(foldername)
+            elif folder.startswith(cfg_file_folder.AUDIO_BASEPATH_RADIO):
+                playout.pc_disableresume(foldername)
+            else:
+                self.append_busyerror ("unbeknnt")
 
-        playout.pc_playfolder(foldername)
-        self.windowmanager.set_window("idle")
+            self.append_busytext("Abspielen...")
+            self.append_busytext(foldername)
+            playout.pc_playfolder(foldername)
+            self.windowmanager.set_window("idle")
+        except Exception as error:
+            self.append_busyerror(error)
+        finally:
+            self.set_window_busy(False)
 
     def on_key_left(self):
         logger.debug("settings.currentfolder:%s " %(settings.currentfolder))
@@ -158,30 +166,42 @@ class Foldermenu(ListBase):
             except:
                 settings.current_selectedfolder = settings.currentfolder
 
-    def push_callback(self,lp=False):
-        if self.position  == -2:
-            settings.currentfolder = settings.audio_basepath
-            self.windowmanager.set_window("mainmenu")
-        elif self.position == -1:
-            self.on_key_left()
-        else:
-            #folder = self.folders[self.position-1]
-            #fullpath = os.path.join(settings.currentfolder,folder)
-            #settings.currentfolder = fullpath
-            if lp:
-                self.windowmanager.set_window("folderinfo")
+    def push_handler(self):
+        try:
+            self.set_window_busy()
+            self.append_busysymbol()
+
+            if self.position  == -2:
+                settings.currentfolder = settings.audio_basepath
+                self.windowmanager.set_window("mainmenu")
+            elif self.position == -1:
+                self.append_windowtext("Eine Ebene höher...")
+                self.on_key_left()
             else:
+                #folder = self.folders[self.position-1]
+                #fullpath = os.path.join(settings.currentfolder,folder)
+                #settings.currentfolder = fullpath
+                self.append_busytext("Auswahl...")
                 thefile = os.listdir(settings.current_selectedfolder)
 
                 if (functions.has_subfolders(settings.current_selectedfolder)):
+                    self.appendbusytext("Suche Ordner...")
+                    self.appendbusytext(settings.selected_folder)
                     self.generate_folders(settings.current_selectedfolder)
                     settings.currentfolder = settings.current_selectedfolder
                     self.position = -1
                 elif len(thefile) <= 1 and not 'livestream.txt' in thefile:
-                    self.set_busy("Verzeichnis ist leer",busysymbol="\uf059")
+                    self.append_busyerror("Verzeichnis ist leer")
+                    self.append_busyerror(settings.current_selectedfolder)
                 else:
-                    self.set_busy("Auswahl startet","\uf07C",self.menu[self.position][0])
-                    self.loop.create_task(self.playfolder(settings.current_selectedfolder))
+                    self.append_busytext("Auswahl startet...")
+                    #self.apend_busytext(self.menu[self.position][0])
+
+                    self.loop.run_in_executor(None,self.playfolder,settings.current_selectedfolder)
+        except Exception as error:
+            self.append_busyerror(error)
+        finally:
+            self.set_window_busy(False,wait=5)
 
 
             #self.mopidyconnection.loadplaylist(self.mopidyconnection.playlists[self.counter-1])

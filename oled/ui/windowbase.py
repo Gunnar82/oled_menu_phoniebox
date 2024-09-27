@@ -186,12 +186,12 @@ class WindowBase():
         self.busymenu = []
         self.set_lastbusytextline()
 
-    def set_window_busy(self, state=True, with_symbol = True, clear_busymenu = True, render_progressbar = False):
+    def set_window_busy(self, state=True, with_symbol = True, clear_busymenu = True, render_progressbar = False, wait=1):
 
         self.render_busy_progressbar = render_progressbar
 
         if state and clear_busymenu: self.clear_busymenu()
-        if not state and self.new_busyrender: time.sleep(1)
+        if not state and self.new_busyrender: time.sleep(wait)
         if with_symbol and state: self.append_busysymbol()
         self.is_busy = state
         self.set_lastbusytextline()
