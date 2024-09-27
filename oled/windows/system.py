@@ -150,7 +150,7 @@ class SystemMenu(ListBase):
             self.set_window_busy(False)
 
 
-    async def push_handler(self,button = '*'):
+    def push_handler(self,button = '*'):
         if self.showqr:
             self.showqr = False
             self.timeout = True
