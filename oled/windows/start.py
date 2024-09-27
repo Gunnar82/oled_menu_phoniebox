@@ -58,7 +58,7 @@ class Start(WindowBase):
 
             if (csettings.AUTO_ENABLED):
                 logger.info("auto_enable firewall EIN")
-                self.appendcomment("Aktiviere Firewall...")
+                self.append_busytext("Aktiviere Firewall...")
                 enable_firewall()
             else:
                 logger.info("auto_enable firewall False")
@@ -84,7 +84,7 @@ class Start(WindowBase):
 
         except Exception as error:
             logger.error(f"exec_init: {error}")
-            self.append_busytext(f"Fehler {error}")
+            self.append_busyerror(f"Fehler {error}")
         finally:
 
             self.append_busytext(f"Initialisierung beendet.")
