@@ -40,8 +40,8 @@ class Bluetoothmenu(ListBase):
     def activate (self):
         self.selector = False
         self.active = True
+        self.show_paired = True
         self.bluetooth.start_bluetoothctl()
-        self.bluetooth.start_scan()
         self.generate = True
         self.loop.create_task(self.gen_menu())
 
@@ -59,36 +59,36 @@ class Bluetoothmenu(ListBase):
 
                 else:
                     self.menu.append(["aktualisieren...",symbols.SYMBOL_REFRESH])
-                    self.menu.append(["","h"])
+                    self.menu.append(["","c"])
+                    if self.show_paired:
+                        self.menu.append(["> gekoppelte Geräte:","c"])
 
-                    self.menu.append(["> gekoppelte Geräte:","c"])
+                        for device in self.bluetooth.get_paired_devices():
+                            self.menu.append([device['name'],symbols.SYMBOL_BLUETOOTH_OFF,device['mac_address']])
+                    else:
+                        self.menu.append(["neue Geräte:","h"])
 
-                    for device in self.bluetooth.get_paired_devices():
-                        self.menu.append([device['name'],symbols.SYMBOL_BLUETOOTH_OFF,device['mac_address']])
+                        for device in self.bluetooth.get_discoverable_devices():
 
-                    self.menu.append(["","h"])
-                    self.menu.append(["> neue Geräte:","c"])
-
-                    for device in self.bluetooth.get_discoverable_devices():
-
-                        self.menu.append([device['name'],symbols.SYMBOL_BLUETOOTH_ON,device['mac_address']])
+                            self.menu.append([device['name'],symbols.SYMBOL_BLUETOOTH_ON,device['mac_address']])
 
                     self.generate = False
 
             await asyncio.sleep(1)
 
     #def push_callback(self,lp=False):
-    async def push_handler(self):
-        await asyncio.sleep(1)
+    def push_handler(self):
 
         if not self.selector:
 
             if (self.position == 0):
+                self.show_paired = False
                 self.bluetooth.start_scan()
 
             elif self.menu[self.position][1] == symbols.SYMBOL_BLUETOOTH_ON:
                 self.bluetooth.pair(self.menu[self.position][2])
                 self.bluetooth.trust(self.menu[self.position][2])
+                self.show_paired = True
             else:
                 self.selected_device = self.menu[self.position]
 
@@ -112,7 +112,6 @@ class Bluetoothmenu(ListBase):
 
         self.generate = True
 
-        await asyncio.sleep(1)
 
 
     def turn_callback(self, direction, key=None):
