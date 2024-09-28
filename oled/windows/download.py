@@ -477,12 +477,12 @@ class DownloadMenu(ListBase):
 
     def create_menu_from_directories(self,directories):
         for i in range(len(directories)): 
-            url = construct_url(directories[i],self.url)
+            url = construct_url(directories[i][0],self.url)
             logger.debug(f"prüfe {directories[i]} {self.url}: {url}")
 
             if uri_exists_locally(url,self.website,cfg_file_folder.AUDIO_BASEPATH_BASE):
-                directories[i] = f"{directories[i]} \u2302"
-        self.menu = directories_to_list(directories)
+                directories[i][0] = f"{directories[i][0]} \u2302"
+        self.menu = directories
         #TODO progress
 
     def get_files_and_dirs_from_listing(self,url, allowed_extensions,get_filesize=True):
@@ -515,9 +515,12 @@ class DownloadMenu(ListBase):
             if href and not href.startswith('?') and not href.startswith('/'):
                 if href.endswith('/'):
                     # Unterverzeichnis gefunden
-                    directory = unquote(href).strip('/')
+                    directory = unquote(href).strip('/') # trailing slash entfernen
                     self.append_busytext(f"Ordner: {directory}")
-                    directories.append(unquote(href).strip('/')) # trailing slash entfernen
+                    pos = self.get_online_pos(directory,url)
+                    self.append_busytext(f"Ordner Onlineposition: {pos}")
+                    directories.append([directory,'x',pos]) 
+
                 elif any(href.endswith(ext) for ext in allowed_extensions):
                     # Datei gefunden
                     filename = unquote(href)
@@ -539,15 +542,24 @@ class DownloadMenu(ListBase):
                             continue
         return files, directories, total_size
 
-####old
+    def get_online_pos(self,onlinepath,url):
+        try:
+            url = urljoin(url,onlinepath)
 
-    def get_content(self):
-        folderinfo = playout.getpos_online(self.baseurl,onlinepath)
-        if len(folderinfo) >= 6 and folderinfo[0] == "POS":
-            song = int(float(folderinfo[3]))
-            length = int(float(folderinfo[4]))
-            prozent = (song - 1) / length * 100
-            progress = "%2.2d%%%s"  % (prozent,progress)
-        elif folderinfo[0] == "ERR":
-            progress = "%s%s"  % (folderinfo[0],progress)
+            logger.debug(f"get_pos_online: {url}")
+            temp, uri = split_url(url)
 
+            if not uri.endswith('/'): uri += '/'
+
+            folderinfo = playout.getpos_online(self.baseurl,uri)
+            logger.debug(f"folderinfo: {folderinfo}")
+            if len(folderinfo) >= 6 and folderinfo[0] == "POS":
+                song = int(float(folderinfo[3]))
+                length = int(float(folderinfo[4]))
+                prozent = (song - 1) / length * 100
+                progress = "%2.2d%%%s"  % (prozent,progress)
+                return progress
+            else:
+                return ""
+        except:
+            return ""
