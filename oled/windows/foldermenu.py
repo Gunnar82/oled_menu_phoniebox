@@ -49,9 +49,9 @@ class Foldermenu(ListBase):
             elif folder.startswith(cfg_file_folder.AUDIO_BASEPATH_RADIO):
                 playout.pc_disableresume(foldername)
             else:
-                self.append_busyerror ("unbeknnt")
+                self.append_busyerror(f"unbekannt: {folder}")
 
-            self.append_busytext("Abspielen...")
+            self.append_busytext("Abspielen:")
             self.append_busytext(foldername)
             playout.pc_playfolder(foldername)
             self.windowmanager.set_window("idle")
@@ -64,13 +64,15 @@ class Foldermenu(ListBase):
         self.set_window_busy(with_symbol=False,clear_busymenu=False)
         self.append_busytext("Ebene höher...")
 
-        logger.debug("settings.currentfolder:%s " %(settings.currentfolder))
+        logger.debug(f"settings.currentfolder: {settings.currentfolder}")
         self.append_busytext(f"von {settings.currentfolder}")
 
         settings.current_selectedfolder = settings.currentfolder
         settings.currentfolder = functions.get_parent_folder(settings.currentfolder)
+
         if len(settings.currentfolder) < len(settings.audio_basepath):
             settings.currentfolder = settings.audio_basepath
+
         self.append_busytext(f"nach {settings.currentfolder}")
 
         self.generate_folders(settings.currentfolder)
@@ -79,13 +81,13 @@ class Foldermenu(ListBase):
         self.set_window_busy(False)
 
     def generate_folders_array(self,path):
-        self.folders = []
-        self.progress = {}
-
-        for file in os.listdir(path):
-            d = os.path.join(path, file)
+        logger.debug("generate_folders_array: start")
+        folders_info = []
+        for filename in os.listdir(path):
+            d = os.path.join(path, filename)
             if os.path.isdir(d):
                 try:
+                    progress = ""
                     folderconf = {}
                     folderconf["RESUME"] = "off"
                     folderconf["CURRENTFILENAME"] = ""
@@ -111,39 +113,46 @@ class Foldermenu(ListBase):
                         prozent = (mpos +1)  / len(subfiles)
                         #print ("prozent: %s, lastplayedfile: %s, mpos: %s" %(prozent, lastplayedfile, mpos))
 
-                        logger.debug("foldermenu: ptogress%.2f" % (prozent))
-                        self.progress[file] = "%2.2d %%" % (prozent * 100)
+                        logger.debug("foldermenu: progress: %.2f" % (prozent))
+                        progress = "%2.2d %%" % (prozent * 100)
                 except Exception as error:
                     logger.debug(error)
 
                 try:
-                    if (functions.has_subfolders(os.path.join(path,file))):
-                        file = symbols.SYMBOL_FOLDER +" " + file
+                    if (functions.has_subfolders(os.path.join(path,filename))):
+                        filename = symbols.SYMBOL_FOLDER +" " + filename
                 except Exception as error:
                     logger.debug(error)
-                self.folders.append(file)
 
-        self.folders.sort()
+                new_element = [filename,"x",progress]
+                logger.debug(f"append new element: {new_element}")
+                folders_info.append(new_element)
 
+        folders_info.sort()
+        logger.debug("generate_folders_array: end")
+        return folders_info
 
     def generate_folders(self,folder):
 
-        self.generate_folders_array(folder)
+        folders_info = self.generate_folders_array(folder)
         self.menu = []
-        for folder in self.folders:
-            self.menu.append([folder])
+        for folder in folders_info:
+            logger.debug(f"append folder toi self.menu: {folder}")
+            self.menu.append(folder)
+
         if settings.current_selectedfolder.rfind(settings.currentfolder) == 0:
             search = settings.current_selectedfolder[len(settings.currentfolder)+1:]
-            logger.debug("search: %s" % (search))
+
+            logger.debug(f"search: {search}")
             try:
-                _pos = self.folders.index(search)
+                _pos = folders_info.index(search)
     
                 logger.debug("foldermenu: generate_folders: position: %d, _pos: %d, self.displaylines: %d" % ( self.position, _pos, self.displaylines))
 
                 self.position= _pos
             except:
                 try:
-                    _pos = self.folders.index(symbols.SYMBOL_FOLDER + " " + search)
+                    _pos = folders_info.index(symbols.SYMBOL_FOLDER + " " + search)
     
                     logger.debug("foldermenu: generate_folders: position: %d, _pos: %d, self.displaylines: %d" % ( self.position, _pos, self.displaylines))
 
@@ -165,7 +174,8 @@ class Foldermenu(ListBase):
             self.windowmanager.set_window("folderinfo")
         else:
             try:
-                folder = functions.remove_folder_symbol(self.folders[self.position])
+                selected_item = self.menu[self.position]
+                folder = functions.remove_folder_symbol(selected_item[0])
 
                 fullpath = os.path.join(settings.currentfolder,folder)
                 settings.current_selectedfolder = fullpath

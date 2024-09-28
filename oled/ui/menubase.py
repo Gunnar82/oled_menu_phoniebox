@@ -18,7 +18,6 @@ class MenuBase(WindowBase):
 
     iconwidth, iconheight = faicons.getsize(symbols.SYMBOL_USB)
 
-
     def __init__(self, windowmanager,loop,title):
         super().__init__(windowmanager,loop)
         self.counter = 0

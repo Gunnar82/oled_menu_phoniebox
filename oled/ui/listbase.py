@@ -38,7 +38,6 @@ class ListBase(WindowBase):
         self.right_pressed = False
         self.drawtextx = 0
         self.position = -2
-        self.progress = {}
         self.progressbarpos = 0
         self.selection_changed = True
         self.handle_left_key = True
@@ -111,15 +110,20 @@ class ListBase(WindowBase):
                 scrolling = False
 
                 selected_element = self.menu[seite * self.displaylines + i]
+                logger.debug(f" list_loop: {selected_element}")
 
                 try:
                     drawtext = symbols.SYMBOL_HEADING if isinstance(selected_element,list) and selected_element[1] in self.heading else ""
+                    logger.debug("element is heading")
                 except Exception as e:
                     drawtext = ""
 
                 is_symbol = False
+ 
+                logger.debug("selected element test")
 
                 if isinstance(selected_element,list):
+                    logger.debug(f"selected_element is list: {selected_element}")
                     drawtext += selected_element[0]
 
                     try:
@@ -128,8 +132,10 @@ class ListBase(WindowBase):
                     except:
                         pass
                 else:
+                    logger.debug(f"item is no list {selected_item}")
                     drawtext += selected_element
 
+                logger.debug(f"drawtext; {drawtext}")
 
                 if self.position  == seite * self.displaylines+ i and not is_symbol: #selected
                     progresscolor = colors.COLOR_SELECTED
@@ -154,15 +160,15 @@ class ListBase(WindowBase):
                         draw.text((self.startleft, current_y), drawtext, font=self.font, fill="white" if not self.is_type_info else colors.COLOR_GREEN)
 
                 try:
-                    if not scrolling:
-                        selected_element = self.menu[seite * self.displaylines + i]
-                        drawtext = self.progress[selected_element[0]] if isinstance(selected_element,list) else self.progress[selected_element]
+                    selected_element = self.menu[seite * self.displaylines + i]
+                    if not scrolling and isinstance(selected_element,list) and selected_element[2] != "":
+                        drawtext = selected_element[2]
                         linewidth1, lineheight1 = self.font.getsize(drawtext)
                         logger.debug("listbase: percent:%s:" %(drawtext))
                         draw.rectangle((settings.DISPLAY_WIDTH - linewidth1 - 15  , current_y , settings.DISPLAY_WIDTH - 3 , current_y + self.entrylineheight ), outline="black", fill="black")
                         draw.text((settings.DISPLAY_WIDTH - linewidth1 - self.startleft, current_y), drawtext, font=self.font, fill=progresscolor)
                 except Exception as error:
-                    logger.debug("no percentage")
+                    logger.debug(f"no percentage {error}")
 
                 if is_symbol:
                     current_y += self.symbolentrylineheight
@@ -202,7 +208,6 @@ class ListBase(WindowBase):
     def turn_callback(self, direction, key=None):
         if key:
             if (key == 'left' or key == '4' or key == 'Y') and self.handle_left_key:
-                if self.info_key_left : self.set_busy("übergeordneter Ordner",busyrendertime=0.2)
                 self.left_pressed = True
                 return
             elif key == 'right' or key == '6' or key == '*':
@@ -241,32 +246,23 @@ class ListBase(WindowBase):
     def appenditem(self,item):
         logger.debug(f"append item: {item}")
         self.menu.append(item)
-        if self.is_type_info: self.set_last_position()
+
 
     def appendheading(self,item):
         logger.debug(f"appendheading: {item}")
         self.menu.append([item,"h"])
-        if self.is_type_info: self.set_last_position()
+
 
     def appendcomment(self,item):
         logger.debug(f"appendheading: {item}")
         self.menu.append([item,"c"])
-        if self.is_type_info: self.set_last_position()
 
     def appendsymbol(self,item):
         logger.debug(f"appendsymbol: {item}")
         self.menu.append([item,self.symbol])
-        if self.is_type_info: self.set_last_position()
-
-    def change_type_info(self, info=True):
-        self.hide_buttons = info
-        self.show_position = not info
-        self.render_progressbar = not info
-        self.is_type_info = info
 
     def clearmenu(self):
         self.menu = []
-
 
     def set_last_position(self):
         self.position = len(self.menu) - 1

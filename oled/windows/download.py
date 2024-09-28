@@ -128,7 +128,7 @@ class DownloadMenu(ListBase):
                     self.append_busytext(self.website)
                     self.url = self.website
                     if not self.check_website_return(self.url):
-                        self.append_busytext(f"Gebe auf! Taste! drücken")
+                        self.append_busytext(f"Gebe auf! Taste drücken!")
                         return
                 else:
                     return
@@ -138,8 +138,8 @@ class DownloadMenu(ListBase):
 
         except Exception as error:
             logger.error(f"execute_init: exception: Verbindungsfehler {error}")
-            self.append_busytext(f"Verbindungsfehler {error}:")
-            self.append_busytext(self.url)
+            self.append_busyerror(f"Verbindungsfehler {error}:")
+            self.append_busyerror(self.url)
 
             self.url = self.website
 
@@ -177,7 +177,7 @@ class DownloadMenu(ListBase):
                 return True
         except Exception as error:
             logger.info(f"check_website_return: exception: {error}")
-            self.append_busytext(f"Fehler: {error}")
+            self.append_busyerror(f"Fehler: {error}")
             return False
 
 
@@ -227,7 +227,7 @@ class DownloadMenu(ListBase):
 
         except Exception as error:
             logger.error(f"downloadfolder: {error}")
-            self.append_busytext(error)
+            self.append_busyerror(error)
         finally:
             self.set_window_busy(False)
             self.downloading = False
@@ -247,6 +247,7 @@ class DownloadMenu(ListBase):
             create_or_modify_folder_conf(directory,playout.getpos_online(self.baseurl,self.cwd))
         except Exception as error:
             logger.error (error)
+            logger.append_busyerror(error)
 
         self.append_busytext("Speihere letzten Online-Titel")
 
@@ -254,7 +255,7 @@ class DownloadMenu(ListBase):
             with open(cfg_file_folder.FILE_LAST_ONLINE,"w") as f:
                 f.write(self.url)
         except Exception as error:
-            self.append_busytext(error)
+            self.append_busyerror(error)
         if not os.path.exists(directory): os.makedirs(directory)
 
         try:
@@ -270,7 +271,7 @@ class DownloadMenu(ListBase):
             playout.pc_playfolder(foldername)
             self.windowmanager.set_window("idle")
         except Exception as error:
-            self.append_busytext(error)
+            self.append_busyerror(error)
         finally:
             self.set_window_busy(False)
 
@@ -349,7 +350,6 @@ class DownloadMenu(ListBase):
 
                 if directories != []:
                     logger.debug(f"Verzeichnisse gefunden: {directories}")
-                    self.change_type_info(False)
                     self.create_menu_from_directories(directories)
                 else:
                     logger.debug(f"Verzeichnis ausgewählt: {self.cwd}")
