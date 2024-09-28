@@ -44,7 +44,7 @@ def savepos():
 
 def savepos_online(nowplaying):
     try:
-        #url = get_parent_directory_of_url(nowplaying.filename)
+        url = nowplaying.filename
         data = {'url' : url, 'pos' : str(nowplaying._elapsed), 'song' : str(nowplaying._song), 'length' : str(nowplaying._playlistlength)}
         if nowplaying.input_is_online:
             r = requests.post(cfg_online.ONLINE_SAVEPOS,data=data,timeout=8)
