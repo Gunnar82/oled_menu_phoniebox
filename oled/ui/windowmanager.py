@@ -209,7 +209,10 @@ class WindowManager():
 
             if self.activewindow.handle_key_back:
                 self.set_window("idle")
-        return settings.screenpower
+
+            return False
+        else:
+            return True
 
 
     def push_callback(self,lp=False):
