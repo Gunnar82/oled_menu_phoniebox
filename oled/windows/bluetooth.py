@@ -19,6 +19,8 @@ logger = setup_logger(__name__)
  
 class Bluetoothmenu(ListBase):
 
+    new_busyrender = True
+
     def __init__(self, windowmanager,loop,bluetooth,title):
         super().__init__(windowmanager,loop,title)
         self.bluetooth = bluetooth
@@ -78,42 +80,47 @@ class Bluetoothmenu(ListBase):
 
     #def push_callback(self,lp=False):
     def push_handler(self):
+        try:
+            self.set_window_busy()
+            if not self.selector:
 
-        if not self.selector:
+                if (self.position == 0):
+                    self.show_paired = False
+                    self.append_busytext("Starte Suche...")
+                    self.bluetooth.start_scan()
 
-            if (self.position == 0):
-                self.show_paired = False
-                self.bluetooth.start_scan()
+                elif self.menu[self.position][1] == symbols.SYMBOL_BLUETOOTH_ON:
+                    device = self.menu[self.position]
+                    self.append_busytext(f"Paare Gerät {device[0]}...")
+                    self.bluetooth.pair(device[2])
+                    self.bluetooth.trust(device[2])
+                    self.show_paired = True
+                else:
+                    self.selected_device = self.menu[self.position]
 
-            elif self.menu[self.position][1] == symbols.SYMBOL_BLUETOOTH_ON:
-                self.bluetooth.pair(self.menu[self.position][2])
-                self.bluetooth.trust(self.menu[self.position][2])
-                self.show_paired = True
+                    self.selector = True
+                    self.position = 0
+
             else:
-                self.selected_device = self.menu[self.position]
+                if self.selected_device[1] == symbols.SYMBOL_BLUETOOTH_OFF:
 
-                self.selector = True
+                    if self.position == 1:
+                        self.append_busytext(f"Setze Bluetooth-Gerät {self.selected_device[0]}...")
+
+                        self.bluetooth.set_alsa_bluetooth_mac(self.selected_device[2],self.selected_device[0])
+                    elif self.position == 2:
+                        self.append_busytext(f"Lösche Bluetooth-Gerät {self.selected_device[0]}...")
+
+                        self.bluetooth.remove(self.selected_device[2])
+
+                    self.selected_device = []
+                self.selector = False
+
                 self.position = 0
 
-        else:
+            self.generate = True
 
-            if self.selected_device[1] == symbols.SYMBOL_BLUETOOTH_OFF:
-
-                if self.position == 1:
-                    self.bluetooth.set_alsa_bluetooth_mac(self.selected_device[2],self.selected_device[0])
-                elif self.position == 2:
-                    self.bluetooth.remove(self.selected_device[2])
-
-                self.selected_device = []
-            self.selector = False
-
-            self.position = 0
-
-
-        self.generate = True
-
-
-
-    def turn_callback(self, direction, key=None):
-        super().turn_callback(direction,key)
-
+        except Exception as error:
+            self.append_busyerror(error)
+        finally:
+            self.set_window_busy(False)
