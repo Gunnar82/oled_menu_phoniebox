@@ -76,7 +76,7 @@ class MenuBase(WindowBase):
         self.counter = 0
 
 
-    async def push_handler(self):
+    def push_handler(self):
         raise NotImplementedError()
 
     def push_callback(self,lp=False):

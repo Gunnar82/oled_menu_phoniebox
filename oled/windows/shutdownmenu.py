@@ -31,8 +31,7 @@ class Shutdownmenu(MenuBase):
         self.descr.append(["Idle 15min", "\uf186"])
 
 
-    async def push_handler(self):
-        await asyncio.sleep(1)
+    def push_handler(self):
         if self.counter == 1:
             restart_oled()
 
@@ -48,7 +47,7 @@ class Shutdownmenu(MenuBase):
             settings.shutdown_reason = settings.SR3
             print("Stopping event loop")
             self.loop.stop()
-        
+
         elif self.counter == 4:
             run_command("%s -c=shutdownafter -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
         elif self.counter == 5:
