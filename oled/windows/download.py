@@ -8,7 +8,6 @@ import time
 import requests
 
 import os
-import asyncio
 import shutil
 
 from luma.core.render import canvas

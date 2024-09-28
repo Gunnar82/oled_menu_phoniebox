@@ -48,6 +48,7 @@ class WindowManager():
     def set_window(self, windowid):
         if windowid in self.windows:
             try:
+                self.init_callback()
                 self.activewindow.set_window_busy(False)
                 self.activewindow.deactivate()
             except (NotImplementedError, AttributeError):

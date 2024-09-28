@@ -12,7 +12,6 @@ import time
 import requests
 import htmllistparse
 import subprocess,os
-import asyncio
 import shutil
 import importlib
 import qrcode

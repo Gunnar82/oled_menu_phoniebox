@@ -11,7 +11,6 @@ import config.symbols as symbols
 import os
 
 import time
-import asyncio
 
 from integrations.logging_config import *
 

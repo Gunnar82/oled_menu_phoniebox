@@ -9,7 +9,7 @@ import config.symbols as symbols
 import config.file_folder as cfg_file_folder
 
 from integrations.functions import mountusb, get_folder_from_file
-import asyncio, os
+import os
 
 class Mainmenu(MenuBase):
 

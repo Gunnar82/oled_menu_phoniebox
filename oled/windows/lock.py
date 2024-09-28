@@ -8,7 +8,6 @@ import config.colors as colors
 import config.symbols as symbols
 
 import time,random
-import asyncio
 
 from datetime import datetime
 

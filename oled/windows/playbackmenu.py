@@ -1,6 +1,6 @@
 """ playbackmenu """
 import datetime
-import asyncio
+
 from ui.windowbase import WindowBase
 from luma.core.render import canvas
 from PIL import ImageFont
