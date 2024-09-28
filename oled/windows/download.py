@@ -546,10 +546,10 @@ class DownloadMenu(ListBase):
         try:
             url = urljoin(url,onlinepath)
 
-            logger.debug(f"get_pos_online: {url}")
             temp, uri = split_url(url)
 
             if not uri.endswith('/'): uri += '/'
+            logger.debug(f"get_pos_online: {uri}")
 
             folderinfo = playout.getpos_online(self.baseurl,uri)
             logger.debug(f"folderinfo: {folderinfo}")
@@ -557,9 +557,10 @@ class DownloadMenu(ListBase):
                 song = int(float(folderinfo[3]))
                 length = int(float(folderinfo[4]))
                 prozent = (song - 1) / length * 100
-                progress = "%2.2d%%%s"  % (prozent,progress)
+                progress = "%2.2d%%"  % (prozent)
                 return progress
             else:
                 return ""
-        except:
+        except Exception as error:
+            logger.error(f"fet_online_pos: {error}")
             return ""

@@ -7,6 +7,9 @@ import config.file_folder as cfg_file_folder
 import config.online as cfg_online
 
 from integrations.functions import run_command
+from integrations.download import get_parent_directory_of_url
+
+from urllib.parse import urljoin
 
 def pc_prev():
     run_command("%s -c=playerprev" % (cfg_file_folder.PLAYOUT_CONTROLS))
@@ -40,15 +43,17 @@ def savepos():
     run_command("%s -c=savepos" % (cfg_file_folder.RESUME_PLAY))
 
 def savepos_online(nowplaying):
-    data = {'url' : nowplaying.filename, 'pos' : str(nowplaying._elapsed), 'song' : str(nowplaying._song), 'length' : str(nowplaying._playlistlength)}
-    #try:
-    #    r = requests.post(cfg_online.ONLINE_SAVEPOS,data=data,timeout=8)
+    try:
+        url = get_parent_directory_of_url(nowplaying.filename)
+        data = {'url' : url, 'pos' : str(nowplaying._elapsed), 'song' : str(nowplaying._song), 'length' : str(nowplaying._playlistlength)}
+        if nowplaying.input_is_online:
+            r = requests.post(cfg_online.ONLINE_SAVEPOS,data=data,timeout=8)
 
-#    except Exception as error:
-#        print (error)
+    except Exception as error:
+        print (error)
 
 def getpos_online(baseurl,cwd):
-    url = baseurl+urllib.parse.quote(cwd)
+    url = urljoin(baseurl,urllib.parse.quote(cwd))
     data = {'url' : url}
     try:
         r = requests.post("%sgetpos.php" % (cfg_online.ONLINE_SAVEPOS),data=data)
