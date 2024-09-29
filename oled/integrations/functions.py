@@ -184,7 +184,7 @@ def run_command(commands, cwd="/home/pi/oledctrl/"):
     try:
         if isinstance(commands,str):
             logger.debug(f"running single command: {commands}")
-            subprocess_result = subprocess.Popen(commands,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd=cwd)
+            subprocess_result = subprocess.Popen(commands,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd=cwd,encoding='utf-8')
             subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
             return (subprocess_result.returncode == 0)
 

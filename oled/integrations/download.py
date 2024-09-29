@@ -8,7 +8,7 @@ import settings
 
 from integrations.logging_config import *
 
-logger = setup_logger(__name__)
+logger = setup_logger(__name__,lvlDEBUG)
 
 
 def check_url_reachability(url):
@@ -93,6 +93,7 @@ def create_or_modify_folder_conf(directory,latestplayed):
 
     try:
         folder_conf_file = open(filename,"r")
+        logger.debug(f"create_or_modify_folder_conf: exists?: {filename}")
         lines = folder_conf_file.readlines()
         for line in lines:
             _key, _val = line.split('=',2)
@@ -110,6 +111,8 @@ def create_or_modify_folder_conf(directory,latestplayed):
         with open(filename,"w") as folder_conf_file:
             for key in folderconf:
                 folder_conf_file.write ("%s=\"%s\"\n" % (key,folderconf[key]))
+        logger.debug(f"create_or_modify_folder_conf: create?: {filename}")
+
     except Exception as error:
         logger.error (error)
 
