@@ -485,19 +485,16 @@ class DownloadMenu(ListBase):
         self.menu = directories
         #TODO progress
 
-    def get_files_and_dirs_from_listing(self,url, allowed_extensions,get_filesize=True):
-        """Extrahiere Dateien und Verzeichnisse aus dem HTTP-Listing."""
+    def get_files_and_dirs_from_listing(self, url, allowed_extensions, get_filesize=True):
+        """Extrahiere Dateien und Verzeichnisse aus dem HTTP-Listing, einschließlich Dateigröße."""
         try:
             logger.debug(f"Verzeichnis-URL: {url}")
-            if not url.endswith('/'): url += '/'
+            if not url.endswith('/'): 
+                url += '/'
             parsed_url = urlparse(url)
 
             # Zertifikatsprüfung nur bei HTTPS-URLs deaktivieren
-            if parsed_url.scheme == 'https':
-                response = requests.get(url, verify=False)
-            else:
-                response = requests.get(url)  # Keine Zertifikatsprüfung für HTTP
-
+            response = requests.get(url, verify=(parsed_url.scheme != 'https'))
             response.raise_for_status()
         except requests.exceptions.RequestException as e:
             # Fehler bei der HTTP-Anfrage abfangen
@@ -517,32 +514,36 @@ class DownloadMenu(ListBase):
             if href and not href.startswith('?') and not href.startswith('/'):
                 if href.endswith('/'):
                     # Unterverzeichnis gefunden
-                    directory = unquote(href).strip('/') # trailing slash entfernen
+                    directory = unquote(href).strip('/')  # trailing slash entfernen
                     self.append_busytext(f"Ordner: {directory}")
-                    pos = self.get_online_pos(directory,url)
+                    pos = self.get_online_pos(directory, url)
                     self.append_busytext(f"Ordner Onlineposition: {pos}")
-                    directories.append([directory,'x',pos]) 
+                    directories.append([directory, 'x', pos])
 
                 elif any(href.endswith(ext) for ext in allowed_extensions):
                     # Datei gefunden
                     filename = unquote(href)
                     self.append_busytext(f"Datei: {filename}", use_last=True)
-                    files.append(unquote(href))
 
-                    #Wenn Dateigröße abgefragt werden soll
-                    if get_filesize:
-                        file_url = urljoin(url, href)
+                    # Extrahiere Dateigröße aus der nächsten Zelle in der Tabelle (angenommen, das Listing ist tabellenartig)
+                    file_row = link.find_parent('tr')  # Finde die gesamte Tabellenzeile
+                    if file_row:
+                        size_column = file_row.find_all('td')[-2]  # Nimm die letzte Zelle an, dass sie die Dateigröße enthält
                         try:
-                            file_response = requests.head(file_url)
-                            file_response.raise_for_status()
-                            # Dateigröße aus dem Header holen, falls vorhanden
-                            file_size = int(file_response.headers.get('content-length', 0))
-                            #self.append_busytext(f"Dateigröße: {file_size}")
+                            file_size_str = size_column.text.strip()
+                            file_size = parse_size(file_size_str)  # Implementiere eine Methode, um die Größe zu parsen
+
+                        except Exception as error:
+                            logger.info(f"Konnte Dateigröße für {filename} {error} nicht extrahieren.")
+                            file_size = 0
+                        finally:
                             total_size += file_size
-                        except requests.RequestException as e:
-                            logger.info(f"Fehler beim Abrufen der Dateigröße für {file_url}: {e}")
-                            continue
+
+                    files.append(unquote(href))
         return files, directories, total_size
+
+
+
 
     def get_online_pos(self,onlinepath,url):
         try:

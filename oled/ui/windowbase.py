@@ -223,8 +223,7 @@ class WindowBase():
                             if selected_element[1] == self.info:
                                 startleft = int((settings.DISPLAY_WIDTH - busyfont.getsize(selected_element[0])[0] ) / 2)
                         except Exception as e:
-                            print (f"error:::{e}")
-                        print (selected_element)
+                            logger.error (f"error:::{e}")
                     else:
                         drawtext = selected_element
 

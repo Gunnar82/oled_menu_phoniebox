@@ -166,3 +166,32 @@ def find_element_or_formatted_position(nested_list, element):
     logger.debug(f"nicht gefunden")
 
     return -1, -1  # Element nicht gefunden
+
+def parse_size(size_str):
+    """Konvertiert einen String wie '1.2 MB' oder '300 KB' in Bytes."""
+    size_str = size_str.strip().upper()
+    size_units = {'B': 1, 'KB': 1024, 'MB': 1024**2, 'GB': 1024**3,
+                  'B': 1, 'K': 1024, 'M': 1024**2, 'G': 1024**3}
+    
+    # Extrahiere die Zahl und die Einheit aus dem String
+    number = ''.join(filter(lambda x: x.isdigit() or x in {'.', ','}, size_str))  # Nimmt nur Ziffern, '.' und ',' für Dezimalzahlen
+    unit = ''.join(filter(str.isalpha, size_str))  # Nimmt nur alphabetische Zeichen (die Einheit)
+
+    # Fallback auf Bytes, wenn keine Einheit angegeben ist
+    if not unit:
+        unit = 'B'
+
+    # Ersetze das Komma durch einen Punkt für die Umwandlung in float
+    number = number.replace(',', '.')  
+
+    # Konvertiere die Zahl in float (für Größen wie 1.5 MB)
+    try:
+        number = float(number)
+    except ValueError:
+        return 0
+
+    # Konvertiere basierend auf der Einheit
+    if unit in size_units:
+        return int(number * size_units[unit])
+    else:
+        return 0

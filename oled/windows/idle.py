@@ -22,7 +22,7 @@ from integrations.functions import get_battload_color, to_min_sec, get_folder, g
 
 from integrations.logging_config import *
 
-logger = setup_logger(__name__,lvlDEBUG)
+logger = setup_logger(__name__)
 
 
 class Idle(MainWindow):
