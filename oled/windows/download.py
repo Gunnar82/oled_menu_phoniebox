@@ -204,6 +204,7 @@ class DownloadMenu(ListBase):
                 self.clear_busymenu()
 
                 url = construct_url_from_local_path(self.baseurl,self.cwd,item)
+
                 logger.debug(f"downloadfolder: url: {url}")
 
                 destination = os.path.join(destdir, stripitem(item))
@@ -213,7 +214,6 @@ class DownloadMenu(ListBase):
                 self.append_busytext("Download %2.2d von %2.2d" % (self.items.index(item) + 1,len(self.items))) 
                 self.append_busytext(item)
                 self.append_busytext("Abbruch mit beliebiger Taste") 
-
 
                 try:
                     self.download_file(url,destination)
@@ -402,7 +402,7 @@ class DownloadMenu(ListBase):
 
     def on_key_left(self, clear_busymenu = True):
         try:
-            self.set_window_busy(clear_busymenu = clear_busymenu, with_symbol = clear_busymenu)
+            self.set_window_busy(clear_busymenu = cler_busymenu, with_symbol = clear_busymenu)
 
             self.append_busytext("Lese Verzeichnis")
 
@@ -510,6 +510,8 @@ class DownloadMenu(ListBase):
         directories = []
         total_size = 0
 
+        self.append_busytext()
+
         for link in soup.find_all('a'):
             href = link.get('href')
             if href and not href.startswith('?') and not href.startswith('/'):
@@ -524,7 +526,7 @@ class DownloadMenu(ListBase):
                 elif any(href.endswith(ext) for ext in allowed_extensions):
                     # Datei gefunden
                     filename = unquote(href)
-                    self.append_busytext(f"Datei: {filename}")
+                    self.append_busytext(f"Datei: {filename}", use_last=True)
                     files.append(unquote(href))
 
                     #Wenn Dateigröße abgefragt werden soll

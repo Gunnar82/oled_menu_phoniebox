@@ -156,9 +156,11 @@ class WindowBase():
         raise NotImplementedError()
 
     # new busy handling
-    def append_busytext(self,item="Verarbeite..."):
+    def append_busytext(self,item="Verarbeite...",use_last= False):
         logger.debug(f"append busyitem: {item}")
-        self.busymenu.append(item)
+        thelen = len(self.busymenu)
+        if use_last and thelen > 0: self.busymenu[thelen -1] = item
+        else: self.busymenu.append(item)
         self.pop_busymenu()
 
     def append_busyerror(self,item="Fehler..."):
