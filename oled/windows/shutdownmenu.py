@@ -47,21 +47,21 @@ class Shutdownmenu(MenuBase):
             settings.shutdown_reason = settings.SR3
             print("Stopping event loop")
             self.loop.stop()
-
-        elif self.counter == 4:
-            run_command("%s -c=shutdownafter -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
-        elif self.counter == 5:
-            run_command("%s -c=shutdownafter -v=15" % cfg_file_folder.PLAYOUT_CONTROLS)
-        elif self.counter == 6:
-            run_command("%s -c=shutdownafter -v=30" % cfg_file_folder.PLAYOUT_CONTROLS)
-        elif self.counter == 7:
-            run_command("%s -c=shutdownafter -v=60" % cfg_file_folder.PLAYOUT_CONTROLS)
-        elif self.counter == 8:
-            run_command("%s -c=setidletime -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
-        elif self.counter == 9:
-            run_command("%s -c=setidletime -v=5" % cfg_file_folder.PLAYOUT_CONTROLS)
-        elif self.counter == 10:
-            run_command("%s -c=setidletime -v=15" % cfg_file_folder.PLAYOUT_CONTROLS)
+        else:
+            if self.counter == 4:
+                run_command("%s -c=shutdownafter -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
+            elif self.counter == 5:
+                run_command("%s -c=shutdownafter -v=15" % cfg_file_folder.PLAYOUT_CONTROLS)
+            elif self.counter == 6:
+                run_command("%s -c=shutdownafter -v=30" % cfg_file_folder.PLAYOUT_CONTROLS)
+            elif self.counter == 7:
+                run_command("%s -c=shutdownafter -v=60" % cfg_file_folder.PLAYOUT_CONTROLS)
+            elif self.counter == 8:
+                run_command("%s -c=setidletime -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
+            elif self.counter == 9:
+                run_command("%s -c=setidletime -v=5" % cfg_file_folder.PLAYOUT_CONTROLS)
+            elif self.counter == 10:
+                run_command("%s -c=setidletime -v=15" % cfg_file_folder.PLAYOUT_CONTROLS)
 
         get_timeouts()
 

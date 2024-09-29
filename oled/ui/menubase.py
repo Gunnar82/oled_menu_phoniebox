@@ -82,6 +82,7 @@ class MenuBase(WindowBase):
         if self.counter == 0:
             self.windowmanager.set_window(self.window_on_back)
         else:
+            self.set_busyinfo(item = self.descr[self.counter][0],symbol=self.descr[self.counter][1],wait=2)
             self.loop.run_in_executor(None,self.push_handler)
 
     def turn_callback(self, direction, key=None):
