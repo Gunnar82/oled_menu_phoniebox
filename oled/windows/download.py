@@ -402,7 +402,7 @@ class DownloadMenu(ListBase):
 
     def on_key_left(self, clear_busymenu = True):
         try:
-            self.set_window_busy(clear_busymenu = cler_busymenu, with_symbol = clear_busymenu)
+            self.set_window_busy(clear_busymenu = clear_busymenu, with_symbol = clear_busymenu)
 
             self.append_busytext("Lese Verzeichnis")
 
