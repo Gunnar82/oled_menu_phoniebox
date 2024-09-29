@@ -78,10 +78,10 @@ class Shutdownmenu(MenuBase):
 
         if key:
             if key == 'A':
-                self.set_busy("Austimer 30 min","\uf0a2")
+                self.set_busyinfo(item = "Austimer 30 min",symbol="\uf0a2",wait=5)
                 run_command("%s -c=shutdownafter -v=30" % cfg_file_folder.PLAYOUT_CONTROLS)
             elif key == 'B':
-                self.set_busy("Austimer deaktiviert","\uf1f7")
+                self.set_busyinfo(item="Austimer deaktiviert",symbol="\uf1f7",wait=5)
                 run_command("%s -c=shutdownafter -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
 
             elif key == 'C':

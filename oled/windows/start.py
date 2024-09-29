@@ -23,7 +23,6 @@ from integrations.functions import get_oledversion, get_battload_color, enable_f
 
 class Start(WindowBase):
     contrasthandle = False
-    new_busyrender = True
 
     def __init__(self, windowmanager,loop, mopidyconnection,bluetooth):
         super().__init__(windowmanager, loop)

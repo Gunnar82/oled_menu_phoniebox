@@ -19,8 +19,6 @@ logger = setup_logger(__name__)
  
 class Headphonemenu(MenuBase):
 
-    new_busyrender = True
-
     def __init__(self, windowmanager,loop,bluetooth,title):
         super().__init__(windowmanager,loop,title)
         self.bluetooth = bluetooth

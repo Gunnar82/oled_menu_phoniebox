@@ -37,7 +37,7 @@ requests.packages.urllib3.disable_warnings(requests.packages.urllib3.exceptions.
 
 
 class DownloadMenu(ListBase):
-    new_busyrender = True
+
     busysymbol = symbols.SYMBOL_CLOUD
 
     def __init__(self, windowmanager,loop):

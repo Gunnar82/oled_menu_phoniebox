@@ -33,8 +33,11 @@ class WindowBase():
     windowtitle = "untitled"
     timeoutwindow="idle"
     window_on_back = "mainmenu"
+
     symbol = "s"
-    error = "err"
+    info   = "i"
+    error  = "err"
+
     busysymbol = symbols.SYMBOL_SANDCLOCK
     busytext1 = settings.PLEASE_WAIT
     busytext2 = ""
@@ -47,8 +50,6 @@ class WindowBase():
     page = 0
     handle_key_back = True
 
-
-    new_busyrender = False
     is_busy = False
     busymenu = []
     busydrawtextx = 0
@@ -69,53 +70,6 @@ class WindowBase():
 
     def clear_window(self):
         self.device.clear()
-
-    def set_busy(self,busytext1,busysymbol=symbols.SYMBOL_SANDCLOCK,busytext2="", busyrendertime=3,busytext3="",set_window=False):
-
-        self.busytext1 = busytext1
-        self.busysymbol = busysymbol
-
-        self.busytext3 = busytext3
-        if busyfont.getsize(busytext2)[0] > settings.DISPLAY_WIDTH:
-            pos = len(busytext2) // 2
-            self.busytext4 = busytext2[:pos]
-            self.busytext2 = busytext2[pos:]
-
-        else:
-            self.busytext4 = ""
-            self.busytext2 = busytext2
-
-        self.busyrendertime = busyrendertime
-
-        self.start_busyrendertime = time.monotonic()
-        self.busy = True
-
-        if set_window:
-            self.loop.create_task(self.set_window(self.window_on_back))
-
-    def renderbusy(self,symbolcolor = colors.COLOR_RED, textcolor1=colors.COLOR_WHITE, textcolor2=colors.COLOR_WHITE):
-        with canvas(self.device) as draw:
-            self.renderbusydraw(draw,symbolcolor,textcolor1,textcolor2)
-
-    def renderbusydraw(self, draw, symbolcolor = colors.COLOR_RED, textcolor1=colors.COLOR_WHITE, textcolor2=colors.COLOR_WHITE):
-        mwidth1,mheight1 = busyfont.getsize(self.busytext1)
-        mwidth2,mheight2 = busyfont.getsize(self.busytext2)
-        mwidth3,mheight3 = busyfont.getsize(self.busytext3)
-        mwidth4,mheight4 = busyfont.getsize(self.busytext4)
-        mwidth,mheight = busyfaiconsbig.getsize(self.busysymbol)
-
-        draw.text(((settings.DISPLAY_WIDTH - mwidth1) / 2, 5), text=self.busytext1, font=busyfont, fill=textcolor1)
-
-        if (self.busytext3 != ""):
-            draw.text(((settings.DISPLAY_WIDTH - mwidth3) / 2, mheight1 + 3), text=self.busytext3, font=busyfont, fill=textcolor2) #sanduhr
-
-        if (self.busytext2 != ""):
-            draw.text(((settings.DISPLAY_WIDTH - mwidth2) / 2, settings.DISPLAY_HEIGHT - mheight2 - 3), text=self.busytext2, font=busyfont, fill=textcolor2) #sanduhr
-
-        if (self.busytext4 != ""):
-            draw.text(((settings.DISPLAY_WIDTH - mwidth4) / 2, settings.DISPLAY_HEIGHT - mheight2 - 3  - mheight4 - 3), text=self.busytext4, font=busyfont, fill=textcolor2) #sanduhr
-
-        draw.text(((settings.DISPLAY_WIDTH - mwidth) / 2, (settings.DISPLAY_HEIGHT - mheight) / 2), text=self.busysymbol, font=busyfaiconsbig, fill=symbolcolor) #sanduhr
 
     def render_progressbar_draw(self,draw, pos=0, color1=colors.COLOR_YELLOW, color2=colors.COLOR_RED, buttom_top=True):
         logger.debug(f"render_progressbar_pos: started, pos: {pos}")
@@ -188,12 +142,15 @@ class WindowBase():
         self.busymenu = []
         self.set_lastbusytextline()
 
-    def set_window_busy(self, state=True, with_symbol = True, clear_busymenu = True, render_progressbar = False, wait=1):
+    def set_window_busy(self, state=True, with_symbol = True, clear_busymenu = True, render_progressbar = False, wait=1, set_window=False):
 
         self.render_busy_progressbar = render_progressbar
 
         if state and clear_busymenu: self.clear_busymenu()
-        if not state and self.new_busyrender: time.sleep(wait)
+        if not state:
+            time.sleep(wait)
+            if set_window:
+                self.windowmanager.set_window(self.window_on_back)
         if with_symbol and state: self.append_busysymbol()
         self.is_busy = state
         self.set_lastbusytextline()
@@ -201,6 +158,25 @@ class WindowBase():
 
     def set_lastbusytextline(self, text=""):
         self.lastbusytext = text
+
+    def set_busyinfo(self,item="", symbol=None,wait = 3):
+        self.loop.run_in_executor(None,self.task_busyinfo,item,symbol,wait)
+
+    def task_busyinfo(self,item,symbol,wait):
+        self.set_window_busy(with_symbol=False)
+        self.append_busytext("")
+        if symbol is not None : self.append_busysymbol(symbol)
+        self.append_busytext("")
+        if isinstance(item,list):
+            logger.debug(f"append_busyitem: liste: {item}")
+            for e in item:
+                logger.debug(f"append_item: liste: {e}")
+                self.append_busytext([e,self.info])
+        else:
+            self.append_busytext([item,self.info])
+
+        self.set_window_busy(False,wait=wait)
+
 
     def new_renderbusy(self):
         try:
@@ -222,6 +198,8 @@ class WindowBase():
 
                     progresscolor = colors.COLOR_GREEN
 
+                    startleft = self.startleft
+
 
                     if isinstance(selected_element,list):
                         drawtext = selected_element[0]
@@ -239,6 +217,14 @@ class WindowBase():
 
                         except:
                             pass
+
+                        startleft = self.startleft
+                        try:
+                            if selected_element[1] == self.info:
+                                startleft = int((settings.DISPLAY_WIDTH - busyfont.getsize(selected_element[0])[0] ) / 2)
+                        except Exception as e:
+                            print (f"error:::{e}")
+                        print (selected_element)
                     else:
                         drawtext = selected_element
 
@@ -246,13 +232,13 @@ class WindowBase():
                         progresscolor = colors.COLOR_SELECTED
 
                         if (time.monotonic()-settings.lastinput) > 2:
-                            if busyfont.getsize(drawtext[self.busydrawtextx:])[0] > settings.DISPLAY_WIDTH -1 - self.startleft:
+                            if busyfont.getsize(drawtext[self.busydrawtextx:])[0] > settings.DISPLAY_WIDTH -1 - startleft:
                                 self.busydrawtextx += 1
                                 scrolling = True
                             else:
                                 self.busydrawtextx = 0
 
-                        draw.text((self.startleft , current_y), drawtext[self.busydrawtextx:], font=busyfont, fill=colors.COLOR_SELECTED)
+                        draw.text((startleft , current_y), drawtext[self.busydrawtextx:], font=busyfont, fill=colors.COLOR_SELECTED)
 
                     else:
 
@@ -261,11 +247,11 @@ class WindowBase():
                             current_y += selected_element[3] # Symbolhöhe
 
                         else:
-                            draw.text((self.startleft, current_y), drawtext, font=busyfont, fill=progresscolor)
+                            draw.text((startleft, current_y), drawtext, font=busyfont, fill=progresscolor)
                             current_y += self.busyentrylineheight
 
                 if self.lastbusytext != "":
-                        draw.text((self.startleft, self.busydisplaylines * self.busyentrylineheight), self.lastbusytext, font=busyfont, fill=colors.COLOR_YELLOW)
+                        draw.text((startleft, self.busydisplaylines * self.busyentrylineheight), self.lastbusytext, font=busyfont, fill=colors.COLOR_YELLOW)
 
                 if self.render_busy_progressbar: self.render_progressbar_draw(draw,self.busyprogressbarpos)
 

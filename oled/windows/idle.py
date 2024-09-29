@@ -22,7 +22,7 @@ from integrations.functions import get_battload_color, to_min_sec, get_folder, g
 
 from integrations.logging_config import *
 
-logger = setup_logger(__name__)
+logger = setup_logger(__name__,lvlDEBUG)
 
 
 class Idle(MainWindow):
@@ -54,7 +54,7 @@ class Idle(MainWindow):
             #####IDLE RENDER
 
             if (settings.battcapacity >= 0 and settings.battcapacity <= settings.X728_BATT_EMERG and not settings.battloading):
-                self.set_busy("Batterie leer", busytext2 = "AUS in %ds" % ((settings.lastinput - now) + 120))
+                self.set_busyinfo(item=["Batterie leer", "AUS in %ds" % ((settings.lastinput - now) + 120)])
                 self.busy = True
                 self.contrasthandle = False
                 self.rendertime = self._rendertime
@@ -78,8 +78,7 @@ class Idle(MainWindow):
             try:
                 if ((now - self.nowplaying.lasttitlechange ) < 3):
                     logger.debug("Titelwechsel erkannt")
-                    self.set_busy ("Titelwechsel", symbols.SYMBOL_CHANGING_SONG, "%2.2d von %2.2d " % (int(self.nowplaying._song), int(self.nowplaying._playlistlength)))
-                    self.busy = True
+                    self.set_busyinfo(item = ["Titelwechsel", "%2.2d von %2.2d " % (int(self.nowplaying._song), int(self.nowplaying._playlistlength))], symbol = symbols.SYMBOL_CHANGING_SONG)
             except Exception as error:
                 print (error)
 
@@ -165,46 +164,46 @@ class Idle(MainWindow):
         if not cfolder.endswith(dfolder):
             playout.pc_playfolder (dfolder)
 
-        self.set_busy(dfolder[dfolder.rindex("/")+1:])
+        self.set_busyinfo(dfolder[dfolder.rindex("/")+1:])
 
 
     def turn_callback(self, direction, key=None):
         if key:
             if key == 'up' or key == '2':
                 playout.pc_volup(5)
-                self.set_busy("lauter",symbols.SYMBOL_VOL_UP)
+                self.set_busyinfo(item="lauter",symbol=symbols.SYMBOL_VOL_UP)
             elif key == 'down' or key == '8':
                 playout.pc_voldown(5)
-                self.set_busy("leiser",symbols.SYMBOL_VOL_DN)
+                self.set_busyinfo(item="leiser",symbol=symbols.SYMBOL_VOL_DN)
 
             elif key in ['left','4']:
                 if self.nowplaying.input_is_stream and not self.nowplaying.input_is_online and self.nowplaying._song >= self.nowplaying._playlistlength:
-                    self.set_busy("Vorheriger Sender",symbols.SYMBOL_PREV)
+                    self.set_busyinfo(item="Vorheriger Sender",symbol=symbols.SYMBOL_PREV)
                     self.loop.create_task(self.change_folder(-1))
                 else:
                     if float(self.nowplaying._elapsed) > 10:
-                        self.set_busy("Neustart Track",symbols.SYMBOL_PREV)
                         logger.debug("idle: seek 0")
                         playout.pc_seek0()
                     elif int(self.nowplaying._song) > 1:
-                        self.set_busy("Zurück",symbols.SYMBOL_PREV)
+                        self.set_busyinfo(item="Zurück",symbol=symbols.SYMBOL_PREV)
                         logger.debug("idle: prev")
                         playout.pc_prev()
+                        self.set_busyinfo(item="Neustart Track",symbol=symbols.SYMBOL_PREV)
                     else:
-                        self.set_busy("Erster Titel",symbols.SYMBOL_FAIL)
+                        self.set_busyinfo(item="Erster Titel",symbol=symbols.SYMBOL_FAIL)
 
             elif key in ['right', '6']:
                 print (self.nowplaying)
                 if self.nowplaying.input_is_stream and not self.nowplaying.input_is_online and self.nowplaying._song <= self.nowplaying._playlistlength:
-                    self.set_busy("Nächster Sender",symbols.SYMBOL_NEXT)
+                    self.set_busyinfo(item="Nächster Sender",symbol=symbols.SYMBOL_NEXT)
                     self.loop.create_task(self.change_folder(1))
                 else:
                     if int(self.nowplaying._song) < int(self.nowplaying._playlistlength):
-                        self.set_busy("Weiter",symbols.SYMBOL_NEXT)
                         logger.debug("idle: next")
                         playout.pc_next()
+                        self.set_busyinfo(item="Weiter",symbol=symbols.SYMBOL_NEXT)
                     else:
-                        self.set_busy("Letzter Titel",symbols.SYMBOL_FAIL)
+                        self.set_busyinfo(item="Letzter Titel",symbol=symbols.SYMBOL_FAIL)
 
             elif key == 'A' or key == 'Y':
                 settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_MUSIC
@@ -244,7 +243,7 @@ class Idle(MainWindow):
                     what = cfg_file_folder.FILE_LAST_MUSIC
 
                 if playout.checkfolder(what) != 0:
-                    self.set_busy("Fehler",symbols.SYMBOL_ERROR,what)
+                    self.set_busyinfo(item=f"Fehler: {what}",symbol=symbols.SYMBOL_ERROR)
                 else:
                     try:
                         with open(what) as f:
@@ -252,14 +251,14 @@ class Idle(MainWindow):
                     except:
                         content = "Fehler"
 
-                    self.set_busy(what.split("/")[-1],symbols.SYMBOL_PASS,content,busyrendertime=5)
+                    self.set_busyinfo(item=what.split("/")[-1],symbol=symbols.SYMBOL_PASS)
                     self.loop.create_task(self.playlast(what))
         else:
             if (direction > 0):
-                self.set_busy("lauter",symbols.SYMBOL_VOL_UP)
+                self.set_busyinfo(item="lauter",symbol=symbols.SYMBOL_VOL_UP)
                 playout.pc_volup()
             else:
-                self.set_busy("leiser",symbols.SYMBOL_VOL_DN)
+                self.set_busyinfo(item="leiser",symbol=symbols.SYMBOL_VOL_DN)
                 playout.pc_voldown()
 
     async def playlast(self,what):

@@ -46,7 +46,7 @@ class Lock(MainWindow):
         elif "keypad4x4" in settings.INPUTS: self.unlockindex = 1
 
         if self.unlockindex == -1:
-            self.set_busy("Kein kompatibler INPUT",symbols.SYMBOL_ERROR,set_window=True)
+            self.set_busyinfo(item="Kein kompatibler INPUT",symbol=symbols.SYMBOL_ERROR,wait=5,set_window=True)
         else:
             try:
                 for r in range(0,4):
@@ -58,8 +58,8 @@ class Lock(MainWindow):
                     self.unlockcodes[ self.unlockindex ].remove(char)
             except:
                 self.gen_unlockcodes()
-                self.set_busy("Random Fehler")
-                self.windowmanager.set_window("idle")
+                self.set_busyinfo(item="Random Fehler")
+                self.windowmanager.set_window(self.window_on_bac)
 
 
             self.currentkey = 0
@@ -86,7 +86,7 @@ class Lock(MainWindow):
 
         if self.currentkey >= len(self.unlockcode):
              self.currentkey = 0 
-             self.set_busy("Gerät entsperrt",symbols.SYMBOL_UNLOCKED,set_window=True)
+             self.set_busyitem(item="Gerät entsperrt",symbol=symbols.SYMBOL_UNLOCKED,wait=5,set_window=True)
         else:
             self.genhint()
 

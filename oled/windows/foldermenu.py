@@ -19,7 +19,6 @@ logger = setup_logger(__name__)
 
 class Foldermenu(ListBase):
     folders = []
-    new_busyrender = True
 
     def __init__(self, windowmanager,loop):
         super().__init__(windowmanager, loop, "Auswahl")
