@@ -65,12 +65,6 @@ class Shutdownmenu(MenuBase):
 
         get_timeouts()
 
-        self.windowmanager.set_window("idle")
-            #self.mopidyconnection.stop()
-            #self.execreboot = True
-            #print("Stopping event loop")
-            #self.loop.stop()
-
 
     def turn_callback(self, direction, key=None):
 
