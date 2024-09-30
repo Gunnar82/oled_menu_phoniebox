@@ -515,14 +515,20 @@ class DownloadMenu(ListBase):
                 if href.endswith('/'):
                     # Unterverzeichnis gefunden
                     directory = unquote(href).strip('/')  # trailing slash entfernen
-                    self.append_busytext(f"Ordner: {directory}")
-                    pos = self.get_online_pos(directory, url)
-                    self.append_busytext(f"Ordner Onlineposition: {pos}")
-                    directories.append([directory, 'x', pos])
+                    logger.debug(f"Verzeichnis gefunden: '{directory}'")
+                    if directory != "..":
+                        self.append_busytext(f"Ordner: {directory}")
+                        pos = self.get_online_pos(directory, url)
+                        self.append_busytext(f"Ordner Onlineposition: {pos}")
+                        directories.append([directory, 'x', pos])
+                    else:
+                        logger.debug(f"Verzeichnis ignorieren: '{directory}'")
+
 
                 elif any(href.endswith(ext) for ext in allowed_extensions):
                     # Datei gefunden
                     filename = unquote(href)
+                    logger.debug(f"create_listing: {filename}")
                     self.append_busytext(f"Datei: {filename}", use_last=True)
 
                     # Extrahiere Dateigröße aus der nächsten Zelle in der Tabelle (angenommen, das Listing ist tabellenartig)
@@ -548,14 +554,14 @@ class DownloadMenu(ListBase):
     def get_online_pos(self,onlinepath,url):
         try:
             url = urljoin(url,onlinepath)
-
             temp, uri = split_url(url)
 
             if not uri.endswith('/'): uri += '/'
-            logger.debug(f"get_pos_online: {uri}")
+            logger.debug(f"get_pos_online: uri: {uri}, url: {url}, onlinepath: {onlinepath}")
+
 
             folderinfo = playout.getpos_online(self.baseurl,uri)
-            logger.debug(f"folderinfo: {folderinfo}")
+            logger.debug(f"get_online_pos: folderinfo: {folderinfo}")
             if len(folderinfo) >= 6 and folderinfo[0] == "POS":
                 song = int(float(folderinfo[3]))
                 length = int(float(folderinfo[4]))

@@ -46,6 +46,7 @@ def savepos_online(nowplaying):
     try:
         url = nowplaying.filename
         data = {'url' : url, 'pos' : str(nowplaying._elapsed), 'song' : str(nowplaying._song), 'length' : str(nowplaying._playlistlength)}
+        print (data)
         if nowplaying.input_is_online:
             r = requests.post(cfg_online.ONLINE_SAVEPOS,data=data,timeout=8)
 
@@ -55,11 +56,13 @@ def savepos_online(nowplaying):
 def getpos_online(baseurl,cwd):
     url = urljoin(baseurl,urllib.parse.quote(cwd))
     data = {'url' : url}
+    print (data)
     try:
         r = requests.post("%sgetpos.php" % (cfg_online.ONLINE_SAVEPOS),data=data)
         response = r.content.decode()
         vals = response.split("|")
         vals.append(url)
+        print (vals)
         return vals
 
     except:
