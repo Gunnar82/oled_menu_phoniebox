@@ -38,6 +38,9 @@ def check_or_create_config(filename,samplename):
        logger.error(f"usersettings Fehler: {error}")
        sys.exit (-1)
 
+file_folder_py = "/home/pi/oledctrl/oled/config/file_folder.py"
+file_folder_py_sample = f"{file_folder_py}.sample"
+
 
 online_py = "/home/pi/oledctrl/oled/config/online.py"
 online_py_sample = f"{online_py}.sample"
@@ -48,6 +51,7 @@ settings_py_sample = f"{settings_py}.sample"
 check_or_create_config(cfg_file_folder.FILE_USER_SETTINGS,cfg_file_folder.FILE_USER_SETTINGS_SAMPLE)
 check_or_create_config(online_py,online_py_sample)
 check_or_create_config(settings_py,settings_py_sample)
+check_or_create_config(file_folder_py,file_folder_py_sample)
 
 
 

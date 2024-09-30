@@ -6,5 +6,6 @@ settings.py
 oled/pins/*
 Latest*
 oled/config/online.py
+oled/config/file_folder.py
 image001.png
 logo.png
