@@ -249,7 +249,7 @@ class DownloadMenu(ListBase):
             logger.error (error)
             logger.append_busyerror(error)
 
-        self.append_busytext("Speihere letzten Online-Titel")
+        self.append_busytext("Speichere Online-Titel in zuletzt gespielt")
 
         try:
             with open(cfg_file_folder.FILE_LAST_ONLINE,"w") as f:
@@ -267,7 +267,7 @@ class DownloadMenu(ListBase):
             self.append_busytext(f"Titelhinzugefügt: {item}")
 
             foldername = directory[len(cfg_file_folder.AUDIO_BASEPATH_BASE):]
-            self.append_busytext("Starte playout {foldername}")
+            self.append_busytext(f"Starte playout {foldername}")
             playout.pc_playfolder(foldername)
             self.windowmanager.set_window("idle")
         except Exception as error:
@@ -528,7 +528,7 @@ class DownloadMenu(ListBase):
                     # Extrahiere Dateigröße aus der nächsten Zelle in der Tabelle (angenommen, das Listing ist tabellenartig)
                     file_row = link.find_parent('tr')  # Finde die gesamte Tabellenzeile
                     if file_row:
-                        size_column = file_row.find_all('td')[-2]  # Nimm die letzte Zelle an, dass sie die Dateigröße enthält
+                        size_column = file_row.find_all('td')[-1]  # Nimm die letzte Zelle an, dass sie die Dateigröße enthält
                         try:
                             file_size_str = size_column.text.strip()
                             file_size = parse_size(file_size_str)  # Implementiere eine Methode, um die Größe zu parsen
