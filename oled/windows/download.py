@@ -6,6 +6,7 @@ import config.symbols as symbols
 
 import time
 import requests
+import xml.etree.ElementTree as ET
 
 import os
 import shutil
@@ -489,11 +490,12 @@ class DownloadMenu(ListBase):
         self.menu = directories
         #TODO progress
 
+
     def get_files_and_dirs_from_listing(self, url, allowed_extensions, get_filesize=True):
-        """Extrahiere Dateien und Verzeichnisse aus dem HTTP-Listing, einschließlich Dateigröße."""
+        """Extrahiere Dateien und Verzeichnisse aus dem XML-Listing, einschließlich Dateigröße."""
         try:
             logger.debug(f"Verzeichnis-URL: {url}")
-            if not url.endswith('/'): 
+            if not url.endswith('/'):
                 url += '/'
             parsed_url = urlparse(url)
 
@@ -505,7 +507,8 @@ class DownloadMenu(ListBase):
             logger.info(f"Error fetching {url}: {e}")
             return [], [], 0
 
-        soup = BeautifulSoup(response.text, 'html.parser')
+        # XML parsen
+        root = ET.fromstring(response.content)
 
         files = []
         directories = []
@@ -513,47 +516,23 @@ class DownloadMenu(ListBase):
 
         self.append_busytext()
 
-        for link in soup.find_all('a'):
-            href = link.get('href')
-            if href and not href.startswith('?') and not href.startswith('/'):
-                if href.endswith('/'):
-                    # Unterverzeichnis gefunden
-                    directory = unquote(href).strip('/')  # trailing slash entfernen
-                    logger.debug(f"Verzeichnis gefunden: '{directory}'")
-                    if directory != "..":
-                        self.append_busytext(f"Ordner: {directory}")
-                        pos = self.get_online_pos(directory, url)
-                        self.append_busytext(f"Ordner Onlineposition: {pos}")
-                        directories.append([directory, 'x', pos])
-                    else:
-                        logger.debug(f"Verzeichnis ignorieren: '{directory}'")
+        for file_element in root.findall('file'):
+            filename = unquote(file_element.text.strip())
+            file_size = int(file_element.get('size', 0))
+            logger.debug(f"Datei gefunden: '{filename}', Größe: {file_size} bytes")
 
+            if any(filename.endswith(ext) for ext in allowed_extensions):
+                self.append_busytext(f"Datei: {filename}", use_last=True)
+                files.append(filename)
+                total_size += file_size
 
-                elif any(href.endswith(ext) for ext in allowed_extensions):
-                    # Datei gefunden
-                    filename = unquote(href)
-                    logger.debug(f"create_listing: {filename}")
-                    self.append_busytext(f"Datei: {filename}", use_last=True)
+        for dir_element in root.findall('directory'):
+            directory_name = unquote(dir_element.text.strip())
+            logger.debug(f"Verzeichnis gefunden: '{directory_name}'")
+            self.append_busytext(f"Ordner: {directory_name}")
+            directories.append([directory_name, 'x'])
 
-                    # Extrahiere Dateigröße aus der nächsten Zelle in der Tabelle (angenommen, das Listing ist tabellenartig)
-                    file_row = link.find_parent('tr')  # Finde die gesamte Tabellenzeile
-                    if file_row:
-                        size_column = file_row.find_all('td')[-1]  # Nimm die letzte Zelle an, dass sie die Dateigröße enthält
-                        try:
-                            file_size_str = size_column.text.strip()
-                            file_size = parse_size(file_size_str)  # Implementiere eine Methode, um die Größe zu parsen
-
-                        except Exception as error:
-                            logger.info(f"Konnte Dateigröße für {filename} {error} nicht extrahieren.")
-                            file_size = 0
-                        finally:
-                            total_size += file_size
-
-                    files.append(unquote(href))
         return files, directories, total_size
-
-
-
 
     def get_online_pos(self,onlinepath,url):
         try:
