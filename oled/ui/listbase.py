@@ -132,7 +132,7 @@ class ListBase(WindowBase):
                     except:
                         pass
                 else:
-                    logger.debug(f"item is no list {selected_item}")
+                    logger.debug(f"item is no list {selected_element}")
                     drawtext += selected_element
 
                 logger.debug(f"drawtext; {drawtext}")

@@ -111,7 +111,7 @@ class SystemMenu(ListBase):
         self.menu.append(["Dienste neustarten:", "h"])             # Eintrag 28
 
         for srv in cfg_services.RESTART_LIST:
-            self.menu.append(["%s" % (srv)])
+            self.menu.append(srv)
 
     def activate(self):
         self.cmd = ""
