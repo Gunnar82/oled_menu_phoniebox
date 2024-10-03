@@ -53,16 +53,30 @@ def savepos_online(nowplaying):
     except Exception as error:
         print (error)
 
+
+
+def lastplayed_online():
+    try:
+        r = requests.get("%sgetpos.php?lastplayed=true" % (cfg_online.ONLINE_SAVEPOS))
+        response = r.content.decode()
+        print (response)
+        vals = response.split("|")
+        if vals[0] == "LSTPLYD":
+            return vals[1]
+        else:
+            return "NOPOS"
+    except Exception as error:
+        return [f"ERREXP|{error}"]
+
+
 def getpos_online(baseurl,cwd):
     url = urljoin(baseurl,urllib.parse.quote(cwd))
     data = {'url' : url}
-    print (data)
     try:
-        r = requests.post("%sgetpos.php" % (cfg_online.ONLINE_SAVEPOS),data=data)
+        r = requests.post("%sgetpos.php?" % (cfg_online.ONLINE_SAVEPOS),data=data)
         response = r.content.decode()
         vals = response.split("|")
         vals.append(url)
-        print (vals)
         return vals
 
     except:

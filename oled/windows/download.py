@@ -18,7 +18,7 @@ from urllib.parse import urljoin, urlparse, quote, unquote
 
 from ui.listbase import ListBase
 import time
-import integrations.playout as playout
+from integrations.playout import *
 from integrations.functions import get_size
 
 import config.online as cfg_online
@@ -69,17 +69,21 @@ class DownloadMenu(ListBase):
 
         try:
             self.append_busytext("Suche letzten Onlinetitel...")
-            with open(cfg_file_folder.FILE_LAST_ONLINE,"r") as f:
-                self.url = f.read()
+            self.url = lastplayed_online()
             self.append_busytext(self.url)
 
-            files,directories, temp = self.get_files_and_dirs_from_listing(self.website, ["mp3"],False)
+            files,directories, temp = self.get_files_and_dirs_from_listing(self.url, ["mp3"],False)
 
             if files != []:
                 logger.info(f"letztes online: {self.url}")
-                self.url = get_parent_directory_of_url(self.url)
 
-            if not self.url.startswith(self.website): 
+            if not self.url.endswith('/'): 
+                self.append_busytext(f"Endet nicht auf /, setze auf Standard")
+                self.append_busytext(self.url)
+                logger.warning(f"{self.website} nicht in {self.url}")
+                self.url = self.website
+
+            elif not self.url.startswith(self.website): 
                 self.append_busytext(f"Basis-Website geändert, setze auf Standard")
                 self.append_busytext(self.website)
                 logger.warning(f"{self.website} nicht in {self.url}")
@@ -149,7 +153,7 @@ class DownloadMenu(ListBase):
                 return
 
         temp, self.cwd = split_url(self.url)
-
+        print (f"cwd: {self.cwd}")
         self.append_busytext(f"Erfolgreich:")
         self.append_busytext(self.url)
 
@@ -244,7 +248,7 @@ class DownloadMenu(ListBase):
             logger.info(f"playfolder {directory}")
             self.append_busytext(f"Abspielen: {directory}")
 
-            create_or_modify_folder_conf(directory,playout.getpos_online(self.baseurl,self.cwd))
+            create_or_modify_folder_conf(directory,getpos_online(self.baseurl,self.cwd))
         except Exception as error:
             logger.error (error)
             logger.append_busyerror(error)
@@ -268,7 +272,7 @@ class DownloadMenu(ListBase):
 
             foldername = directory[len(cfg_file_folder.AUDIO_BASEPATH_BASE):]
             self.append_busytext(f"Starte playout {foldername}")
-            playout.pc_playfolder(foldername)
+            pc_playfolder(foldername)
             self.windowmanager.set_window("idle")
         except Exception as error:
             self.append_busyerror(error)
@@ -358,7 +362,7 @@ class DownloadMenu(ListBase):
                     self.selector = True
 
                     try:
-                        posstring = playout.getpos_online(self.baseurl,self.cwd)
+                        posstring = getpos_online(self.baseurl,self.cwd)
                         if posstring[0] == "POS":
                             online_file = posstring[1]
                             online_pos = "Zeit:  %s " % (posstring[2])
@@ -560,7 +564,7 @@ class DownloadMenu(ListBase):
             logger.debug(f"get_pos_online: uri: {uri}, url: {url}, onlinepath: {onlinepath}")
 
 
-            folderinfo = playout.getpos_online(self.baseurl,uri)
+            folderinfo = getpos_online(self.baseurl,uri)
             logger.debug(f"get_online_pos: folderinfo: {folderinfo}")
             if len(folderinfo) >= 6 and folderinfo[0] == "POS":
                 song = int(float(folderinfo[3]))
