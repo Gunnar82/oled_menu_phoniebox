@@ -39,7 +39,6 @@ class Start(WindowBase):
 
     def activate(self):
         logger.debug("activate: startet")
-        self.clear_window()
         self.bluetooth.enable_dev_local()
         self.set_window_busy()
 

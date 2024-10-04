@@ -95,7 +95,7 @@ class WindowBase():
         self.windowmanager.set_window(windowid)
 
     def activate(self):
-        self.clear_window()
+        raise NotImplementedError()
 
     def deactivate(self):
         raise NotImplementedError()
@@ -141,6 +141,7 @@ class WindowBase():
     def clear_busymenu(self):
         self.busymenu = []
         self.set_lastbusytextline()
+        self.clear_window()
 
     def set_window_busy(self, state=True, with_symbol = True, clear_busymenu = True, render_progressbar = False, wait=1, set_window=False):
 
@@ -149,6 +150,7 @@ class WindowBase():
         if state and clear_busymenu: self.clear_busymenu()
         if not state:
             time.sleep(wait)
+            self.clear_window()
             if set_window:
                 self.windowmanager.set_window(self.window_on_back)
         if with_symbol and state: self.append_busysymbol()

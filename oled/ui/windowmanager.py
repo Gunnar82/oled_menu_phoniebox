@@ -59,6 +59,7 @@ class WindowManager():
             logger.info(f"Window {windowid} not found!")
 
         try:
+            self.activewindow.clear_window()
             self.rendertime = self.activewindow._rendertime
             self.activewindow.busy = False
             self.activewindow.activate()
