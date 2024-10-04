@@ -21,6 +21,7 @@ from datetime import datetime
 class SnakeGame(WindowBase):
 
     font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_SMALL)
+    game_over = True
 
     def __init__(self, windowmanager, loop):
         super().__init__(windowmanager, loop)
@@ -42,16 +43,23 @@ class SnakeGame(WindowBase):
             self.score = 0
             self.speed = 0.1
             self.game_over = False
-            self.loop.create_task(self.play_game())
+            self.loop.run_in_executor(None,self.play_game)
         except Exception as e:
             print (e)
 
 
     def activate(self):
-        self.init_game()
-        self.game_over = True
+        logger.info (f"INPUT: {settings.INPUTS}")
+        if "gpicase" in settings.INPUTS:
 
-    async def play_game(self):
+            self.game_over = True
+            self.init_game()
+
+        else:
+            self.set_busyinfo(item="nur GPICASE!", set_window=True)
+
+
+    def play_game(self):
         while not self.game_over:
             try:
                 if not self.game_over:
@@ -76,13 +84,13 @@ class SnakeGame(WindowBase):
                     if self.check_food_collision(new_head):
                         self.score += 1
                         self.food = self.random_food_position()  # Neues Essen
-                        self.speed = max(0.05, self.speed * 0.9) 
+                        self.speed = max(0.001, self.speed * 0.9) 
                     else:
                         self.snake.pop()  # Das letzte Segment der Schlange wird entfernt
             except Exception as e:
                 print (e)
 
-            await asyncio.sleep (self.speed)
+            time.sleep (self.speed)
 
     def render(self):
         with canvas(self.device) as draw:

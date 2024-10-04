@@ -58,8 +58,7 @@ class Lock(MainWindow):
                     self.unlockcodes[ self.unlockindex ].remove(char)
             except:
                 self.gen_unlockcodes()
-                self.set_busyinfo(item="Random Fehler")
-                self.windowmanager.set_window(self.window_on_bac)
+                self.set_busyinfo(item="Random Fehler",set_window=True)
 
 
             self.currentkey = 0

@@ -51,8 +51,8 @@ class WindowManager():
                 self.init_callback()
                 self.activewindow.set_window_busy(False)
                 self.activewindow.deactivate()
-            except (NotImplementedError, AttributeError):
-                pass
+            except Exception as error:
+                logger.debug("set_window error deactivate {error}")
             self.activewindow = self.windows[windowid]
             logger.info(f"Activated {windowid}")
         else:
@@ -63,8 +63,8 @@ class WindowManager():
             self.activewindow.busy = False
             self.activewindow.activate()
             self.activewindow.windowtitle = windowid
-        except (NotImplementedError, AttributeError):
-            pass
+        except Exception as error:
+            logger.debug(f"set_window error activate {error}")
 
 
     def show_window(self):
