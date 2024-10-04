@@ -106,7 +106,7 @@ class DownloadMenu(ListBase):
             self.position = -1
             self.url = self.website
 
-        #self.loop.run_in_executor(None,self.execute_init)
+        self.loop.run_in_executor(None,self.execute_init)
 
     def deactivate(self):
         logger.info("deactivate")
