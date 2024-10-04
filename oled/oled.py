@@ -252,7 +252,7 @@ def main():
         loop.close()
 
     ###GPICase
-    if "gpicase " in settings.INPUTS:
+    if "gpicase" in settings.INPUTS:
         mypygame.quit()
 
     if settings.shutdown_reason == settings.SR2:

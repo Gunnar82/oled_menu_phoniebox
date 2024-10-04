@@ -54,7 +54,7 @@ class Ende(MainWindow):
                 playout.savepos_online(self.nowplaying)
             playout.savepos()
             logger.info("Stopping event loop")
-            await assyncio.sleep(1)
+            await asyncio.sleep(1)
             self.loop.stop()
 
         else:
