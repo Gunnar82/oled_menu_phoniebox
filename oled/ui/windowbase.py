@@ -177,6 +177,7 @@ class WindowBase():
             self.append_busytext([item,self.info])
 
         if set_window: self.windowmanager.set_window(self.window_on_back)
+        else: self.set_window_busy(False)
 
 
     def new_renderbusy(self):
