@@ -8,7 +8,7 @@ import settings
 
 from integrations.logging_config import *
 
-logger = setup_logger(__name__)
+logger = setup_logger(__name__,lvlDEBUG)
 
 
 def check_url_reachability(url):

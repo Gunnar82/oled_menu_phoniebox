@@ -30,7 +30,7 @@ from integrations.download import *
 
 from integrations.logging_config import *
 
-logger = setup_logger(__name__)
+logger = setup_logger(__name__,lvlDEBUG)
 
 
 # SSL-Zertifikatswarnungen deaktivieren, nur für HTTPS-URLs
@@ -364,6 +364,7 @@ class DownloadMenu(ListBase):
 
                     try:
                         posstring = getpos_online(self.baseurl,self.cwd)
+                        logger.debug(f"getpos_online: {posstring}")
                         if posstring[0] == "POS":
                             online_file = posstring[1]
                             online_pos = "Zeit:  %s " % (posstring[2])
@@ -481,12 +482,18 @@ class DownloadMenu(ListBase):
 
 
     def create_menu_from_directories(self,directories):
-        for i in range(len(directories)): 
-            url = construct_url(directories[i][0],self.url)
-            logger.debug(f"prüfe {directories[i]} {self.url}: {url}")
+        for i in range(len(directories)):
+            directory = directories[i]
+            url = construct_url(directory[0],self.url)
+            logger.debug(f"prüfe {directory} {self.url}: {url}")
 
             if uri_exists_locally(url,self.website,cfg_file_folder.AUDIO_BASEPATH_BASE):
                 directories[i][0] = f"{directories[i][0]} \u2302"
+
+            pos = self.get_online_pos(url) #,cfg_file_folder.AUDIO_BASEPATH_BASE)
+
+            if pos != "":
+                directories[i].append(pos)
         self.menu = directories
         #TODO progress
 
@@ -534,14 +541,13 @@ class DownloadMenu(ListBase):
 
         return files, directories, total_size
 
-    def get_online_pos(self,onlinepath,url):
+    def get_online_pos(self,url):
         try:
-            url = urljoin(url,onlinepath)
+            #url = urljoin(url,onlinepath)
             temp, uri = split_url(url)
 
             if not uri.endswith('/'): uri += '/'
-            logger.debug(f"get_pos_online: uri: {uri}, url: {url}, onlinepath: {onlinepath}")
-
+            logger.debug(f"get_pos_online: uri: {uri}, url: {url}")
 
             folderinfo = getpos_online(self.baseurl,uri)
             logger.debug(f"get_online_pos: folderinfo: {folderinfo}")

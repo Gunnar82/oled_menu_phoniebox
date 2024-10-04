@@ -9,7 +9,6 @@ from luma.core.render import canvas
 import re
 import imp
 import time
-import requests
 import htmllistparse
 import subprocess,os
 import shutil

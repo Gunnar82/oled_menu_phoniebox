@@ -1,6 +1,6 @@
 import os
 import settings
-import requests
+
 import urllib.parse
 
 import config.file_folder as cfg_file_folder
@@ -8,6 +8,7 @@ import config.online as cfg_online
 
 from integrations.functions import run_command
 from integrations.download import get_parent_directory_of_url
+from integrations.webrequest import WebRequest
 
 from urllib.parse import urljoin
 
@@ -48,7 +49,7 @@ def savepos_online(nowplaying):
         data = {'url' : url, 'pos' : str(nowplaying._elapsed), 'song' : str(nowplaying._song), 'length' : str(nowplaying._playlistlength)}
         print (data)
         if nowplaying.input_is_online:
-            r = requests.post(cfg_online.ONLINE_SAVEPOS,data=data,timeout=8)
+            r = WebRequest(cfg_online.ONLINE_SAVEPOS,method="post",data=data)
 
     except Exception as error:
         print (error)
@@ -57,10 +58,9 @@ def savepos_online(nowplaying):
 
 def lastplayed_online():
     try:
-        r = requests.get("%sgetpos.php?lastplayed=true" % (cfg_online.ONLINE_SAVEPOS))
-        response = r.content.decode()
-        print (response)
-        vals = response.split("|")
+        r = WebRequest("%sgetpos.php?lastplayed=true" % (cfg_online.ONLINE_SAVEPOS))
+        vals = r.get_response_text().split("|")
+
         if vals[0] == "LSTPLYD":
             return vals[1]
         else:
@@ -73,14 +73,16 @@ def getpos_online(baseurl,cwd):
     url = urljoin(baseurl,urllib.parse.quote(cwd))
     data = {'url' : url}
     try:
-        r = requests.post("%sgetpos.php?" % (cfg_online.ONLINE_SAVEPOS),data=data)
-        response = r.content.decode()
-        vals = response.split("|")
+        r = WebRequest("%sgetpos.php?" % (cfg_online.ONLINE_SAVEPOS),method="post",data=data)
+
+        vals = r.get_response_text().split("|")
         vals.append(url)
+        print (vals)
         return vals
 
-    except:
-        return ["ERREXP"]
+    except Exception as error:
+        print (error)
+        return "ERREXP",error
 
 def add_leading_slash(folder):
     return folder if folder[0] == '/' else '/%s' % (folder)
