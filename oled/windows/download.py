@@ -73,11 +73,14 @@ class DownloadMenu(ListBase):
         try:
             self.append_busytext("Suche letzten Onlinetitel...")
             r = lastplayed_online()
+            print (f"r: {r}")
 
             if r[0] == "LSTPLYD":
-                self.url = r.get_response_text()
+                self.url = r[1]
+                self.append_busytext(self.url)
+            else:
+                self.append_busyerror(f"activate: lastonline: {r}")
 
-            self.append_busytext(self.url)
 
             files,directories, temp = self.get_files_and_dirs_from_listing(self.url, ["mp3"],False)
 
@@ -98,12 +101,12 @@ class DownloadMenu(ListBase):
 
         except Exception as error:
             logger.error(f"activate: {error}")
-            self.append_busytext(f"Fehler: {error}")
+            self.append_busyerror(f"activate: {error}")
             time.sleep(3)
             self.position = -1
             self.url = self.website
 
-        self.loop.run_in_executor(None,self.execute_init)
+        #self.loop.run_in_executor(None,self.execute_init)
 
     def deactivate(self):
         logger.info("deactivate")

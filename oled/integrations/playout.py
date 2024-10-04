@@ -65,7 +65,7 @@ def lastplayed_online():
         vals = r.get_response_text().split("|")
 
         if vals[0] == "LSTPLYD":
-            return vals[1]
+            return vals
         else:
             return "NOPOS",""
     except Exception as error:
