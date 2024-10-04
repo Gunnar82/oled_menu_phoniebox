@@ -150,7 +150,6 @@ class WindowBase():
         if state and clear_busymenu: self.clear_busymenu()
         if not state:
             time.sleep(wait)
-            self.clear_window()
             if set_window:
                 self.windowmanager.set_window(self.window_on_back)
         if with_symbol and state: self.append_busysymbol()
@@ -161,10 +160,10 @@ class WindowBase():
     def set_lastbusytextline(self, text=""):
         self.lastbusytext = text
 
-    def set_busyinfo(self,item="", symbol=None,wait = 3):
-        self.loop.run_in_executor(None,self.task_busyinfo,item,symbol,wait)
+    def set_busyinfo(self,item="", symbol=None,wait = 3,set_window = False):
+        self.loop.run_in_executor(None,self.task_busyinfo,item,symbol,wait,set_window)
 
-    def task_busyinfo(self,item,symbol,wait):
+    def task_busyinfo(self,item,symbol,wait,set_window):
         self.set_window_busy(with_symbol=False)
         self.append_busytext("")
         if symbol is not None : self.append_busysymbol(symbol)
@@ -177,7 +176,7 @@ class WindowBase():
         else:
             self.append_busytext([item,self.info])
 
-        self.set_window_busy(False,wait=wait)
+        if set_window: self.windowmanager.set_window(self.window_on_back)
 
 
     def new_renderbusy(self):

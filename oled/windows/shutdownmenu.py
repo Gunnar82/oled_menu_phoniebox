@@ -39,8 +39,8 @@ class Shutdownmenu(MenuBase):
             settings.shutdown_reason = settings.SR2
             self.windowmanager.set_window("ende")
         elif self.counter == 3:
-            self.windowmanager.set_window("ende")
             settings.shutdown_reason = settings.SR3
+            self.windowmanager.set_window("ende")
         else:
             if self.counter == 4:
                 run_command("%s -c=shutdownafter -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)

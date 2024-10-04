@@ -261,10 +261,10 @@ def main():
                 pc.shutdown()
 
         print("Shutting down system")
-        playout.pc_shutdown()
+        #playout.pc_shutdown()
 
-    if settings.shutdown_reason == settings.SR3:
-        playout.pc_reboot()
+#    if settings.shutdown_reason == settings.SR3:
+        #playout.pc_reboot()
 
 
 

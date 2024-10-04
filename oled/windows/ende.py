@@ -40,35 +40,40 @@ class Ende(MainWindow):
         self.drawline3 = ""
         self.mwidth,self.mheight = self.fontawesome.getsize(self.drawsymbol)
 
-    async def gpicase_timer(self):
-        self.power_timer = settings.job_t >= 0
+    async def timer(self):
+        try:
+            self.power_timer = settings.job_t >= 0
 
-        if not self.power_timer:
-            self.drawsymbol =  "\uf0a2"
-            self.drawline1 = f"System wird {settings.shutdown_reason}"
-            self.drawsymbol = "\uf011"
-            self.mwidth,self.mheight = self.fontawesome.getsize(self.drawsymbol)
+            if not self.power_timer:
+                logger.debug(f"no powertimer")
+                self.drawsymbol =  "\uf0a2"
 
-            await asyncio.sleep(1)
+                self.drawline1 = settings.shutdown_reason
+                self.drawline2 = "System wird:"
+                self.drawsymbol = "\uf011"
+                self.mwidth,self.mheight = self.fontawesome.getsize(self.drawsymbol)
 
-            if self.nowplaying.input_is_online:
-                playout.savepos_online(self.nowplaying)
-            playout.savepos()
-            logger.info("Stopping event loop")
-            await asyncio.sleep(1)
-            self.loop.stop()
+                await asyncio.sleep(1)
 
-        else:
+                if self.nowplaying.input_is_online:
+                    playout.savepos_online(self.nowplaying)
+                playout.savepos()
+                logger.info("timer: Stopping event loop")
+                await asyncio.sleep(2)
+                self.loop.stop()
 
-            while self.loop.is_running() and self.power_timer:
-                self.drawline1 = "GPI Case Timer aktiv!"
-                self.drawline2 = f"AUS in min {settings.job_t} min"
-                self.drawline3 = "start > pause; X,Y > AUS"
-                await asyncio.sleep(3)
+            else:
+
+                while self.loop.is_running() and self.power_timer:
+                    self.drawline1 = "GPI Case Timer aktiv!"
+                    self.drawline2 = f"AUS in min {settings.job_t} min"
+                    self.drawline3 = "start > pause; X,Y > AUS"
+                    await asyncio.sleep(3)
+        except Exception as error:
+            loger.debug("timer:error")
 
     def activate(self):
-        super().activate()
-        self.loop.create_task(self.gpicase_timer())
+        self.loop.create_task(self.timer())
 
 
     def render(self):
@@ -94,7 +99,6 @@ class Ende(MainWindow):
             playout.savepos()
             #self.mopidyconnection.stop()
             logger.info("Stopping event loop")
-            playout.pc_shutdown()
             time.sleep(1)
             self.loop.stop()
 

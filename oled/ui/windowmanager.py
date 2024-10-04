@@ -25,7 +25,7 @@ class WindowManager():
         self.looptime = self._looptime
         self.device = device
         self.windows = {}
-        self.activewindow = []
+        self.activewindow = None
         self.loop = loop
         fn.set_lastinput()
         self._lastcontrast = csettings.CONTRAST_FULL
@@ -48,25 +48,26 @@ class WindowManager():
     def set_window(self, windowid):
         if windowid in self.windows:
             try:
-                self.init_callback()
-                self.activewindow.set_window_busy(False)
-                self.activewindow.deactivate()
+                if self.activewindow is not None:
+                    self.init_callback_or_idle()
+                    self.activewindow.set_window_busy(False)
+                    self.activewindow.deactivate()
+            except Exception as err:
+                logger.info(f"set_window error deactivate: {err}:")
+            finally:
+                self.activewindow = self.windows[windowid]
+                logger.info(f"Activated {windowid}")
+    
+            try:
+                self.rendertime = self.activewindow._rendertime
+                self.activewindow.busy = False
+                self.activewindow.activate()
+                self.activewindow.windowtitle = windowid
             except Exception as error:
-                logger.debug("set_window error deactivate {error}")
-            self.activewindow = self.windows[windowid]
-            logger.info(f"Activated {windowid}")
+                logger.info(f"set_window error activate {error}")
+
         else:
             logger.info(f"Window {windowid} not found!")
-
-        try:
-            self.activewindow.clear_window()
-            self.rendertime = self.activewindow._rendertime
-            self.activewindow.busy = False
-            self.activewindow.activate()
-            self.activewindow.windowtitle = windowid
-        except Exception as error:
-            logger.debug(f"set_window error activate {error}")
-
 
     def show_window(self):
         fn.set_lastinput()
@@ -226,7 +227,7 @@ class WindowManager():
     def turn_callback(self, direction, key=None):
         if not self.init_callback_or_idle(): return
 
-        if key == '0' and self.activewindow.windowtitle not in ["idle"]:
+        if key == '0' and self.activewindow.windowtitle not in ["idle","lock","ende"]:
             try:
                 fn.restart_oled()
             except Exception as error:

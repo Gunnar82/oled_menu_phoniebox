@@ -14,6 +14,7 @@ from datetime import datetime
 class Lock(MainWindow):
     font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_L)
     fontawesome = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XXL)
+    busysymbol=symbols.SYMBOL_LOCKED
 
     def __init__(self, windowmanager,loop,nowplaying):
         super().__init__(windowmanager, loop,nowplaying)
@@ -63,13 +64,7 @@ class Lock(MainWindow):
 
             self.currentkey = 0
 
-            self.busysymbol=symbols.SYMBOL_LOCKED
             self.genhint()
-
-    def render(self):
-        with canvas(self.device) as draw:
-            super().render(draw)
-            self.renderbusydraw(draw)
 
     def push_callback(self,lp=False):
         pass
@@ -85,21 +80,27 @@ class Lock(MainWindow):
 
         if self.currentkey >= len(self.unlockcode):
              self.currentkey = 0 
-             self.set_busyitem(item="Gerät entsperrt",symbol=symbols.SYMBOL_UNLOCKED,wait=5,set_window=True)
+             self.set_busyinfo(item="Gerät entsperrt",symbol=symbols.SYMBOL_UNLOCKED,wait=5,set_window=True)
         else:
             self.genhint()
 
     def genhint(self):
-        self.busytext1 = ""
+        self.unlocktext = ""
         for r in range(len(self.unlockcode)):
             if r == self.currentkey:
                 self.unlockcode[r] = self.unlockcode[r].upper()
-                self.busytext1 += ">%s< " % (self.unlockcode[r])
+                self.unlocktext += ">%s< " % (self.unlockcode[r])
             else:
                 self.unlockcode[r] = self.unlockcode[r].lower()
-                self.busytext1 += self.unlockcode[r] + ' '
+                self.unlocktext += self.unlockcode[r] + ' '
+        self.textwidth, temp = self.font.getsize(self.unlocktext)
 
 
     def deactivate(self):
             self.power_timer = False
 
+    def render(self):
+        with canvas(self.device) as draw:
+            super().render(draw)
+            #draw.text((, settings.DISPLAY_HEIGHT - 4*settings.IDLE_LINE_HEIGHT ), self.drawline2, font=self.font, fill="white")
+            draw.text(((settings.DISPLAY_WIDTH - self.textwidth) / 2, settings.DISPLAY_HEIGHT - 4*settings.IDLE_LINE_HEIGHT ), self.unlocktext , font=self.font, fill="white")
