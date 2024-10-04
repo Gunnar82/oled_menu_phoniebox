@@ -78,7 +78,7 @@ class SystemMenu(ListBase):
         self.menu.append(["Lösche Hörspielstatus"])                # Eintrag 3
         self.menu.append(["Lösche Musikstatus"])                   # Eintrag 4
         self.menu.append(["Lösche Radiostatus"])                   # Eintrag 5
-        self.menu.append(["Lösche Onlinestatus"])                  # Eintrag 6
+        self.menu.append(["","c"])                  # Eintrag 6
 
         self.menu.append(["Update OLED"])                          # Eintrag 7
 
@@ -180,9 +180,6 @@ class SystemMenu(ListBase):
                 what = cfg_file_folder.FILE_LAST_MUSIC
             elif self.position == 5:
                 what = cfg_file_folder.FILE_LAST_RADIO
-            else:
-                what = cfg_file_folder.FILE_LAST_ONLINE
-
             self.cmd = "sudo rm %s" % (what)
 
 
