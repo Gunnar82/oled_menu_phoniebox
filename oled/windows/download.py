@@ -497,7 +497,7 @@ class DownloadMenu(ListBase):
             if pos != "":
                 directories[i].append(pos)
         self.menu = directories
-        #TODO progress
+
 
 
     def get_files_and_dirs_from_listing(self, url, allowed_extensions, get_filesize=True):
