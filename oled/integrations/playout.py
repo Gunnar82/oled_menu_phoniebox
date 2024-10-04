@@ -58,14 +58,18 @@ def savepos_online(nowplaying):
 def lastplayed_online():
     try:
         r = WebRequest("%sgetpos.php?lastplayed=true" % (cfg_online.ONLINE_SAVEPOS))
+        if r.get_response_code() != 200:
+            logger.debug("lastplayed_online: no pos")
+            return "NOPOS",""
+
         vals = r.get_response_text().split("|")
 
         if vals[0] == "LSTPLYD":
             return vals[1]
         else:
-            return "NOPOS"
+            return "NOPOS",""
     except Exception as error:
-        return [f"ERREXP|{error}"]
+        return "ERREXP",error
 
 
 def getpos_online(baseurl,cwd):
@@ -79,7 +83,6 @@ def getpos_online(baseurl,cwd):
         return vals
 
     except Exception as error:
-        print (error)
         return "ERREXP",error
 
 def add_leading_slash(folder):

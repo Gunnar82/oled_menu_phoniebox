@@ -72,7 +72,11 @@ class DownloadMenu(ListBase):
 
         try:
             self.append_busytext("Suche letzten Onlinetitel...")
-            self.url = lastplayed_online()
+            r = lastplayed_online()
+
+            if r[0] == "LSTPLYD":
+                self.url = r.get_response_text()
+
             self.append_busytext(self.url)
 
             files,directories, temp = self.get_files_and_dirs_from_listing(self.url, ["mp3"],False)
@@ -97,6 +101,7 @@ class DownloadMenu(ListBase):
             self.append_busytext(f"Fehler: {error}")
             time.sleep(3)
             self.position = -1
+            self.url = self.website
 
         self.loop.run_in_executor(None,self.execute_init)
 
