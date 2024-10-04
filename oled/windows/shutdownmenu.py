@@ -34,19 +34,13 @@ class Shutdownmenu(MenuBase):
     def push_handler(self):
         if self.counter == 1:
             restart_oled()
-
         elif self.counter == 2:
-            playout.pc_toggle()
-            self.mopidyconnection.stop()
+            #playout.pc_toggle()
             settings.shutdown_reason = settings.SR2
-            print("Stopping event loop")
-            self.loop.stop()
+            self.windowmanager.set_window("ende")
         elif self.counter == 3:
-            self.windowmanager.set_window("start")
-            self.mopidyconnection.stop()
+            self.windowmanager.set_window("ende")
             settings.shutdown_reason = settings.SR3
-            print("Stopping event loop")
-            self.loop.stop()
         else:
             if self.counter == 4:
                 run_command("%s -c=shutdownafter -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)

@@ -40,25 +40,34 @@ class Ende(MainWindow):
         self.drawline3 = ""
 
     async def gpicase_timer(self):
-        while self.loop.is_running() and self.power_timer:
-            self.drawline1 = "GPI Case Timer aktiv!"
-            self.drawline2 = f"AUS in min {settings.job_t} min"
-            self.drawline3 = "start > pause; X,Y > AUS"
-            await asyncio.sleep(3)
+        self.power_timer = settings.job_t >= 0
+
+        if not self.power_timer:
+            self.drawsymbol =  "\uf0a2"
+            self.drawline1 = f"System wird {settings.shutdown_reason}"
+            self.drawsymbol = "\uf011"
+            self.mwidth,self.mheight = self.fontawesome.getsize(self.drawsymbol)
+
+            await asyncio.sleep(1)
+
+            if self.nowplaying.input_is_online:
+                playout.savepos_online(self.nowplaying)
+            playout.savepos()
+            logger.info("Stopping event loop")
+            await assyncio.sleep(1)
+            self.loop.stop()
+
+        else:
+
+            while self.loop.is_running() and self.power_timer:
+                self.drawline1 = "GPI Case Timer aktiv!"
+                self.drawline2 = f"AUS in min {settings.job_t} min"
+                self.drawline3 = "start > pause; X,Y > AUS"
+                await asyncio.sleep(3)
 
     def activate(self):
         super().activate()
-        self.power_timer = settings.job_t >= 0
-
-        if self.power_timer:
-            self.drawsymbol =  "\uf0a2"
-
-            self.loop.create_task(self.gpicase_timer())
-        else:
-            self.drawline1 = f"System wird {settings.shutdown_reason}"
-            self.drawsymbol = "\uf011"
-            self.render()
-        self.mwidth,self.mheight = self.fontawesome.getsize(self.drawsymbol)
+        self.loop.create_task(self.gpicase_timer())
 
 
     def render(self):

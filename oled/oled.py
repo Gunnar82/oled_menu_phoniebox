@@ -245,6 +245,7 @@ def main():
     ###main
     try:
         loop.run_forever()
+        modipy.stop()
     except (KeyboardInterrupt, SystemExit):
         logger.error("main Loop exiting")
     finally:
@@ -253,9 +254,6 @@ def main():
     ###GPICase
     if "gpicase " in settings.INPUTS:
         mypygame.quit()
-
-
-    windowmanager.set_window("ende")
 
     if settings.shutdown_reason == settings.SR2:
         if haspowercontroller:

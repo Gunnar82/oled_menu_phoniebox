@@ -53,27 +53,17 @@ class pygameInput():
         try:
             gpio26 = GPIO.input(26)
             self.powerbtn = gpio26
-            if settings.job_t >= 0:
-                #if self.powerbtn != gpio26:
-                logger.debug("Shutdown Timer active - Waiting")
-                if gpio26 == 0:
-                    if self.powerpressed < 1:
-                        self.powerpressed += 1
-                        self.windowmanager.set_window("ende")
-                else:
-                    self.powerpressed = 0
-                    self.windowmanager.set_window("idle")
-            elif not settings.callback_active:
-                settings.callback_active = True
-                if self.nowplaying.input_is_online:
-                    playout.savepos_online(self.nowplaying)
-                playout.savepos()
-                #self.mopidyconnection.stop()
-                logger.info("Stopping event loop")
-                playout.pc_shutdown()
-                time.sleep(1)
-                self.loop.stop()
+            #if self.powerbtn != gpio26:
+            logger.debug(f"gpicase Powerbutton: {gpio26}")
 
+            if gpio26 == 0:
+                settings.shutdown_reason = settings.SR2
+                if self.powerpressed < 1:
+                    self.powerpressed += 1
+                    self.windowmanager.set_window("ende")
+            else:
+                self.powerpressed = 0
+                self.windowmanager.set_window("idle")
         finally:
             logger.debug("gpicase power handling: ende")
             time.sleep(0.1)
