@@ -73,7 +73,6 @@ class DownloadMenu(ListBase):
         try:
             self.append_busytext("Suche letzten Onlinetitel...")
             r = lastplayed_online()
-            print (f"r: {r}")
 
             if r[0] == "LSTPLYD":
                 self.url = r[1]
