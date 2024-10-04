@@ -77,9 +77,9 @@ class Start(WindowBase):
                 self.append_busytext(f"Batterie {settings.battcapacity}% geladen")
 
             while not  self.mopidyconnection.connected:
-                self.append_busytext(f"modipy verbinden...")
+                self.append_busytext(f"mopidy verbinden...")
                 time.sleep(1)
-            self.append_busytext(f"modipy verbunden.")
+            self.append_busytext(f"mopidy verbunden.")
 
         except Exception as error:
             logger.error(f"exec_init: {error}")

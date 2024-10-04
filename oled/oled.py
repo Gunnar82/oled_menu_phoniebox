@@ -245,7 +245,7 @@ def main():
     ###main
     try:
         loop.run_forever()
-        modipy.stop()
+        mopidy.stop()
     except (KeyboardInterrupt, SystemExit):
         logger.error("main Loop exiting")
     finally:

@@ -125,7 +125,7 @@ class pygameInput():
 
 
     def quit(self):
-        logger.error("Shutting Down Pygame")
-        #pygame.joystick.quit()
-        #pygame.display.quit()
-        #pygame.quit()
+        logger.info("Shutting Down Pygame")
+        pygame.joystick.quit()
+        pygame.display.quit()
+        pygame.quit()

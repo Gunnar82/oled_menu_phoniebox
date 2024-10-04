@@ -38,6 +38,7 @@ class Ende(MainWindow):
         self.drawline1 = ""
         self.drawline2 = ""
         self.drawline3 = ""
+        self.mwidth,self.mheight = self.fontawesome.getsize(self.drawsymbol)
 
     async def gpicase_timer(self):
         self.power_timer = settings.job_t >= 0
