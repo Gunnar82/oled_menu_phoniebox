@@ -12,7 +12,7 @@ def get_display():
 
 
     device.contrast(settings.CONTRAST_FULL)
-    device.cleanup = do_nothing
+    #device.cleanup = do_nothing
 
     print("Using real display hardware")
     return device
