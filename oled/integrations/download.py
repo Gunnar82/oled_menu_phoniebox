@@ -1,24 +1,26 @@
 #funktionen für download.py
 
-import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse, quote, unquote
 import os
 import settings
 
+
+from integrations.webrequest import WebRequest
+
 from integrations.logging_config import *
 
-logger = setup_logger(__name__,lvlDEBUG)
+logger = setup_logger(__name__)
 
 
 def check_url_reachability(url):
     try:
         logger.debug(f"Check URL: {url}")
         # Timeout auf 5 Sekunden setzen, um nicht zu lange zu warten
-        response = requests.get(url, timeout=5)
+        response = WebRequest(url)
         # Rückgabewert: Statuscode der Anfrage
-        return response.status_code
-    except requests.exceptions.RequestException as e:
+        return response.get_response_code()
+    except Exception as e:
         # Falls ein Fehler auftritt (z.B. URL nicht erreichbar), Rückgabe 0
         logger.warning(f"Fehler beim Erreichen der URL: {e}")
         return 0

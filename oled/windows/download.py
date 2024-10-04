@@ -19,8 +19,10 @@ from urllib.parse import urljoin, urlparse, quote, unquote
 
 from ui.listbase import ListBase
 import time
+
 from integrations.playout import *
 from integrations.functions import get_size
+from integrations.webrequest import WebRequest
 
 import config.online as cfg_online
 import config.file_folder as cfg_file_folder
@@ -30,7 +32,7 @@ from integrations.download import *
 
 from integrations.logging_config import *
 
-logger = setup_logger(__name__,lvlDEBUG)
+logger = setup_logger(__name__)
 
 
 # SSL-Zertifikatswarnungen deaktivieren, nur für HTTPS-URLs
@@ -507,15 +509,14 @@ class DownloadMenu(ListBase):
             parsed_url = urlparse(url)
 
             # Zertifikatsprüfung nur bei HTTPS-URLs deaktivieren
-            response = requests.get(url, verify=(parsed_url.scheme != 'https'))
-            response.raise_for_status()
-        except requests.exceptions.RequestException as e:
+            response = WebRequest(url)
+        except Exception as e:
             # Fehler bei der HTTP-Anfrage abfangen
             logger.info(f"Error fetching {url}: {e}")
             return [], [], 0
 
         # XML parsen
-        root = ET.fromstring(response.content)
+        root = ET.fromstring(response.get_response_text())
 
         files = []
         directories = []
