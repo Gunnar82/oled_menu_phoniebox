@@ -1,17 +1,11 @@
 """ Shutdown menu """
 from ui.listbase import ListBase
 from luma.core.render import canvas
-
 import settings
-
 import config.colors as colors
 import config.symbols as symbols
-
-import os
-
 import time
 import asyncio
-
 from integrations.logging_config import *
 
 logger = setup_logger(__name__)

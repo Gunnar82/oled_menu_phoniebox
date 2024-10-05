@@ -12,9 +12,6 @@ from luma.core.render import canvas
 
 import time
 
-from luma.core.render import canvas
-
-
 from integrations.logging_config import *
 
 logger = setup_logger(__name__)
@@ -188,7 +185,7 @@ class WindowBase():
 
                 seite = position // self.busydisplaylines
                 pos = position % self.busydisplaylines
-                maxpos = (self.busydisplaylines if (seite + 1) * self.busydisplaylines <= menulen else (menulen % self.busydisplaylines))
+                maxpos = min(self.busydisplaylines, menulen - seite * self.busydisplaylines)
                 current_y = 0 # bei 0 beginnen
 
                 for i in range(maxpos):
