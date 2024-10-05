@@ -1,33 +1,17 @@
 """ Playlist menu """
-import settings
-
-import config.colors as colors
 import config.symbols as symbols
+import qrcode
+import importlib
 
 from luma.core.render import canvas
-
-import re
-import imp
-import time
-import htmllistparse
-import subprocess,os
-import shutil
-import importlib
-import qrcode
-
 from ui.listbase import ListBase
-import time
-import integrations.playout as playout
-
+from integrations.playout import *  # Wenn notwendig, ansonsten spezifisch importieren
 from integrations.functions import *
 
 import config.online as cfg_online
 import config.file_folder as cfg_file_folder
 import config.services as cfg_services
-
-
 import config.user_settings
-
 
 
 class SystemMenu(ListBase):
