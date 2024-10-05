@@ -1,15 +1,12 @@
 """ Start screen """
+
 from ui.mainwindow import MainWindow
 from luma.core.render import canvas
 from PIL import ImageFont
 import settings
-
 import config.colors as colors
 import config.symbols as symbols
-
-import time,random
-
-from datetime import datetime
+import random  # Beibehalten, da verwendet
 
 class Lock(MainWindow):
     font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_L)
@@ -32,15 +29,16 @@ class Lock(MainWindow):
 
 
     def gen_unlockcodes(self):
-        self.unlockcodes = []
-
-        self.unlockcodes.append( ['up','down','left','right','start','select','x','hl','hr'])
-        self.unlockcodes.append( ['1','2','3','4','5','6','7','8','9','0','a','b','c','d'] )
+        """Generiert die möglichen Entsperrcodes."""
+        self.unlockcodes = [
+            ['up','down','left','right','start','select','x','hl','hr'],
+            ['1','2','3','4','5','6','7','8','9','0','a','b','c','d']
+        ]
 
 
     def activate(self):
+        """Aktiviert die Entsperrfunktionalität und generiert zufällige Entsperrcodes."""
         self.gen_unlockcodes()
-
         self.unlockcode = []
 
         if "gpicase" in settings.INPUTS: self.unlockindex = 0
@@ -57,20 +55,16 @@ class Lock(MainWindow):
 
                     self.unlockcode.append(char)
                     self.unlockcodes[ self.unlockindex ].remove(char)
+
             except:
                 self.gen_unlockcodes()
                 self.set_busyinfo(item="Random Fehler",set_window=True)
 
-
             self.currentkey = 0
-
             self.genhint()
 
-    def push_callback(self,lp=False):
-        pass
-
     def turn_callback(self,direction, key=None):
-
+        """Überprüft, ob der gedrückte Schlüssel korrekt ist."""
         if key.lower() == self.unlockcode[self.currentkey].lower():
             self.busysymbol = symbols.SYMBOL_PASS
             self.currentkey += 1
@@ -85,21 +79,14 @@ class Lock(MainWindow):
             self.genhint()
 
     def genhint(self):
-        self.unlocktext = ""
-        for r in range(len(self.unlockcode)):
-            if r == self.currentkey:
-                self.unlockcode[r] = self.unlockcode[r].upper()
-                self.unlocktext += ">%s< " % (self.unlockcode[r])
-            else:
-                self.unlockcode[r] = self.unlockcode[r].lower()
-                self.unlocktext += self.unlockcode[r] + ' '
-        self.textwidth, temp = self.font.getsize(self.unlocktext)
-
-
-    def deactivate(self):
-            self.power_timer = False
+        """Generiert den Hinweistext für den aktuellen Entsperrcode."""
+        self.unlocktext = ' '.join(
+            [char.upper() if i == self.currentkey else char.lower() for i, char in enumerate(self.unlockcode)]
+        )
+        self.textwidth, _ = self.font.getsize(self.unlocktext)
 
     def render(self):
+        """Rendern des Bildschirms mit dem Entsperrcode."""
         with canvas(self.device) as draw:
             super().render(draw)
             #draw.text((, settings.DISPLAY_HEIGHT - 4*settings.IDLE_LINE_HEIGHT ), self.drawline2, font=self.font, fill="white")
