@@ -17,7 +17,7 @@ import config.user_settings as csettings
 
 from integrations.logging_config import *
 
-logger = setup_logger(__name__,lvlDEBUG)
+logger = setup_logger(__name__)
 
 
 class nowplaying:

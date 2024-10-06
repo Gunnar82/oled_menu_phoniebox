@@ -35,7 +35,7 @@ def check_or_create_config(filename,samplename):
             else:
                 logger.error(f"Vorlage {samplename} existiert nicht.")
     except Exception as error:
-       logger.error(f"usersettings Fehler: {error}")
+       logger.error(f"usersettings Fehler: {filename}: {error}")
        sys.exit (-1)
 
 file_folder_py = "/home/pi/oledctrl/oled/config/file_folder.py"
@@ -81,12 +81,11 @@ if not settings.DISPLAY_DRIVER in displays:
 
 try:
     lib = "integrations.display.%s" % (settings.DISPLAY_DRIVER)
-    print (lib)
+    logger.info(f"Display: {lib}")
     idisplay = importlib.import_module(lib)
     idisplay.set_fonts()
 except Exception as error:
-   raise ("DISPLAY init FAILED: %s" % (error))
-
+    raise Exception(f"DISPLAY init FAILED: {error}")  # Exception verbessern
 
 from integrations.mopidy import MopidyControl
 from integrations.musicmanager import Musicmanager
@@ -116,7 +115,6 @@ signal.signal(signal.SIGTERM, gracefulexit)
 
 def main():
     loop = asyncio.get_event_loop()
-
 
     objbluetooth = bluetooth.BluetoothOutput()
 
@@ -182,7 +180,6 @@ def main():
         windowmanager.add_window(window.__class__.__name__.lower(), window)
 
     #Load start window
-
     windowmanager.set_window("start")
 
 
@@ -222,7 +219,7 @@ def main():
             haspowercontroller = False
         except:
             haspowercontroller = False
-
+            logger.error(f"Power controller init failed: {e}")  # Fehlerbehandlung verbessern
 
     #### pirateaudio init
     if "pirateaudio" in settings.INPUTS:
