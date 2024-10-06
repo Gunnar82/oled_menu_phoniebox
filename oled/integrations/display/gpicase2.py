@@ -12,7 +12,7 @@ def get_display():
 
     device = linux_framebuffer("/dev/fb0",bgr=True)
     device.capabilities(width=640,height=480,rotate=0,mode='RGB')
-    device.cleanup = do_nothing
+    #device.cleanup = do_nothing
 
     return device
 
