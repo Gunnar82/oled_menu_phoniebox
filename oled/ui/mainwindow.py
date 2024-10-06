@@ -116,7 +116,7 @@ class MainWindow(WindowBase):
 
         if not self.nowplaying.is_device_online():
             #Teste ob Gerät online ist, wenn nein, zeige Symbol
-            draw.text((xpos3, lineposy), symbols.SYMBOL_NOCLOUD, font=self.faicons, fill="white")
+            draw.text((xpos3, lineposy), symbols.SYMBOL_NOCLOUD, font=self.faicons, fill=colors.COLOR_ORANGE)
         elif self.nowplaying.input_is_online():
             #Teste ob aktuelle Wiedergabe, wenn online, zeige Symbol
             draw.text((xpos3, lineposy), symbols.SYMBOL_CLOUD, font=self.faicons, fill="white")
