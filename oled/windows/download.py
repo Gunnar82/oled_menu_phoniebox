@@ -260,25 +260,21 @@ class DownloadMenu(ListBase):
 
             create_or_modify_folder_conf(directory,getpos_online(self.baseurl,self.cwd))
         except Exception as error:
-            logger.error (error)
-            logger.append_busyerror(error)
+            logger.error (f"playfolder: {error}")
+            logger.append_busyerror(f"{error}")
 
-        self.append_busytext("Speichere Online-Titel in zuletzt gespielt")
-
-        try:
-            with open(cfg_file_folder.FILE_LAST_ONLINE,"w") as f:
-                f.write(self.url)
-        except Exception as error:
-            self.append_busyerror(error)
         if not os.path.exists(directory): os.makedirs(directory)
 
         try:
             filename = os.path.join(directory,"livestream.txt")
+            self.append_busytext(f"Titel hinzufügen:")
+            self.append_busytext("")
+
             with open(filename,"w") as ofile:
                 for item in self.items:
                     additem = construct_url_from_local_path(self.baseurl,self.cwd,item) + '\n'
                     ofile.write(additem)
-            self.append_busytext(f"Titelhinzugefügt: {item}")
+                    self.append_busytext(f"Titelhinzugefügt: {item}",reuse_last = True)
 
             foldername = directory[len(cfg_file_folder.AUDIO_BASEPATH_BASE):]
             self.append_busytext(f"Starte playout {foldername}")
@@ -287,7 +283,7 @@ class DownloadMenu(ListBase):
         except Exception as error:
             self.append_busyerror(error)
         finally:
-            self.set_window_busy(False)
+            self.set_window_busy(False,wait = 3)
 
     def push_handler(self,button = '*'):
         try:
@@ -537,7 +533,7 @@ class DownloadMenu(ListBase):
             logger.debug(f"Datei gefunden: '{filename}', Größe: {file_size} bytes")
 
             if any(filename.endswith(ext) for ext in allowed_extensions):
-                self.append_busytext(f"Datei: {filename}", use_last=True)
+                self.append_busytext(f"Datei: {filename}", reuse_last=True)
                 files.append(filename)
                 total_size += file_size
 
