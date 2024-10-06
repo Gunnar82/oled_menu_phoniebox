@@ -22,7 +22,7 @@ from integrations.functions import get_battload_color, to_min_sec, get_folder, g
 
 from integrations.logging_config import *
 
-logger = setup_logger(__name__)
+logger = setup_logger(__name__,lvlDEBUG)
 
 
 class Idle(MainWindow):
@@ -62,9 +62,8 @@ class Idle(MainWindow):
 
                 if ((now - settings.lastinput) > 120):
                     logger.info("X728: Shutting down: Low Battery (EMERG)")
-                    playout.savepos_online(self.nowplaying)
-                    playout.savepos()
-                    playout.pc_shutdown()
+                    settings.shutdown_reason = settings.SR2
+                    self.windowmanager.set_window("ende")
 
 
                 return
@@ -75,7 +74,7 @@ class Idle(MainWindow):
 
             ####setting idle text / Icon on Song Number Changed
             try:
-                if ((now - self.nowplaying.lasttitlechange ) < 3):
+                if self.nowplaying.is_title_changed():
                     logger.debug("Titelwechsel erkannt")
                     self.set_busyinfo(item = ["Titelwechsel", "%2.2d von %2.2d " % (int(self.nowplaying._song), int(self.nowplaying._playlistlength))], symbol = symbols.SYMBOL_CHANGING_SONG)
             except Exception as error:
