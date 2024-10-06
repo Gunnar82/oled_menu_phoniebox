@@ -214,8 +214,9 @@ class DownloadMenu(ListBase):
                 if not os.path.exists(destdir): os.makedirs(destdir)
             except Exception as error:
                 logger.error(f"downloadfolder: error {error}")
+            self.clear_busymenu()
+
             for item in self.items:
-                self.clear_busymenu()
 
                 url = construct_url_from_local_path(self.baseurl,self.cwd,item)
 
@@ -225,15 +226,15 @@ class DownloadMenu(ListBase):
 
                 logger.debug(f"downloadfolder: destination: {destination}")
 
-                self.append_busytext("Download %2.2d von %2.2d" % (self.items.index(item) + 1,len(self.items))) 
-                self.append_busytext(item)
+                self.append_busytext("Download %2.2d von %2.2d" % (self.items.index(item) + 1,len(self.items)),reuse_last=True) 
+                self.append_busytext(item,color=colors.COLOR_ORANGE)
                 self.append_busytext("Abbruch mit beliebiger Taste") 
 
                 try:
                     self.download_file(url,destination)
                     if self.canceled:
                         logger.info("downloadfolder: Abbruch")
-                        self.append_busytext("Abbruch! Bitte warten...")
+                        self.append_busyerror("Abbruch! Bitte warten...")
                         break
 
                 except Exception as error:

@@ -14,7 +14,7 @@ import time
 
 from integrations.logging_config import *
 
-logger = setup_logger(__name__)
+logger = setup_logger(__name__,lvlDEBUG)
 
 font = ImageFont.truetype(settings.FONT_TEXT, size=settings.WINDOWBASE_BUSYFONT)
 busyfont = ImageFont.truetype(settings.FONT_TEXT, size=settings.LISTBASE_ENTRY_SIZE)
@@ -34,6 +34,7 @@ class WindowBase():
     symbol = "s"
     info   = "i"
     error  = "err"
+    bc     = "bc"
 
     busysymbol = symbols.SYMBOL_SANDCLOCK
     busytext1 = settings.PLEASE_WAIT
@@ -107,11 +108,11 @@ class WindowBase():
         raise NotImplementedError()
 
     # new busy handling
-    def append_busytext(self,item="Verarbeite...",reuse_last= False):
+    def append_busytext(self,item="Verarbeite...",reuse_last= False,color=colors.COLOR_GREEN):
         logger.debug(f"append busyitem: {item}")
         thelen = len(self.busymenu)
         if reuse_last and thelen > 0: self.busymenu[thelen -1] = item
-        else: self.busymenu.append(item)
+        else: self.busymenu.append([item,f"{self.bc}:{color}"])
         self.pop_busymenu()
 
     def append_busyerror(self,item="Fehler..."):
@@ -195,6 +196,7 @@ class WindowBase():
                     selected_element = self.busymenu[seite * self.busydisplaylines + i]
                     is_symbol = False
 
+
                     progresscolor = colors.COLOR_GREEN
 
                     startleft = self.startleft
@@ -202,12 +204,21 @@ class WindowBase():
 
                     if isinstance(selected_element,list):
                         drawtext = selected_element[0]
+                        logger.debug(f"list: {selected_element}")
 
                         try:
                             if selected_element[1] == self.symbol:
                                 is_symbol = True
                         except:
                             pass
+
+                        #scan progresscolor in selected_element
+
+                        try:
+                            if selected_element[1].startswith(self.bc):
+                                progresscolor = selected_element[1].split(':')[1]
+                        except Exception as error:
+                            logger.debug(f"color error: {error}")
 
 
                         try:
