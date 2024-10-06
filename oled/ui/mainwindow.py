@@ -110,16 +110,22 @@ class MainWindow(WindowBase):
 
         draw.text((_xpos, lineposy + settings.MAINWINDOW_LINESPACE ),_spos , font=self.fontsmall, fill="white")
 
-        #shutdowntimer ? aktiv dann Zeit anzeigen
-        xpause = 0
-        if 'http://' in self.nowplaying.filename or 'https://' in self.nowplaying.filename:
-            draw.text((xpos3 + 5, lineposy + settings.MAINWINDOW_LINESPACE), symbols.SYMBOL_CLOUD, font=self.faicons, fill="white")
-            xpause, ypause = self.faicons.getsize(symbols.SYMBOL_CLOUD)
+        xpos3 += settings.MAINWINDOW_LINESPACE # Position für Symbol
+        lineposy += settings.MAINWINDOW_LINESPACE
 
-        if settings.job_t >= 0:
-            draw.text((xpos3 + 5 + 1.2 * xpause, lineposy + settings.MAINWINDOW_LINESPACE ), "%2.2d" % (int(settings.job_t)), font=self.fontsmall, fill="white")
+
+        if not self.nowplaying.is_device_online():
+            #Teste ob Gerät online ist, wenn nein, zeige Symbol
+            draw.text((xpos3, lineposy), symbols.SYMBOL_NOCLOUD, font=self.faicons, fill="white")
+        elif self.nowplaying.input_is_online():
+            #Teste ob aktuelle Wiedergabe, wenn online, zeige Symbol
+            draw.text((xpos3, lineposy), symbols.SYMBOL_CLOUD, font=self.faicons, fill="white")
+        elif settings.job_t >= 0:
+            #Wenn Shutdowntimer, dann anzeigen
+            draw.text((xpos3, lineposy), "%2.2d" % (int(settings.job_t)), font=self.fontsmall, fill="white")
         elif "x728" in settings.INPUTS:
-            draw.text((xpos3 + 5 + 1.2 * xpause, lineposy + settings.MAINWINDOW_LINESPACE), symbols.SYMBOL_BATTERY, font=self.faicons, fill=get_battload_color())
+            #wenn Batterie, dann anzeigen
+            draw.text((xpos3, lineposy), symbols.SYMBOL_BATTERY, font=self.faicons, fill=get_battload_color())
 
 
     async def _find_dev_bt(self):

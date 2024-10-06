@@ -186,6 +186,7 @@ def run_command(commands, cwd="/home/pi/oledctrl/"):
             logger.debug(f"running single command: {commands}")
             subprocess_result = subprocess.Popen(commands,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd=cwd,encoding='utf-8')
             subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
+            logger.debug(f"result: {subprocess_result.returncode}: {subprocess_output}")
             return (subprocess_result.returncode == 0)
 
         elif isinstance(commands,list):
@@ -194,11 +195,10 @@ def run_command(commands, cwd="/home/pi/oledctrl/"):
 
                 subprocess_result = subprocess.Popen(command,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd=cwd)
                 subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
-                logger.debug(subprocess_output)
-                if subprocess_result.returncode != 0:
-                    logger.info("command returncode not 0")
-                    return False
-            return True
+                logger.debug(f"result: {subprocess_result.returncode}: {subprocess_output}")
+
+                return subprocess_result.returncode == 0
+
 
     except Exception as e:
         logger.exception(str(e))
@@ -293,3 +293,8 @@ def get_hostapd_psk():
 
 def set_lastinput():
     settings.lastinput = time.monotonic()
+
+
+def ping_test(host="8.8.8.8", wait=2): # default ip
+    """Teste ob das Gerät online ist."""
+    return run_command(f"ping -c1 -W {wait} {host}")

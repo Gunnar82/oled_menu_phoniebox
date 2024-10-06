@@ -175,7 +175,7 @@ class Idle(MainWindow):
                 self.set_busyinfo(item="leiser",symbol=symbols.SYMBOL_VOL_DN)
 
             elif key in ['left','4']:
-                if self.nowplaying.input_is_stream and not self.nowplaying.input_is_online and self.nowplaying._song >= self.nowplaying._playlistlength:
+                if self.nowplaying.input_is_stream() and not self.nowplaying.input_is_online() and self.nowplaying._song >= self.nowplaying._playlistlength:
                     self.set_busyinfo(item="Vorheriger Sender",symbol=symbols.SYMBOL_PREV)
                     self.loop.create_task(self.change_folder(-1))
                 else:
@@ -192,7 +192,7 @@ class Idle(MainWindow):
 
             elif key in ['right', '6']:
                 print (self.nowplaying)
-                if self.nowplaying.input_is_stream and not self.nowplaying.input_is_online and self.nowplaying._song <= self.nowplaying._playlistlength:
+                if self.nowplaying.input_is_stream() and not self.nowplaying.input_is_online() and self.nowplaying._song <= self.nowplaying._playlistlength:
                     self.set_busyinfo(item="Nächster Sender",symbol=symbols.SYMBOL_NEXT)
                     self.loop.create_task(self.change_folder(1))
                 else:

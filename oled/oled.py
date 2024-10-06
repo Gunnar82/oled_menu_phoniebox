@@ -157,11 +157,9 @@ def main():
 
     #Import all window classes and generate objects of them
     loadedwins = []
-    idlescreen = windows.idle.Idle(windowmanager, loop, _nowplaying)
-    playbackm = windows.playbackmenu.Playbackmenu(windowmanager, loop, _nowplaying)
-    shutdownscreen = windows.shutdownmenu.Shutdownmenu(windowmanager, loop, mopidy,"Powermenü")
-    loadedwins.append(idlescreen)
-    loadedwins.append(playbackm)
+
+    loadedwins.append(windows.idle.Idle(windowmanager, loop, _nowplaying))
+    loadedwins.append(windows.playbackmenu.Playbackmenu(windowmanager, loop, _nowplaying))
     loadedwins.append(windows.mainmenu.Mainmenu(windowmanager,loop,"Hauptmenü"))
     loadedwins.append(windows.info.Infomenu(windowmanager,loop))
     loadedwins.append(windows.headphone.Headphonemenu(windowmanager,loop,objbluetooth,"Audioausgabe"))
@@ -170,7 +168,7 @@ def main():
     loadedwins.append(windows.foldermenu.Foldermenu(windowmanager,loop))
     loadedwins.append(windows.folderinfo.FolderInfo(windowmanager, loop))
     loadedwins.append(windows.ende.Ende(windowmanager, loop,_nowplaying))
-    loadedwins.append(shutdownscreen)
+    loadedwins.append(windows.shutdownmenu.Shutdownmenu(windowmanager, loop, mopidy,"Powermenü"))
     loadedwins.append(windows.start.Start(windowmanager, loop, mopidy,objbluetooth))
     loadedwins.append(wdownload.DownloadMenu(windowmanager,loop))
     loadedwins.append(wsnake.SnakeGame(windowmanager,loop))

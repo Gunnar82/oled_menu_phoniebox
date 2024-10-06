@@ -47,7 +47,7 @@ def savepos_online(nowplaying):
     try:
         url = nowplaying.filename
         data = {'url' : url, 'pos' : str(nowplaying._elapsed), 'song' : str(nowplaying._song), 'length' : str(nowplaying._playlistlength)}
-        if nowplaying.input_is_online:
+        if nowplaying.input_is_online():
             r = WebRequest(cfg_online.ONLINE_SAVEPOS,method="post",data=data)
 
     except Exception as error:

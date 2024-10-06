@@ -55,8 +55,7 @@ class Ende(MainWindow):
 
                 await asyncio.sleep(1)
 
-                if self.nowplaying.input_is_online:
-                    playout.savepos_online(self.nowplaying)
+                playout.savepos_online(self.nowplaying)
                 playout.savepos()
                 logger.info("timer: Stopping event loop")
                 await asyncio.sleep(2)
@@ -94,8 +93,7 @@ class Ende(MainWindow):
         if key == 'start':
             playout.pc_toggle()
         elif key in ['X','Y']:
-            if self.nowplaying.input_is_online:
-                playout.savepos_online(self.nowplaying)
+            playout.savepos_online(self.nowplaying)
             playout.savepos()
             #self.mopidyconnection.stop()
             logger.info("Stopping event loop")

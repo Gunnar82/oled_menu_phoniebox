@@ -5,7 +5,7 @@ import RPi.GPIO as GPIO   # Import the GPIO library.
 import time               # Import time library
 import settings
 import asyncio
-from  integrations.functions import get_timeouts
+from  integrations.functions import get_timeouts, ping_test
 import integrations.playout as playout
 import time
 
@@ -25,9 +25,8 @@ class nowplaying:
     filename = ""
     __oldtitle = ""
     __titlechanged = False
+    __onlinestate = False
     output_symbol = symbols.SYMBOL_SPEAKER
-    input_is_stream = False
-    input_is_online = False
 
     _playingname = ""
     _playingtitle = ""
@@ -102,19 +101,13 @@ class nowplaying:
             try:
                 if ("file" in playing):
                     self._playingfile = playing['file']
-                    self.input_is_stream = self._playingfile.startswith('https:','http:')
                 else:
                     self._playingfile = ""
-                    self.input_is_stream = False
             except:
-                self.input_is_stream = False
+                pass
 
 
 
-            try:
-                self.input_is_online = self._playingfile.startswith(cfg_online.ONLINE_URL)
-            except Exception as error:
-                self.input_is_online = False
 
             status = self.musicmanager.status()
 
@@ -161,7 +154,7 @@ class nowplaying:
 
     def do_savestate(self):
         """Speichern der Aktuellen Postion ggf. online"""
-        if self.input_is_stream and self.input_is_online:
+        if self.input_is_online():
             logger.debug("saving online position")
             playout.savepos_online(self)
 
@@ -175,12 +168,21 @@ class nowplaying:
             return True
         return False
 
-    async def _output(self):
+    async def __systemabfrage(self):
 
         while self.loop.is_running():
             self.output_symbol = symbols.SYMBOL_SPEAKER if  self.bluetooth.output_status(settings.ALSA_DEV_LOCAL) == "enabled" else symbols.SYMBOL_HEADPHONE
-            await asyncio.sleep(5)
+            await self.loop.run_in_executor(None,self.check_online_state)
+            await asyncio.sleep(10)
 
+    def check_online_state(self):
+        state = ping_test()
+        logger.debug(f"is_online: {state}")
+        self.__onlinestate = state
+
+
+    def is_device_online(self):
+        return self.__onlinestate
 
     def __init__(self,loop,musicmanager,windowmanager,bluetooth):
         self.bluetooth = bluetooth
@@ -190,7 +192,18 @@ class nowplaying:
 
         self.loop.create_task(self._generatenowplaying())
         self.loop.create_task(self._linuxjob())
-        self.loop.create_task(self._output())
+        self.loop.create_task(self.__systemabfrage())
         self.loop.create_task(self._savepos_status())
 
 
+    def input_is_stream(self):
+        try:
+             return self._playingfile.startswith('https:','http:')
+        except:
+            return false
+
+    def input_is_online(self):
+        try:
+            return self._playingfile.startswith(cfg_online.ONLINE_URL)
+        except Exception as error:
+            return False
