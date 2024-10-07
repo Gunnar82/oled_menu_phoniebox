@@ -179,7 +179,7 @@ def delete_local_online_folder():
     run_command("sudo rm -r %s/*" % (cfg_file_folder.AUDIO_BASEPATH_ONLINE))
 
 
-def run_command(commands, cwd="/home/pi/oledctrl/"):
+def run_command(commands, cwd="/home/pi/oledctrl/", results = None):
     """Führt einen Shell-Befehl aus und prüft die Ausgabe."""
     try:
         if isinstance(commands,str):
@@ -187,6 +187,8 @@ def run_command(commands, cwd="/home/pi/oledctrl/"):
             subprocess_result = subprocess.Popen(commands,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd=cwd,encoding='utf-8')
             subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
             logger.debug(f"result: {subprocess_result.returncode}: {subprocess_output}")
+            if results is not None:
+                results.append((subprocess_result.returncode,subprocess_output))
             return (subprocess_result.returncode == 0)
 
         elif isinstance(commands,list):
@@ -196,9 +198,13 @@ def run_command(commands, cwd="/home/pi/oledctrl/"):
                 subprocess_result = subprocess.Popen(command,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd=cwd)
                 subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
                 logger.debug(f"result: {subprocess_result.returncode}: {subprocess_output}")
+                if results is not None:
+                    results.append((subprocess_result.returncode,subprocess_output))
 
-                return subprocess_result.returncode == 0
-
+                if subprocess_result.returncode != 0:
+                    logger.debug(f"Returncode: {subprocess_result.returncode}, {command} failed")
+                    return False
+            return True
 
     except Exception as e:
         logger.exception(str(e))

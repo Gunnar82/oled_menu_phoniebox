@@ -115,10 +115,11 @@ class SystemMenu(ListBase):
             else:
                 self.append_busytext(self.menu[self.position][0])
                 self.append_busytext(self.cmd)
-                if run_command(self.cmd) == True:
+                result = ()
+                if run_command(self.cmd,results=result) == True:
                     self.append_busytext("Erfolgreich!")
                 else:
-                    self.append_busyerror()
+                    self.append_busyerror(result[1])
         except Exception as error:
             self.appendbusyerror(error)
         finally:
