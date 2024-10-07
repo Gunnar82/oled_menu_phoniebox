@@ -18,6 +18,7 @@ import config.user_settings as csettings
 from integrations.logging_config import *
 
 logger = setup_logger(__name__)
+#logger = setup_logger(__name__,lvlDEBUG)
 
 
 class nowplaying:
@@ -198,9 +199,10 @@ class nowplaying:
 
     def input_is_stream(self):
         try:
-             return self._playingfile.startswith('https:','http:')
-        except:
-            return false
+             return self._playingfile.startswith(('https:','http:'))
+        except Exception as error:
+            logger.debug(f"input_is_online: error: {error}")
+            return False
 
     def input_is_online(self):
         try:
