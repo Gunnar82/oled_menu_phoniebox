@@ -1,8 +1,7 @@
 import logging
 import sys
-
+import os
 import config.loglevel
-
 
 lvlDEBUG = logging.DEBUG
 lvlINFO = logging.INFO
@@ -10,6 +9,9 @@ lvlWARN = logging.WARNING
 lvlERROR = logging.ERROR
 
 def setup_logger(module_name,level = config.loglevel.LOGLEVEL):
+    if 'INVOCATION_ID' in os.environ:
+        level = logging.ERROR
+
     # Grundlegende Konfiguration des Loggings
     logger = logging.getLogger(module_name)
     #logging.basicConfig(

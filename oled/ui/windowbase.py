@@ -14,7 +14,8 @@ import time
 
 from integrations.logging_config import *
 
-logger = setup_logger(__name__,lvlDEBUG)
+#logger = setup_logger(__name__,lvlDEBUG)
+logger = setup_logger(__name__)
 
 font = ImageFont.truetype(settings.FONT_TEXT, size=settings.WINDOWBASE_BUSYFONT)
 busyfont = ImageFont.truetype(settings.FONT_TEXT, size=settings.LISTBASE_ENTRY_SIZE)

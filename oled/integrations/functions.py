@@ -298,3 +298,11 @@ def set_lastinput():
 def ping_test(host="8.8.8.8", wait=2): # default ip
     """Teste ob das Gerät online ist."""
     return run_command(f"ping -c1 -W {wait} {host}")
+
+
+def run_as_service():
+    """Prüft, ob das Progamm von systemd ausgeführt wird"""
+    try:
+        return 'INVOCATION_ID' in os.environ
+    except:
+        return False

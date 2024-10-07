@@ -17,7 +17,7 @@ import config.symbols as symbols
 
 import config.user_settings as csettings
 
-from integrations.functions import get_oledversion, get_battload_color, enable_firewall
+from integrations.functions import get_oledversion, get_battload_color, enable_firewall, run_as_service
 
 
 
@@ -53,6 +53,11 @@ class Start(WindowBase):
             logger.info(f"exec_init: oled_version: {oled_version}")
             self.append_busytext(f"Version: {oled_version}")
 
+            if (run_as_service()):
+                self.append_busytext("Als Dienst - minimales Logging...")
+                enable_firewall()
+            else:
+                self.append_busytext("Kommandozeile - normales Logging...")
             if (csettings.AUTO_ENABLED):
                 logger.info("auto_enable firewall EIN")
                 self.append_busytext("Aktiviere Firewall...")
@@ -60,6 +65,7 @@ class Start(WindowBase):
             else:
                 logger.info("auto_enable firewall False")
                 self.append_busytext("Übespringe Firewall...")
+
 
             if (csettings.BLUETOOTH_AUTOCONNECT):
                 logger.info("bluetooth autoconnect")
