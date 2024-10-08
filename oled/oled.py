@@ -7,6 +7,26 @@ import os,shutil
 import time
 import importlib
 from subprocess import call
+import argparse
+
+# Funktion zum Argumente parsen
+def parse_arguments():
+    parser = argparse.ArgumentParser(description="Starte das Programm mit benutzerdefiniertem Log-Level.")
+    parser.add_argument('--loglevel-debug', type=str, nargs='*', help='Setze den Debug-Level für bestimmte Module')
+    return parser.parse_args()
+
+# Argumente parsen
+args = parse_arguments()
+
+
+from integrations.logging_config import *
+
+
+# Debug-Module global setzen
+if args.loglevel_debug:
+    configure_debug_modules(args.loglevel_debug)
+
+
 import integrations.bluetooth
 import integrations.functions as fn
 import integrations.playout as playout
@@ -16,7 +36,6 @@ import settings
 import config.file_folder as cfg_file_folder
 
 
-from integrations.logging_config import *
 
 logger = setup_logger(__name__)
 

@@ -8,10 +8,19 @@ lvlINFO = logging.INFO
 lvlWARN = logging.WARNING
 lvlERROR = logging.ERROR
 
-def setup_logger(module_name,level = config.loglevel.LOGLEVEL):
+
+# Globale Variable, um Debug-Module zu verwalten
+DEBUG_MODULES = []
+
+def setup_logger(module_name,default_level = config.loglevel.LOGLEVEL):
     if 'INVOCATION_ID' in os.environ:
         level = logging.ERROR
-
+    else:
+        # Prüfen, ob das aktuelle Modul im Debug-Level laufen soll
+        if module_name in DEBUG_MODULES:
+            level = logging.DEBUG
+        else:
+            level = default_level
     # Grundlegende Konfiguration des Loggings
     logger = logging.getLogger(module_name)
     #logging.basicConfig(
@@ -42,3 +51,6 @@ def setup_logger(module_name,level = config.loglevel.LOGLEVEL):
     return logger
 
 
+def configure_debug_modules(modules):
+    global DEBUG_MODULES
+    DEBUG_MODULES = modules
