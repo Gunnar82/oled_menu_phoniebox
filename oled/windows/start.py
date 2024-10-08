@@ -55,7 +55,6 @@ class Start(WindowBase):
 
             if (run_as_service()):
                 self.append_busytext("Als Dienst - minimales Logging...")
-                enable_firewall()
             else:
                 self.append_busytext("Kommandozeile - normales Logging...")
 
