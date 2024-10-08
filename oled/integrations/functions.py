@@ -184,22 +184,22 @@ def run_command(commands, cwd="/home/pi/oledctrl/", results = None):
     try:
         if isinstance(commands,str):
             logger.debug(f"running single command: {commands}")
-            subprocess_result = subprocess.Popen(commands,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd=cwd,encoding='utf-8')
+            subprocess_result = subprocess.Popen(commands,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd=cwd,)
             subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
             logger.debug(f"result: {subprocess_result.returncode}: {subprocess_output}")
             if results is not None:
-                results.append((subprocess_result.returncode,subprocess_output))
+                results.append([subprocess_result.returncode,str(subprocess_output)])
             return (subprocess_result.returncode == 0)
 
         elif isinstance(commands,list):
             for command in commands:
                 logger.debug(f"running multiple commands: {commands}")
 
-                subprocess_result = subprocess.Popen(command,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd=cwd)
+                subprocess_result = subprocess.Popen(command,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd=cwd,encoding='utf-8')
                 subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
                 logger.debug(f"result: {subprocess_result.returncode}: {subprocess_output}")
                 if results is not None:
-                    results.append((subprocess_result.returncode,subprocess_output))
+                    results.append([subprocess_result.returncode,str(subprocess_output)])
 
                 if subprocess_result.returncode != 0:
                     logger.debug(f"Returncode: {subprocess_result.returncode}, {command} failed")
@@ -312,3 +312,7 @@ def run_as_service():
         return 'INVOCATION_ID' in os.environ
     except:
         return False
+
+
+def check_results_list(list_of_lists):
+    return next((inner_list[1] for inner_list in list_of_lists if inner_list and inner_list[0] != 0), None)

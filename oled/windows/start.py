@@ -58,6 +58,7 @@ class Start(WindowBase):
                 enable_firewall()
             else:
                 self.append_busytext("Kommandozeile - normales Logging...")
+
             if (csettings.AUTO_ENABLED):
                 logger.info("auto_enable firewall EIN")
                 self.append_busytext("Aktiviere Firewall...")

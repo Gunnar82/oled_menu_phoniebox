@@ -13,6 +13,13 @@ import config.file_folder as cfg_file_folder
 import config.services as cfg_services
 import config.user_settings
 
+from integrations.logging_config import *
+
+#logger = setup_logger(__name__)
+logger = setup_logger(__name__,lvlDEBUG)
+
+
+
 
 class SystemMenu(ListBase):
 
@@ -114,14 +121,17 @@ class SystemMenu(ListBase):
                 disable_firewall()
             else:
                 self.append_busytext(self.menu[self.position][0])
-                self.append_busytext(self.cmd)
-                result = ()
+                self.append_busytext(str(self.cmd))
+                result = []
                 if run_command(self.cmd,results=result) == True:
                     self.append_busytext("Erfolgreich!")
                 else:
-                    self.append_busyerror(result[1])
+                    text = check_results_list(result)
+
+                    logger.debug(f"exec_command: FAILED: {text}")
+                    self.append_busyerror(str(text))
         except Exception as error:
-            self.appendbusyerror(error)
+            self.append_busyerror(error)
         finally:
             self.append_busytext("Abgeschlossen!")
             time.sleep(2)
@@ -129,7 +139,7 @@ class SystemMenu(ListBase):
 
             self.refresh_values()
             self.processing = False
-            self.set_window_busy(False)
+            self.set_window_busy(False,wait=5)
 
 
     def push_handler(self,button = '*'):
@@ -170,7 +180,7 @@ class SystemMenu(ListBase):
 
         elif self.position == 7:
 
-            self.cmd = ["git pull", "sudo pip3 install -r requirements.txt", "sudo systemctl restart oled"]
+            self.cmd = ["gitdd pull", "sudo pip3 install -r requirements.txt", "sudo systemctl restart oled"]
 
         elif self.position == 8:
             self.cmd = "sudo ip link set wlan0 down"
