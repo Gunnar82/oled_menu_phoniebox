@@ -46,6 +46,7 @@ class Idle(MainWindow):
 
     def render(self):
         with canvas(self.device) as draw:
+            draw.rectangle(self.device.bounding_box, outline="black", fill="black")  # Löscht den Hintergrund
             super().render(draw)
 
             now = time.monotonic()
