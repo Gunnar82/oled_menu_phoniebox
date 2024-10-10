@@ -49,6 +49,7 @@ class WindowManager():
         if windowid in self.windows:
             try:
                 if self.activewindow is not None:
+
                     self.init_callback_or_idle()
                     self.activewindow.set_window_busy(False)
                     self.activewindow.deactivate()
@@ -57,7 +58,7 @@ class WindowManager():
             finally:
                 self.activewindow = self.windows[windowid]
                 logger.info(f"Activated {windowid}")
-    
+
             try:
                 self.rendertime = self.activewindow._rendertime
                 self.activewindow.busy = False
