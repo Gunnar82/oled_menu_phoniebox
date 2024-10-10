@@ -180,7 +180,7 @@ class SystemMenu(ListBase):
 
         elif self.position == 7:
 
-            self.cmd = ["gitdd pull", "sudo pip3 install -r requirements.txt", "sudo systemctl restart oled"]
+            self.cmd = ["git pull", "sudo pip3 install -r requirements.txt", "sudo systemctl restart oled"]
 
         elif self.position == 8:
             self.cmd = "sudo ip link set wlan0 down"
