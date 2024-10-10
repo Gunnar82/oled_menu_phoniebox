@@ -248,8 +248,12 @@ class Idle(MainWindow):
                             content = f.read()
                     except:
                         content = "Fehler"
+                    if content.startswith('/'): content = content[1:]
 
-                    self.set_busyinfo(item=what.split("/")[-1],symbol=symbols.SYMBOL_PASS)
+                    content = content.split('/',1)
+                    logger.debug(content)
+
+                    self.set_busyinfo(item=[what.split("/")[-1],content[0],content[1]],symbol=symbols.SYMBOL_PASS)
                     self.loop.create_task(self.playlast(what))
         else:
             if (direction > 0):
