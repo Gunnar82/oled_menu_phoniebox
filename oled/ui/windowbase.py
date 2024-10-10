@@ -186,7 +186,7 @@ class WindowBase():
                 self.__append_busyitem(e,self.info)
         else:
             self.__append_busyitem(item,self.info)
-
+        time.sleep(wait)
         if set_window: self.windowmanager.set_window(self.window_on_back)
         else: self.set_window_busy(False)
 
