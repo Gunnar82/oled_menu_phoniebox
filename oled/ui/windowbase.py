@@ -108,27 +108,39 @@ class WindowBase():
     def turn_callback(self, direction, key=None):
         raise NotImplementedError()
 
-    # new busy handling
-    def append_busytext(self,item="Verarbeite...",reuse_last= False,color=colors.COLOR_GREEN):
-        logger.debug(f"append busyitem: {item}")
+    ### protected functions
+
+    def __append_busyitem(self,item1,item2,item3 = None,reuse_last = False):
         thelen = len(self.busymenu)
-        if reuse_last and thelen > 0: self.busymenu[thelen -1] = item
-        else: self.busymenu.append([item,f"{self.bc}:{color}"])
+
+        if item3 == None: entry = [str(item1), str(item2)]
+        else: entry = [str(item1), str(item2),item3]
+
+        if reuse_last and thelen > 0: self.busymenu[thelen -1] = entry
+        else: self.busymenu.append(entry)
+
         self.pop_busymenu()
 
-    def append_busyerror(self,item="Fehler..."):
-        logger.debug(f"append busyitem: {item}")
-        self.busymenu.append([item,self.error])
-        self.pop_busymenu()
+    # new busy handling
+    def append_busytext(self,text="Verarbeite...",reuse_last= False,color=colors.COLOR_GREEN):
+        logger.debug(f"append busytext: {text}")
+        self.__append_busyitem(text,f"{self.bc}:{color}",reuse_last=reuse_last)
 
 
-    def append_busysymbol(self,item=None):
-        logger.debug(f"append busysymbol: {item}")
-        if item is None: item  = self.busysymbol  # Zugriff auf die Klassenvariable via self
-        width,height = busyfaiconsbig.getsize(item)
+    def append_busyerror(self,text="Fehler..."):
+        logger.debug(f"append busyerror: {text}")
+        self.__append_busyitem(text,self.error)
 
-        self.busymenu.append([item,self.symbol,width,height])
-        self.pop_busymenu()
+
+    def append_busysymbol(self,text=None):
+        if text is None: text = self.busysymbol  # Zugriff auf die Klassenvariable via self
+
+        logger.debug(f"append busysymbol: {text}")
+        size = busyfaiconsbig.getsize(text)
+
+        self.__append_busyitem(text,self.symbol,item3=size)
+
+    # Menu Handling für Busymenu
 
 
     def pop_busymenu(self):
@@ -171,15 +183,16 @@ class WindowBase():
             logger.debug(f"append_busyitem: liste: {item}")
             for e in item:
                 logger.debug(f"append_item: liste: {e}")
-                self.append_busytext([e,self.info])
+                self.__append_busyitem(e,self.info)
         else:
-            self.append_busytext([item,self.info])
+            self.__append_busyitem(item,self.info)
 
         if set_window: self.windowmanager.set_window(self.window_on_back)
         else: self.set_window_busy(False)
 
 
     def new_renderbusy(self):
+        """wenn self.is_busy, dann nutze self.renderbusy() statt render()"""
         try:
             with canvas (self.device) as draw:
                 menulen = len(self.busymenu)
@@ -253,8 +266,9 @@ class WindowBase():
                     else:
 
                         if is_symbol:
-                            draw.text(((settings.DISPLAY_WIDTH - selected_element[2]) / 2, current_y), drawtext, font=busyfaiconsbig, fill=colors.COLOR_RED)
-                            current_y += selected_element[3] # Symbolhöhe
+                            width, height = selected_element[2]
+                            draw.text(((settings.DISPLAY_WIDTH - width) / 2, current_y), drawtext, font=busyfaiconsbig, fill=colors.COLOR_RED)
+                            current_y += height # Symbolhöhe
 
                         else:
                             draw.text((startleft, current_y), drawtext, font=busyfont, fill=progresscolor)
