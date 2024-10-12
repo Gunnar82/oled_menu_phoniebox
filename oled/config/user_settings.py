@@ -35,3 +35,6 @@ CONTRAST_BLACK = 20
 
 #Display ausschalten?
 DISABLE_DISPLAY = True
+
+#Radiostationen aktualisieren
+UPDATE_RADIO=True

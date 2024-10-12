@@ -63,14 +63,15 @@ class SystemMenu(ListBase):
 
         # QR-Code generieren
 
-        self.menu.append(["Update Radiostationen"] if cfg_online.UPDATE_RADIO else ["Onlineupdate Radio deaktiviert","c"])                   # Eintrag 0
-        self.menu.append(["Lösche Online-Ordner"])                 # Eintrag 1
-        self.menu.append(["Lösche Online-Status Online"])          # Eintrag 2
+        self.menu.append(["Update Radiostationen EIN"])            # Eintrag 0
+        self.menu.append(["Update Radiostationen AUS"])            # Eintrag 1
 
-        self.menu.append(["Lösche Hörspielstatus"])                # Eintrag 3
-        self.menu.append(["Lösche Musikstatus"])                   # Eintrag 4
-        self.menu.append(["Lösche Radiostatus"])                   # Eintrag 5
-        self.menu.append(["","c"])                  # Eintrag 6
+        self.menu.append(["Lösche Online-Ordner"])                 # Eintrag 2
+        self.menu.append(["Lösche Online-Status Online"])          # Eintrag 3
+
+        self.menu.append(["Lösche Hörspielstatus"])                # Eintrag 4
+        self.menu.append(["Lösche Musikstatus"])                   # Eintrag 5
+        self.menu.append(["Lösche Radiostatus"])                   # Eintrag 6
 
         self.menu.append(["Update OLED"])                          # Eintrag 7
 
@@ -113,9 +114,10 @@ class SystemMenu(ListBase):
         self.qrimage = None
 
     def exec_command(self):
+        logger.debug(f"cmd: {self.cmd}")
         try:
             self.processing = True
-            if self.position == 2:
+            if self.position == 3:
                 try:
                     url = f"{cfg_online.ONLINE_SAVEPOS}deletepos.php?confirm=true"
 
@@ -171,15 +173,21 @@ class SystemMenu(ListBase):
         self.set_window_busy()
         self.append_busytext()
 
-        if self.position == 1:
+        if self.position == 0:
+            self.cmd = self.set_option("UPDATE_RADIO",True,cfg_file_folder.FILE_USER_SETTINGS)
+
+        elif self.position == 1:
+            self.cmd = self.set_option("UPDATE_RADIO",False,cfg_file_folder.FILE_USER_SETTINGS)
+
+        elif self.position == 2:
             delete_local_online_folder()
 
-        elif self.position >=3 and self.position <= 6:
-            if self.position == 3:
+        elif self.position >= 4 and self.position <= 6:
+            if self.position == 4:
                 what = cfg_file_folder.FILE_LAST_HOERBUCH
-            elif self.position == 4:
-                what = cfg_file_folder.FILE_LAST_MUSIC
             elif self.position == 5:
+                what = cfg_file_folder.FILE_LAST_MUSIC
+            elif self.position == 6:
                 what = cfg_file_folder.FILE_LAST_RADIO
             self.cmd = "sudo rm %s" % (what)
 
@@ -195,17 +203,17 @@ class SystemMenu(ListBase):
             self.cmd = "sudo ip link set wlan0 up"
 
         elif self.position == 11:
-            self.cmd = f"sed -i 's/AUTO_ENABLED=False/AUTO_ENABLED=True/g' {cfg_file_folder.FILE_USER_SETTINGS}"
+            self.cmd = self.set_option("AUTO_ENABLED",True,cfg_file_folder.FILE_USER_SETTINGS)
 
         elif self.position == 12:
-            self.cmd = f"sed -i 's/AUTO_ENABLED=True/AUTO_ENABLED=False/g' {cfg_file_folder.FILE_USER_SETTINGS}"
+            self.cmd = self.set_option("AUTO_ENABLED",False,cfg_file_folder.FILE_USER_SETTINGS)
 
 
         elif self.position == 17:
-            self.cmd = f"sed -i 's/BLUETOOTH_AUTOCONNECT=False/BLUETOOTH_AUTOCONNECT=True/g' {cfg_file_folder.FILE_USER_SETTINGS}"
+            self.cmd = self.set_option("BLUETOOTH_AUTOCONNECT",True,cfg_file_folder.FILE_USER_SETTINGS)
 
         elif self.position == 18:
-            self.cmd = f"sed -i 's/BLUETOOTH_AUTOCONNECT=True/BLUETOOTH_AUTOCONNECT=False/g' {cfg_file_folder.FILE_USER_SETTINGS}"
+            self.cmd = self.set_option("BLUETOOTH_AUTOCONNECT",False,cfg_file_folder.FILE_USER_SETTINGS)
 
 
         elif self.position == 20:
@@ -237,6 +245,10 @@ class SystemMenu(ListBase):
 
 
         self.loop.run_in_executor(None,self.exec_command)
+
+
+    def set_option(self,option,value,filename):
+        return f"sed -i 's/{option}=[^ ]*/{option}={value}/g' {filename}"
 
 
     def render(self):

@@ -14,6 +14,7 @@ import time
 
 import config.file_folder as cfg_file_folder
 import config.online as cfg_online
+import config.user_settings as csettings
 
 from integrations.logging_config import *
 
@@ -30,6 +31,10 @@ class Radiomenu(ListBase):
         self.busysymbol = symbols.SYMBOL_CLOUD
 
     def activate(self):
+        if not csettings.UPDATE_RADIO:
+            self.set_busyinfo("Radio Update deaktiviert",eait=5)
+            return
+
         self.set_window_busy()
         #Stationen Online auslesen
         stations = self.get_online_stations()
