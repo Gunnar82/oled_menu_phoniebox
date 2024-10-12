@@ -248,7 +248,9 @@ class SystemMenu(ListBase):
 
 
     def set_option(self,option,value,filename):
-        return f"sed -i 's/{option}=[^ ]*/{option}={value}/g' {filename}"
+        command = f"grep -q '{option}=' {filename} && sed -i 's/{option}=[^ ]*/{option}={value}/g' {filename} || {{ echo '\n{option}={value}\n' >> {filename}; }}"
+        logger.debug(f"set_option: {command}")
+        return command
 
 
     def render(self):
