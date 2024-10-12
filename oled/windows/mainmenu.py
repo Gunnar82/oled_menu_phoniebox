@@ -18,7 +18,7 @@ class Mainmenu(MenuBase):
         self.counter = 0
         self.descr.append ([ "Musik", symbols.SYMBOL_MUSIC,"foldermenu" ])
         self.descr.append([ "Hörspiele", symbols.SYMBOL_HOERSPIEL, "foldermenu" ])
-        self.descr.append([ "Internetradio", symbols.SYMBOL_RADIO, "foldermenu" ])
+        self.descr.append([ "Internetradio", symbols.SYMBOL_RADIO, "radiomenu" ])
         self.descr.append([ "Online", symbols.SYMBOL_CLOUD, "downloadmenu"])
         self.descr.append([ "USB-Stick", symbols.SYMBOL_USB,"foldermenu" ])
         self.descr.append([ "Betriebsinfos", "\uf022", "infomenu" ])

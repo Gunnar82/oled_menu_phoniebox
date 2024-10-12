@@ -63,7 +63,7 @@ class SystemMenu(ListBase):
 
         # QR-Code generieren
 
-        self.menu.append(["Update Radiosender"])                   # Eintrag 0
+        self.menu.append(["","c"])                   # Eintrag 0
         self.menu.append(["Lösche Online-Ordner"])                 # Eintrag 1
         self.menu.append(["Lösche Online-Status Online"])          # Eintrag 2
 
@@ -171,14 +171,7 @@ class SystemMenu(ListBase):
         self.set_window_busy()
         self.append_busytext()
 
-        if self.position == 0:
-            if cfg_online.UPDATE_RADIO:
-                self.cmd = "wget  --no-verbose --no-check-certificate  -r %s  --no-parent -A txt -nH -P %s/" %(cfg_online.ONLINE_RADIO_URL,cfg_file_folder.AUDIO_BASEPATH_BASE)
-
-            else:
-                self.append_busytext("Online Updates deaktiviert!")
-
-        elif self.position == 1:
+        if self.position == 1:
             delete_local_online_folder()
 
         elif self.position >=3 and self.position <= 6:

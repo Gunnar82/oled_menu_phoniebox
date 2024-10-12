@@ -119,6 +119,7 @@ import windows.playlistmenu
 import windows.foldermenu
 import windows.shutdownmenu
 import windows.folderinfo
+import windows.radiomenu
 import windows.start
 import windows.ende
 import windows.download as wdownload
@@ -185,6 +186,7 @@ def main():
     loadedwins.append(windows.bluetooth.Bluetoothmenu(windowmanager,loop,objbluetooth,"Bluetoothmenu"))
     loadedwins.append(windows.playlistmenu.Playlistmenu(windowmanager, loop, musicmanager))
     loadedwins.append(windows.foldermenu.Foldermenu(windowmanager,loop))
+    loadedwins.append(windows.radiomenu.Radiomenu(windowmanager,loop))
     loadedwins.append(windows.folderinfo.FolderInfo(windowmanager, loop))
     loadedwins.append(windows.ende.Ende(windowmanager, loop,_nowplaying))
     loadedwins.append(windows.shutdownmenu.Shutdownmenu(windowmanager, loop, mopidy,"Powermenü"))
