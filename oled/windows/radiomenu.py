@@ -33,18 +33,17 @@ class Radiomenu(ListBase):
     def activate(self):
         if not csettings.UPDATE_RADIO:
             self.set_busyinfo("Radio Update deaktiviert",wait=5)
-            return
-
-        self.set_window_busy()
-        #Stationen Online auslesen
-        stations = self.get_online_stations()
-        logger.debug(f"activate stations :{stations}")
+        else:
+            self.set_window_busy()
+            #Stationen Online auslesen
+            stations = self.get_online_stations()
+            logger.debug(f"activate stations :{stations}")
  
-        #Stationen in lokales Dateisystem schreiben
-        for station in stations:
-            self.create_local_station(station['name'], station['url'])
+            #Stationen in lokales Dateisystem schreiben
+            for station in stations:
+                self.create_local_station(station['name'], station['url'])
 
-        self.set_window_busy(False,wait=4)
+            self.set_window_busy(False,wait=4)
 
         #Nach Abschluss zu Radio wechseln
         self.windowmanager.set_window("foldermenu")
