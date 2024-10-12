@@ -63,7 +63,7 @@ class SystemMenu(ListBase):
 
         # QR-Code generieren
 
-        self.menu.append(["","c"])                   # Eintrag 0
+        self.menu.append(["Update Radiostationen"] if cfg_online.UPDATE_RADIO else ["Onlineupdate Radio deaktiviert","c"])                   # Eintrag 0
         self.menu.append(["Lösche Online-Ordner"])                 # Eintrag 1
         self.menu.append(["Lösche Online-Status Online"])          # Eintrag 2
 

@@ -27,21 +27,28 @@ class Radiomenu(ListBase):
         #self.timeoutwindow="folderinfo"
         self.timeout = False
         self.loop = loop
-
+        self.busysymbol = symbols.SYMBOL_CLOUD
 
     def activate(self):
+        self.set_window_busy()
+        #Stationen Online auslesen
         stations = self.get_online_stations()
-        logger.debug(f"activate stations :{stations}") 
-        self.menu = []
-        for station in stations: self.menu.append([station['name'], station['url']])
+        logger.debug(f"activate stations :{stations}")
+ 
+        #Stationen in lokales Dateisystem schreiben
+        for station in stations:
+            self.create_local_station(station['name'], station['url'])
 
+        self.set_window_busy(False,wait=4)
 
-    def playfolder(self,folder):
+        #Nach Abschluss zu Radio wechseln
+        self.windowmanager.set_window("foldermenu")
+
+    def create_local_station(self,folder,url):
         try:
-            self.set_window_busy()
-            selected_element = self.menu[self.position]
+            self.append_busytext(f"Erstelle: {folder}")
 
-            foldername = os.path.join(cfg_file_folder.AUDIO_BASEPATH_RADIO,selected_element[0])
+            foldername = os.path.join(cfg_file_folder.AUDIO_BASEPATH_RADIO,folder)
             logger.debug(f"Radio path: {foldername}")
             try:
                 if not os.path.exists(foldername): os.makedirs(foldername)
@@ -49,52 +56,12 @@ class Radiomenu(ListBase):
                 self.append_busyerror(error)
                 logger.error(f"radiomenu: error {error}")
 
-            self.append_busytext("Abspielen:")
-            self.append_busytext(selected_element[0])
             livestream = os.path.join(foldername,"livestream.txt")
             logger.debug(f"creating file {livestream}")
             with open(livestream,"w") as fname:
-                fname.write(selected_element[1])
-
-            basename = foldername[len(cfg_file_folder.AUDIO_BASEPATH_BASE):]
-            logger.debug(f"stripped folder: {basename}")
-            playout.pc_playfolder(basename)
-            self.windowmanager.set_window("idle")
+                fname.write(url)
         except Exception as error:
             self.append_busyerror(error)
-        finally:
-            self.set_window_busy(False)
-
-
-    def push_handler(self):
-        set_window = True
-        try:
-
-            self.set_window_busy()
-
-            """if self.position  == -2:
-                settings.currentfolder = settings.audio_basepath
-                self.windowmanager.set_window("mainmenu")
-            elif self.position == -1:
-                self.append_busytext("Eine Ebene höher...")
-                set_window = False
-                self.on_key_left()
-            else:"""
-            if self.position >= 0:
-                #folder = self.folders[self.position-1]
-                #fullpath = os.path.join(settings.currentfolder,folder)
-                #settings.currentfolder = fullpath
-                self.append_busytext("Auswahl...")
-                thefile = os.listdir(settings.current_selectedfolder)
-                self.loop.run_in_executor(None,self.playfolder,settings.current_selectedfolder)
-        except Exception as error:
-            self.append_busyerror(error)
-        finally:
-            if set_window: self.set_window_busy(False,wait=5)
-
-            #self.mopidyconnection.loadplaylist(self.mopidyconnection.playlists[self.counter-1])
-            #self.windowmanager.set_window("idle")
-
 
     def get_online_stations(self):
         try:
