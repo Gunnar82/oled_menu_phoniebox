@@ -7,11 +7,12 @@ from luma.core.render import canvas
 from ui.listbase import ListBase
 from integrations.playout import *  # Wenn notwendig, ansonsten spezifisch importieren
 from integrations.functions import *
-
+from integrations.webrequest import WebRequest
 import config.online as cfg_online
 import config.file_folder as cfg_file_folder
 import config.services as cfg_services
 import config.user_settings
+
 
 from integrations.logging_config import *
 
@@ -113,9 +114,24 @@ class SystemMenu(ListBase):
 
     def exec_command(self):
         try:
-
             self.processing = True
-            if self.position == 14:
+            if self.position == 2:
+                try:
+                    url = f"{cfg_online.ONLINE_SAVEPOS}deletepos.php?confirm=true"
+
+                    logger.debug(f"Verzeichnis-URL: {url}")
+                    self.append_busytext(self.menu[self.position][0])
+
+                    response = WebRequest(url).get_response_text().splitlines()
+                    logger.debug(f"response: {response}")
+                    self.append_busytext("")
+                    for line in response:
+                        if line.startswith('DELOK'): self.append_busytext(line,reuse_last=True)
+                        else: self.append_busyerror(line)
+                except Exception as error:
+                    logger.debug(f"exec_command: {error}")
+                    self.append_busyerror(error)
+            elif self.position == 14:
                 enable_firewall()
             elif self.position == 15:
                 disable_firewall()
@@ -164,9 +180,6 @@ class SystemMenu(ListBase):
 
         elif self.position == 1:
             delete_local_online_folder()
-
-        elif self.position == 2:
-            self.cmd = "wget  --no-verbose --no-check-certificate %sdeletepos.php?confirm=true -O-" %(cfg_online.ONLINE_SAVEPOS)
 
         elif self.position >=3 and self.position <= 6:
             if self.position == 3:

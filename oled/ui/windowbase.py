@@ -124,7 +124,9 @@ class WindowBase():
     # new busy handling
     def append_busytext(self,text="Verarbeite...",reuse_last= False,color=colors.COLOR_GREEN):
         logger.debug(f"append busytext: {text}")
-        self.__append_busyitem(text,f"{self.bc}:{color}",reuse_last=reuse_last)
+        if isinstance(text,str): self.__append_busyitem(text,f"{self.bc}:{color}",reuse_last=reuse_last)
+        else:
+            for item in text: self.__append_busyitem(text,f"{self.bc}:{color}",reuse_last=reuse_last)
 
 
     def append_busyerror(self,text="Fehler..."):
