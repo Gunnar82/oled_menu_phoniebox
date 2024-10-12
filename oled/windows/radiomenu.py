@@ -32,7 +32,7 @@ class Radiomenu(ListBase):
 
     def activate(self):
         if not csettings.UPDATE_RADIO:
-            self.set_busyinfo("Radio Update deaktiviert",eait=5)
+            self.set_busyinfo("Radio Update deaktiviert",wait=5)
             return
 
         self.set_window_busy()
