@@ -8,6 +8,7 @@ import asyncio
 from  integrations.functions import get_timeouts, ping_test
 import integrations.playout as playout
 import time
+from pathlib import Path
 
 import config.symbols as symbols
 import config.file_folder as cfg_file_folder
@@ -61,9 +62,10 @@ class nowplaying:
                 if "title" in playing:
                     title = playing['title']
                 else:
-                    title = filename[filename.rfind("/")+1:]
-            except:
-                title = "n/a"
+                    title = self.filename[self.filename.rfind("/")+1:]
+            except Exception as error:
+                logger.debug(f"itle error : {error}")
+                title = n/a
 
             if title != self.__oldtitle:
                 if self.__oldtitle:
@@ -79,23 +81,23 @@ class nowplaying:
                 elif "artist" in playing:
                     name = playing['artist']
                 else:
-                    name = "n/v"
+                    name = os.path.dirname(os.path.dirname(self.filename)).replace('/',' . ')
             except:
                 name = "n/a"
 
             self._playingname = name
+
             try:
                 if "album" in playing:
                     album = playing['album']
                 elif not playing['file'].startswith('http'):
-                    album = filename[:filename.rfind('/')] #.split("/")[0]
-                    album = album.replace('/',' - ')
+                    album = Path(self.filename).parent.name
                 elif playing['file'].startswith('http'):
                     album = "Livestream"
                 else:
                     album = ""
-            except:
-                album = ""
+            except Exception as error:
+                album = str(error)
 
             self._playingalbum = album
 
@@ -106,8 +108,6 @@ class nowplaying:
                     self._playingfile = ""
             except:
                 pass
-
-
 
 
             status = self.musicmanager.status()
