@@ -54,10 +54,10 @@ class WindowManager():
                     self.activewindow.set_window_busy(False)
                     self.activewindow.deactivate()
             except Exception as err:
-                logger.info(f"set_window error deactivate: {err}:")
+                logger.debug(f"set_window error deactivate: {err}:")
             finally:
                 self.activewindow = self.windows[windowid]
-                logger.info(f"Activated {windowid}")
+                loggerdebug(f"Activated {windowid}")
 
             try:
                 self.rendertime = self.activewindow._rendertime
@@ -65,7 +65,7 @@ class WindowManager():
                 self.activewindow.activate()
                 self.activewindow.windowtitle = windowid
             except Exception as error:
-                logger.info(f"set_window error activate {error}")
+                logger.debug(f"set_window error activate {error}")
 
         else:
             logger.info(f"Window {windowid} not found!")
@@ -91,7 +91,7 @@ class WindowManager():
 
             #wenn in aktivem Fenster aktiviert, setze timeoutwindow
             if (seconds_since_last_input >= csettings.MENU_TIMEOUT) and self.activewindow.timeout:
-                logger.info(f"_render: MENU_TIMEOUT: setze auf: {self.activewindow.timeoutwindow}")
+                logger.debug(f"_render: MENU_TIMEOUT: setze auf: {self.activewindow.timeoutwindow}")
                 self.set_window(self.activewindow.timeoutwindow)
 
             #wenn in aktivem Fenster aktiviert, setze Display-Helligkeit
@@ -239,7 +239,7 @@ class WindowManager():
 
             try:
                 if key == '#' and self.activewindow.handle_key_back:
-                    logger.info("activate window_on_back: %s" % (self.activewindow.window_on_back))
+                    logger.debug("activate window_on_back: %s" % (self.activewindow.window_on_back))
                     if self.activewindow.window_on_back not in ["","none","n/a"]: self.set_window(self.activewindow.window_on_back)
                 else:
                     self.activewindow.turn_callback(direction,key=key)
