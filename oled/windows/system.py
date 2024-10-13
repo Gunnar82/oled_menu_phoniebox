@@ -259,6 +259,7 @@ class SystemMenu(ListBase):
             self.menu[17]  = ["setze auf %s" % ("EIN" if not config.user_settings.BLUETOOTH_AUTOCONNECT else "AUS")]
 
             self.menu[19] = [f"hostapd (aktiviert: {self.hostapd_status}):", "h"]
+
             self.menu[25] = [self.hostapd_ssid]
             self.menu[26] = [self.hostapd_psk]
 
