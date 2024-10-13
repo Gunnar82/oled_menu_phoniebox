@@ -202,7 +202,7 @@ class ListBase(WindowBase):
         if self.counter in [ -1, -2]:
             self.windowmanager.set_window(self.window_on_back)
         else:
-            if not self.is_comment():
+            if not self.is_comment() and not self.is_heading():
                 self.loop.run_in_executor(None,self.push_handler)
 
     def turn_callback(self, direction, key=None):

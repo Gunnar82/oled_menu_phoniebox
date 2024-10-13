@@ -16,10 +16,7 @@ import config.user_settings
 
 from integrations.logging_config import *
 
-#logger = setup_logger(__name__)
-logger = setup_logger(__name__,lvlDEBUG)
-
-
+logger = setup_logger(__name__)
 
 
 class SystemMenu(ListBase):
@@ -62,8 +59,8 @@ class SystemMenu(ListBase):
         self.totalsize = 0
 
         # QR-Code generieren
-        self.menu.append("PLACEHOLDER UPDATE_RADIO 1")                                      # Eitnrag 0
-        self.menu.append("PLACEHOLDER UPDATE_RADIO 2")                                      # Eitnrag 1
+        self.menu.append("PLACEHOLDER UPDATE_RADIO 1")             # Eitnrag 0
+        self.menu.append("PLACEHOLDER UPDATE_RADIO 2")             # Eitnrag 1
 
         self.menu.append(["Lösche Online-Ordner"])                 # Eintrag 2
         self.menu.append(["Lösche Online-Status Online"])          # Eintrag 3
@@ -77,17 +74,17 @@ class SystemMenu(ListBase):
         self.menu.append(["WLAN: aus"])                            # Eintrag 8
         self.menu.append(["WLAN: an"])                             # Eintrag 9
 
-        self.menu.append(["PLACEHOLDER AUTO_ENABLE 1"])                                     # Eintrag 10
-        self.menu.append(["PLACEHOLDER AUTO_ENABLE 2"])                                     # Eintrag 11
+        self.menu.append(["PLACEHOLDER AUTO_ENABLE 1"])            # Eintrag 10
+        self.menu.append(["PLACEHOLDER AUTO_ENABLE 2"])            # Eintrag 11
         self.menu.append([""])                                     # Eintrag 12
 
-        self.menu.append(["PLACEHOLDER FIREWALL_STATUS 1"])                                     # Eintrag 13
-        self.menu.append(["PLACEHOLDER FIREWALL_STATUS 2"])                                     # Eintrag 14
+        self.menu.append(["PLACEHOLDER FIREWALL_STATUS 1"])        # Eintrag 13
+        self.menu.append(["PLACEHOLDER FIREWALL_STATUS 2"])        # Eintrag 14
         self.menu.append([""])                                     # Eintrag 15
 
-        self.menu.append(["PLACEHOLDER BLUETOOTH_AUTOCONNECT 1"])                                     # Eintrag 16
-        self.menu.append(["PLACEHOLDER BLUETOOTH_AUTOCONNECT 2"])                           # Eintrag 17
-        self.menu.append([""])                         # Eintrag 18
+        self.menu.append(["PLACEHOLDER BLUETOOTH_AUTOCONNECT 1"])  # Eintrag 16
+        self.menu.append(["PLACEHOLDER BLUETOOTH_AUTOCONNECT 2"])  # Eintrag 17
+        self.menu.append([""])                                     # Eintrag 18
 
         self.menu.append([""])                                     # Eintrag 19
 
@@ -137,7 +134,7 @@ class SystemMenu(ListBase):
                 else: disable_firewall()
             else:
                 self.append_busytext(self.menu[self.position][0])
-                self.append_busytext(str(self.cmd))
+                self.append_busytext(str(self.cmd).replace('\n',''))
                 result = []
                 if run_command(self.cmd,results=result) == True:
                     self.append_busytext("Erfolgreich!")
@@ -198,13 +195,10 @@ class SystemMenu(ListBase):
             self.cmd = "sudo ip link set wlan0 up"
 
         elif self.position == 11:
-            self.cmd = self.set_option("AUTO_ENABLED",not config_user_settings.AUTO_ENABLED,cfg_file_folder.FILE_USER_SETTINGS)
-
+            self.cmd = self.set_option("AUTO_ENABLED",not config.user_settings.AUTO_ENABLED,cfg_file_folder.FILE_USER_SETTINGS)
 
         elif self.position == 17:
-            self.cmd = self.set_option("BLUETOOTH_AUTOCONNECT",not config_user_settings.BLUETOOTH_AUTOCONNECT,cfg_file_folder.FILE_USER_SETTINGS)
-
-
+            self.cmd = self.set_option("BLUETOOTH_AUTOCONNECT",not config.user_settings.BLUETOOTH_AUTOCONNECT,cfg_file_folder.FILE_USER_SETTINGS)
 
         elif self.position == 20:
             self.cmd = "sudo systemctl stop hostapd"

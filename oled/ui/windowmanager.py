@@ -90,12 +90,12 @@ class WindowManager():
             seconds_since_last_input = time.monotonic() - settings.lastinput
 
             #wenn in aktivem Fenster aktiviert, setze timeoutwindow
-            if (seconds_since_last_input >= csettings.MENU_TIMEOUT) and self.activewindow.timeout:
+            if (seconds_since_last_input >= csettings.MENU_TIMEOUT) and self.activewindow.timeout and not self.activewindow.is_busy:
                 logger.debug(f"_render: MENU_TIMEOUT: setze auf: {self.activewindow.timeoutwindow}")
                 self.set_window(self.activewindow.timeoutwindow)
 
             #wenn in aktivem Fenster aktiviert, setze Display-Helligkeit
-            if self.activewindow.contrasthandle:
+            if self.activewindow.contrasthandle and not self.activewindow.is_busy:
                 logger.debug(f"_render: {self.activewindow.contrasthandle}")
                 #Helligkeit Stufe 2
                 if (seconds_since_last_input >= csettings.DARK_TIMEOUT) and settings.DISPLAY_HANDLE_CONTRAST:
