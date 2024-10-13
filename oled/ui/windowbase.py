@@ -154,7 +154,7 @@ class WindowBase():
     def clear_busymenu(self):
         self.busymenu = []
         self.set_lastbusytextline()
-        self.clear_window()
+        #self.clear_window()
 
     def set_window_busy(self, state=True, with_symbol = True, clear_busymenu = True, render_progressbar = False, wait=1, set_window=False):
 
