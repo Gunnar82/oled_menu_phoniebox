@@ -62,9 +62,8 @@ class SystemMenu(ListBase):
         self.totalsize = 0
 
         # QR-Code generieren
-
-        self.menu.append(["Update Radiostationen EIN"])            # Eintrag 0
-        self.menu.append(["Update Radiostationen AUS"])            # Eintrag 1
+        self.menu.append("PLACEHOLDER UPDATE_RADIO 1")                                      # Eitnrag 0
+        self.menu.append("PLACEHOLDER UPDATE_RADIO 2")                                      # Eitnrag 1
 
         self.menu.append(["Lösche Online-Ordner"])                 # Eintrag 2
         self.menu.append(["Lösche Online-Status Online"])          # Eintrag 3
@@ -78,29 +77,29 @@ class SystemMenu(ListBase):
         self.menu.append(["WLAN: aus"])                            # Eintrag 8
         self.menu.append(["WLAN: an"])                             # Eintrag 9
 
-        self.menu.append([""])                                     # Eintrag 11
-        self.menu.append(["aktivieren"])                           # Eintrag 12
-        self.menu.append(["deaktivieren"])                         # Eintrag 13
+        self.menu.append(["PLACEHOLDER AUTO_ENABLE 1"])                                     # Eintrag 10
+        self.menu.append(["PLACEHOLDER AUTO_ENABLE 2"])                                     # Eintrag 11
+        self.menu.append([""])                                     # Eintrag 12
 
-        self.menu.append([""])                                     # Eintrag 14
-        self.menu.append(["EIN"])                                  # Eintrag 15
-        self.menu.append(["AUS"])                                  # Eintrag 16
+        self.menu.append(["PLACEHOLDER FIREWALL_STATUS 1"])                                     # Eintrag 13
+        self.menu.append(["PLACEHOLDER FIREWALL_STATUS 2"])                                     # Eintrag 14
+        self.menu.append([""])                                     # Eintrag 15
 
-        self.menu.append([""])                                     # Eintrag 17
-        self.menu.append(["aktivieren"])                           # Eintrag 18
-        self.menu.append(["deaktivieren"])                         # Eintrag 19
+        self.menu.append(["PLACEHOLDER BLUETOOTH_AUTOCONNECT 1"])                                     # Eintrag 16
+        self.menu.append(["PLACEHOLDER BLUETOOTH_AUTOCONNECT 2"])                           # Eintrag 17
+        self.menu.append([""])                         # Eintrag 18
 
-        self.menu.append([""])                                     # Eintrag 20
+        self.menu.append([""])                                     # Eintrag 19
 
-        self.menu.append(["beenden"])                              # Eintrag 21
-        self.menu.append(["starten"])                              # Eintrag 22
-        self.menu.append(["deaktivieren"])                         # Eintrag 23
-        self.menu.append(["aktivieren"])                           # Eintrag 24
+        self.menu.append(["beenden"])                              # Eintrag 20
+        self.menu.append(["starten"])                              # Eintrag 21
+        self.menu.append(["deaktivieren"])                         # Eintrag 22
+        self.menu.append(["aktivieren"])                           # Eintrag 23
 
-        self.menu.append(["WLAN QR anzeigen"])                     # Eintrag 25
-        self.menu.append(["ssid"])                                 # Eintrag 26
-        self.menu.append(["psk"])                                  # Eintrag 27
-        self.menu.append(["Dienste neustarten:", "h"])             # Eintrag 28
+        self.menu.append(["WLAN QR anzeigen"])                     # Eintrag 24
+        self.menu.append(["ssid"])                                 # Eintrag 25
+        self.menu.append(["psk"])                                  # Eintrag 26
+        self.menu.append(["Dienste neustarten:", "h"])             # Eintrag 27
 
         for srv in cfg_services.RESTART_LIST:
             self.menu.append(srv)
@@ -134,9 +133,8 @@ class SystemMenu(ListBase):
                     logger.debug(f"exec_command: {error}")
                     self.append_busyerror(error)
             elif self.position == 14:
-                enable_firewall()
-            elif self.position == 15:
-                disable_firewall()
+                if "deny" not in self.firewall_status: enable_firewall()
+                else: disable_firewall()
             else:
                 self.append_busytext(self.menu[self.position][0])
                 self.append_busytext(str(self.cmd))
@@ -173,11 +171,8 @@ class SystemMenu(ListBase):
         self.set_window_busy()
         self.append_busytext()
 
-        if self.position == 0:
-            self.cmd = self.set_option("UPDATE_RADIO",True,cfg_file_folder.FILE_USER_SETTINGS)
-
-        elif self.position == 1:
-            self.cmd = self.set_option("UPDATE_RADIO",False,cfg_file_folder.FILE_USER_SETTINGS)
+        if self.position == 1:
+            self.cmd = self.set_option("UPDATE_RADIO",not config_user_settings.UPDATE_RADIO,cfg_file_folder.FILE_USER_SETTINGS)
 
         elif self.position == 2:
             delete_local_online_folder()
@@ -203,17 +198,12 @@ class SystemMenu(ListBase):
             self.cmd = "sudo ip link set wlan0 up"
 
         elif self.position == 11:
-            self.cmd = self.set_option("AUTO_ENABLED",True,cfg_file_folder.FILE_USER_SETTINGS)
-
-        elif self.position == 12:
-            self.cmd = self.set_option("AUTO_ENABLED",False,cfg_file_folder.FILE_USER_SETTINGS)
+            self.cmd = self.set_option("AUTO_ENABLED",not config_user_settings.AUTO_ENABLED,cfg_file_folder.FILE_USER_SETTINGS)
 
 
         elif self.position == 17:
-            self.cmd = self.set_option("BLUETOOTH_AUTOCONNECT",True,cfg_file_folder.FILE_USER_SETTINGS)
+            self.cmd = self.set_option("BLUETOOTH_AUTOCONNECT",not config_user_settings.BLUETOOTH_AUTOCONNECT,cfg_file_folder.FILE_USER_SETTINGS)
 
-        elif self.position == 18:
-            self.cmd = self.set_option("BLUETOOTH_AUTOCONNECT",False,cfg_file_folder.FILE_USER_SETTINGS)
 
 
         elif self.position == 20:
@@ -256,9 +246,18 @@ class SystemMenu(ListBase):
     def render(self):
 
         if not self.showqr:
-            self.menu[10] = [f"Firewall AUTO_ENABLED ({config.user_settings.AUTO_ENABLED}):","h"]
+            self.menu[0]  = ["Update Radio ist %s" % ("EIN" if config.user_settings.UPDATE_RADIO else "AUS"),"h"]
+            self.menu[1]  = ["setze auf %s" % ("EIN" if not config.user_settings.UPDATE_RADIO else "AUS")]
+
+            self.menu[10] = ["Firewall AUTO_ENABLED ist %s" % ("EIN" if config.user_settings.AUTO_ENABLED else "AUS"),"h"]
+            self.menu[11]  = ["setze auf %s" % ("EIN" if not config.user_settings.AUTO_ENABLED else "AUS")]
+
             self.menu[13] = ["Firewall Status: %s " % ("AUS" if "deny" not in self.firewall_status else "EIN"),"h"]
-            self.menu[16] = [f"Bluetooth_Autoconnect ({config.user_settings.BLUETOOTH_AUTOCONNECT}):","h"]
+            self.menu[14]  = ["setze auf %s" % ("AUS" if "deny" in self.firewall_status else "EIN")]
+
+            self.menu[16] = ["Bluetooth_Autoconnect ist %s" % ("EIN" if config.user_settings.BLUETOOTH_AUTOCONNECT else "AUS"),"h"]
+            self.menu[17]  = ["setze auf %s" % ("EIN" if not config.user_settings.BLUETOOTH_AUTOCONNECT else "AUS")]
+
             self.menu[19] = [f"hostapd (aktiviert: {self.hostapd_status}):", "h"]
             self.menu[25] = [self.hostapd_ssid]
             self.menu[26] = [self.hostapd_psk]
