@@ -57,7 +57,7 @@ class WindowManager():
                 logger.debug(f"set_window error deactivate: {err}:")
             finally:
                 self.activewindow = self.windows[windowid]
-                loggerdebug(f"Activated {windowid}")
+                logger.debug(f"Activated {windowid}")
 
             try:
                 self.rendertime = self.activewindow._rendertime
