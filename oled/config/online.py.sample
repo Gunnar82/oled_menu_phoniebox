@@ -1,7 +1,6 @@
-ONLINE_URL = "http://localhost:8080/gunnar/"
-ONLINE_SAVEPOS = "http://localhost:8080/savepos/"
+ONLINE_URL = "https://audio.gunnarboelke.de/gunnar/"
+ONLINE_SAVEPOS = "https://audio.gunnarboelke.de/savepos/"
 
-ONLINE_RADIO_URL = "http://localhost:8080/Radio/"
+ONLINE_CLIENT_KEY = None # = "/home/pi/oledctrl/certs/phoniebox.gunnar.key"
+ONLINE_CLIENT_CERT = None # = "/home/pi/oledctrl/certs/phoniebox.gunnar.crt"
 
-ONLINE_CLIENT_KEY = None
-ONLINE_CLIENT_CERT = None
