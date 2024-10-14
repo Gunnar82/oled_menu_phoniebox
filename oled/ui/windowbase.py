@@ -31,11 +31,12 @@ class WindowBase():
     windowtitle = "untitled"
     timeoutwindow="idle"
     window_on_back = "mainmenu"
-
-    symbol = "s"
-    info   = "i"
-    error  = "err"
-    bc     = "bc"
+    comment = "c"
+    heading = "h"
+    symbol  = "s"
+    info    = "i"
+    error   = "err"
+    bc      = "bc"
 
     busysymbol = symbols.SYMBOL_SANDCLOCK
     busytext1 = settings.PLEASE_WAIT

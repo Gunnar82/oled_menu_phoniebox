@@ -35,16 +35,12 @@ from integrations.logging_config import *
 logger = setup_logger(__name__)
 
 
-# SSL-Zertifikatswarnungen deaktivieren, nur für HTTPS-URLs
-requests.packages.urllib3.disable_warnings(requests.packages.urllib3.exceptions.InsecureRequestWarning)
-
-
 class DownloadMenu(ListBase):
-
-    busysymbol = symbols.SYMBOL_CLOUD
 
     def __init__(self, windowmanager,loop):
         super().__init__(windowmanager, loop, "Download")
+        self.busysymbol = symbols.SYMBOL_CLOUD
+
         self.direct_play_last_folder = False
 
         self.timeout = False
@@ -66,8 +62,6 @@ class DownloadMenu(ListBase):
         self.website = cfg_online.ONLINE_URL
         self.url = self.website
         self.baseurl, self.basecwd = split_url(self.website)
-        self.clearmenu()
-        self.appendsymbol(symbols.SYMBOL_CLOUD)
         self.set_window_busy()
 
         try:

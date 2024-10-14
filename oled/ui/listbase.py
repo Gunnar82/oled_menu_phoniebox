@@ -18,10 +18,6 @@ class ListBase(WindowBase):
     faicons = ImageFont.truetype(settings.FONT_ICONS, size=settings.LISTBASE_ENTRY_SIZE)
     faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_L)
 
-    comment = ["c"]
-    heading = ["h"]
-    symbol = ["s"]
-
     info_key_left = True
 
     render_progressbar = True
