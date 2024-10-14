@@ -1,3 +1,7 @@
 ONLINE_URL = "http://localhost:8080/gunnar/"
-ONLINE_RADIO_URL = "http://localhost:8080/Radio/"
 ONLINE_SAVEPOS = "http://localhost:8080/savepos/"
+
+ONLINE_RADIO_URL = "http://localhost:8080/Radio/"
+
+ONLINE_CLIENT_KEY = None
+ONLINE_CLIENT_CERT = None
