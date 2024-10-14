@@ -9,4 +9,7 @@ oled/config/online.py
 oled/config/file_folder.py
 image001.png
 logo.png
-certs/*
+certs/*.key
+certs/*.cer
+certs/*.crt
+certs/*.pem
