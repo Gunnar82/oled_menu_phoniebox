@@ -206,7 +206,7 @@ class ListBase(WindowBase):
                 self.loop.run_in_executor(None,self.push_handler)
 
     def turn_callback(self, direction, key=None):
-        if key:
+        if key and not self.is_busy:
             if (key == 'left' or key == '4' or key == 'Y') and self.handle_left_key:
                 self.left_pressed = True
                 return

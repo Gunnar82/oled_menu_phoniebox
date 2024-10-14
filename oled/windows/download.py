@@ -57,7 +57,7 @@ class DownloadMenu(ListBase):
         self.lastplayedfile = ""
 
     def activate(self):
-
+        self.handle_key_back = False
         self.init_finished = False
         self.progress = {}
         self.items = []
@@ -130,22 +130,16 @@ class DownloadMenu(ListBase):
     def execute_init(self):
         # Verbinungsversuch mit zuletzt abgespieltem Titel, ob vorhanden
         try:
-            r = check_url_reachability(self.url)
+            r = self.check_website_return(self.url)
 
             if r != 200:
                 logger.error(f"execute_init: Verbindungsfehler letzter Onlinetitel {r}: {self.url}")
                 self.append_busytext(f"Verbindungsfehler {r}:")
                 self.append_busytext(self.url)
 
-                if r > 200:
-                    self.append_busytext("Setze auf Standard:")
-                    self.append_busytext(self.website)
-                    self.url = self.website
-                    if not self.check_website_return(self.url):
-                        self.append_busytext(f"Gebe auf! Taste drücken!")
-                        return
-                else:
-                    return
+                self.append_busytext("Setze auf Standard:")
+                self.append_busytext(self.website)
+                self.url = self.website
 
             else: #r == 200:
                 logger.info(f"execute_init: erfolg {r}: {self.url}")
@@ -157,10 +151,10 @@ class DownloadMenu(ListBase):
 
             self.url = self.website
 
-            # Verbindungsversuch mit Website
-            if not self.check_website_return(self.url):
-                self.append_busytext(f"Gebe auf! Taste drücken!")
-                return
+        # Verbindungsversuch mit Website
+        if not self.check_website_return(self.url) == 200:
+            self.append_busyerror(f"Gebe auf! Taste drücken!")
+            return
 
         temp, self.cwd = split_url(self.url)
         print (f"cwd: {self.cwd}")
@@ -169,6 +163,7 @@ class DownloadMenu(ListBase):
 
         self.init_finished = True
 
+        self.handle_key_back = True
         self.set_window_busy(False)
 
         if self.direct_play_last_folder:
@@ -184,15 +179,12 @@ class DownloadMenu(ListBase):
         try:
             self.append_busytext("Prüfe URL:")
             self.append_busytext(url)
-            r1 = check_url_reachability(url)
-            if r1 != 200:
-                raise Exception(f"Keine Verbindung! Fehler {r1})")
-            else:
-                return True
+            return check_url_reachability(url)
+
         except Exception as error:
             logger.info(f"check_website_return: exception: {error}")
             self.append_busyerror(f"Fehler: {error}")
-            return False
+            return -1
 
 
     def downloadfolder(self):
