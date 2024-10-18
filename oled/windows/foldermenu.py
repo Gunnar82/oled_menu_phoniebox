@@ -37,6 +37,7 @@ class Foldermenu(ListBase):
         if settings.currentfolder.startswith(cfg_file_folder.AUDIO_BASEPATH_MUSIC): self.busysymbol = f"{symbols.SYMBOL_LIST} {symbols.SYMBOL_MUSIC}"
         elif settings.currentfolder.startswith(cfg_file_folder.AUDIO_BASEPATH_HOERBUCH): self.busysymbol = f"{symbols.SYMBOL_LIST} {symbols.SYMBOL_HOERSPIEL}"
         elif settings.currentfolder.startswith(cfg_file_folder.AUDIO_BASEPATH_RADIO): self.busysymbol = f"{symbols.SYMBOL_LIST} {symbols.SYMBOL_RADIO}"
+        else: busysymbol = symbols.SYMBOL_LIST
 
         self.generate_folders(settings.currentfolder)
         self.on_key_left()
