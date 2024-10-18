@@ -138,7 +138,7 @@ class nowplaying:
         oldfilename = ""
         oldstate = "stop"
         oldstate = "none"
-
+        last_online_save = time.monotonic()
         while self.loop.is_running():
             try:
                 if ((oldfilename != self.filename and self.filename and self._state != "stop" and oldstate != "stop") or
@@ -146,20 +146,26 @@ class nowplaying:
                     oldfilename = self.filename
                     oldstate = self._state
                     self.__titlechanged = True
-                    self.loop.run_in_executor(None,self.do_savestate)
+                    self.loop.run_in_executor(None,self.do_savestate,False)
+
+                if time.monotonic() - last_online_save > 60 and self._state in ["play","playing"]:
+                    last_online_save = time.monotonic()
+                    self.loop.run_in_executor(None,self.do_savestate,True)
+
+
 
             except Exception as error:
                 logger.error (f"_savepos_status: {error}")
 
             await asyncio.sleep(1)
 
-    def do_savestate(self):
+    def do_savestate(self,only_online):
         """Speichern der Aktuellen Postion ggf. online"""
         if self.input_is_online():
             logger.debug("saving online position")
             playout.savepos_online(self)
 
-        playout.savepos()
+        if not only_online: playout.savepos()
 
     def is_title_changed(self):
         """Wenn Titelwechsel und noch nicht abgefragt, true"""
