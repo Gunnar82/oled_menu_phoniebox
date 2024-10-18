@@ -26,7 +26,7 @@ class Start(WindowBase):
 
     def __init__(self, windowmanager,loop, mopidyconnection,bluetooth):
         super().__init__(windowmanager, loop)
-        self.busysymbol = "\uf001 \uf02d \uf02c"
+        self.busysymbol = symbols.SYMBOL_PROGRAMM
 
         self.bluetooth = bluetooth
         self.mopidyconnection = mopidyconnection

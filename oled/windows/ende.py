@@ -7,6 +7,7 @@ import asyncio
 import time
 import settings
 import integrations.playout as playout
+import config.symbols as symbols
 
 from integrations.logging_config import *
 
@@ -34,7 +35,7 @@ class Ende(MainWindow):
         self.timeout = False
         self.startup = datetime.now()
 
-        self.drawsymbol = "\uf011"
+        self.drawsymbol = symbols.SYMBOL_POWER
         self.drawline1 = ""
         self.drawline2 = ""
         self.drawline3 = ""
@@ -46,11 +47,11 @@ class Ende(MainWindow):
 
             if not self.power_timer:
                 logger.debug(f"no powertimer")
-                self.drawsymbol =  "\uf0a2"
+                self.drawsymbol =  symbols.SYMBOL_BELL_WHITE
 
                 self.drawline1 = settings.shutdown_reason
                 self.drawline2 = "System wird:"
-                self.drawsymbol = "\uf011"
+                self.drawsymbol = symbols.SYMBOL_POWER
                 self.mwidth,self.mheight = self.fontawesome.getsize(self.drawsymbol)
 
                 await asyncio.sleep(1)

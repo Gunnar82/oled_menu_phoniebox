@@ -23,7 +23,7 @@ class SystemMenu(ListBase):
 
     qr_width = settings.DISPLAY_HEIGHT if settings.DISPLAY_HEIGHT < settings.DISPLAY_WIDTH else settings.DISPLAY_WIDTH
     timeout = False
-    busysymbol =" \uf013"
+    busysymbol = symbols.SYMBOL_ZAHNRAD
 
     def create_qr(self):
 

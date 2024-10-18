@@ -19,6 +19,7 @@ logger = setup_logger(__name__)
 
 class Foldermenu(ListBase):
     folders = []
+    busysymbol = symbols.SYMBOL_LIST
 
     def __init__(self, windowmanager,loop):
         super().__init__(windowmanager, loop, "Auswahl")
@@ -33,12 +34,16 @@ class Foldermenu(ListBase):
             settings.currentfolder = settings.audio_basepath
             self.position = -1
 
+        if settings.currentfolder.startswith(cfg_file_folder.AUDIO_BASEPATH_MUSIC): self.busysymbol = f"{symbols.SYMBOL_LIST} {symbols.SYMBOL_MUSIC}"
+        elif settings.currentfolder.startswith(cfg_file_folder.AUDIO_BASEPATH_HOERBUCH): self.busysymbol = f"{symbols.SYMBOL_LIST} {symbols.SYMBOL_HOERSPIEL}"
+        elif settings.currentfolder.startswith(cfg_file_folder.AUDIO_BASEPATH_RADIO): self.busysymbol = f"{symbols.SYMBOL_LIST} {symbols.SYMBOL_RADIO}"
+
         self.generate_folders(settings.currentfolder)
         self.on_key_left()
 
     def playfolder(self,folder):
         try:
-            self.set_window_busy(with_symbol = False, clear_busymenu = False)
+            self.set_window_busy()
             foldername = folder[len(cfg_file_folder.AUDIO_BASEPATH_BASE) + 1:]
 
             if folder.startswith(cfg_file_folder.AUDIO_BASEPATH_HOERBUCH):
@@ -60,7 +65,7 @@ class Foldermenu(ListBase):
             self.set_window_busy(False)
 
     def on_key_left(self):
-        self.set_window_busy(with_symbol=False,clear_busymenu=False)
+        self.set_window_busy()
         self.append_busytext("Ebene höher...")
 
         logger.debug(f"settings.currentfolder: {settings.currentfolder}")
