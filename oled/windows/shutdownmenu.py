@@ -29,6 +29,19 @@ class Shutdownmenu(MenuBase):
         self.descr.append(["Idle AUS", "\uf185"])
         self.descr.append(["Idle 5min", "\uf186"])
         self.descr.append(["Idle 15min", "\uf186"])
+        self.descr.append(["IP vorlesen", "\uf012"])
+        self.descr.append(["Start-Laufstärke AUS", "\uf026"])
+        self.descr.append(["Start-Laufstärke 30%", "\uf027"])
+        self.descr.append(["Start-Laufstärke 50%", "\uf027"])
+        self.descr.append(["Start-Laufstärke 100%", "\uf028"])
+        self.descr.append(["Max-Laufstärke AUS", "\uf026"])
+        self.descr.append(["Max-Laufstärke 30%", "\uf027"])
+        self.descr.append(["Max-Laufstärke 50%", "\uf027"])
+        self.descr.append(["Max-Laufstärke 100%", "\uf028"])
+        self.descr.append(["Änderung zu 1", "\uf026"])
+        self.descr.append(["Änderung zu 3", "\uf027"])
+        self.descr.append(["Änderung zu 5", "\uf027"])
+        self.descr.append(["Änderung zu 8", "\uf028"])
 
 
     def push_handler(self):
@@ -56,6 +69,32 @@ class Shutdownmenu(MenuBase):
                 run_command("%s -c=setidletime -v=5" % cfg_file_folder.PLAYOUT_CONTROLS)
             elif self.counter == 10:
                 run_command("%s -c=setidletime -v=15" % cfg_file_folder.PLAYOUT_CONTROLS)
+            elif self.counter == 11:
+                run_command("%s -c=readwifiipoverspeaker" % cfg_file_folder.PLAYOUT_CONTROLS)
+            elif self.counter == 12:
+                run_command("%s -c=setstartupvolume -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
+            elif self.counter == 13:
+                run_command("%s -c=setstartupvolume -v=30" % cfg_file_folder.PLAYOUT_CONTROLS)
+            elif self.counter == 14:
+                run_command("%s -c=setstartupvolume -v=50" % cfg_file_folder.PLAYOUT_CONTROLS)
+            elif self.counter == 15:
+                run_command("%s -c=setstartupvolume -v=100" % cfg_file_folder.PLAYOUT_CONTROLS)
+            elif self.counter == 16:
+                run_command("%s -c=setmaxvolume -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
+            elif self.counter == 17:
+                run_command("%s -c=setmaxvolume -v=30" % cfg_file_folder.PLAYOUT_CONTROLS)
+            elif self.counter == 18:
+                run_command("%s -c=setmaxvolume -v=50" % cfg_file_folder.PLAYOUT_CONTROLS)
+            elif self.counter == 19:
+                run_command("%s -c=setmaxvolume -v=100" % cfg_file_folder.PLAYOUT_CONTROLS)
+            elif self.counter == 20:
+                run_command("%s -c=setvolstep -v=1" % cfg_file_folder.PLAYOUT_CONTROLS)
+            elif self.counter == 21:
+                run_command("%s -c=setvolstep -v=3" % cfg_file_folder.PLAYOUT_CONTROLS)
+            elif self.counter == 22:
+                run_command("%s -c=setvolstep -v=5" % cfg_file_folder.PLAYOUT_CONTROLS)
+            elif self.counter == 23:
+                run_command("%s -c=setvolstep -v=8" % cfg_file_folder.PLAYOUT_CONTROLS)
 
         get_timeouts()
 
