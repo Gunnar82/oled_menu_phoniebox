@@ -169,7 +169,7 @@ class SystemMenu(ListBase):
         self.append_busytext()
 
         if self.position == 1:
-            self.cmd = self.set_option("UPDATE_RADIO",not config_user_settings.UPDATE_RADIO,cfg_file_folder.FILE_USER_SETTINGS)
+            self.cmd = self.set_option("UPDATE_RADIO",not config.user_settings.UPDATE_RADIO,cfg_file_folder.FILE_USER_SETTINGS)
 
         elif self.position == 2:
             delete_local_online_folder()
@@ -181,7 +181,7 @@ class SystemMenu(ListBase):
                 what = cfg_file_folder.FILE_LAST_MUSIC
             elif self.position == 6:
                 what = cfg_file_folder.FILE_LAST_RADIO
-            self.cmd = "sudo rm %s" % (what)
+            self.cmd = f"sudo rm {what}"
 
 
         elif self.position == 7:

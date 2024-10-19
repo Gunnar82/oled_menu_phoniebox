@@ -38,5 +38,5 @@ DISABLE_DISPLAY = True
 
 #Radiostationen aktualisieren
 
-UPDATE_RADIO=False
+UPDATE_RADIO=True
 
