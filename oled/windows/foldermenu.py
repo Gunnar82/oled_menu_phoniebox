@@ -30,9 +30,9 @@ class Foldermenu(ListBase):
 
     def activate(self):
         self.folders = []
-        if not os.path.exists(settings.currentfolder):
-            settings.currentfolder = settings.audio_basepath
-            self.position = -1
+        settings.currentfolder = self.check_if_subdir_of_basepath(settings.currentfolder,settings.audio_basepath)
+
+        self.position = -1
 
         if settings.currentfolder.startswith(cfg_file_folder.AUDIO_BASEPATH_MUSIC): self.busysymbol = f"{symbols.SYMBOL_LIST} {symbols.SYMBOL_MUSIC}"
         elif settings.currentfolder.startswith(cfg_file_folder.AUDIO_BASEPATH_HOERBUCH): self.busysymbol = f"{symbols.SYMBOL_LIST} {symbols.SYMBOL_HOERSPIEL}"
@@ -65,6 +65,16 @@ class Foldermenu(ListBase):
         finally:
             self.set_window_busy(False)
 
+    def check_if_subdir_of_basepath(self,directory, basepath):
+        try:
+            if len(directory) >= len(basepath) and directory.startswith(basepath) and os.path.exists(directory):
+                return directory
+        except Exception as error:
+            logger.error(f"check_if_subdir: {error}")
+        finally:
+            return settings.audio_basepath
+
+
     def on_key_left(self):
         self.set_window_busy()
         self.append_busytext("Ebene höher...")
@@ -75,8 +85,7 @@ class Foldermenu(ListBase):
         settings.current_selectedfolder = settings.currentfolder
         settings.currentfolder = functions.get_parent_folder(settings.currentfolder)
 
-        if len(settings.currentfolder) < len(settings.audio_basepath):
-            settings.currentfolder = settings.audio_basepath
+        settings.currentfolder = self.check_if_subdir_of_basepath(settings.currentfolder,settings.audio_basepath)
 
         self.append_busytext(f"nach {settings.currentfolder}")
 
