@@ -43,6 +43,7 @@ class Lock(MainWindow):
 
         if "gpicase" in settings.INPUTS: self.unlockindex = 0
         elif "keypad4x4" in settings.INPUTS: self.unlockindex = 1
+        self.symbolwidth, temp = self.fontawesome.getsize(self.busysymbol)
 
         if self.unlockindex == -1:
             self.set_busyinfo(item="Kein kompatibler INPUT",symbol=symbols.SYMBOL_ERROR,wait=5,set_window=True)
@@ -81,7 +82,7 @@ class Lock(MainWindow):
     def genhint(self):
         """Generiert den Hinweistext für den aktuellen Entsperrcode."""
         self.unlocktext = ' '.join(
-            [char.upper() if i == self.currentkey else char.lower() for i, char in enumerate(self.unlockcode)]
+            [f"> {char.upper()} <" if i == self.currentkey else char.lower() for i, char in enumerate(self.unlockcode)]
         )
         self.textwidth, _ = self.font.getsize(self.unlocktext)
 
@@ -89,5 +90,5 @@ class Lock(MainWindow):
         """Rendern des Bildschirms mit dem Entsperrcode."""
         with canvas(self.device) as draw:
             super().render(draw)
-            #draw.text((, settings.DISPLAY_HEIGHT - 4*settings.IDLE_LINE_HEIGHT ), self.drawline2, font=self.font, fill="white")
-            draw.text(((settings.DISPLAY_WIDTH - self.textwidth) / 2, settings.DISPLAY_HEIGHT - 4*settings.IDLE_LINE_HEIGHT ), self.unlocktext , font=self.font, fill="white")
+            draw.text(((settings.DISPLAY_WIDTH - self.symbolwidth) / 2, settings.DISPLAY_HEIGHT - 5*settings.IDLE_LINE_HEIGHT ), self.busysymbol, font=self.fontawesome, fill=colors.COLOR_RED)
+            draw.text(((settings.DISPLAY_WIDTH - self.textwidth) / 2, settings.DISPLAY_HEIGHT - 3*settings.IDLE_LINE_HEIGHT ), self.unlocktext , font=self.font, fill="white")
