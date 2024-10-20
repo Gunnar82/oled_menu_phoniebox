@@ -34,7 +34,6 @@ class ListBase(WindowBase):
         self.right_pressed = False
         self.drawtextx = 0
         self.position = -2
-        self.progressbarpos = 0
         self.selection_changed = True
         self.handle_left_key = True
         self.hide_buttons = False

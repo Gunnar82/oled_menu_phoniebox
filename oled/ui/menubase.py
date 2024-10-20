@@ -18,6 +18,8 @@ class MenuBase(WindowBase):
 
     iconwidth, iconheight = faicons.getsize(symbols.SYMBOL_USB)
 
+    render_progressbar = True
+
     def __init__(self, windowmanager,loop,title):
         super().__init__(windowmanager,loop)
         self.counter = 0
@@ -25,16 +27,20 @@ class MenuBase(WindowBase):
         self.descr.append([ "Zurück", "\uf0a8"])
         self.basetitle = title
 
-        if settings.DISPLAY_HEIGHT >= 480:
-            self.lines_per_page = 6
-        elif settings.DISPLAY_HEIGHT >= 128:
-            self.lines_per_page = 6
+        if settings.DISPLAY_DRIVER in ["gpicase","gpicase2","emulated"]: self.lines_per_page = 5
+        elif settings.DISPLAY_DRIVER in ["st7789", "ssd1351"]: self.lines_per_page = 4
+        elif settings.DISPLAY_DRIVER in ["sh1106_i2c", "sh1106_i2c"]: self.lines_per_page =  2
         else: self.lines_per_page =  2
 
         self.symbols_per_line = 4
 
 
     def render(self):
+        try:
+            self.progressbarpos = (self.counter + 1) / len(self.descr)
+        except Exception as error:
+            logger.debug(f"{error}")
+
         with canvas(self.device) as draw:
             headingwidth, headingheight = self.fontheading.getsize(self.descr[self.counter][0])
             draw.text((int(settings.DISPLAY_WIDTH / 2) - int(headingwidth/2),1), text=self.descr[self.counter][0], font=self.fontheading, fill="white")
@@ -77,6 +83,8 @@ class MenuBase(WindowBase):
 
                 i += 1
 
+            if self.render_progressbar: self.render_progressbar_draw(draw,self.progressbarpos,buttom_top = False)
+
     def activate(self):
         self.counter = 0
 
@@ -108,4 +116,4 @@ class MenuBase(WindowBase):
         if (self.counter + direction < len(self.descr) and self.counter + direction >= 0):
             self.counter += direction
 
-
+        

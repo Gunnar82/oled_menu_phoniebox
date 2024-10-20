@@ -60,7 +60,7 @@ class WindowBase():
     busytitlelineheight = busyfont.getsize("ZZZ")[1] + 3
     busydisplaylines = (settings.DISPLAY_HEIGHT - busytitlelineheight) // busyentrylineheight - 1# letzte Zeile gesondert
     startleft, selected_symbol_height = busyfaicons.getsize(symbols.SYMBOL_LIST_SELECTED)
-
+    progressbarpos = 0
 
     def __init__(self, windowmanager,loop):
         self.start_busyrendertime = time.monotonic()
