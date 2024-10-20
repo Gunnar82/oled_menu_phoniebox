@@ -38,10 +38,10 @@ class Shutdownmenu(MenuBase):
         self.descr.append(["Max-Laufstärke 30%", "\uf027"])
         self.descr.append(["Max-Laufstärke 50%", "\uf027"])
         self.descr.append(["Max-Laufstärke 100%", "\uf028"])
-        self.descr.append(["Änderung zu 1", "\uf026"])
-        self.descr.append(["Änderung zu 3", "\uf027"])
-        self.descr.append(["Änderung zu 5", "\uf027"])
-        self.descr.append(["Änderung zu 8", "\uf028"])
+        self.descr.append(["\u0394vol 1%", "\uf026"])
+        self.descr.append(["\u0394vol 3%", "\uf027"])
+        self.descr.append(["\u0394vol 5%", "\uf027"])
+        self.descr.append(["\u0394vol 8%", "\uf028"])
 
 
     def push_handler(self):
