@@ -56,7 +56,8 @@ class nowplaying:
         try:
             _playingtitle = ""
             playing = self.musicmanager.nowplaying()
-            self.filename = playing.get('file',"")
+            logger.debug(f"playing: {playing}")
+            self.filename = playing.get("file","")
 
             try:
                 if "title" in playing:
@@ -97,13 +98,13 @@ class nowplaying:
                 else:
                     album = ""
             except Exception as error:
-                album = str(error)
+                album = ""
 
             self._playingalbum = album
 
             try:
                 if ("file" in playing):
-                    self._playingfile = playing['file']
+                    self._playingfile = playing["file"]
                 else:
                     self._playingfile = ""
             except:
