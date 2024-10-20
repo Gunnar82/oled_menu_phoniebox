@@ -24,7 +24,13 @@ class MenuBase(WindowBase):
         self.descr = []
         self.descr.append([ "Zurück", "\uf0a8"])
         self.basetitle = title
-        self.lines_per_page = 4 if settings.DISPLAY_HEIGHT >= 128 else 2
+
+        if settings.DISPLAY_HEIGHT >= 480:
+            self.lines_per_page = 6
+        elif settings.DISPLAY_HEIGHT >= 128:
+            self.lines_per_page = 6
+        else: self.lines_per_page =  2
+
         self.symbols_per_line = 4
 
 
