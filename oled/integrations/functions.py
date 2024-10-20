@@ -148,8 +148,10 @@ def get_battload_color():
         return "WHITE"
     elif settings.battcapacity >= 70:
         return colors.COLOR_GREEN
-    elif settings.battcapacity >= 30:
+    elif settings.battcapacity >= 40:
         return colors.COLOR_YELLOW
+    elif settings.battcapacity >= settings.X728_BATT_LOW:
+        return colors.COLOR_ORANGE
     else:
         return colors.COLOR_RED
 
