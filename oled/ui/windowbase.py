@@ -149,8 +149,8 @@ class WindowBase():
     def pop_busymenu(self):
         try:
             if len(self.busymenu) >= self.busydisplaylines:
-                if self.busymenu[0] == self.symbol: del (self.busymenu[1])
-                elif self.busymenu[0] == self.symbol: del (self.busymenu[0])
+                if self.busymenu[0][1] == self.symbol: del (self.busymenu[1])
+                else: del (self.busymenu[0])
         except Exception as error:
             pass
 
