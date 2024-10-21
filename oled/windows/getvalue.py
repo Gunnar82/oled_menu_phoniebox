@@ -54,7 +54,7 @@ class GetValue(WindowBase):
         self.__vstep = vstep
         self.get_position()
 
-        while not self.finished:
+        while not self.finished and self.loop.is_running():
             await asyncio.sleep (0.2)
 
         return self.__value
