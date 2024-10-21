@@ -122,6 +122,7 @@ import windows.folderinfo
 import windows.radiomenu
 import windows.start
 import windows.ende
+import windows.getvalue
 import windows.download as wdownload
 import windows.lock as wlock
 import windows.system as wsystem
@@ -188,6 +189,7 @@ def main():
     loadedwins.append(windows.foldermenu.Foldermenu(windowmanager,loop))
     loadedwins.append(windows.radiomenu.Radiomenu(windowmanager,loop))
     loadedwins.append(windows.folderinfo.FolderInfo(windowmanager, loop))
+    loadedwins.append(windows.getvalue.GetValue(windowmanager, loop))
     loadedwins.append(windows.ende.Ende(windowmanager, loop,_nowplaying))
     loadedwins.append(windows.shutdownmenu.Shutdownmenu(windowmanager, loop, mopidy,"Powermenü"))
     loadedwins.append(windows.start.Start(windowmanager, loop, mopidy,objbluetooth))

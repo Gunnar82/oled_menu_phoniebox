@@ -60,7 +60,7 @@ class Playbackmenu(MainWindow):
             drawtext = "Titelwechsel aktiv" if self.skipselected else self.descr[self.counter][0]
             descrwidth, temp = self.font.getsize(drawtext)
 
-            draw.text((int(settings.DISPLAY_WIDTH / 2) - int(descrwidth/2),settings.PLAYBACKMENU_DESCR_Y), text=drawtext, font=Playbackmenu.font, fill="white")
+            draw.text((int(settings.DISPLAY_WIDTH / 2) - int(descrwidth/2),settings.PLAYBACKMENU_DESCR_Y), text=drawtext, font=self.font, fill="white")
 
             i = 0
 

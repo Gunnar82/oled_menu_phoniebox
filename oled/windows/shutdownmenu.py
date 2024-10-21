@@ -34,10 +34,10 @@ class Shutdownmenu(MenuBase):
         self.descr.append(["Start-Laufstärke 30%", "\uf027"])
         self.descr.append(["Start-Laufstärke 50%", "\uf027"])
         self.descr.append(["Start-Laufstärke 100%", "\uf028"])
-        self.descr.append(["Max-Laufstärke AUS", "\uf026"])
-        self.descr.append(["Max-Laufstärke 30%", "\uf027"])
-        self.descr.append(["Max-Laufstärke 50%", "\uf027"])
-        self.descr.append(["Max-Laufstärke 100%", "\uf028"])
+        self.descr.append(["VOLmax AUS", "\uf026"])
+        self.descr.append(["VOLmax 30%", "\uf027"])
+        self.descr.append(["VOLmax 50%", "\uf027"])
+        self.descr.append(["VOLmax Eingabe", "\uf028"])
         self.descr.append(["\u0394vol 1%", "\uf026"])
         self.descr.append(["\u0394vol 3%", "\uf027"])
         self.descr.append(["\u0394vol 5%", "\uf027"])
@@ -86,7 +86,8 @@ class Shutdownmenu(MenuBase):
             elif self.counter == 18:
                 run_command("%s -c=setmaxvolume -v=50" % cfg_file_folder.PLAYOUT_CONTROLS)
             elif self.counter == 19:
-                run_command("%s -c=setmaxvolume -v=100" % cfg_file_folder.PLAYOUT_CONTROLS)
+                value = self.windowmanager.getValue()
+                run_command("%s -c=setmaxvolume -v=%d" % (cfg_file_folder.PLAYOUT_CONTROLS,value))
             elif self.counter == 20:
                 run_command("%s -c=setvolstep -v=1" % cfg_file_folder.PLAYOUT_CONTROLS)
             elif self.counter == 21:
