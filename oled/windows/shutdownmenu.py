@@ -25,15 +25,15 @@ class Shutdownmenu(MenuBase):
         self.descr.append(["Timer AUS", "\uf1f7"])
         self.descr.append(["Timer 15min", "\uf0a2"])
         self.descr.append(["Timer 30min", "\uf0a2"])
-        self.descr.append(["Timer 60min", "\uf0a2"])
+        self.descr.append(["Timer §ingabe", "\uf0a2"])
         self.descr.append(["Idle AUS", "\uf185"])
         self.descr.append(["Idle 5min", "\uf186"])
-        self.descr.append(["Idle 15min", "\uf186"])
+        self.descr.append(["Idle Eingabe", "\uf186"])
         self.descr.append(["IP vorlesen", "\uf012"])
         self.descr.append(["Start-Laufstärke AUS", "\uf026"])
         self.descr.append(["Start-Laufstärke 30%", "\uf027"])
         self.descr.append(["Start-Laufstärke 50%", "\uf027"])
-        self.descr.append(["Start-Laufstärke 100%", "\uf028"])
+        self.descr.append(["VOLStart Eingabe", "\uf028"])
         self.descr.append(["VOLmax AUS", "\uf026"])
         self.descr.append(["VOLmax 30%", "\uf027"])
         self.descr.append(["VOLmax 50%", "\uf027"])
@@ -62,13 +62,15 @@ class Shutdownmenu(MenuBase):
             elif self.counter == 6:
                 run_command("%s -c=shutdownafter -v=30" % cfg_file_folder.PLAYOUT_CONTROLS)
             elif self.counter == 7:
-                run_command("%s -c=shutdownafter -v=60" % cfg_file_folder.PLAYOUT_CONTROLS)
+                value = self.windowmanager.getValue()
+                run_command("%s -c=shutdownafter -v=%d" % (cfg_file_folder.PLAYOUT_CONTROLS,value))
             elif self.counter == 8:
                 run_command("%s -c=setidletime -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
             elif self.counter == 9:
                 run_command("%s -c=setidletime -v=5" % cfg_file_folder.PLAYOUT_CONTROLS)
             elif self.counter == 10:
-                run_command("%s -c=setidletime -v=15" % cfg_file_folder.PLAYOUT_CONTROLS)
+                value = self.windowmanager.getValue()
+                run_command("%s -c=setidletime -v=%d" % (cfg_file_folder.PLAYOUT_CONTROLS,value))
             elif self.counter == 11:
                 run_command("%s -c=readwifiipoverspeaker" % cfg_file_folder.PLAYOUT_CONTROLS)
             elif self.counter == 12:
@@ -78,7 +80,8 @@ class Shutdownmenu(MenuBase):
             elif self.counter == 14:
                 run_command("%s -c=setstartupvolume -v=50" % cfg_file_folder.PLAYOUT_CONTROLS)
             elif self.counter == 15:
-                run_command("%s -c=setstartupvolume -v=100" % cfg_file_folder.PLAYOUT_CONTROLS)
+                value = self.windowmanager.getValue()
+                run_command("%s -c=setstartupvolume -v=%d" % (cfg_file_folder.PLAYOUT_CONTROLS,value))
             elif self.counter == 16:
                 run_command("%s -c=setmaxvolume -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
             elif self.counter == 17:
