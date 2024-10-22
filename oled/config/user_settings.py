@@ -12,7 +12,7 @@ MENU_TIMEOUT=20
 START_TIMEOUT=5
 
 #abdunkeln Stufe 1 in Sekunden
-CONTRAST_TIMEOUT=10
+CONTRAST_TIMEOUT=5
 
 #abdunkeln Stufe 2 in Sekunden
 DARK_TIMEOUT=11

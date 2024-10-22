@@ -249,11 +249,20 @@ class SystemMenu(ListBase):
 
         elif self.position >= 32 and self.position <= 34:
             logger.debug(f"Started CONTRAST Setting {self.menu[self.position]}")
-            if self.position == 32: startpos = config.user_settings.MENU_TIMEOUT
-            elif self.position == 33: startpos = config.user_settings.CONTRAST_TIMEOUT
-            elif self.position == 34: startpos = config.user_settings.DARK_TIMEOUT
+            if self.position == 32:
+                startpos = config.user_settings.MENU_TIMEOUT
+                vmin = 5
+                vmax = 100
+            elif self.position == 33:
+                startpos = config.user_settings.CONTRAST_TIMEOUT
+                vmin = 5
+                vmax = config.user_settings.DARK_TIMEOUT - 1
+            elif self.position == 34:
+                vmin = config.user_settings.CONTRAST_TIMEOUT + 1
+                vmax = 300
+                startpos = config.user_settings.DARK_TIMEOUT
 
-            value = self.windowmanager.getValue(vmin=10,vmax=60,vstep=3,startpos=startpos, unit="sec")
+            value = self.windowmanager.getValue(vmin=vmin,vmax=vmax,startpos=startpos, unit="sec")
             logger.debug(f"got value: {value}")
 
             if self.position == 32: self.cmd = self.set_option("MENU_TIMEOUT",value,cfg_file_folder.FILE_USER_SETTINGS)

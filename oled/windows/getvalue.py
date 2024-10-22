@@ -54,6 +54,11 @@ class GetValue(WindowBase):
             draw.text((self.xy), drawtext ,font=self.font,fill="white") 
 
     async def __async_get_value(self, vmin, vmax, vstep, startpos,unit):
+        if vmin > vmax: return startpos
+        if startpos > vmax: startpos = vmax
+        if startpos < vmin: startpos = vmin
+
+        if vmin > vmax: return startpos
         self.__value = startpos
         self.__vmin = vmin
         self.__vmax = vmax
