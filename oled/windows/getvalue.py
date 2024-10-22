@@ -104,7 +104,7 @@ class GetValue(WindowBase):
         if self.__value + direction  >= self.__vmax : # zero based
             self.__value = self.__vmax
         elif self.__value + direction < self.__vmin: # base counter is 2
-            self.position = self.vmin
+            self.position = self.__vmin
         else:
            self.__value += direction
 
