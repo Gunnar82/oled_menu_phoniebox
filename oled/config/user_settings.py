@@ -28,9 +28,9 @@ BUSY_RENDERTIME = 1
 
 
 #Helligkeitswerte
-CONTRAST_FULL = 245
-CONTRAST_DARK = 64
-CONTRAST_BLACK = 20
+CONTRAST_FULL=35
+CONTRAST_DARK=64
+CONTRAST_BLACK=20
 
 
 #Display ausschalten?
@@ -39,4 +39,3 @@ DISABLE_DISPLAY = True
 #Radiostationen aktualisieren
 
 UPDATE_RADIO=True
-
