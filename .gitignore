@@ -4,6 +4,9 @@
 *.mp3
 settings.py
 oled/pins/*
+oled/config/online.py
+oled/config/file_folder.py
+oled/config/user_settings.py
 Latest*
 oled/config/online.py
 oled/config/file_folder.py
