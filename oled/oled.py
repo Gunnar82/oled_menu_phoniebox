@@ -27,14 +27,6 @@ if args.loglevel_debug:
     configure_debug_modules(args.loglevel_debug)
 
 
-import integrations.bluetooth
-import integrations.functions as fn
-import integrations.playout as playout
-
-import settings
-
-import config.file_folder as cfg_file_folder
-
 
 
 logger = setup_logger(__name__)
@@ -57,6 +49,10 @@ def check_or_create_config(filename,samplename):
        logger.error(f"usersettings Fehler: {filename}: {error}")
        sys.exit (-1)
 
+user_settings_py = "/home/pi/oledctrl/oled/config/user_settings.py"
+user_settings_py_sample = f"{user_settings_py}.sample"
+
+
 file_folder_py = "/home/pi/oledctrl/oled/config/file_folder.py"
 file_folder_py_sample = f"{file_folder_py}.sample"
 
@@ -67,10 +63,21 @@ online_py_sample = f"{online_py}.sample"
 settings_py = "/home/pi/oledctrl/oled/settings.py"
 settings_py_sample = f"{settings_py}.sample"
 
-check_or_create_config(cfg_file_folder.FILE_USER_SETTINGS,cfg_file_folder.FILE_USER_SETTINGS_SAMPLE)
+check_or_create_config(user_settings_py,user_settings_py_sample)
 check_or_create_config(online_py,online_py_sample)
 check_or_create_config(settings_py,settings_py_sample)
 check_or_create_config(file_folder_py,file_folder_py_sample)
+
+import config.file_folder as cfg_file_folder
+import integrations.bluetooth
+import integrations.functions as fn
+import integrations.playout as playout
+
+import settings
+
+import config.file_folder as cfg_file_folder
+
+
 
 
 
