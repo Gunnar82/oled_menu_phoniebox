@@ -80,13 +80,13 @@ class SystemMenu(ListBase):
 
         self.menu.append(["PLACEHOLDER FIREWALL_STATUS 1"])        # Eintrag 13
         self.menu.append(["PLACEHOLDER FIREWALL_STATUS 2"])        # Eintrag 14
-        self.menu.append([""])                                     # Eintrag 15
+        self.menu.append(["","c"])                                     # Eintrag 15
 
         self.menu.append(["PLACEHOLDER BLUETOOTH_AUTOCONNECT 1"])  # Eintrag 16
         self.menu.append(["PLACEHOLDER BLUETOOTH_AUTOCONNECT 2"])  # Eintrag 17
-        self.menu.append([""])                                     # Eintrag 18
+        self.menu.append(["","c"])                                     # Eintrag 18
 
-        self.menu.append([""])                                     # Eintrag 19
+        self.menu.append(["","c"])                                     # Eintrag 19
 
         self.menu.append(["beenden"])                              # Eintrag 20
         self.menu.append(["starten"])                              # Eintrag 21
@@ -96,15 +96,15 @@ class SystemMenu(ListBase):
         self.menu.append(["WLAN QR anzeigen"])                     # Eintrag 24
         self.menu.append(["ssid"])                                 # Eintrag 25
         self.menu.append(["psk"])                                  # Eintrag 26
-        self.menu.append([""])                                     # Eintrag 27
+        self.menu.append(["","c"])                                     # Eintrag 27
         self.menu.append(["PLACEHOLDER CONTRAST_FULL"])            # Eintrag 28
         self.menu.append(["PLACEHOLDER CONTRAST_DARK"])            # Eintrag 29
         self.menu.append(["PLACEHOLDER CONTRASST_BLACK"])          # Eintrag 30
-        self.menu.append([""])                                     # Eintrag 31
+        self.menu.append(["","c"])                                     # Eintrag 31
         self.menu.append(["PLACEHOLDER MENU_TIMEOUT"])             # Eintrag 32
         self.menu.append(["PLACEHOLDER CONTRAST_TIMEOUT"])         # Eintrag 33
         self.menu.append(["PLACEHOLDER DARK_TIMEOUT"])             # Eintrag 34
-        self.menu.append([""])                                     # Eintrag 35
+        self.menu.append(["","c"])                                     # Eintrag 35
 
         self.menu.append(["Dienste neustarten:", "h"])             # Eintrag 36
 
