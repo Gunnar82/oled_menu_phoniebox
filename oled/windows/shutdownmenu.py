@@ -19,29 +19,22 @@ class Shutdownmenu(MenuBase):
         super().__init__(windowmanager,loop,title)
 
         self.mopidyconnection = mopidyconnection
-        self.descr.append(["Neustart OLED", "\uf0e2"])
-        self.descr.append(["AUS Sofort", "\uf011"])
-        self.descr.append(["Reboot", "\uf0e2"])
-        self.descr.append(["Timer AUS", "\uf1f7"])
-        self.descr.append(["Timer 15min", "\uf0a2"])
-        self.descr.append(["Timer 30min", "\uf0a2"])
-        self.descr.append(["Timer §ingabe", "\uf0a2"])
-        self.descr.append(["Idle AUS", "\uf185"])
-        self.descr.append(["Idle 5min", "\uf186"])
-        self.descr.append(["Idle Eingabe", "\uf186"])
-        self.descr.append(["IP vorlesen", "\uf012"])
-        self.descr.append(["Start-Laufstärke AUS", "\uf026"])
-        self.descr.append(["Start-Laufstärke 30%", "\uf027"])
-        self.descr.append(["Start-Laufstärke 50%", "\uf027"])
-        self.descr.append(["VOLStart Eingabe", "\uf028"])
-        self.descr.append(["VOLmax AUS", "\uf026"])
-        self.descr.append(["VOLmax 30%", "\uf027"])
-        self.descr.append(["VOLmax 50%", "\uf027"])
-        self.descr.append(["VOLmax Eingabe", "\uf028"])
-        self.descr.append(["\u0394vol 1%", "\uf026"])
-        self.descr.append(["\u0394vol 3%", "\uf027"])
-        self.descr.append(["\u0394vol 5%", "\uf027"])
-        self.descr.append(["\u0394vol 8%", "\uf028"])
+        self.descr.append(["Neustart OLED", "\uf0e2"])  #1
+        self.descr.append(["AUS Sofort", "\uf011"])     #2
+        self.descr.append(["Reboot", "\uf0e2"])         #3
+        self.descr.append(["Timer AUS", "\uf1f7"])      #4
+        self.descr.append(["Timer Eingabe", "\uf0a2"])  #5
+        self.descr.append(["Idle AUS", "\uf185"])       #6
+        self.descr.append(["Idle Eingabe", "\uf186"])         #7
+        self.descr.append(["IP vorlesen", "\uf012"])          #8
+        self.descr.append(["VOLstart AUS", "\uf026"]) #9
+        self.descr.append(["VOLstart Eingabe", "\uf028"])     #10
+        self.descr.append(["VOLmax AUS", "\uf026"])           #11
+        self.descr.append(["VOLmax Eingabe", "\uf028"])       #12
+        self.descr.append(["\u0394vol 1%", "\uf026"])         #13
+        self.descr.append(["\u0394vol 3%", "\uf027"])         #14
+        self.descr.append(["\u0394vol 5%", "\uf027"])         #15
+        self.descr.append(["\u0394vol 8%", "\uf028"])         #16
 
 
     def push_handler(self):
@@ -58,46 +51,32 @@ class Shutdownmenu(MenuBase):
             if self.counter == 4:
                 run_command("%s -c=shutdownafter -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
             elif self.counter == 5:
-                run_command("%s -c=shutdownafter -v=15" % cfg_file_folder.PLAYOUT_CONTROLS)
-            elif self.counter == 6:
-                run_command("%s -c=shutdownafter -v=30" % cfg_file_folder.PLAYOUT_CONTROLS)
-            elif self.counter == 7:
-                value = self.windowmanager.getValue()
+                value = self.windowmanager.getValue(startpos=30,unit=" min")
                 run_command("%s -c=shutdownafter -v=%d" % (cfg_file_folder.PLAYOUT_CONTROLS,value))
-            elif self.counter == 8:
+            elif self.counter == 6:
                 run_command("%s -c=setidletime -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
-            elif self.counter == 9:
-                run_command("%s -c=setidletime -v=5" % cfg_file_folder.PLAYOUT_CONTROLS)
-            elif self.counter == 10:
-                value = self.windowmanager.getValue()
+            elif self.counter == 7:
+                value = self.windowmanager.getValue(startpos=15,unit=" min")
                 run_command("%s -c=setidletime -v=%d" % (cfg_file_folder.PLAYOUT_CONTROLS,value))
-            elif self.counter == 11:
+            elif self.counter == 8:
                 run_command("%s -c=readwifiipoverspeaker" % cfg_file_folder.PLAYOUT_CONTROLS)
-            elif self.counter == 12:
+            elif self.counter == 9:
                 run_command("%s -c=setstartupvolume -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
-            elif self.counter == 13:
-                run_command("%s -c=setstartupvolume -v=30" % cfg_file_folder.PLAYOUT_CONTROLS)
-            elif self.counter == 14:
-                run_command("%s -c=setstartupvolume -v=50" % cfg_file_folder.PLAYOUT_CONTROLS)
-            elif self.counter == 15:
-                value = self.windowmanager.getValue()
+            elif self.counter == 10:
+                value = self.windowmanager.getValue(startpos=90,unit=" %")
                 run_command("%s -c=setstartupvolume -v=%d" % (cfg_file_folder.PLAYOUT_CONTROLS,value))
-            elif self.counter == 16:
+            elif self.counter == 11:
                 run_command("%s -c=setmaxvolume -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
-            elif self.counter == 17:
-                run_command("%s -c=setmaxvolume -v=30" % cfg_file_folder.PLAYOUT_CONTROLS)
-            elif self.counter == 18:
-                run_command("%s -c=setmaxvolume -v=50" % cfg_file_folder.PLAYOUT_CONTROLS)
-            elif self.counter == 19:
-                value = self.windowmanager.getValue()
+            elif self.counter == 12:
+                value = self.windowmanager.getValue(startpos=100,unit=" %")
                 run_command("%s -c=setmaxvolume -v=%d" % (cfg_file_folder.PLAYOUT_CONTROLS,value))
-            elif self.counter == 20:
+            elif self.counter == 13:
                 run_command("%s -c=setvolstep -v=1" % cfg_file_folder.PLAYOUT_CONTROLS)
-            elif self.counter == 21:
+            elif self.counter == 14:
                 run_command("%s -c=setvolstep -v=3" % cfg_file_folder.PLAYOUT_CONTROLS)
-            elif self.counter == 22:
+            elif self.counter == 15:
                 run_command("%s -c=setvolstep -v=5" % cfg_file_folder.PLAYOUT_CONTROLS)
-            elif self.counter == 23:
+            elif self.counter == 16:
                 run_command("%s -c=setvolstep -v=8" % cfg_file_folder.PLAYOUT_CONTROLS)
 
         get_timeouts()

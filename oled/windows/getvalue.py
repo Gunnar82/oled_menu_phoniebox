@@ -33,25 +33,32 @@ class GetValue(WindowBase):
         self.__vmax = 100
         self.__vmin = 0
         self.__vstep = 1
+        self.__unit = None
         self.finished = False
         self.__result = self.__vmin -1
 
     def get_position(self):
         try:
-            width, height = self.font.getsize(str(self.__value))
+            drawtext = str(self.__value)
+            if self.__unit is not None: drawtext += self.__unit 
+
+            width, height = self.font.getsize(drawtext)
             self.xy = (settings.DISPLAY_WIDTH - width) / 2, (settings.DISPLAY_HEIGHT - height) / 2
         except Exception as error:
             logger.debug(f"get_position: {error}")
 
     def render(self):
         with canvas(self.device) as draw:
-            draw.text((self.xy), f"{self.__value}",font=self.font,fill="white") 
+            drawtext = f"{self.__value}"
+            if self.__unit is not None: drawtext += self.__unit 
+            draw.text((self.xy), drawtext ,font=self.font,fill="white") 
 
-    async def __async_get_value(self, vmin, vmax, vstep, startpos):
+    async def __async_get_value(self, vmin, vmax, vstep, startpos,unit):
         self.__value = startpos
         self.__vmin = vmin
         self.__vmax = vmax
         self.__vstep = vstep
+        self.__unit = unit
         self.get_position()
 
         while not self.finished and self.loop.is_running():
@@ -59,14 +66,19 @@ class GetValue(WindowBase):
 
         return self.__value
 
-    def getValue(self,vmin=0,vmax=100,vstep=1,startpos=50):
-        future = asyncio.run_coroutine_threadsafe(self.__async_get_value(vmin, vmax, vstep, startpos), self.loop)
+    def getValue(self,vmin=0,vmax=100,vstep=1,startpos=50,unit=None):
+        future = asyncio.run_coroutine_threadsafe(self.__async_get_value(vmin, vmax, vstep, startpos,unit), self.loop)
         return future.result()
 
     def activate(self):
         logger.debug("activate: startet")
         self.finished = False
         self.get_position()
+
+    def deactivate(self):
+        logger.debug("deactivate: startet")
+        self.finished = True
+
 
     def push_callback(self,lp=False):
         logger.debug(f"push_callback")
