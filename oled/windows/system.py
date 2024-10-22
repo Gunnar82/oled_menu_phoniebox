@@ -96,12 +96,17 @@ class SystemMenu(ListBase):
         self.menu.append(["WLAN QR anzeigen"])                     # Eintrag 24
         self.menu.append(["ssid"])                                 # Eintrag 25
         self.menu.append(["psk"])                                  # Eintrag 26
-        self.menu.append(["PLACEHOLDER CONTRAST_FULL"])            # Eintrag 27
-        self.menu.append(["PLACEHOLDER CONTRAST_DARK"])            # Eintrag 28
-        self.menu.append(["PLACEHOLDER CONTRASST_BLACK"])          # Eintrag 29
-        self.menu.append([""])                                     # Eintrag 30
+        self.menu.append([""])                                     # Eintrag 27
+        self.menu.append(["PLACEHOLDER CONTRAST_FULL"])            # Eintrag 28
+        self.menu.append(["PLACEHOLDER CONTRAST_DARK"])            # Eintrag 29
+        self.menu.append(["PLACEHOLDER CONTRASST_BLACK"])          # Eintrag 30
+        self.menu.append([""])                                     # Eintrag 31
+        self.menu.append(["PLACEHOLDER MENU_TIMEOUT"])             # Eintrag 32
+        self.menu.append(["PLACEHOLDER CONTRAST_TIMEOUT"])         # Eintrag 33
+        self.menu.append(["PLACEHOLDER DARK_TIMEOUT"])             # Eintrag 34
+        self.menu.append([""])                                     # Eintrag 35
 
-        self.menu.append(["Dienste neustarten:", "h"])             # Eintrag 31
+        self.menu.append(["Dienste neustarten:", "h"])             # Eintrag 36
 
         for srv in cfg_services.RESTART_LIST:
             self.menu.append(srv)
@@ -229,20 +234,35 @@ class SystemMenu(ListBase):
         elif self.position == 26:
             self.cmd = "sudo sed -i \"s/^wpa_passphrase=.*/wpa_passphrase=`tr -dc 'A-Za-z0-9' </dev/urandom | head -c 10`/\" \"/etc/hostapd/hostapd.conf\""
 
-        elif self.position >= 27 and self.position <= 29:
+        elif self.position >= 28 and self.position <= 30:
             logger.debug(f"Started CONTRAST Setting {self.menu[self.position]}")
-            if self.position == 27: startpos = config.user_settings.CONTRAST_FULL
-            elif self.position == 28: startpos = config.user_settings.CONTRAST_DARK
-            elif self.position == 29: startpos = config.user_settings.CONTRAST_BLACK
+            if self.position == 28: startpos = config.user_settings.CONTRAST_FULL
+            elif self.position == 29: startpos = config.user_settings.CONTRAST_DARK
+            elif self.position == 30: startpos = config.user_settings.CONTRAST_BLACK
 
             value = self.windowmanager.getValue(vmin=1,vmax=255,vstep=3,startpos=startpos)
             logger.debug(f"got value: {value}")
 
-            if self.position == 27: self.cmd = self.set_option("CONTRAST_FULL",value,cfg_file_folder.FILE_USER_SETTINGS)
-            elif self.position == 28: self.cmd = self.set_option("CONTRAST_DARK",value,cfg_file_folder.FILE_USER_SETTINGS)
+            if self.position == 28: self.cmd = self.set_option("CONTRAST_FULL",value,cfg_file_folder.FILE_USER_SETTINGS)
+            elif self.position == 29: self.cmd = self.set_option("CONTRAST_DARK",value,cfg_file_folder.FILE_USER_SETTINGS)
             else: self.cmd = self.set_option("CONTRAST_BLACK",value,cfg_file_folder.FILE_USER_SETTINGS)
 
-        elif self.position > 31:
+        elif self.position >= 32 and self.position <= 34:
+            logger.debug(f"Started CONTRAST Setting {self.menu[self.position]}")
+            if self.position == 32: startpos = config.user_settings.MENU_TIMEOUT
+            elif self.position == 33: startpos = config.user_settings.CONTRAST_TIMEOUT
+            elif self.position == 34: startpos = config.user_settings.DARK_TIMEOUT
+
+            value = self.windowmanager.getValue(vmin=10,vmax=60,vstep=3,startpos=startpos, unit="sec")
+            logger.debug(f"got value: {value}")
+
+            if self.position == 32: self.cmd = self.set_option("MENU_TIMEOUT",value,cfg_file_folder.FILE_USER_SETTINGS)
+            elif self.position == 33: self.cmd = self.set_option("CONTRAST_TIMEOUT",value,cfg_file_folder.FILE_USER_SETTINGS)
+            else:
+               value = max(value, config.user_settings.CONTRAST_TIMEOUT + 1)
+               self.cmd = self.set_option("DARK_TIMEOUT",value,cfg_file_folder.FILE_USER_SETTINGS)
+
+        elif self.position > 36:
             self.cmd = "sudo systemctl restart %s" % (self.menu[self.position][0])
 
         logger.debug(f"cmd: {self.cmd}")
@@ -272,10 +292,13 @@ class SystemMenu(ListBase):
 
             self.menu[19] = [f"hostapd (aktiviert: {self.hostapd_status}):", "h"]
 
-            self.menu[27] = ["CONTRAST_FULL: %d" % (config.user_settings.CONTRAST_FULL)]
-            self.menu[28] = ["CONTRAST_FULL: %d" % (config.user_settings.CONTRAST_DARK)]
-            self.menu[29] = ["CONTRAST_FULL: %d" % (config.user_settings.CONTRAST_BLACK)]
+            self.menu[28] = ["CONTRAST_FULL: %d" % (config.user_settings.CONTRAST_FULL)]
+            self.menu[29] = ["CONTRAST_DARK: %d" % (config.user_settings.CONTRAST_DARK)]
+            self.menu[30] = ["CONTRAST_BLACK: %d" % (config.user_settings.CONTRAST_BLACK)]
 
+            self.menu[32] = ["MENU_TIMEOUT: %d" % (config.user_settings.MENU_TIMEOUT)]
+            self.menu[33] = ["CONTAST_TIMEOUT: %d" % (config.user_settings.CONTRAST_TIMEOUT)]
+            self.menu[34] = ["DARK_TIMEOUT: %d" % (config.user_settings.DARK_TIMEOUT)]
 
             self.menu[25] = [self.hostapd_ssid]
             self.menu[26] = [self.hostapd_psk]

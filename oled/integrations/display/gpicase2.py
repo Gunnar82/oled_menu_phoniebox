@@ -6,7 +6,7 @@ from luma.core.device import linux_framebuffer
 
 
 def get_display():
-    settings.DISPLAY_HANDLE_CONTRAST = False
+    settings.DISPLAY_HANDLE_CONTRAST = True
 
     print("gpicase2")
 

@@ -6,35 +6,35 @@ BLUETOOTH_AUTOCONNECT=False
 AUTO_ENABLED=False
 
 #Wenn keine Eingabe, dann Fenster zurücl - Timeout in Sekunden
-MENU_TIMEOUT = 20
+MENU_TIMEOUT=20
 
 #Start Bildschirm Timeout
-START_TIMEOUT = 5
+START_TIMEOUT=5
 
 #abdunkeln Stufe 1 in Sekunden
-CONTRAST_TIMEOUT = 40
+CONTRAST_TIMEOUT=10
 
 #abdunkeln Stufe 2 in Sekunden
-DARK_TIMEOUT = 60
+DARK_TIMEOUT=11
 
 #Renderzeit bei abdungeln Stufe 1
-CONTRAST_RENDERTIME = 3
+CONTRAST_RENDERTIME=3
 
 #Renderzeit bei abdungeln Stufe 2
-DARK_RENDERTIME = 2 #sekunden
+DARK_RENDERTIME=2 #sekunden
 
 #Renderzeit bei Busy-Screen
-BUSY_RENDERTIME = 1
+BUSY_RENDERTIME=1
 
 
 #Helligkeitswerte
-CONTRAST_FULL=35
+CONTRAST_FULL=245
 CONTRAST_DARK=64
 CONTRAST_BLACK=20
 
 
 #Display ausschalten?
-DISABLE_DISPLAY = True
+DISABLE_DISPLAY=True
 
 #Radiostationen aktualisieren
 
