@@ -67,7 +67,8 @@ class Ende(MainWindow):
                 while self.loop.is_running() and self.power_timer:
                     self.drawline1 = "Poweroff Timer aktiv!"
                     self.drawline2 = f"AUS in min {settings.job_t} min"
-                    self.drawline3 = "# | start > pause; A,B,C,D | X,Y > AUS"
+                    if "gpicase" in settings.INPUTS: self.drawline3 = "start > pause; X,Y > AUS"
+                    elif "keypad4x4" in settings.INPUTS: self.drawline3 = "# > pause; A,B,C,D > AUS"
                     await asyncio.sleep(3)
         except Exception as error:
             loger.debug("timer:error")
