@@ -102,21 +102,20 @@ class WindowManager():
                     self.rendertime = csettings.DARK_RENDERTIME
                     self.looptime = int (csettings.DARK_RENDERTIME // 2)
 
-                    contrast = csettings.CONTRAST_BLACK
+                    if csettings.DISABLE_DISPLAY:
+                        #Display ausschalten, wenn unterstützt
+                        if settings.screenpower:
+                            logger.debug("disable Display")
+                            self.clear_window()
+                    else:
+                        contrast = csettings.CONTRAST_BLACK
 
                 elif  (seconds_since_last_input >= csettings.CONTRAST_TIMEOUT):
                     # Helligkeit Stufe 1
                     self.looptime = csettings.CONTRAST_RENDERTIME
                     self.rendertime = csettings.CONTRAST_RENDERTIME
                     logger.debug("contrast_timeout")
-                    if csettings.DISABLE_DISPLAY:
-                        #Display ausschalten, wenn unterstützt
-                        if settings.screenpower:
-                            logger.debug("disable Display")
-                            self.clear_window()
-                    elif settings.DISPLAY_HANDLE_CONTRAST:
-                        #wenn nicht, Helligkeit auf minimum
-                        contrast = csettings.CONTRAST_DARK
+                    contrast = csettings.CONTRAST_DARK
 
                 else:
                     #Eingabe erfolgt, normales render-Verhalten
