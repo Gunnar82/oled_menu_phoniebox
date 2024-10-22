@@ -65,9 +65,9 @@ class Ende(MainWindow):
             else:
 
                 while self.loop.is_running() and self.power_timer:
-                    self.drawline1 = "GPI Case Timer aktiv!"
+                    self.drawline1 = "Poweroff Timer aktiv!"
                     self.drawline2 = f"AUS in min {settings.job_t} min"
-                    self.drawline3 = "start > pause; X,Y > AUS"
+                    self.drawline3 = "# | start > pause; A,B,C,D | X,Y > AUS"
                     await asyncio.sleep(3)
         except Exception as error:
             loger.debug("timer:error")
@@ -91,9 +91,9 @@ class Ende(MainWindow):
         pass
 
     def turn_callback(self, direction, key=None):
-        if key == 'start':
+        if key in ['start','#']:
             playout.pc_toggle()
-        elif key in ['X','Y']:
+        elif key in ['X','Y','A','B','C','D',]:
             playout.savepos_online(self.nowplaying)
             playout.savepos()
             #self.mopidyconnection.stop()
