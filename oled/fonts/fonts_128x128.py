@@ -1,6 +1,6 @@
 import settings
 
-settings.FONT_SIZE_XXXL = 40
+settings.FONT_SIZE_XXXL = 30
 settings.FONT_SIZE_XXL = 20
 settings.FONT_SIZE_XL = 18
 settings.FONT_SIZE_L = 16

@@ -23,6 +23,7 @@ import config.user_settings as csettings
 class GetValue(WindowBase):
     contrasthandle = False
     font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_XXXL)
+    window_on_back = "none"
 
     def __init__(self, windowmanager,loop):
         super().__init__(windowmanager, loop)
@@ -91,19 +92,19 @@ class GetValue(WindowBase):
 
     def turn_callback(self, direction, key=None):
         if key:
-            if key == 'up' or key == '2':
+            if key in ['up','right','2','6']:
                 direction = self.__vstep
-            elif key == 'down' or key == '8':
+            elif key in ['down','left','4','8']:
                 direction = - self.__vstep
-            elif key =='A':
-                self.__value = 0
+            elif key =='D':
+                self.__value = self.__vmin
                 direction = 0
-            elif key == 'D':
+            elif key == 'A':
                 self.__value = self.__vmax
                 direction = 0
-            elif key == 'B' or key== 'hl':
+            elif key in ['C','hl']:
                     direction = - 10 * self.__vstep
-            elif key == 'C' or key == 'hr':
+            elif key in ['B','hr']:
                     direction = 10 * self.__vstep
 
         if self.__value + direction  >= self.__vmax : # zero based

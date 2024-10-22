@@ -45,6 +45,7 @@ class SystemMenu(ListBase):
         return img.resize((self.qr_width,self.qr_width))
 
     def refresh_values(self):
+        self.firewall_status = str(get_firewall_state())
         self.hostapd_status = get_hostapd_file_status()
         self.hostapd_ssid = get_hostapd_ssid()
         self.hostapd_psk = get_hostapd_psk()
