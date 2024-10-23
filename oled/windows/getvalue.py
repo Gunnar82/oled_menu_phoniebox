@@ -62,8 +62,13 @@ class GetValue(WindowBase):
             drawtext = f"{self.__value}"
             if self.__unit is not None: drawtext += self.__unit 
             draw.text((self.xy), drawtext ,font=self.font,fill="white") 
-            if not self.__hint_text == "": draw.text((self.xy_hint), self.__hint_text ,font=self.font,fill=colors.COLOR_ORANGE) 
-
+            if not self.__hint_text == "": draw.text((self.xy_hint), self.__hint_text ,font=self.font,fill=colors.COLOR_ORANGE)
+            try:
+                pos = (self.__value - self.__vmin) / (self.__vmax - self.__vmin)
+                logger.debug(f"pos for progressbar: {pos}")
+                self.render_progressbar_draw(draw,pos=pos,buttom_top=True)
+            except Exception as error:
+                logger.debug(f"render: {error}")
 
     async def __async_get_value(self, vmin, vmax, vstep, startpos,unit):
         if vmin > vmax: return startpos
