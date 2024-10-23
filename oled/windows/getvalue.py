@@ -62,7 +62,7 @@ class GetValue(WindowBase):
             drawtext = f"{self.__value}"
             if self.__unit is not None: drawtext += self.__unit 
             draw.text((self.xy), drawtext ,font=self.font,fill="white") 
-            if not self.__hint_text == "": draw.text((self.xy_hint), self.__hint_text ,font=self.font,fill="white") 
+            if not self.__hint_text == "": draw.text((self.xy_hint), self.__hint_text ,font=self.font,fill=colors.COLOR_ORANGE) 
 
 
     async def __async_get_value(self, vmin, vmax, vstep, startpos,unit):
