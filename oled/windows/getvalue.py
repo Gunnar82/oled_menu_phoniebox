@@ -37,14 +37,23 @@ class GetValue(WindowBase):
         self.__unit = None
         self.finished = False
         self.__result = self.__vmin -1
+        self.__min_text = "min"
+        self.__max_text = "max"
+        self.__hint_text = ""
 
     def get_position(self):
         try:
             drawtext = str(self.__value)
+            self.__hint_text = "min" if self.__value <= self.__vmin else "max" if self.__value >= self.__vmax else ""
+
             if self.__unit is not None: drawtext += self.__unit 
 
             width, height = self.font.getsize(drawtext)
             self.xy = (settings.DISPLAY_WIDTH - width) / 2, (settings.DISPLAY_HEIGHT - height) / 2
+
+            width, height = self.font.getsize(self.__hint_text)
+            self.xy_hint = (settings.DISPLAY_WIDTH - width) / 2, settings.DISPLAY_HEIGHT - height - 2
+
         except Exception as error:
             logger.debug(f"get_position: {error}")
 
@@ -53,6 +62,8 @@ class GetValue(WindowBase):
             drawtext = f"{self.__value}"
             if self.__unit is not None: drawtext += self.__unit 
             draw.text((self.xy), drawtext ,font=self.font,fill="white") 
+            if not self.__hint_text == "": draw.text((self.xy_hint), self.__hint_text ,font=self.font,fill="white") 
+
 
     async def __async_get_value(self, vmin, vmax, vstep, startpos,unit):
         if vmin > vmax: return startpos
@@ -103,15 +114,12 @@ class GetValue(WindowBase):
                 self.__value = self.__vmax
                 direction = 0
             elif key in ['C','hl']:
-                    direction = - 10 * self.__vstep
+                    direction = - 5 * self.__vstep
             elif key in ['B','hr']:
-                    direction = 10 * self.__vstep
+                    direction = 5 * self.__vstep
 
-        if self.__value + direction  >= self.__vmax : # zero based
-            self.__value = self.__vmax
-        elif self.__value + direction < self.__vmin: # base counter is 2
-            self.position = self.__vmin
-        else:
-           self.__value += direction
+        self.__value += direction
+
+        self.__value = min(max(self.__value + direction, self.__vmin), self.__vmax)
 
         self.get_position()
