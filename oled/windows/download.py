@@ -298,8 +298,9 @@ class DownloadMenu(ListBase):
                 elif self.position == 3:
                     self.set_window_busy()
 
-                    destdir = cfg_file_folder.AUDIO_BASEPATH_BASE + '/' + self.url[len(cfg_online.ONLINE_URL):]
+                    destdir = cfg_file_folder.AUDIO_BASEPATH_BASE + '/' + unquote(self.url[len(cfg_online.ONLINE_URL):])
                     if not os.path.exists(destdir):
+                        logger.info(f"delete_local error: {destdir}")
                         self.append_busytext(f"lokal nicht gefunden: {destdir}")
                     else:
                         try:
@@ -451,6 +452,19 @@ class DownloadMenu(ListBase):
 
         # Dateigröße ermitteln
         total_size_in_bytes = int(response.headers.get('content-length', 0))
+        try:
+            if os.path.exists(local_path) and os.path.getsize(local_path) == total_size_in_bytes:
+                self.append_busyerror("Datei existiert in der Größe, überspringe")
+                self.append_busyerror(f"{local_path}")
+                logger.debug(f"download_file: exists: {local_path}")
+                self.append_busyerror("")
+                
+                return  # Datei überspringen, wenn sie bereits existiert und die gleiche Größe hat
+
+        except Exception as error:
+            self.append_busyerror(f"{error}")
+
+
         block_size = 1024  # 1 Kibibyte
 
         # Datei speichern
