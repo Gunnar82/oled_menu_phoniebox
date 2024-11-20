@@ -85,8 +85,8 @@ class Idle(MainWindow):
                 if (settings.battcapacity >= 0):
                     text = "Batterie: %d%%%s" % (settings.battcapacity, ", lädt." if settings.battloading else " ") if settings.battcapacity > settings.X728_BATT_LOW else "Batterie laden! %d%%" % (settings.battcapacity)
                     mwidth = Idle.font.getsize(text)
-                    ungerade = (time.time() % 2) // 1
-                    fill = "black" if ungerade and  settings.battcapacity <= settings.X728_BATT_LOW else  get_battload_color()
+                    ungerade = (now % 2) // 1
+                    fill = "black" if ungerade and  settings.battcapacity <= settings.X728_BATT_LOW and not settings.battloading else  get_battload_color()
                     draw.text(((settings.DISPLAY_WIDTH/2) - (mwidth[0]/2),10), text, font=Idle.font, fill=fill)
                 if settings.job_i >= 0 or settings.job_t >= 0:
                     if settings.job_i >= settings.job_t:
