@@ -25,7 +25,7 @@ DISPLAY_DRIVER = "emulated"
 
 
 ###
-STATUS_LED_PIN=6
+STATUS_LED_PIN=5
 STATUS_LED_ALWAYS_ON=False
 
 ###

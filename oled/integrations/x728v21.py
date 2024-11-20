@@ -11,6 +11,10 @@ import config.symbols as symbols
 import asyncio
 from datetime import datetime
 
+from integrations.logging_config import *
+
+logger = setup_logger(__name__)
+
 
 class x728:
 
@@ -34,14 +38,7 @@ class x728:
 
                 settings.battcapacity = self.capacity
                 symbols.SYMBOL_BATTERY = self.getSymbol()
-                if self.capacity > self.oldcapacity and self.oldcapacity > 0:
-                    settings.battloading = True
-                    self.loading = True
-                elif self.capacity < self.oldcapacity:
-                    settings.battloading = False
-                    self.loading = False
 
-                self.oldcapacity = self.capacity
             except:
                 print ("err x728")
 
@@ -55,28 +52,31 @@ class x728:
         self.GPIO_PORT 	= 26
         self.GPIO_SHUTDOWN   = 5
         self.GPIO_BOOT	= 12
+        self.GPIO_POWERFAIL = 6
         self.voltage = 0
         self.capacity = 0
         self.oldvoltage = 0
         self.oldcapacity = -1
         self.loading = False
-
-
         self.I2C_ADDR    = 0x36
 
-        #GPIO.setmode(GPIO.BCM)
-        #GPIO.setup(GPIO_BOOT, GPIO.OUT)
-        #GPIO.output(GPIO_BOOT,1)
-        #GPIO.setup(self.GPIO_PORT, GPIO.OUT)
-        #GPIO.setup(self.GPIO_SHUTDOWN, GPIO.IN)
-
-        #GPIO.setwarnings(False)
-
-        #GPIO.add_event_detect(GPIO_SHUTDOWN, GPIO.RISING, callback=shutdown_handler)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.GPIO_POWERFAIL, GPIO.IN)
+        GPIO.add_event_detect(self.GPIO_POWERFAIL, GPIO.BOTH, callback=self.powerfail_callback, bouncetime=100)
+        self.get_powerfail_state()
 
         self.bus = smbus.SMBus(1) # 0 = /dev/i2c-0 (port I2C0), 1 = /dev/i2c-1 (port I2C1)
 
         self.loop.create_task(self._handler())
+
+    def powerfail_callback (self,channel):
+        self.get_powerfail_state()
+
+
+    def get_powerfail_state(self):
+        status = GPIO.input(self.GPIO_POWERFAIL) == 1 # 0 == angeschlossen, 1 = ohne Kabel
+        logger.debug(f"Powerfail ist {status}")
+        settings.battloading = not status
 
     def getSymbol(self):
         if self.capacity < 10:
