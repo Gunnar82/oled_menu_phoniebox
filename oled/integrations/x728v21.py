@@ -45,9 +45,10 @@ class x728:
             await asyncio.sleep (10)
 
 
-    def __init__(self,loop):
+    def __init__(self,loop,windowmanager):
         # Global settings
         self.loop = loop
+        self.windowmanager = windowmanager
         # GPIO is 26 for x728 v2.0, GPIO is 13 for X728 v1.2/v1.3
         self.GPIO_PORT 	= 26
         self.GPIO_SHUTDOWN   = 5
@@ -62,7 +63,13 @@ class x728:
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.GPIO_POWERFAIL, GPIO.IN)
+
+        GPIO.setup(12, GPIO.OUT)
+        GPIO.output(12, GPIO.HIGH)
+        GPIO.setup(5, GPIO.IN)
         GPIO.add_event_detect(self.GPIO_POWERFAIL, GPIO.BOTH, callback=self.powerfail_callback, bouncetime=100)
+        GPIO.add_event_detect(5, GPIO.BOTH, callback=self.powerfail_callback, bouncetime=100)
+
         self.get_powerfail_state()
 
         self.bus = smbus.SMBus(1) # 0 = /dev/i2c-0 (port I2C0), 1 = /dev/i2c-1 (port I2C1)
@@ -70,8 +77,11 @@ class x728:
         self.loop.create_task(self._handler())
 
     def powerfail_callback (self,channel):
-        self.get_powerfail_state()
-
+        if channel == self.GPIO_POWERFAIL:
+            self.get_powerfail_state()
+        elif channel == 5:
+            settings.shutdownreason = settings.SR1
+            self.windowmanager.set_window("ende")
 
     def get_powerfail_state(self):
         status = GPIO.input(self.GPIO_POWERFAIL) == 1 # 0 == angeschlossen, 1 = ohne Kabel

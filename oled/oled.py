@@ -264,7 +264,7 @@ def main():
     ####x728V2.1
     if "x728" in settings.INPUTS:
         import integrations.x728v21 as x728v21
-        x728 = x728v21.x728(loop)
+        x728 = x728v21.x728(loop,windowmanager)
 
 
     ###main
