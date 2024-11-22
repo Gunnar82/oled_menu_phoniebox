@@ -278,6 +278,11 @@ def main():
     finally:
         loop.close()
 
+    ####x728 Cleanup
+    if "x728" in settings.INPUTS:
+        print ("shutdown x728")
+        x728.shutdown()
+
     ###GPICase
     if "gpicase" in settings.INPUTS:
         mypygame.quit()

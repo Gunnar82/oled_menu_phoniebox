@@ -6,6 +6,6 @@ case "$1" in
 	echo "$BUTTON" > /sys/class/gpio/export;
 	echo "out" > /sys/class/gpio/gpio$BUTTON/direction
 	echo "1" > /sys/class/gpio/gpio$BUTTON/value
-
+        sleep 10
         ;;
 esac

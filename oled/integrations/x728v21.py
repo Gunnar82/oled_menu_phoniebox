@@ -22,7 +22,7 @@ class x728:
     GPIO_BOOT	= 12
     GPIO_POWERFAIL = 6
     GPIO_BUZZER = 20 # BUZZER
-    GPIO_26     = 26 #
+    GPIO_LED     = 26 #
 
 
     def __init__(self,loop,windowmanager,led):
@@ -42,11 +42,11 @@ class x728:
         GPIO.setup(self.GPIO_POWERFAIL, GPIO.IN)
         GPIO.setup(self.GPIO_BUTTON, GPIO.IN)
 
-        GPIO.add_event_detect(self.GPIO_POWERFAIL, GPIO.BOTH, callback=self.gpio_callback, bouncetime=100)
-        GPIO.add_event_detect(self.GPIO_BUTTON, GPIO.BOTH, callback=self.gpio_callback, bouncetime=100)
-
         GPIO.setup(self.GPIO_BOOT, GPIO.OUT)
         GPIO.output(self.GPIO_BOOT, GPIO.HIGH)
+
+        GPIO.add_event_detect(self.GPIO_POWERFAIL, GPIO.BOTH, callback=self.gpio_callback, bouncetime=100)
+        GPIO.add_event_detect(self.GPIO_BUTTON, GPIO.BOTH, callback=self.gpio_callback, bouncetime=100)
 
         self.gpio_callback(self.GPIO_POWERFAIL)
 
@@ -54,18 +54,6 @@ class x728:
 
         self.loop.create_task(self._handler())
 
-
-    def readVoltage(self):
-         read = self.bus.read_word_data(self.I2C_ADDR, 2)
-         swapped = struct.unpack("<H", struct.pack(">H", read))[0]
-         self.voltage = swapped * 1.25 /1000/16
-
-
-    def readCapacity(self):
-
-         read = self.bus.read_word_data(self.I2C_ADDR, 4)
-         swapped = struct.unpack("<H", struct.pack(">H", read))[0]
-         self.capacity = swapped/256
 
     async def _handler(self):
         while self.loop.is_running():
@@ -91,9 +79,9 @@ class x728:
             self.button_pressed = status
             if status:
                 self.button_pressed_time = time.monotonic()
-                self.loop.create_task(self._handle_button_pressed())
+                self.loop.run_in_executor(None,self._handle_button_pressed)
 
-    async def _handle_button_pressed(self):
+    def _handle_button_pressed(self):
 
         handling = True
 
@@ -121,7 +109,19 @@ class x728:
                     settings.shutdown_reason = settings.SR3
                     self.windowmanager.set_window("ende")
 
-            await asyncio.sleep(1)
+            time.sleep(1)
+
+    def readVoltage(self):
+         read = self.bus.read_word_data(self.I2C_ADDR, 2)
+         swapped = struct.unpack("<H", struct.pack(">H", read))[0]
+         self.voltage = swapped * 1.25 /1000/16
+
+
+    def readCapacity(self):
+
+         read = self.bus.read_word_data(self.I2C_ADDR, 4)
+         swapped = struct.unpack("<H", struct.pack(">H", read))[0]
+         self.capacity = swapped/256
 
 
     def get_powerfail_state(self,status):
@@ -140,3 +140,5 @@ class x728:
         else:
             return "\uf240"
 
+    def shutdown(self):
+        logger.debug("x728 shutdown")
