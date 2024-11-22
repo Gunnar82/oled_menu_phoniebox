@@ -18,6 +18,43 @@ logger = setup_logger(__name__)
 
 class x728:
 
+
+    GPIO_BUTTON  = 5 # INPUT BUTTON PRESSED
+    GPIO_BOOT	= 12
+    GPIO_POWERFAIL = 6
+    GPIO_BUZZER = 20 # BUZZER
+    GPIO_26     = 26 #
+
+
+    def __init__(self,loop,windowmanager):
+        # Global settings
+        self.loop = loop
+        self.windowmanager = windowmanager
+        self.voltage = 0
+        self.capacity = 0
+        self.oldvoltage = 0
+        self.oldcapacity = -1
+        self.loading = False
+        self.I2C_ADDR    = 0x36
+
+        GPIO.setmode(GPIO.BCM)
+
+        GPIO.setup(self.GPIO_POWERFAIL, GPIO.IN)
+        GPIO.setup(self.GPIO_BUTTON, GPIO.IN)
+
+        GPIO.add_event_detect(self.GPIO_POWERFAIL, GPIO.BOTH, callback=self.gpio_callback, bouncetime=100)
+        GPIO.add_event_detect(self.GPIO_BUTTON, GPIO.BOTH, callback=self.gpio_callback, bouncetime=100)
+
+        GPIO.setup(self.GPIO_BOOT, GPIO.OUT)
+        GPIO.output(self.GPIO_BOOT, GPIO.HIGH)
+
+        self.gpio_callback(self.GPIO_POWERFAIL)
+
+        self.bus = smbus.SMBus(1) # 0 = /dev/i2c-0 (port I2C0), 1 = /dev/i2c-1 (port I2C1)
+
+        self.loop.create_task(self._handler())
+
+
     def readVoltage(self):
          read = self.bus.read_word_data(self.I2C_ADDR, 2)
          swapped = struct.unpack("<H", struct.pack(">H", read))[0]
@@ -44,47 +81,43 @@ class x728:
 
             await asyncio.sleep (10)
 
+    def gpio_callback (self,channel):
+        status = GPIO.input(channel) == 1 # GPIO_POWERFAIL: 0 == angeschlossen, 1 = ohne Kabel
+        logger.debug(f"handle GPIO {channel}, status: {status}")
 
-    def __init__(self,loop,windowmanager):
-        # Global settings
-        self.loop = loop
-        self.windowmanager = windowmanager
-        # GPIO is 26 for x728 v2.0, GPIO is 13 for X728 v1.2/v1.3
-        self.GPIO_PORT 	= 26
-        self.GPIO_SHUTDOWN   = 5
-        self.GPIO_BOOT	= 12
-        self.GPIO_POWERFAIL = 6
-        self.voltage = 0
-        self.capacity = 0
-        self.oldvoltage = 0
-        self.oldcapacity = -1
-        self.loading = False
-        self.I2C_ADDR    = 0x36
-
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.GPIO_POWERFAIL, GPIO.IN)
-
-        GPIO.setup(12, GPIO.OUT)
-        GPIO.output(12, GPIO.HIGH)
-        GPIO.setup(5, GPIO.IN)
-        GPIO.add_event_detect(self.GPIO_POWERFAIL, GPIO.BOTH, callback=self.powerfail_callback, bouncetime=100)
-        GPIO.add_event_detect(5, GPIO.BOTH, callback=self.powerfail_callback, bouncetime=100)
-
-        self.get_powerfail_state()
-
-        self.bus = smbus.SMBus(1) # 0 = /dev/i2c-0 (port I2C0), 1 = /dev/i2c-1 (port I2C1)
-
-        self.loop.create_task(self._handler())
-
-    def powerfail_callback (self,channel):
         if channel == self.GPIO_POWERFAIL:
-            self.get_powerfail_state()
-        elif channel == 5:
-            settings.shutdownreason = settings.SR1
-            self.windowmanager.set_window("ende")
+            self.get_powerfail_state(status)
+        elif channel == self.GPIO_BUTTON:
+            self.button_pressed = status
+            if status:
+                self.button_pressed_time = time.monotonic()
+                self.loop.create_task(self._handle_button_pressed())
 
-    def get_powerfail_state(self):
-        status = GPIO.input(self.GPIO_POWERFAIL) == 1 # 0 == angeschlossen, 1 = ohne Kabel
+    async def _handle_button_pressed(self):
+
+        handling = True
+
+        while self.loop.is_running() and handling:
+            timediff = time.monotonic() - self.button_pressed_time
+
+            logger.debug(f"handle_button_pressed: timediff {timediff}, pressed: {self.button_pressed} ")
+
+            if  timediff >= 6 and self.button_pressed:
+                logger.debug("> 6 sek: shutdown")
+                handling = False
+                settings.shutdown_reason = settings.SR2
+                self.windowmanager.set_window("ende")
+
+            elif timediff > 1 and timediff < 6  and not self.button_pressed:
+                logger.debug("> 2 && < 6 sek: reboot")
+                handling = False
+                settings.shutdown_reason = settings.SR3
+                #elf.windowmanager.set_window("ende")
+
+            await asyncio.sleep(1)
+
+
+    def get_powerfail_state(self,status):
         logger.debug(f"Powerfail ist {status}")
         settings.battloading = not status
 
