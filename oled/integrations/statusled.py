@@ -6,7 +6,43 @@ import time               # Import time library
 import settings
 import asyncio
 
+
+from integrations.logging_config import *
+
+logger = setup_logger(__name__)
+
 class statusled:
+    minduty = 0
+    maxduty = 10
+    button_pressed = False
+
+    def __init__(self,loop,musicmanager):
+        self.loop = loop
+        self.musicmanager = musicmanager
+        GPIO.setmode(GPIO.BCM)    # Set Pi to use pin number when referencing GPIO pins.
+                              # Can use GPIO.setmode(GPIO.BCM) instead to use 
+                              # Broadcom SOC channel names.
+        GPIO.setup(settings.STATUS_LED_PIN, GPIO.OUT)  # Set GPIO pin 12 to output mode.
+        self.pwm = GPIO.PWM(settings.STATUS_LED_PIN, 100)   # Initialize PWM on pwmPin 100Hz frequency
+
+        self.loop.create_task(self._pulse())
+
+    def set_permanent(self):
+        logger.debug("statusled to permanent")
+        self.button_pressed = True
+
+        GPIO.setup(settings.STATUS_LED_PIN, GPIO.OUT)
+        GPIO.output(settings.STATUS_LED_PIN, GPIO.HIGH)
+
+
+    def set_dark(self):
+        logger.debug("statusled to dark")
+        self.button_pressed = True
+
+        GPIO.setup(settings.STATUS_LED_PIN, GPIO.OUT)
+        GPIO.output(settings.STATUS_LED_PIN, GPIO.LOW)
+
+
     async def _pulse(self):
         try:
             status = self.musicmanager.status()
@@ -14,7 +50,6 @@ class statusled:
                 self.pulsing = 1 
         except:
             self.pulsing = 0
-
 
         # main loop of program
         dc=0                               # set dc variable to 0 for 0%
@@ -37,32 +72,26 @@ class statusled:
                      self.pulsing = 10
 
                 cloop = 0
-                while cloop < self.pulsing:
+                while cloop < self.pulsing and not self.button_pressed:
                     cloop += 1
+
                     self.pwm.start(dc)
-                    for dc in range(0, 10, 1):    # Loop 0 to 100 stepping dc by 5 each loop
+
+                    for dc in range(self.minduty, self.maxduty, 1):    # Loop 0 to 100 stepping dc by 5 each loop
                         self.pwm.ChangeDutyCycle(dc)
                         time.sleep(0.05)             # wait .05 seconds at current LED brightness
-                    for dc in range(10, 0, -1):    # Loop 95 to 5 stepping dc down by 5 each loop
+
+                    for dc in range(self.maxduty, self.minduty, -1):    # Loop 95 to 5 stepping dc down by 5 each loop
                         self.pwm.ChangeDutyCycle(dc)
                         time.sleep(0.05)             # wait .05 seconds at current LED brightness
+
                     self.pwm.stop()
 
-                await asyncio.sleep(15)
+                await asyncio.sleep(2)
 
         except:
             pass
 
-    def __init__(self,loop,musicmanager):
-        self.loop = loop
-        self.musicmanager = musicmanager
-        GPIO.setmode(GPIO.BCM)    # Set Pi to use pin number when referencing GPIO pins.
-                              # Can use GPIO.setmode(GPIO.BCM) instead to use 
-                              # Broadcom SOC channel names.
-        GPIO.setup(settings.STATUS_LED_PIN, GPIO.OUT)  # Set GPIO pin 12 to output mode.
-        self.pwm = GPIO.PWM(settings.STATUS_LED_PIN, 100)   # Initialize PWM on pwmPin 100Hz frequency
-
-        self.loop.create_task(self._pulse())
 
     def startpulse(self,count = 1):
         print (count)

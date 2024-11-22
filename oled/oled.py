@@ -260,11 +260,13 @@ def main():
     if "statusled" in settings.INPUTS:
         import integrations.statusled as statusled
         led = statusled.statusled(loop,musicmanager)
+    else:
+        led = None
 
     ####x728V2.1
     if "x728" in settings.INPUTS:
         import integrations.x728v21 as x728v21
-        x728 = x728v21.x728(loop,windowmanager)
+        x728 = x728v21.x728(loop,windowmanager,led)
 
 
     ###main

@@ -18,7 +18,6 @@ logger = setup_logger(__name__)
 
 class x728:
 
-
     GPIO_BUTTON  = 5 # INPUT BUTTON PRESSED
     GPIO_BOOT	= 12
     GPIO_POWERFAIL = 6
@@ -26,8 +25,9 @@ class x728:
     GPIO_26     = 26 #
 
 
-    def __init__(self,loop,windowmanager):
+    def __init__(self,loop,windowmanager,led):
         # Global settings
+        self.led = led
         self.loop = loop
         self.windowmanager = windowmanager
         self.voltage = 0
@@ -103,16 +103,23 @@ class x728:
             logger.debug(f"handle_button_pressed: timediff {timediff}, pressed: {self.button_pressed} ")
 
             if  timediff >= 6 and self.button_pressed:
-                logger.debug("> 6 sek: shutdown")
+                if self.led is not None:
+                    self.led.set_permanent()
+
+                logger.debug("> 4 sek: shutdown")
                 handling = False
                 settings.shutdown_reason = settings.SR2
                 self.windowmanager.set_window("ende")
 
-            elif timediff > 1 and timediff < 6  and not self.button_pressed:
-                logger.debug("> 2 && < 6 sek: reboot")
-                handling = False
-                settings.shutdown_reason = settings.SR3
-                #elf.windowmanager.set_window("ende")
+            elif timediff > 2 and timediff < 6:
+                if self.button_pressed:
+                    if self.led is not None:
+                        self.led.set_dark()
+                else:
+                    logger.debug("> 2 && < 6 sek: reboot")
+                    handling = False
+                    settings.shutdown_reason = settings.SR3
+                    self.windowmanager.set_window("ende")
 
             await asyncio.sleep(1)
 
