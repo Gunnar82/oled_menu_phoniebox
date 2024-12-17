@@ -1,6 +1,7 @@
 """ Start screen """
 
 from ui.mainwindow import MainWindow
+from integrations.playout import pc_toggle
 from luma.core.render import canvas
 from PIL import ImageFont
 import settings
@@ -31,7 +32,7 @@ class Lock(MainWindow):
     def gen_unlockcodes(self):
         """Generiert die möglichen Entsperrcodes."""
         self.unlockcodes = [
-            ['up','down','left','right','start','select','x','hl','hr'],
+            ['up','down','left','right','select','x','hl','hr'],
             ['1','2','3','4','5','6','7','8','9','0','a','b','c','d']
         ]
 
@@ -66,7 +67,9 @@ class Lock(MainWindow):
 
     def turn_callback(self,direction, key=None):
         """Überprüft, ob der gedrückte Schlüssel korrekt ist."""
-        if key.lower() == self.unlockcode[self.currentkey].lower():
+        if key.lower() == 'start':
+            pc_toggle()
+        elif key.lower() == self.unlockcode[self.currentkey].lower():
             self.busysymbol = symbols.SYMBOL_PASS
             self.currentkey += 1
         else:

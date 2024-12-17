@@ -41,6 +41,7 @@ class Ende(MainWindow):
         self.drawline3 = ""
         self.mwidth,self.mheight = self.fontawesome.getsize(self.drawsymbol)
 
+
     async def timer(self):
         try:
             self.power_timer = settings.job_t >= 0
@@ -63,7 +64,6 @@ class Ende(MainWindow):
                 self.loop.stop()
 
             else:
-
                 while self.loop.is_running() and self.power_timer:
                     self.drawline1 = "Poweroff Timer aktiv!"
                     self.drawline2 = f"AUS in min {settings.job_t} min"
