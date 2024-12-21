@@ -27,9 +27,8 @@ class Shutdownmenu(MenuBase):
         self.descr.append(["Timer Eingabe", "\uf0a2"])  #5
         self.descr.append(["Idle AUS", "\uf185"])             #6
         self.descr.append(["Idle Eingabe", "\uf186"])         #7
-        self.descr.append(["AUS nach Ende", "\uf185"])        #8
-        self.descr.append(["AUS nach Titeln", "\uf186"])      #9
-
+        self.descr.append(["AUS nach Ende", "\uf011"])        #8
+        self.descr.append(["AUS nach Titeln", "\uf011"])      #9
         self.descr.append(["IP vorlesen", "\uf012"])          #10
         self.descr.append(["VOLstart AUS", "\uf026"])         #11
         self.descr.append(["VOLstart Eingabe", "\uf028"])     #12
@@ -65,6 +64,10 @@ class Shutdownmenu(MenuBase):
             elif self.counter == 8:
                 settings.shutdown_reason = settings.SR4
                 self.windowmanager.set_window("ende")
+            elif self.counter == 9:
+                if not self.nowplaying._state == "stop":
+                    value = self.windowmanager.getValue(startpos=int(self.nowplaying._song),vmax=int(self.nowplaying._playlistlength) - 1,unit="")
+                #run_command("%s -c=setstartupvolume -v=%d" % (cfg_file_folder.PLAYOUT_CONTROLS,value))
             elif self.counter == 10:
                 run_command("%s -c=readwifiipoverspeaker" % cfg_file_folder.PLAYOUT_CONTROLS)
             elif self.counter == 11:
