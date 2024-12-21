@@ -69,6 +69,7 @@ INTPIN=2
 SR1 = "beendet"
 SR2 = "heruntergefahren"
 SR3 = "neugestartet"
+SR4 = "gewartet"
 
 PLEASE_WAIT = "Bitte Warten..."
 CARD_READ = "Karte gelesen!"

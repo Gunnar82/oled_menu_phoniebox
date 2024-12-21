@@ -56,12 +56,8 @@ class Ende(MainWindow):
                 self.mwidth,self.mheight = self.fontawesome.getsize(self.drawsymbol)
 
                 await asyncio.sleep(1)
-
-                playout.savepos_online(self.nowplaying)
-                playout.savepos()
-                logger.info("timer: Stopping event loop")
-                await asyncio.sleep(2)
-                self.loop.stop()
+                if not settings.shutdown_reason == settings.SR4:
+                    self.do_shutdown()
 
             else:
                 while self.loop.is_running() and self.power_timer:
@@ -88,6 +84,10 @@ class Ende(MainWindow):
 
             draw.text(((settings.DISPLAY_WIDTH - self.mwidth )/ 2, 20), self.drawsymbol, font=self.fontawesome, fill=colors.COLOR_RED)
 
+            if settings.shutdown_reason == settings.SR4 and self.nowplaying._state == "stop":
+                settings.shutdown_reason = settings.SR2
+                self.do_shutdown()
+
     def push_callback(self,lp=False):
         pass
 
@@ -107,3 +107,10 @@ class Ende(MainWindow):
         super().deactivate()
         self.power_timer = False
 
+
+    def do_shutdown(self):
+        playout.savepos_online(self.nowplaying)
+        playout.savepos()
+        logger.info("timer: Stopping event loop")
+        time.sleep(2)
+        self.loop.stop()

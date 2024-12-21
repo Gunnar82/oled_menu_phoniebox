@@ -121,6 +121,7 @@ class nowplaying:
             self._playlistlength = status.get('playlistlength', -1)
             self._song = str(int(status.get('song', -1)) + 1)
             self._state = status.get('state', "unknown")
+
         except Exception as error:
             logger.debug (f"nowplaying error: {error}")
 
