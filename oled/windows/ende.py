@@ -63,9 +63,10 @@ class Ende(MainWindow):
                     check = max(0, int(self.wait4track))
                     print (check)
                     if int(self.nowplaying._song) > check:
-                        settings.shutdown_reason = SR.SR2
-    
+                        break
                     await asyncio.sleep(1)
+
+                settings.shutdown_reason = SR.SR5
                 self.do_shutdown()
             else:
                 while self.loop.is_running() and self.power_timer:
