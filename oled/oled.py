@@ -294,7 +294,7 @@ def main():
                 pc.shutdown()
 
         print("Shutting down system")
-        playout.pc_shutdown(True if settings.shutdown_reason == SR.SR5 else False)
+        playout.pc_shutdown(silent=True if settings.shutdown_reason == SR.SR5 else False)
 
     elif settings.shutdown_reason == SR.SR3:
         playout.pc_reboot()
