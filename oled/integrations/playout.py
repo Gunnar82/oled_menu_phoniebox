@@ -115,8 +115,6 @@ def pc_voldown(step=5):
 def pc_playfolder(folder=cfg_file_folder.AUDIO_BASEPATH_RADIO):
     run_command("sudo /home/pi/RPi-Jukebox-RFID/scripts/rfid_trigger_play.sh -d=\"%s\"" % (folder))
 
-def pc_shutdown():
-    run_command("sudo /home/pi/RPi-Jukebox-RFID/scripts/playout_controls.sh -c=shutdown")
 
 def pc_enableresume(folder=""):
     if folder != "":
