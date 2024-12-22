@@ -46,7 +46,9 @@ class Ende(MainWindow):
         try:
             self.power_timer = settings.job_t >= 0
 
-            if not self.power_timer:
+
+            if not (self.power_timer):
+
                 logger.debug(f"no powertimer")
                 self.drawsymbol =  symbols.SYMBOL_BELL_WHITE
 
@@ -66,17 +68,18 @@ class Ende(MainWindow):
                     if "gpicase" in settings.INPUTS: self.drawline3 = "start > pause; X,Y > AUS"
                     elif "keypad4x4" in settings.INPUTS: self.drawline3 = "# > pause; A,B,C,D > AUS"
                     await asyncio.sleep(3)
+
         except Exception as error:
             loger.debug("timer:error")
 
     def activate(self):
-        self.loop.create_task(self.timer())
+        if not self.drawline1 == settings.SR4:
+            self.loop.create_task(self.timer())
 
 
     def render(self):
         with canvas(self.device) as draw:
             super().render(draw)
-
 
             draw.text((1, settings.DISPLAY_HEIGHT - 3*settings.IDLE_LINE_HEIGHT ), self.drawline1 , font=self.font, fill="white")
             draw.text((1, settings.DISPLAY_HEIGHT - 4*settings.IDLE_LINE_HEIGHT ), self.drawline2, font=self.font, fill="white")
