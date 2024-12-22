@@ -59,10 +59,9 @@ class Ende(MainWindow):
                 self.drawsymbol = symbols.SYMBOL_POWER
                 self.mwidth,self.mheight = self.fontawesome.getsize(self.drawsymbol)
 
-                while self.loop.is_running() and (settings.shutdown_reason == SR.SR4 or (self.nowplaying._state != "stop" and self.wait4track == -1)):
-                    check = max(0, int(self.wait4track))
-                    print (check)
-                    if int(self.nowplaying._song) > check:
+                while self.loop.is_running() and (settings.shutdown_reason == SR.SR4 or (self.nowplaying._state != "stop")):
+                    check = int(self.wait4track)
+                    if self.wait4track >= 0 and int(self.nowplaying._song) > check:
                         break
                     await asyncio.sleep(1)
 
