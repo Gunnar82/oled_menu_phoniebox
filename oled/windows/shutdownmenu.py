@@ -66,8 +66,11 @@ class Shutdownmenu(MenuBase):
                 self.windowmanager.set_window("ende")
             elif self.counter == 9:
                 if not self.nowplaying._state == "stop":
-                    value = self.windowmanager.getValue(startpos=int(self.nowplaying._song),vmax=int(self.nowplaying._playlistlength) - 1,unit="")
-                #run_command("%s -c=setstartupvolume -v=%d" % (cfg_file_folder.PLAYOUT_CONTROLS,value))
+                    value = self.windowmanager.getValue(startpos=int(self.nowplaying._song),vmin=int(self.nowplaying._song),vmax=int(self.nowplaying._playlistlength),unit="")
+                    settings.shutdown_reason = SR.SR4
+                    self.windowmanager.windows["ende"].wait4track = int(value)
+                    self.windowmanager.set_window("ende")
+
             elif self.counter == 10:
                 run_command("%s -c=readwifiipoverspeaker" % cfg_file_folder.PLAYOUT_CONTROLS)
             elif self.counter == 11:

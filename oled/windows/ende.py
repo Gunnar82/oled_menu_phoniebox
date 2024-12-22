@@ -26,6 +26,7 @@ class Ende(MainWindow):
         self.loop = loop
 #        self.font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_L)
         self.fontawesome = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XXL)
+        self.wait4track = -1
         self.timeout = False
         self.window_on_back = "none"
         self.handle_key_back = False
@@ -47,7 +48,6 @@ class Ende(MainWindow):
         try:
             self.power_timer = settings.job_t >= 0
 
-
             if not (self.power_timer):
 
                 logger.debug(f"no powertimer")
@@ -55,13 +55,18 @@ class Ende(MainWindow):
 
                 self.drawline1 = settings.shutdown_reason
                 self.drawline2 = "System wird:"
+                if self.wait4track != -1: self.drawline3 = "Titelende: %d" % (self.wait4track)
                 self.drawsymbol = symbols.SYMBOL_POWER
                 self.mwidth,self.mheight = self.fontawesome.getsize(self.drawsymbol)
 
-                await asyncio.sleep(1)
-                if not settings.shutdown_reason == SR.SR4:
-                    self.do_shutdown()
-
+                while self.loop.is_running() and (settings.shutdown_reason == SR.SR4 or (self.nowplaying._state != "stop" and self.wait4track == -1)):
+                    check = max(0, int(self.wait4track))
+                    print (check)
+                    if int(self.nowplaying._song) > check:
+                        settings.shutdown_reason = SR.SR2
+    
+                    await asyncio.sleep(1)
+                self.do_shutdown()
             else:
                 while self.loop.is_running() and self.power_timer:
                     self.drawline1 = "Poweroff Timer aktiv!"
@@ -88,9 +93,6 @@ class Ende(MainWindow):
 
             draw.text(((settings.DISPLAY_WIDTH - self.mwidth )/ 2, 20), self.drawsymbol, font=self.fontawesome, fill=colors.COLOR_RED)
 
-            if settings.shutdown_reason == SR.SR4 and self.nowplaying._state == "stop":
-                settings.shutdown_reason = SR.SR2
-                self.do_shutdown()
 
     def push_callback(self,lp=False):
         pass
