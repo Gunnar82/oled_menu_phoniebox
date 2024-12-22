@@ -28,8 +28,9 @@ def pc_mute():
 def pc_toggle():
     run_command("%s -c=playerpause" % (cfg_file_folder.PLAYOUT_CONTROLS))
 
-def pc_shutdown():
-    run_command("%s -c=shutdown" % (cfg_file_folder.PLAYOUT_CONTROLS))
+def pc_shutdown(silent=False):
+    if silent: run_command("%s -c=shutdownsilent" % (cfg_file_folder.PLAYOUT_CONTROLS))
+    else: run_command("%s -c=shutdown" % (cfg_file_folder.PLAYOUT_CONTROLS))
 
 def pc_reboot():
     print("Reboot down system")

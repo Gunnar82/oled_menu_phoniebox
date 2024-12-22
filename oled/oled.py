@@ -288,15 +288,15 @@ def main():
     if "gpicase" in settings.INPUTS:
         mypygame.quit()
 
-    if settings.shutdown_reason == SR.SR2:
+    if settings.shutdown_reason in [SR.SR2, SR.SR5]:
         if haspowercontroller:
             if pc.ready:
-                pc.shutdown()
+                pc.shutdown(True if settings.shutdown_reason == SR.SR5 else False)
 
         print("Shutting down system")
         playout.pc_shutdown()
 
-    if settings.shutdown_reason == SR.SR3:
+    elif settings.shutdown_reason == SR.SR3:
         playout.pc_reboot()
 
 
