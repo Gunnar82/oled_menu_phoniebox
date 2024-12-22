@@ -7,7 +7,7 @@ import RPi.GPIO as GPIO
 import settings
 
 import config.symbols as symbols
-
+import config.shutdown_reason as SR
 import asyncio
 from datetime import datetime
 
@@ -96,7 +96,7 @@ class x728:
 
                 logger.debug("> 4 sek: shutdown")
                 handling = False
-                settings.shutdown_reason = settings.SR2
+                settings.shutdown_reason = SR.SR2
                 self.windowmanager.set_window("ende")
 
             elif timediff > 2 and timediff < 6:
@@ -106,7 +106,7 @@ class x728:
                 else:
                     logger.debug("> 2 && < 6 sek: reboot")
                     handling = False
-                    settings.shutdown_reason = settings.SR3
+                    settings.shutdown_reason = SR.SR3
                     self.windowmanager.set_window("ende")
 
             time.sleep(1)

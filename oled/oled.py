@@ -72,6 +72,7 @@ import config.file_folder as cfg_file_folder
 import integrations.bluetooth
 import integrations.functions as fn
 import integrations.playout as playout
+import config.shutdown_reason as SR
 
 import settings
 
@@ -148,7 +149,7 @@ def main():
 
 
     #shutdown reason default
-    settings.shutdown_reason = settings.SR1
+    settings.shutdown_reason = SR.SR1
 
     #Display = real hardware or emulator (depending on settings)
     display = idisplay.get_display()
@@ -287,7 +288,7 @@ def main():
     if "gpicase" in settings.INPUTS:
         mypygame.quit()
 
-    if settings.shutdown_reason == settings.SR2:
+    if settings.shutdown_reason == SR.SR2:
         if haspowercontroller:
             if pc.ready:
                 pc.shutdown()
@@ -295,7 +296,7 @@ def main():
         print("Shutting down system")
         playout.pc_shutdown()
 
-    if settings.shutdown_reason == settings.SR3:
+    if settings.shutdown_reason == SR.SR3:
         playout.pc_reboot()
 
 

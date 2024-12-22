@@ -8,6 +8,7 @@ import time
 import settings
 import integrations.playout as playout
 import config.symbols as symbols
+import config.shutdown_reason as SR
 
 from integrations.logging_config import *
 
@@ -58,7 +59,7 @@ class Ende(MainWindow):
                 self.mwidth,self.mheight = self.fontawesome.getsize(self.drawsymbol)
 
                 await asyncio.sleep(1)
-                if not settings.shutdown_reason == settings.SR4:
+                if not settings.shutdown_reason == SR.SR4:
                     self.do_shutdown()
 
             else:
@@ -73,7 +74,7 @@ class Ende(MainWindow):
             loger.debug("timer:error")
 
     def activate(self):
-        if not self.drawline1 == settings.SR4:
+        if not self.drawline1 == SR.SR4:
             self.loop.create_task(self.timer())
 
 
@@ -87,8 +88,8 @@ class Ende(MainWindow):
 
             draw.text(((settings.DISPLAY_WIDTH - self.mwidth )/ 2, 20), self.drawsymbol, font=self.fontawesome, fill=colors.COLOR_RED)
 
-            if settings.shutdown_reason == settings.SR4 and self.nowplaying._state == "stop":
-                settings.shutdown_reason = settings.SR2
+            if settings.shutdown_reason == SR.SR4 and self.nowplaying._state == "stop":
+                settings.shutdown_reason = SR.SR2
                 self.do_shutdown()
 
     def push_callback(self,lp=False):

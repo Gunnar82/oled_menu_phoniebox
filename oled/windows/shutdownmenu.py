@@ -6,7 +6,7 @@ import settings
 
 import config.colors as colors
 import config.file_folder as cfg_file_folder
-
+import config.shutdown_reason as SR
 import os
 import integrations.playout as playout
 
@@ -45,10 +45,10 @@ class Shutdownmenu(MenuBase):
             restart_oled()
         elif self.counter == 2:
             #playout.pc_toggle()
-            settings.shutdown_reason = settings.SR2
+            settings.shutdown_reason = SR.SR2
             self.windowmanager.set_window("ende")
         elif self.counter == 3:
-            settings.shutdown_reason = settings.SR3
+            settings.shutdown_reason = SR.SR3
             self.windowmanager.set_window("ende")
         else:
             if self.counter == 4:
@@ -62,7 +62,7 @@ class Shutdownmenu(MenuBase):
                 value = self.windowmanager.getValue(startpos=15,unit=" min")
                 run_command("%s -c=setidletime -v=%d" % (cfg_file_folder.PLAYOUT_CONTROLS,value))
             elif self.counter == 8:
-                settings.shutdown_reason = settings.SR4
+                settings.shutdown_reason = SR.SR4
                 self.windowmanager.set_window("ende")
             elif self.counter == 9:
                 if not self.nowplaying._state == "stop":
@@ -107,7 +107,7 @@ class Shutdownmenu(MenuBase):
             elif key == 'C':
                 playout.savepos()
                 self.mopidyconnection.stop()
-                settings.shutdown_reason = settings.SR2
+                settings.shutdown_reason = SR.SR2
                 print("Stopping event loop")
                 self.loop.stop()
             elif key == '0':

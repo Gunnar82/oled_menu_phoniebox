@@ -6,6 +6,7 @@ import settings
 
 import config.colors as colors
 import config.symbols as symbols
+import config.shutdown_reason as SR
 
 import config.file_folder as cfg_file_folder
 from luma.core.render import canvas
@@ -63,7 +64,7 @@ class Idle(MainWindow):
 
                 if ((now - settings.lastinput) > 120):
                     logger.info("X728: Shutting down: Low Battery (EMERG)")
-                    settings.shutdown_reason = settings.SR2
+                    settings.shutdown_reason = SR.SR2
                     self.windowmanager.set_window("ende")
 
 

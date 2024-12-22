@@ -4,7 +4,7 @@ import settings
 import pygame
 import time
 import integrations.playout as playout
-
+import config.shutdown_reason as SR
 
 from integrations.logging_config import *
 logger = setup_logger(__name__)
@@ -57,7 +57,7 @@ class pygameInput():
             logger.debug(f"gpicase Powerbutton: {gpio26}")
 
             if gpio26 == 0:
-                settings.shutdown_reason = settings.SR2
+                settings.shutdown_reason = SR.SR2
                 if self.powerpressed < 1:
                     self.powerpressed += 1
                     self.windowmanager.set_window("ende")
