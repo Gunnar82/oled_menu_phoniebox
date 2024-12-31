@@ -49,19 +49,27 @@ class Ende(MainWindow):
             self.power_timer = settings.job_t >= 0
 
             if not (self.power_timer):
-
+                # keine Poweroff-Timer
                 logger.debug(f"no powertimer")
                 self.drawsymbol =  symbols.SYMBOL_BELL_WHITE
 
                 self.drawline1 = settings.shutdown_reason
                 self.drawline2 = "System wird:"
-                if self.wait4track != -1: self.drawline3 = "Titelende: %d" % (self.wait4track)
+
+                wait4track = False
+
+                if self.wait4track != -1:
+                    #wait4 track ist aktiviert
+                    wait4track = True
+                    self.drawline3 = "Titelende: %d" % (self.wait4track)
+
                 self.drawsymbol = symbols.SYMBOL_POWER
                 self.mwidth,self.mheight = self.fontawesome.getsize(self.drawsymbol)
 
-                while self.loop.is_running() and (settings.shutdown_reason == SR.SR4 or (self.nowplaying._state != "stop")):
+                while self.loop.is_running() and (settings.shutdown_reason == SR.SR4 or (self.nowplaying._state != "stop" and wait4track)):
                     check = int(self.wait4track)
                     if self.wait4track >= 0 and int(self.nowplaying._song) > check:
+                        #track wurde erreicht
                         break
                     await asyncio.sleep(1)
 
@@ -79,6 +87,7 @@ class Ende(MainWindow):
             loger.debug("timer:error")
 
     def activate(self):
+        print (settings.shutdown_reason)
         if not self.drawline1 == SR.SR4:
             self.loop.create_task(self.timer())
 
