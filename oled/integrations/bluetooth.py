@@ -20,28 +20,27 @@ class BluetoothOutput():
 
         self.new_devices = []
 
-        self.selected_bt_mac, self.selected_bt_name = self.read_dev_bt_from_file()
         self.all_bt_dev = self.get_bt_devices()
+
+        self.selected_bt_mac, self.selected_bt_name = self.read_dev_bt_from_file()
 
 
     def read_dev_bt_from_file(self):
         mac = "00:00:00:00:00:00"
         name = "none"
         try:
-            with open('/etc/asound.conf') as reader:
+            with open('/home/pi/oledctrl/oled/config/bt_device') as reader:
                 text = reader.read()
-                mac = re.findall("(?:[0-9A-Fa-f]{2}[:-]){5}(?:[0-9A-Fa-f]{2})",text)[0]
-                name = re.findall("description \"[A-Za-z0-9_\- ]*\"",text)[0].split("\"")[1]
-
-        except Exception as errir:
-            logger.error(e)
-        finally:
-            reader.close()
+                mac, name = text.split(maxsplit=1)
+        except Exception as error:
+            logger.error(error)
 
         return mac,name
 
     def get_bt_dev_status(self):
-        return run_command ("bluetoothctl connect %s && sudo l2ping %s -c 1" % (self.selected_bt_mac, self.selected_bt_mac))
+        print (f"MAC:{self.selected_bt_mac}")
+        run_command ("bluetoothctl connect %s" % (self.selected_bt_mac))
+        return run_command ("sudo l2ping %s -c 1" % (self.selected_bt_mac))
 
     def cmd_disconnect(self):
         return run_command("bluetoothctl disconnect")
@@ -66,45 +65,63 @@ class BluetoothOutput():
             self.enable_dev_local()
 
     def set_alsa_bluetooth_mac(self,mac,name):
-
-        with open('/etc/asound.conf') as asound:
-            asound_content = asound.read()
-
-        asound_new = re.sub("(?:[0-9A-Fa-f]{2}[:-]){5}(?:[0-9A-Fa-f]{2})",mac,asound_content)
-        asound_new = re.sub("description \"[A-Za-z0-9_\- ]*\"","description \"%s\"" %(name),asound_new)
-
-        run_command("sudo chown pi /etc/asound.conf")
-
-        with open('/etc/asound.conf','w') as asound:
-            asound.write(asound_new)
-
-        run_command(["sudo chown root /etc/asound.conf", "sudo systemctl restart mpd", "sudo systemctl restart phoniebox-bt-buttons.service"])
+        with open('/home/pi/oledctrl/oled/config/bt_device','w') as bt_conf:
+            bt_conf.write(f"{mac} {name}")
 
         self.selected_bt_mac, self.selected_bt_name = self.read_dev_bt_from_file()
 
+    def find_sink_by_mac(self,mac_address):
+        try:
+            # Ersetze die ':' in der MAC-Adresse durch '_', da PulseAudio das Format so verwendet
+            mac_address = mac_address.replace(":", "_")
+            # Führe den Befehl pactl list short sinks aus, um alle Sinks aufzulisten
+            result = subprocess.run(
+                ["pactl", "list", "short", "sinks"], 
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+            )
+        
+            # Gehe durch die Ausgabe und suche nach der MAC-Adresse
+            for line in result.stdout.splitlines():
+                if mac_address in line:
+                    # Der erste Wert in der Zeile ist der Sink-Name
+                    sink_name = line.split()[0]
+                    return sink_name
+        
+            # Wenn keine passende Sink gefunden wurde
+            return None
+        except subprocess.CalledProcessError as e:
+            print(f"Fehler beim Ausführen von pactl: {e}")
+            return None
 
+
+    def set_default_sink(self,sink_name):
+        try:
+            # Setze die gefundene Sink als Standard
+            subprocess.run(["pactl", "set-default-sink", sink_name], check=True)
+            logger.debug(f"Die Bluetooth-Sink {sink_name} wurde als Standard gesetzt.")
+        except subprocess.CalledProcessError as e:
+            logger.debug(f"Fehler beim Setzen der Standard-Sink: {e}")
 
     def enable_dev_bt(self):
-        return run_command([f"bluetoothctl connect {self.selected_bt_mac}", f"sudo l2ping {self.selected_bt_mac} -c 1", f"mpc enable \"{bt_dev_1}\"", f"mpc disable \"{settings.ALSA_DEV_LOCAL}\""])
+        sink_name = self.find_sink_by_mac(self.selected_bt_mac)
+        if sink_name:
+            self.set_default_sink(sink_name)
+            return True
+        else:
+            return False
 
     def enable_dev_local(self):
-        run_command([f"mpc enable \"{settings.ALSA_DEV_LOCAL}\"", f"mpc disable \"{bt_dev_1}\""])
+        run_command("pactl set-default-sink 0")
 
 
-    def output_status(self,device="hifiberry"):
-        result = subprocess.run("mpc outputs | grep %s" % (device), shell=True, capture_output=True)
-        message = str(result.stdout)
-        if "abled" in message:
-            return (message[message.find("is")+3:message.find('\n')-2])
+    def output_is_bluez(self):
+        results = []
+        run_command("pactl list short sinks | grep bluez | grep RUNNING", results=results)
+        if "bluez_sink" in str(results):
+            logger.debug("bluez")
+            return True
         else:
-           print ("unavailable")
-
-
-    def output_status_local(self):
-        return self.output_status(settings.ALSA_DEV_LOCAL)
-
-    def output_status_bt(self):
-        return self.output_status(bt_dev_1)
+            return False
 
     def send(self, command, pause=0):
         self.process.send(f"{command}\n")

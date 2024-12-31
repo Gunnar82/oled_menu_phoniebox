@@ -135,21 +135,6 @@ class Idle(MainWindow):
             draw.text((1, settings.DISPLAY_HEIGHT - 5*settings.IDLE_LINE_HEIGHT ), self.nowplaying._playingtitle[self.titlex:], font=Idle.font, fill="white")
 
 
-
-
-    async def _find_dev_bt(self):
-        await asyncio.sleep(30)
-
-        if integrations.bluetooth.check_dev_bt():
-            self.BluetoothFound = True
-            #integrations.bluetooth.enable_dev_bt()
-        else:
-            if not self.LocalOutputEnabled:
-    
-                integrations.bluetooth.enable_dev_local()
-    
-                self.LocalOutputEnabled = True
-
     def push_callback(self,lp=False):
         if lp:
             self.windowmanager.set_window("shutdownmenu")

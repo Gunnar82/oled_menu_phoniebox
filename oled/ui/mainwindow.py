@@ -127,16 +127,3 @@ class MainWindow(WindowBase):
             #wenn Batterie, dann anzeigen
             draw.text((xpos3, lineposy), symbols.SYMBOL_BATTERY, font=self.faicons, fill=get_battload_color())
 
-
-    async def _find_dev_bt(self):
-        await asyncio.sleep(30)
-
-        if integrations.bluetooth.check_dev_bt():
-            self.BluetoothFound = True
-            #integrations.bluetooth.enable_dev_bt()
-        else:
-            if not self.LocalOutputEnabled:
-    
-                integrations.bluetooth.enable_dev_local()
-    
-                self.LocalOutputEnabled = True
