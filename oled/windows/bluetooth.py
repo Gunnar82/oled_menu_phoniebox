@@ -86,7 +86,7 @@ class Bluetoothmenu(ListBase):
                     device = self.menu[self.position]
                     self.append_busytext(f"Paare Gerät {device[0]}...")
                     self.bluetooth.pair(device[2])
-                    self.bluetooth.trust(device[2])
+                    #self.bluetooth.trust(device[2])
                     self.show_paired = True
                 else:
                     self.selected_device = self.menu[self.position]

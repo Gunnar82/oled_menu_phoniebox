@@ -58,17 +58,17 @@ class Headphonemenu(MenuBase):
             self.append_busytext("Verbinde Gerät:")
             self.append_busytext (self.bluetooth.selected_bt_name)
 
-            if not self.bluetooth.enable_dev_bt():
+            if not self.bluetooth.enable_bluez():
                 self.append_busyerror ("Keine Verbindung:")
             else:
-                self.append_busytext("Dektiviere lokale Ausgabe")
+                self.append_busytext("Deaktiviere lokale Ausgabe")
                 self.append_busytext("Aktiviere Bluetoothausgabe")
 
 
         elif self.counter == 3:
             self.append_busytext("Trenne Bluetooth - falls verbunden")
-            self.bluetooth.cmd_disconnect()
-
+            for i in range(0, 4):
+                self.bluetooth.cmd_disconnect()
             self.windowmanager.set_window("bluetoothmenu")
 
         self.append_busytext("Beendet.")

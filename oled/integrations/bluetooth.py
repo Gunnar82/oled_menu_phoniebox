@@ -37,13 +37,12 @@ class BluetoothOutput():
 
         return mac,name
 
-    def get_bt_dev_status(self):
-        print (f"MAC:{self.selected_bt_mac}")
-        run_command ("bluetoothctl connect %s" % (self.selected_bt_mac))
-        return run_command ("sudo l2ping %s -c 1" % (self.selected_bt_mac))
 
     def cmd_disconnect(self):
         return run_command("bluetoothctl disconnect")
+
+    def cmd_connect(self):
+        return run_command(f"bluetoothctl connect {self.selected_bt_mac}")
 
 
     def get_bt_devices(self):
@@ -57,12 +56,14 @@ class BluetoothOutput():
         return devices
 
 
-    def init_output(self):
+    def enable_bluez(self):
+        logger.debug(f"verbinde zu {self.selected_bt_mac}")
+        self.cmd_connect()
 
-        if self.get_bt_dev_status():
-            self.enable_dev_bt()
-        else:
-            self.enable_dev_local()
+        if self.output_is_bluez(running="SUSPENDED"):
+            logger.debug("bluz-sink vorhanden")
+            return self.enable_dev_bt()
+        return False
 
     def set_alsa_bluetooth_mac(self,mac,name):
         with open('/home/pi/oledctrl/oled/config/bt_device','w') as bt_conf:
@@ -103,6 +104,7 @@ class BluetoothOutput():
             logger.debug(f"Fehler beim Setzen der Standard-Sink: {e}")
 
     def enable_dev_bt(self):
+        logger.debug(f"enable_dev_bt: {self.selected_bt_mac} ")
         sink_name = self.find_sink_by_mac(self.selected_bt_mac)
         if sink_name:
             self.set_default_sink(sink_name)
@@ -114,9 +116,10 @@ class BluetoothOutput():
         run_command("pactl set-default-sink 0")
 
 
-    def output_is_bluez(self):
+    def output_is_bluez(self, running="RUNNING"):
         results = []
-        run_command("pactl list short sinks | grep bluez | grep RUNNING", results=results)
+        run_command(f"pactl list short sinks | grep bluez | grep {running}", results=results)
+        print (results)
         if "bluez_sink" in str(results):
             logger.debug("bluez")
             return True
@@ -237,29 +240,23 @@ class BluetoothOutput():
 
     def connect(self, mac_address):
         """Try to connect to a device by mac address."""
+        logger.debug(f"connect {mac_address}")
         try:
             self.send(f"connect {mac_address}", 2)
+            return True
         except Exception as e:
             logger.error(e)
             return False
-        else:
-            res = self.process.expect(
-                ["Failed to connect", "Connection successful", pexpect.EOF]
-            )
-            return res == 1
+        
 
     def disconnect(self, mac_address=""):
         """Try to disconnect to a device by mac address."""
         try:
             self.send(f"disconnect {mac_address}", 2)
+            return True
         except Exception as e:
             logger.error(e)
             return False
-        else:
-            res = self.process.expect(
-                ["Failed to disconnect", "Successful disconnected", pexpect.EOF]
-            )
-            return res == 1
 
     def remove(self, mac_address):
         """Remove paired device by mac address, return success of the operation."""
