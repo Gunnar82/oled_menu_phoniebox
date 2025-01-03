@@ -19,8 +19,14 @@ except ImportError:
 
 class pygameInput():
 
+    def setup_headless_mode(self):
+        """Setzt den Dummy-Video-Treiber für headless-Systeme."""
+        os.environ["SDL_VIDEODRIVER"] = "dummy"
+
     def __init__(self, loop, turn_callback, push_callback,windowmanager,nowplaying):
         print("Polling PyGame keys")
+
+        self.setup_headless_mode()
         pygame.init()
         pygame.joystick.init()
         pygame.mixer.init(44100, -16,2,512)
