@@ -27,16 +27,12 @@ class Bluetoothmenu(ListBase):
 
     def deactivate(self):
         self.active = False
-        self.bluetooth.stop_scan()
-
-        self.bluetooth.stop_bluetoothctl()
 
 
     def activate (self):
         self.selector = False
         self.active = True
         self.show_paired = True
-        self.bluetooth.start_bluetoothctl()
         self.generate = True
         self.loop.create_task(self.gen_menu())
 
@@ -56,16 +52,18 @@ class Bluetoothmenu(ListBase):
                     self.menu.append(["aktualisieren...",symbols.SYMBOL_REFRESH])
                     self.menu.append(["","c"])
                     if self.show_paired:
+                        self.bluetooth.get_paired_devices()
                         self.menu.append(["> gekoppelte Geräte:","c"])
 
-                        for device in self.bluetooth.get_paired_devices():
-                            self.menu.append([device['name'],symbols.SYMBOL_BLUETOOTH_OFF,device['mac_address']])
+                        for device in self.bluetooth.paired_devices:
+                            self.menu.append([str(device[1]),symbols.SYMBOL_BLUETOOTH_OFF,str(device[0])])
                     else:
                         self.menu.append(["neue Geräte:","h"])
 
-                        for device in self.bluetooth.get_discoverable_devices():
 
-                            self.menu.append([device['name'],symbols.SYMBOL_BLUETOOTH_ON,device['mac_address']])
+                        for device in self.bluetooth.nearby_devices:
+
+                            self.menu.append([str(device[1]),symbols.SYMBOL_BLUETOOTH_ON,str(device[0])])
 
                     self.generate = False
 
@@ -80,12 +78,12 @@ class Bluetoothmenu(ListBase):
                 if (self.position == 0):
                     self.show_paired = False
                     self.append_busytext("Starte Suche...")
-                    self.bluetooth.start_scan()
+                    self.bluetooth.discover_devices()
 
                 elif self.menu[self.position][1] == symbols.SYMBOL_BLUETOOTH_ON:
                     device = self.menu[self.position]
                     self.append_busytext(f"Paare Gerät {device[0]}...")
-                    self.bluetooth.pair(device[2])
+                    self.bluetooth.pair_device(device[2])
                     #self.bluetooth.trust(device[2])
                     self.show_paired = True
                 else:
@@ -115,5 +113,6 @@ class Bluetoothmenu(ListBase):
 
         except Exception as error:
             self.append_busyerror(error)
+            logger.debug(f"{error}")
         finally:
             self.set_window_busy(False)

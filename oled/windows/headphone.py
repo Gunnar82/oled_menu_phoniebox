@@ -67,8 +67,8 @@ class Headphonemenu(MenuBase):
 
         elif self.counter == 3:
             self.append_busytext("Trenne Bluetooth - falls verbunden")
-            for i in range(0, 4):
-                self.bluetooth.cmd_disconnect()
+            #for i in range(0, 4):
+            #    self.bluetooth.cmd_disconnect()
             self.windowmanager.set_window("bluetoothmenu")
 
         self.append_busytext("Beendet.")

@@ -10,3 +10,4 @@ pygame==2.5.1
 watchdog
 pexpect
 bs4
+pybluez
