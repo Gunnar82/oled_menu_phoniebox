@@ -40,7 +40,6 @@ class Start(WindowBase):
 
     def activate(self):
         logger.debug("activate: startet")
-        if csettings.BLUETOOTH_ENABLED: self.bluetooth.enable_dev_local()
         self.set_window_busy()
 
         self.loop.run_in_executor(None,self.exec_init)
@@ -67,6 +66,8 @@ class Start(WindowBase):
                 logger.info("auto_enable firewall False")
                 self.append_busytext("Übespringe Firewall...")
 
+
+            if csettings.BLUETOOTH_ENABLED: self.bluetooth.enable_dev_local()
 
             if (csettings.BLUETOOTH_AUTOCONNECT and csettings.BLUETOOTH_ENABLED):
                 logger.info("bluetooth autoconnect")
