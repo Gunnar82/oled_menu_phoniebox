@@ -180,7 +180,11 @@ class nowplaying:
     async def __systemabfrage(self):
 
         while self.loop.is_running():
-            self.output_symbol = symbols.SYMBOL_SPEAKER if not self.bluetooth.output_is_bluez() else symbols.SYMBOL_HEADPHONE
+            try:
+                self.output_symbol = symbols.SYMBOL_SPEAKER if not self.bluetooth.output_is_bluez() else symbols.SYMBOL_HEADPHONE
+            except:
+                self.output_symbol = symbols.SYMBOL_SPEAKER
+
             await self.loop.run_in_executor(None,self.check_online_state)
             await asyncio.sleep(10)
 

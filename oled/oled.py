@@ -68,10 +68,6 @@ keypad_4x4_i2c_cfg_sample = f"{keypad_4x4_i2c_cfg}.sample"
 statusled_cfg = "/home/pi/oledctrl/oled/config/statusled.py"
 statusled_cfg_sample = f"{statusled_cfg}.sample"
 
-bluetooth_cfg = "/home/pi/oledctrl/oled/config/bluetooth.py"
-bluetooth_cfg_sample = f"{bluetooth_cfg}.sample"
-
-
 rotary_enc_cfg = "/home/pi/oledctrl/oled/config/rotary_enc.py"
 rotary_enc_cfg_sample = f"{rotary_enc_cfg}.sample"
 
@@ -83,8 +79,7 @@ check_or_create_config(online_py,online_py_sample)
 
 import settings
 
-
-
+import config.user_settings as csettings
 import config.file_folder as cfg_file_folder
 import integrations.functions as fn
 import integrations.playout as playout
@@ -109,20 +104,6 @@ settings.battcapacity = -1
 settings.battloading = False
 settings.callback_active = False
 
-
-check_or_create_config(bluetooth_cfg,bluetooth_cfg_sample)
-
-
-try:
-    bluetooth_enabled = False
-    import config.bluetooth as bluetooth_config
-    if bluetooth_config.BLUETOOTH_ENABLED:
-        import integrations.bluetooth
-        import windows.bluetooth
-        bluetooth_enabled = True
-except Exception as error:
-    bluetooth_enabled = False
-    logger.error(f"Bluetooth: {error}")
 
 
 displays = ["st7789", "ssd1351", "sh1106_i2c", "sh1106_i2c", "emulated","gpicase","gpicase2"]
@@ -161,7 +142,28 @@ import windows.download as wdownload
 import windows.lock as wlock
 import windows.system as wsystem
 import windows.snake as wsnake
-import integrations.bluetooth as bluetooth
+
+
+try:
+    bluetooth_enabled = False
+    mybluetooth = None
+
+
+    if csettings.BLUETOOTH_ENABLED:
+        import integrations.bluetooth
+        import windows.bluetooth
+        bluetooth_enabled = True
+        mybluetooth = integrations.bluetooth.BluetoothOutput()
+except Exception as error:
+    print (error)
+    bluetooth_enabled = False
+    mybluetooth = None
+
+
+    logger.error(f"Bluetooth: {error}")
+
+print (f"bluetooth: {bluetooth_enabled}")
+
 
 #Systemd exit
 def gracefulexit(signum, frame):
@@ -170,9 +172,6 @@ signal.signal(signal.SIGTERM, gracefulexit)
 
 def main():
     loop = asyncio.get_event_loop()
-
-    objbluetooth = bluetooth.BluetoothOutput()
-
 
     #shutdown reason default
     settings.shutdown_reason = SR.SR1
@@ -193,7 +192,7 @@ def main():
     ###processing nowplaying
     import integrations.nowplaying as nowplaying
 
-    _nowplaying = nowplaying.nowplaying(loop,musicmanager,windowmanager,objbluetooth)
+    _nowplaying = nowplaying.nowplaying(loop,musicmanager,windowmanager,mybluetooth)
 
     #callback_setup
     def turn_callback(direction,_key=False):
@@ -217,8 +216,8 @@ def main():
     loadedwins.append(windows.playbackmenu.Playbackmenu(windowmanager, loop, _nowplaying))
     loadedwins.append(windows.mainmenu.Mainmenu(windowmanager,loop,"Hauptmenü"))
     loadedwins.append(windows.info.Infomenu(windowmanager,loop))
-    if bluetooth_enabled: loadedwins.append(windows.headphone.Headphonemenu(windowmanager,loop,objbluetooth,"Audioausgabe"))
-    if bluetooth_enabled: loadedwins.append(windows.bluetooth.Bluetoothmenu(windowmanager,loop,objbluetooth,"Bluetoothmenu"))
+    if bluetooth_enabled: loadedwins.append(windows.headphone.Headphonemenu(windowmanager,loop,mybluetooth,"Audioausgabe"))
+    if bluetooth_enabled: loadedwins.append(windows.bluetooth.Bluetoothmenu(windowmanager,loop,mybluetooth,"Bluetoothmenu"))
     loadedwins.append(windows.playlistmenu.Playlistmenu(windowmanager, loop, musicmanager))
     loadedwins.append(windows.foldermenu.Foldermenu(windowmanager,loop))
     loadedwins.append(windows.radiomenu.Radiomenu(windowmanager,loop))
@@ -226,7 +225,7 @@ def main():
     loadedwins.append(windows.getvalue.GetValue(windowmanager, loop))
     loadedwins.append(windows.ende.Ende(windowmanager, loop,_nowplaying))
     loadedwins.append(windows.shutdownmenu.Shutdownmenu(windowmanager, loop, mopidy,_nowplaying,"Powermenü"))
-    loadedwins.append(windows.start.Start(windowmanager, loop, mopidy,bluetooth_enabled))
+    loadedwins.append(windows.start.Start(windowmanager, loop, mopidy,mybluetooth))
     loadedwins.append(wdownload.DownloadMenu(windowmanager,loop))
     loadedwins.append(wsnake.SnakeGame(windowmanager,loop))
     loadedwins.append(wlock.Lock(windowmanager,loop,_nowplaying))
