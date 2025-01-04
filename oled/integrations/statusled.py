@@ -16,14 +16,17 @@ class statusled:
     maxduty = 10
     button_pressed = False
 
-    def __init__(self,loop,musicmanager):
+    def __init__(self,loop,musicmanager,pin,always_on):
         self.loop = loop
         self.musicmanager = musicmanager
+        self.pin = pin
+        self.always_on = always_on
+
         GPIO.setmode(GPIO.BCM)    # Set Pi to use pin number when referencing GPIO pins.
                               # Can use GPIO.setmode(GPIO.BCM) instead to use 
                               # Broadcom SOC channel names.
-        GPIO.setup(settings.STATUS_LED_PIN, GPIO.OUT)  # Set GPIO pin 12 to output mode.
-        self.pwm = GPIO.PWM(settings.STATUS_LED_PIN, 100)   # Initialize PWM on pwmPin 100Hz frequency
+        GPIO.setup(pin, GPIO.OUT)  # Set GPIO pin 12 to output mode.
+        self.pwm = GPIO.PWM(pin, 100)   # Initialize PWM on pwmPin 100Hz frequency
 
         self.loop.create_task(self._pulse())
 
@@ -31,16 +34,16 @@ class statusled:
         logger.debug("statusled to permanent")
         self.button_pressed = True
 
-        GPIO.setup(settings.STATUS_LED_PIN, GPIO.OUT)
-        GPIO.output(settings.STATUS_LED_PIN, GPIO.HIGH)
+        GPIO.setup(self.pin, GPIO.OUT)
+        GPIO.output(self.pin, GPIO.HIGH)
 
 
     def set_dark(self):
         logger.debug("statusled to dark")
         self.button_pressed = True
 
-        GPIO.setup(settings.STATUS_LED_PIN, GPIO.OUT)
-        GPIO.output(settings.STATUS_LED_PIN, GPIO.LOW)
+        GPIO.setup(self.pin, GPIO.OUT)
+        GPIO.output(self.pin, GPIO.LOW)
 
 
     async def _pulse(self):

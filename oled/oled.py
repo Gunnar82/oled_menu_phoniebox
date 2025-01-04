@@ -27,8 +27,6 @@ if args.loglevel_debug:
     configure_debug_modules(args.loglevel_debug)
 
 
-
-
 logger = setup_logger(__name__)
 
 
@@ -49,6 +47,10 @@ def check_or_create_config(filename,samplename):
        logger.error(f"usersettings Fehler: {filename}: {error}")
        sys.exit (-1)
 
+settings_py = "/home/pi/oledctrl/oled/settings.py"
+settings_py_sample = f"{settings_py}.sample"
+
+
 user_settings_py = "/home/pi/oledctrl/oled/config/user_settings.py"
 user_settings_py_sample = f"{user_settings_py}.sample"
 
@@ -60,13 +62,22 @@ file_folder_py_sample = f"{file_folder_py}.sample"
 online_py = "/home/pi/oledctrl/oled/config/online.py"
 online_py_sample = f"{online_py}.sample"
 
-settings_py = "/home/pi/oledctrl/oled/settings.py"
-settings_py_sample = f"{settings_py}.sample"
+keypad_4x4_i2c_cfg = "/home/pi/oledctrl/oled/config/keypad_4x4_i2c.py"
+keypad_4x4_i2c_cfg_sample = f"{keypad_4x4_i2c_cfg}.sample"
 
-check_or_create_config(user_settings_py,user_settings_py_sample)
-check_or_create_config(online_py,online_py_sample)
+statusled_cfg = "/home/pi/oledctrl/oled/config/statusled.py"
+statusled_cfg_sample = f"{statusled_cfg}.sample"
+
 check_or_create_config(settings_py,settings_py_sample)
+check_or_create_config(user_settings_py,user_settings_py_sample)
 check_or_create_config(file_folder_py,file_folder_py_sample)
+
+check_or_create_config(online_py,online_py_sample)
+
+
+import settings
+
+
 
 import config.file_folder as cfg_file_folder
 import integrations.bluetooth
@@ -75,11 +86,6 @@ import integrations.playout as playout
 import config.shutdown_reason as SR
 
 import settings
-
-import config.file_folder as cfg_file_folder
-
-
-
 
 
 ######
@@ -223,9 +229,12 @@ def main():
     ### KEYPAD 4x4 MCP23017 I2C
 
     if "keypad4x4" in settings.INPUTS:
+        check_or_create_config(keypad_4x4_i2c_cfg,keypad_4x4_i2c_cfg_sample)
+        import config.keypad_4x4_i2c as keypad_4x4_i2c_config
+
         from integrations.inputs.keypad_4x4_i2c import keypad_4x4_i2c
 
-        mKeypad = keypad_4x4_i2c(loop, settings.KEYPAD_ADDR, settings.KEYPAD_INTPIN, turn_callback, push_callback)
+        mKeypad = keypad_4x4_i2c(loop, keypad_4x4_i2c_config.KEYPAD_ADDR, keypad_4x4_i2c_config.KEYPAD_INTPIN, turn_callback, push_callback)
 
 
     ###Rotaryencoder Setup
@@ -259,8 +268,13 @@ def main():
 
     ######Status LED
     if "statusled" in settings.INPUTS:
+        check_or_create_config(statusled_cfg,statusled_cfg_sample)
+
+        import config.statusled as statusled_config
+
         import integrations.statusled as statusled
-        led = statusled.statusled(loop,musicmanager)
+
+        led = statusled.statusled(loop,musicmanager,pin=statusled_config.STATUS_LED_PIN,always_on=statusled_config.STATUS_LED_ALWAYS_ON)
     else:
         led = None
 

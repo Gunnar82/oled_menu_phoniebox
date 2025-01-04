@@ -23,7 +23,7 @@ class BluetoothOutput():
 
         self.new_devices = []
 
-        self.all_bt_dev = self.get_paired_devices()
+        #self.all_bt_dev = self.get_paired_devices()
 
         self.selected_bt_mac, self.selected_bt_name = self.read_dev_bt_from_file()
 

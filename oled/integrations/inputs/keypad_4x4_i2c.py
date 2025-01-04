@@ -12,6 +12,7 @@ import signal
 import sys
 import RPi.GPIO as GPIO
 
+
 class keypad_4x4_i2c:
     busy = False
 

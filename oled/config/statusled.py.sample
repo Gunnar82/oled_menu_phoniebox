@@ -1,0 +1,5 @@
+###
+STATUS_LED_PIN=19
+STATUS_LED_ALWAYS_ON=False
+
+###
