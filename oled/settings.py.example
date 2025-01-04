@@ -37,12 +37,6 @@ FONT_ICONS = "fonts/fontawesome.otf"
 FONT_TEXT = "fonts/arial.ttf"
 FONT_CLOCK = "fonts/calibri.ttf"
 
-ALSA_DEV_LOCAL="speaker"
-
-#BluetoothKopfhoerer
-BLUETOOTH_ENABLED = True
-BLUETOOTH_AUTOCONNECT = True
-
 INTPIN=2
 
 PLEASE_WAIT = "Bitte Warten..."

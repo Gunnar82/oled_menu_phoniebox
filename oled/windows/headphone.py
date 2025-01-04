@@ -22,7 +22,7 @@ class Headphonemenu(MenuBase):
     def __init__(self, windowmanager,loop,bluetooth,title):
         super().__init__(windowmanager,loop,title)
         self.bluetooth = bluetooth
-        self.descr.append([settings.ALSA_DEV_LOCAL,symbols.SYMBOL_SPEAKER])
+        self.descr.append(["Lautsprecher",symbols.SYMBOL_SPEAKER])
         self.descr.append(["",symbols.SYMBOL_HEADPHONE])
 
         self.descr.append(["Gerät suchen","\uf01e"])

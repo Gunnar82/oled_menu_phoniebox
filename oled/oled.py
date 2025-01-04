@@ -154,15 +154,15 @@ try:
         import windows.bluetooth
         bluetooth_enabled = True
         mybluetooth = integrations.bluetooth.BluetoothOutput()
+        logger.info ("Bluetooth gestartet")
+
 except Exception as error:
-    print (error)
     bluetooth_enabled = False
     mybluetooth = None
 
 
     logger.error(f"Bluetooth: {error}")
 
-print (f"bluetooth: {bluetooth_enabled}")
 
 
 #Systemd exit
