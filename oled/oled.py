@@ -68,14 +68,16 @@ keypad_4x4_i2c_cfg_sample = f"{keypad_4x4_i2c_cfg}.sample"
 statusled_cfg = "/home/pi/oledctrl/oled/config/statusled.py"
 statusled_cfg_sample = f"{statusled_cfg}.sample"
 
+bluetooth_cfg = "/home/pi/oledctrl/oled/config/bluetooth.py"
+bluetooth_cfg_sample = f"{bluetooth_cfg}.sample"
+
 
 rotary_enc_cfg = "/home/pi/oledctrl/oled/config/rotary_enc.py"
 rotary_enc_cfg_sample = f"{rotary_enc_cfg}.sample"
 
-check_or_create_config(settings_py,settings_py_sample)
 check_or_create_config(user_settings_py,user_settings_py_sample)
 check_or_create_config(file_folder_py,file_folder_py_sample)
-
+check_or_create_config(settings_py,settings_py_sample)
 check_or_create_config(online_py,online_py_sample)
 
 
@@ -84,7 +86,6 @@ import settings
 
 
 import config.file_folder as cfg_file_folder
-import integrations.bluetooth
 import integrations.functions as fn
 import integrations.playout as playout
 import config.shutdown_reason as SR
@@ -109,6 +110,19 @@ settings.battloading = False
 settings.callback_active = False
 
 
+check_or_create_config(bluetooth_cfg,bluetooth_cfg_sample)
+
+
+try:
+    bluetooth_enabled = False
+    import config.bluetooth as bluetooth_config
+    if bluetooth_config.BLUETOOTH_ENABLED:
+        import integrations.bluetooth
+        import windows.bluetooth
+        bluetooth_enabled = True
+except Exception as error:
+    bluetooth_enabled = False
+    logger.error(f"Bluetooth: {error}")
 
 
 displays = ["st7789", "ssd1351", "sh1106_i2c", "sh1106_i2c", "emulated","gpicase","gpicase2"]
@@ -124,13 +138,15 @@ try:
 except Exception as error:
     raise Exception(f"DISPLAY init FAILED: {error}")  # Exception verbessern
 
+
+
+
 from integrations.mopidy import MopidyControl
 from integrations.musicmanager import Musicmanager
 from ui.windowmanager import WindowManager
 import windows.idle
 import windows.info
 import windows.headphone
-import windows.bluetooth
 import windows.mainmenu
 import windows.playbackmenu
 import windows.playlistmenu
@@ -201,8 +217,8 @@ def main():
     loadedwins.append(windows.playbackmenu.Playbackmenu(windowmanager, loop, _nowplaying))
     loadedwins.append(windows.mainmenu.Mainmenu(windowmanager,loop,"Hauptmenü"))
     loadedwins.append(windows.info.Infomenu(windowmanager,loop))
-    loadedwins.append(windows.headphone.Headphonemenu(windowmanager,loop,objbluetooth,"Audioausgabe"))
-    loadedwins.append(windows.bluetooth.Bluetoothmenu(windowmanager,loop,objbluetooth,"Bluetoothmenu"))
+    if bluetooth_enabled: loadedwins.append(windows.headphone.Headphonemenu(windowmanager,loop,objbluetooth,"Audioausgabe"))
+    if bluetooth_enabled: loadedwins.append(windows.bluetooth.Bluetoothmenu(windowmanager,loop,objbluetooth,"Bluetoothmenu"))
     loadedwins.append(windows.playlistmenu.Playlistmenu(windowmanager, loop, musicmanager))
     loadedwins.append(windows.foldermenu.Foldermenu(windowmanager,loop))
     loadedwins.append(windows.radiomenu.Radiomenu(windowmanager,loop))
