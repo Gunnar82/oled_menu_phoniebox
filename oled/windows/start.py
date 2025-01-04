@@ -24,11 +24,14 @@ from integrations.functions import get_oledversion, get_battload_color, enable_f
 class Start(WindowBase):
     contrasthandle = False
 
-    def __init__(self, windowmanager,loop, mopidyconnection,bluetooth):
+    def __init__(self, windowmanager,loop, mopidyconnection,bluetooth_enabled):
         super().__init__(windowmanager, loop)
         self.busysymbol = symbols.SYMBOL_PROGRAMM
 
-        self.bluetooth = bluetooth
+        if bluetooth_enabled: import integrations.bluetooth as bluetooth
+
+        self.bluetooth_enabled = bluetooth_enabled
+
         self.mopidyconnection = mopidyconnection
         self.timeout = False
         self.conrasthandle = False
@@ -39,7 +42,7 @@ class Start(WindowBase):
 
     def activate(self):
         logger.debug("activate: startet")
-        self.bluetooth.enable_dev_local()
+        if self.bluetooth_enabled: self.bluetooth.enable_dev_local()
         self.set_window_busy()
 
         self.loop.run_in_executor(None,self.exec_init)
@@ -67,7 +70,7 @@ class Start(WindowBase):
                 self.append_busytext("Übespringe Firewall...")
 
 
-            if (csettings.BLUETOOTH_AUTOCONNECT):
+            if (csettings.BLUETOOTH_AUTOCONNECT and self.bluetooth_enabled):
                 logger.info("bluetooth autoconnect")
                 self.append_busytext("Verbinde Bluetooth...")
                 self.append_busytext(f"Suche Gerät: {self.bluetooth.selected_bt_name}")
