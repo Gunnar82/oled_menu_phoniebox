@@ -11,10 +11,13 @@ except ImportError:
     pass
 
 class RotaryEncoder():
-    def __init__(self, loop, turn_callback, push_callback):
+    def __init__(self, loop, turn_callback, push_callback,clk,dt,sw):
         self.loop = loop
         self.turn_callback = turn_callback
         self.push_callback = push_callback
+        self.pin_clk = clk
+        self.pin_dt = dt
+        self.pin_sw = sw
         self.lastchannel = -1
 
 
@@ -22,7 +25,7 @@ class RotaryEncoder():
         self.current_clk = 1
         self.current_dt = 1
         self.lockrotary = threading.Lock() #create lock for rotary switch
-        self._setup_gpio(settings.PIN_CLK, settings.PIN_DT, settings.PIN_SW)
+        self._setup_gpio(self.pin_clk, self.pin_dt, self.pin_sw)
         print("Using rotary encoder interrupts")
 
     def _rotary_push(self, channel):
@@ -30,8 +33,8 @@ class RotaryEncoder():
         self.push_callback()
 
     def _rotary_turn(self, channel):
-        switch_a = GPIO.input(settings.PIN_CLK)
-        switch_b = GPIO.input(settings.PIN_DT)
+        switch_a = GPIO.input(self.pin_clk)
+        switch_b = GPIO.input(self.pin_dt)
 
         if self.current_clk == switch_a and self.current_dt == switch_b:
             #Same interrupt as before? -> Bouncing -> no action
@@ -46,7 +49,7 @@ class RotaryEncoder():
                 if (channel != self.lastchannel): # 
                     self.lastchannel = channel
                 else:
-                    if channel == settings.PIN_DT: #Direction depends on which one was last
+                    if channel == self.pin_dt: #Direction depends on which one was last
                         self.turn_callback(1)
                     else:
                         self.turn_callback(-1)

@@ -68,6 +68,10 @@ keypad_4x4_i2c_cfg_sample = f"{keypad_4x4_i2c_cfg}.sample"
 statusled_cfg = "/home/pi/oledctrl/oled/config/statusled.py"
 statusled_cfg_sample = f"{statusled_cfg}.sample"
 
+
+rotary_enc_cfg = "/home/pi/oledctrl/oled/config/rotary_enc.py"
+rotary_enc_cfg_sample = f"{rotary_enc_cfg}.sample"
+
 check_or_create_config(settings_py,settings_py_sample)
 check_or_create_config(user_settings_py,user_settings_py_sample)
 check_or_create_config(file_folder_py,file_folder_py_sample)
@@ -175,7 +179,7 @@ def main():
 
     _nowplaying = nowplaying.nowplaying(loop,musicmanager,windowmanager,objbluetooth)
 
-    #Rotary encoder setup
+    #callback_setup
     def turn_callback(direction,_key=False):
         windowmanager.turn_callback(direction, key=_key)
 
@@ -239,10 +243,13 @@ def main():
 
     ###Rotaryencoder Setup
     if "rotaryenc" in settings.INPUTS:
+        check_or_create_config(rotary_enc_cfg,rotary_enc_cfg_sample)
+        import config.rotary_enc as rotary_enc_config
+
         from integrations.inputs.rotaryencoder import RotaryEncoder
 
         print ("Rotaryconctroller")
-        rc = RotaryEncoder(loop, turn_callback, push_callback)
+        rc = RotaryEncoder(loop, turn_callback, push_callback,clk=rotary_enc_config.PIN_CLK,dt=rotary_enc_config.PIN_DT,sw=rotary_enc_config.PIN_SW)
 
 
     ####Powercontroller Init

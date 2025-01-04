@@ -23,14 +23,6 @@ DISPLAY_DRIVER = "emulated"
 
 ####CONTROL
 
-
-#Pins for rotary encoder
-PIN_CLK = 24
-PIN_DT = 1
-PIN_SW = 25
-
-####
-
 ### X728 UPS support
 X728_BATT_LOW = 15
 X728_BATT_EMERG = 5 # Shutdown Battery Percentage
