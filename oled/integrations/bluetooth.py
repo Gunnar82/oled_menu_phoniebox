@@ -75,7 +75,7 @@ class BluetoothOutput():
             # Wenn keine passende Sink gefunden wurde
             return None
         except subprocess.CalledProcessError as e:
-            print(f"Fehler beim Ausführen von pactl: {e}")
+            logger.debug(f"Fehler beim Ausführen von pactl: {e}")
             return None
 
 
@@ -103,7 +103,7 @@ class BluetoothOutput():
     def output_is_bluez(self, running="RUNNING"):
         results = []
         run_command(f"pactl list short sinks | grep bluez | grep {running}", results=results)
-        print (results)
+        logger.debug(str(results))
         if "bluez_sink" in str(results):
             logger.debug("bluez")
             return True

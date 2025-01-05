@@ -69,7 +69,7 @@ class Playlistmenu(ListBase):
             self.song = int(status['song']) + 1 if ("song" in status) else -1
             cnt += 1
             time.sleep(0.1)
-        print ("Song: %s POS: %s" %(self.song, self.position))
+        logger.debug ("Song: %s POS: %s" %(self.song, self.position))
 
 
         try:

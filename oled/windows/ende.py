@@ -27,6 +27,7 @@ class Ende(MainWindow):
 #        self.font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_L)
         self.fontawesome = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XXL)
         self.wait4track = -1
+        self.wait4end = False
         self.timeout = False
         self.window_on_back = "none"
         self.handle_key_back = False
@@ -63,14 +64,25 @@ class Ende(MainWindow):
                     wait4track = True
                     self.drawline3 = "Titelende: %d" % (self.wait4track)
 
+
+                if self.wait4end:
+                    #wait4end ist aktiviert
+                    self.drawline3 = "auf STOP"
+
                 self.drawsymbol = symbols.SYMBOL_POWER
                 self.mwidth,self.mheight = self.fontawesome.getsize(self.drawsymbol)
 
-                while self.loop.is_running() and (settings.shutdown_reason == SR.SR4 or (self.nowplaying._state != "stop" and wait4track)):
+                while self.loop.is_running() and (settings.shutdown_reason == SR.SR4):
                     check = int(self.wait4track)
-                    if self.wait4track >= 0 and int(self.nowplaying._song) > check:
+                    wait4end = self.wait4end and self.nowplaying._state == "stop"
+
+                    if self.wait4track >= 0 and int(self.nowplaying._song) > check and self.nowplaying._state != "stop":
                         #track wurde erreicht
                         break
+
+                    if wait4end:
+                        break
+
                     await asyncio.sleep(1)
 
                 settings.shutdown_reason = SR.SR5
@@ -84,7 +96,7 @@ class Ende(MainWindow):
                     await asyncio.sleep(3)
 
         except Exception as error:
-            loger.debug("timer:error")
+            logger.debug(f"timer:{error}")
 
     def activate(self):
         print (settings.shutdown_reason)

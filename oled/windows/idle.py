@@ -80,7 +80,7 @@ class Idle(MainWindow):
                     logger.debug("Titelwechsel erkannt")
                     self.set_busyinfo(item = ["Titelwechsel", "%2.2d von %2.2d " % (int(self.nowplaying._song), int(self.nowplaying._playlistlength))], symbol = symbols.SYMBOL_CHANGING_SONG)
             except Exception as error:
-                print (error)
+                logger.debug(f"{error}")
 
             if ((self.nowplaying._state == "stop") or (settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (0 <= settings.battcapacity <= settings.X728_BATT_LOW) or (settings.DISPLAY_HEIGHT > 64)):
                 if (settings.battcapacity >= 0):
@@ -178,7 +178,6 @@ class Idle(MainWindow):
                         self.set_busyinfo(item="Erster Titel",symbol=symbols.SYMBOL_FAIL)
 
             elif key in ['right', '6']:
-                print (self.nowplaying)
                 if self.nowplaying.input_is_stream() and not self.nowplaying.input_is_online() and self.nowplaying._song <= self.nowplaying._playlistlength:
                     self.set_busyinfo(item="Nächster Sender",symbol=symbols.SYMBOL_NEXT)
                     self.loop.create_task(self.change_folder(1))

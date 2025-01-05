@@ -33,7 +33,7 @@ class Headphonemenu(MenuBase):
 
 
     def deactivate(self):
-        print ("ende")
+        logger.debug ("ende")
         #self.bluetooth.start_bluetoothctl()
 
     def activate (self):

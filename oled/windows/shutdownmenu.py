@@ -63,6 +63,7 @@ class Shutdownmenu(MenuBase):
                 run_command("%s -c=setidletime -v=%d" % (cfg_file_folder.PLAYOUT_CONTROLS,value))
             elif self.counter == 8:
                 settings.shutdown_reason = SR.SR4
+                self.windowmanager.windows["ende"].wait4end = True
                 self.windowmanager.set_window("ende")
             elif self.counter == 9:
                 if not self.nowplaying._state == "stop":
