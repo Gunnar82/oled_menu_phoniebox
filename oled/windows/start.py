@@ -74,7 +74,7 @@ class Start(WindowBase):
                 self.append_busytext("Verbinde Bluetooth...")
                 self.append_busytext(f"Suche Gerät: {self.bluetooth.selected_bt_name}")
 
-                self.bluetooth.enable_dev_bt()
+                self.bluetooth.enable_bluez()
             else:
                 logger.info("bluetooth autoconnect AUS")
                 self.append_busytext("Überspringe Bluetooth...")
