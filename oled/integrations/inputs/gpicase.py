@@ -63,7 +63,8 @@ class pygameInput():
             logger.debug(f"gpicase Powerbutton: {gpio26}")
 
             if gpio26 == 0:
-                settings.shutdown_reason = SR.SR2
+                if settings.shutdown_reason != SR.SR4 : settings.shutdown_reason = SR.SR2
+
                 if self.powerpressed < 1:
                     self.powerpressed += 1
                     self.windowmanager.set_window("ende")

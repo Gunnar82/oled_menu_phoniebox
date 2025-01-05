@@ -27,7 +27,7 @@ class Shutdownmenu(MenuBase):
         self.descr.append(["Timer Eingabe", "\uf0a2"])  #5
         self.descr.append(["Idle AUS", "\uf185"])             #6
         self.descr.append(["Idle Eingabe", "\uf186"])         #7
-        self.descr.append(["AUS nach Ende", "\uf011"])        #8
+        self.descr.append(["AUS nach STOP", "\uf011"])        #8
         self.descr.append(["AUS nach Titeln", "\uf011"])      #9
         self.descr.append(["IP vorlesen", "\uf012"])          #10
         self.descr.append(["VOLstart AUS", "\uf026"])         #11

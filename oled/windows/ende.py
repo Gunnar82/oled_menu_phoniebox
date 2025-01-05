@@ -54,8 +54,8 @@ class Ende(MainWindow):
                 logger.debug(f"no powertimer")
                 self.drawsymbol =  symbols.SYMBOL_BELL_WHITE
 
-                self.drawline1 = settings.shutdown_reason
-                self.drawline2 = "System wird:"
+                self.drawline1 = "Systemstatus:"
+                self.drawline2 = settings.shutdown_reason
 
                 wait4track = False
 
@@ -67,7 +67,7 @@ class Ende(MainWindow):
 
                 if self.wait4end:
                     #wait4end ist aktiviert
-                    self.drawline3 = "auf STOP"
+                    self.drawline3 = "STOP"
 
                 self.drawsymbol = symbols.SYMBOL_POWER
                 self.mwidth,self.mheight = self.fontawesome.getsize(self.drawsymbol)
@@ -100,7 +100,7 @@ class Ende(MainWindow):
 
     def activate(self):
         print (settings.shutdown_reason)
-        if not self.drawline1 == SR.SR4:
+        if not self.drawline2 == SR.SR4:
             self.loop.create_task(self.timer())
 
 
@@ -108,9 +108,9 @@ class Ende(MainWindow):
         with canvas(self.device) as draw:
             super().render(draw)
 
-            draw.text((1, settings.DISPLAY_HEIGHT - 3*settings.IDLE_LINE_HEIGHT ), self.drawline1 , font=self.font, fill="white")
+            draw.text((1, settings.DISPLAY_HEIGHT - 3*settings.IDLE_LINE_HEIGHT ), self.drawline3 , font=self.font, fill="white")
             draw.text((1, settings.DISPLAY_HEIGHT - 4*settings.IDLE_LINE_HEIGHT ), self.drawline2, font=self.font, fill="white")
-            draw.text((1, settings.DISPLAY_HEIGHT - 5*settings.IDLE_LINE_HEIGHT ), self.drawline3, font=self.font, fill="white")
+            draw.text((1, settings.DISPLAY_HEIGHT - 5*settings.IDLE_LINE_HEIGHT ), self.drawline1, font=self.font, fill="white")
 
             draw.text(((settings.DISPLAY_WIDTH - self.mwidth )/ 2, 20), self.drawsymbol, font=self.fontawesome, fill=colors.COLOR_RED)
 
@@ -141,3 +141,4 @@ class Ende(MainWindow):
         logger.info("timer: Stopping event loop")
         time.sleep(2)
         self.loop.stop()
+

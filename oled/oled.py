@@ -20,7 +20,7 @@ args = parse_arguments()
 
 
 from integrations.logging_config import *
-
+from integrations.functions import run_as_service
 
 # Debug-Module global setzen
 if args.loglevel_debug:
@@ -324,18 +324,21 @@ def main():
     if "gpicase" in settings.INPUTS:
         mypygame.quit()
 
-    if settings.shutdown_reason in [SR.SR2, SR.SR5]:
-        if haspowercontroller:
-            if pc.ready:
-                pc.shutdown()
+    if run_as_service():
 
-        print("Shutting down system")
-        silent=True if settings.shutdown_reason == SR.SR5 else False
-        playout.pc_shutdown(silent)
+        if settings.shutdown_reason in [SR.SR2, SR.SR5]:
+            if haspowercontroller:
+                if pc.ready:
+                    pc.shutdown()
 
-    elif settings.shutdown_reason == SR.SR3:
-        playout.pc_reboot()
+            logger.error(f"Shutting down system: {settings.shutdown_reason}")
+            silent=True if settings.shutdown_reason == SR.SR5 else False
+            playout.pc_shutdown(silent)
 
+        elif settings.shutdown_reason == SR.SR3:
+            playout.pc_reboot()
+    else:
+        logger.error (f"nicht als Dienst gestartet - nur beenden, eigentlich: {settings.shutdown_reason}")
 
 
 if __name__ == '__main__':

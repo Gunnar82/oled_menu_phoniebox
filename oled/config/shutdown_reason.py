@@ -1,7 +1,7 @@
 #shutdown Texte
 
-SR1 = "beendet"
-SR2 = "heruntergefahren"
-SR3 = "neugestartet"
-SR4 = "gewartet"
+SR1 = "wird beendet"
+SR2 = "wird heruntergefahren"
+SR3 = "wird neugestartet"
+SR4 = "warten auf"
 SR5 = "leise AUS"
