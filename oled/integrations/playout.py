@@ -12,6 +12,11 @@ from integrations.webrequest import WebRequest
 
 from urllib.parse import urljoin
 
+from integrations.logging_config import *
+
+logger = setup_logger(__name__)
+
+
 def pc_prev():
     run_command("%s -c=playerprev" % (cfg_file_folder.PLAYOUT_CONTROLS))
 def pc_next():
@@ -100,7 +105,7 @@ def checkfolder(playfile):
 
 def playlast_checked(playfile):
     lastfile=add_leading_slash(open(playfile).read().replace("\n",""))
-
+    set_resume(lastfile)
     pc_playfolder(lastfile)
 
 def pc_volup(step=5):
@@ -117,9 +122,37 @@ def pc_playfolder(folder=cfg_file_folder.AUDIO_BASEPATH_RADIO):
 
 
 def pc_enableresume(folder=""):
+    logger.debug("enable_resume started")
     if folder != "":
-        print("%s -c=enableresume -d=\"%s\"" % (cfg_file_folder.RESUME_PLAY,folder))
+        cmd = "%s -c=enableresume -d=\"%s\"" % (cfg_file_folder.RESUME_PLAY,folder)
+        logger.debug(cmd)
+        run_command(cmd)
 
 def pc_disableresume(folder=""):
     if folder != "":
         run_command("%s -c=disableresume -d=\"%s\"" % (cfg_file_folder.RESUME_PLAY,folder))
+
+
+def set_resume(folder):
+    logger.debug(f"set_resume: {folder}")
+
+    enable = False
+    hoerbuch = cfg_file_folder.AUDIO_BASEPATH_HOERBUCH[len(cfg_file_folder.AUDIO_BASEPATH_BASE):]
+    print (hoerbuch)
+    if folder.startswith(cfg_file_folder.AUDIO_BASEPATH_BASE):
+        logger.debug("set_resume - entferne Basispfad")
+        folder = folder[len(cfg_file_folder.AUDIO_BASEPATH_BASE) + 1:]
+
+    if folder.startswith(hoerbuch):
+        logger.debug (f"enable_resume: hoerbuch {cfg_file_folder.AUDIO_BASEPATH_HOERBUCH}")
+        enable = True
+    #elif folder.startswith(cfg_file_folder.AUDIO_BASEPATH_MUSIC):
+    #    logger.debug (f"disable_resume: music {cfg_file_folder.AUDIO_BASEPATH_HOERBUCH}")
+    #    enable = False
+    #elif folder.startswith(cfg_file_folder.AUDIO_BASEPATH_RADIO):
+    #    logger.debug (f"diable_resume: radio {cfg_file_folder.AUDIO_BASEPATH_HOERBUCH}")
+
+
+    print (enable,folder)
+    if enable: pc_enableresume(folder)
+    else: pc_disableresume(folder)

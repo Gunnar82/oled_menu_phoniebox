@@ -24,6 +24,7 @@ class SystemMenu(ListBase):
     qr_width = settings.DISPLAY_HEIGHT if settings.DISPLAY_HEIGHT < settings.DISPLAY_WIDTH else settings.DISPLAY_WIDTH
     timeout = False
     busysymbol = symbols.SYMBOL_ZAHNRAD
+    pixeltest = False
 
     def create_qr(self):
 
@@ -60,7 +61,7 @@ class SystemMenu(ListBase):
         self.totalsize = 0
 
         # QR-Code generieren
-        self.menu.append("PLACEHOLDER UPDATE_RADIO 1")             # Eitnrag 0
+        self.menu.append("pixel ausrichten")             # Eitnrag 0
         self.menu.append("PLACEHOLDER UPDATE_RADIO 2")             # Eitnrag 1
 
         self.menu.append(["Lösche Online-Ordner"])                 # Eintrag 2
@@ -174,11 +175,18 @@ class SystemMenu(ListBase):
 
             return
 
+        if self.pixeltest:
+            self.pixeltest = False
+
+            return
+
         self.cmd = ""
 
         self.set_window_busy()
         self.append_busytext()
 
+        if self.position == 0 and not self.pixeltest:
+            self.pixeltest = True
         if self.position == 1:
             self.cmd = self.set_option("UPDATE_RADIO",not config.user_settings.UPDATE_RADIO,cfg_file_folder.FILE_USER_SETTINGS)
 
@@ -286,11 +294,26 @@ class SystemMenu(ListBase):
 
 
     def render(self):
-
-        if not self.showqr:
+        if self.pixeltest:
             try:
-                self.menu[0]  = ["Update Radio ist %s" % ("EIN" if config.user_settings.UPDATE_RADIO else "AUS"),"h"]
-                self.menu[1]  = ["setze auf %s" % ("EIN" if not config.user_settings.UPDATE_RADIO else "AUS")]
+                with canvas(self.device) as draw:
+                    outer_x1, outer_y1 = 0, 0
+                    outer_x2, outer_y2 = settings.DISPLAY_WIDTH, settings.DISPLAY_HEIGHT
+
+                    draw.rectangle([outer_x1, outer_y1, outer_x2, outer_y2], outline="blue", fill="blue")
+
+                    # Inneres Rechteck (gelb, innerhalb der blauen Umrandung)
+                    inner_x1 = outer_x1 + 10  # Offset von 2 Pixeln für die Wandstärke
+                    inner_y1 = outer_y1 + 10
+                    inner_x2 = outer_x2 - 10
+                    inner_y2 = outer_y2 - 10
+                    draw.rectangle([inner_x1, inner_y1, inner_x2, inner_y2], outline="yellow", fill="yellow")
+            except:
+                self.pixetest = False
+
+        elif not self.showqr:
+            try:
+                self.menu[1]  = ["Radio ist %s - setze auf %s" % ("EIN" if config.user_settings.UPDATE_RADIO else "AUS","EIN" if not config.user_settings.UPDATE_RADIO else "AUS")]
 
                 self.menu[10] = ["Firewall AUTO_ENABLED ist %s" % ("EIN" if config.user_settings.AUTO_ENABLED else "AUS"),"h"]
                 self.menu[11]  = ["setze auf %s" % ("EIN" if not config.user_settings.AUTO_ENABLED else "AUS")]

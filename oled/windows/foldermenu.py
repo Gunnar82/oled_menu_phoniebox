@@ -46,21 +46,16 @@ class Foldermenu(ListBase):
         try:
             self.set_window_busy()
             foldername = folder[len(cfg_file_folder.AUDIO_BASEPATH_BASE) + 1:]
+            logger.debug (f"enable_resume: {foldername}")
 
-            if folder.startswith(cfg_file_folder.AUDIO_BASEPATH_HOERBUCH):
-                playout.pc_enableresume(foldername)
-            elif folder.startswith(cfg_file_folder.AUDIO_BASEPATH_MUSIC):
-                playout.pc_disableresume(foldername)
-            elif folder.startswith(cfg_file_folder.AUDIO_BASEPATH_RADIO):
-                playout.pc_disableresume(foldername)
-            else:
-                self.append_busyerror(f"unbekannt: {folder}")
+            playout.set_resume(folder)
 
             self.append_busytext("Abspielen:")
             self.append_busytext(foldername)
             playout.pc_playfolder(foldername)
             self.windowmanager.set_window("idle")
         except Exception as error:
+            logger.debug(f"{error}")
             self.append_busyerror(error)
         finally:
             self.set_window_busy(False)
