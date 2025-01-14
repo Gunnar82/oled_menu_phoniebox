@@ -58,6 +58,8 @@ class Headphonemenu(MenuBase):
             self.append_busytext("Verbinde Gerät:")
             self.append_busytext (self.bluetooth.selected_bt_name)
 
+            self.bluetooth.disconnect_default_bt_device()
+
             if not self.bluetooth.connect_default_bt_device():
                 self.append_busyerror ("Keine Verbindung:")
             else:

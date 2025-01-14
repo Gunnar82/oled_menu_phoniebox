@@ -203,8 +203,15 @@ class BluetoothOutput():
             print(f"Trenne Verbindung zu Gerät {device_addr}...")
             subprocess.run(f"bluetoothctl disconnect {device_addr}", shell=True, check=True)
             print(f"Erfolgreich die Verbindung zu {device_addr} getrennt.")
+            return True
         except subprocess.CalledProcessError as e:
             print(f"Fehler beim Trennen der Verbindung mit {device_addr}: {e}")
+            return False
+
+    def disconnect_default_bt_device(self):
+        logger.debug(f"BT: disconnect_default_device {self.selected_bt_name}")
+        return self.disconnect_device(self.selected_bt_mac)
+
 
     def remove_device(self, device_addr):
         """
