@@ -67,7 +67,7 @@ class Start(WindowBase):
                 self.append_busytext("Übespringe Firewall...")
 
 
-            if csettings.BLUETOOTH_ENABLED: self.bluetooth.enable_dev_local()
+            #if csettings.BLUETOOTH_ENABLED: self.bluetooth.enable_dev_local()
 
             if (csettings.BLUETOOTH_AUTOCONNECT and csettings.BLUETOOTH_ENABLED):
                 logger.info("bluetooth autoconnect")

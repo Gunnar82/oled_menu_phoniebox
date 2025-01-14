@@ -12,7 +12,7 @@ import asyncio
 from datetime import datetime
 
 from integrations.logging_config import *
-
+from integrations.functions import restart_oled
 logger = setup_logger(__name__)
 
 
@@ -106,8 +106,7 @@ class x728:
                 else:
                     logger.debug("> 2 && < 6 sek: reboot")
                     handling = False
-                    settings.shutdown_reason = SR.SR3
-                    self.windowmanager.set_window("ende")
+                    restart_oled()
 
             time.sleep(1)
 
