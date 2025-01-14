@@ -58,7 +58,7 @@ class Headphonemenu(MenuBase):
             self.append_busytext("Verbinde Gerät:")
             self.append_busytext (self.bluetooth.selected_bt_name)
 
-            if not self.bluetooth.enable_bluez():
+            if not self.bluetooth.connect_default_bt_device():
                 self.append_busyerror ("Keine Verbindung:")
             else:
                 self.append_busytext("Deaktiviere lokale Ausgabe")

@@ -153,7 +153,7 @@ class BluetoothOutput():
                     print(f"Adresse: {addr}, Name: {name}")
             else:
                 print("Keine bereits gekoppelten Geräte gefunden.")
-        
+
         except subprocess.CalledProcessError as e:
             print(f"Fehler beim Abrufen der gekoppelten Geräte: {e}")
 
@@ -186,8 +186,14 @@ class BluetoothOutput():
             print(f"Versuche, mit Gerät {device_addr} zu verbinden...")
             subprocess.run(f"bluetoothctl connect {device_addr}", shell=True, check=True)
             print(f"Erfolgreich verbunden mit {device_addr}")
+            return True
         except subprocess.CalledProcessError as e:
             print(f"Fehler beim Verbinden mit {device_addr}: {e}")
+            return False
+
+    def connect_default_bt_device(self):
+        logger.debug(f"BT: connect_default_device {self.selected_bt_name}")
+        return self.connect_device(self.selected_bt_mac)
 
     def disconnect_device(self, device_addr):
         """
