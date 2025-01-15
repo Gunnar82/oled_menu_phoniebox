@@ -67,17 +67,6 @@ class Start(WindowBase):
                 self.append_busytext("Übespringe Firewall...")
 
 
-            #if csettings.BLUETOOTH_ENABLED: self.bluetooth.enable_dev_local()
-
-            if (csettings.BLUETOOTH_AUTOCONNECT and csettings.BLUETOOTH_ENABLED):
-                logger.info("bluetooth autoconnect")
-                self.append_busytext("Verbinde Bluetooth...")
-                self.append_busytext(f"Suche Gerät: {self.bluetooth.selected_bt_name}")
-
-                self.bluetooth.connect_default_bt_device()
-            else:
-                logger.info("bluetooth autoconnect AUS")
-                self.append_busytext("Überspringe Bluetooth...")
 
             if "x728" in settings.INPUTS:
                 self.append_busytext(f"Batterie {settings.battcapacity}% geladen")
@@ -86,6 +75,23 @@ class Start(WindowBase):
                 self.append_busytext(f"mopidy verbinden...")
                 time.sleep(1)
             self.append_busytext(f"mopidy verbunden.")
+
+
+            #if csettings.BLUETOOTH_ENABLED: self.bluetooth.enable_dev_local()
+
+            if (csettings.BLUETOOTH_AUTOCONNECT and csettings.BLUETOOTH_ENABLED):
+                logger.info("bluetooth autoconnect")
+                time.sleep(5)
+
+                self.append_busytext("Verbinde Bluetooth...")
+                self.append_busytext(f"Suche Gerät: {self.bluetooth.selected_bt_name}")
+
+                self.bluetooth.connect_default_bt_device()
+
+            else:
+                logger.info("bluetooth autoconnect AUS")
+                self.append_busytext("Überspringe Bluetooth...")
+
 
         except Exception as error:
             logger.error(f"exec_init: {error}")
