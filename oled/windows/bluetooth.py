@@ -52,16 +52,15 @@ class Bluetoothmenu(ListBase):
                     self.menu.append(["aktualisieren...",symbols.SYMBOL_REFRESH])
                     self.menu.append(["","c"])
                     if self.show_paired:
-                        self.bluetooth.get_paired_devices()
                         self.menu.append(["> gekoppelte Geräte:","c"])
 
-                        for device in self.bluetooth.paired_devices:
+                        for device in self.bluetooth.paired_devices():
                             self.menu.append([str(device[1]),symbols.SYMBOL_BLUETOOTH_OFF,str(device[0])])
                     else:
                         self.menu.append(["neue Geräte:","h"])
 
 
-                        for device in self.bluetooth.nearby_devices:
+                        for device in self.bluetooth.pairable_devices:
 
                             self.menu.append([str(device[1]),symbols.SYMBOL_BLUETOOTH_ON,str(device[0])])
 
@@ -78,13 +77,15 @@ class Bluetoothmenu(ListBase):
                 if (self.position == 0):
                     self.show_paired = False
                     self.append_busytext("Starte Suche...")
-                    self.bluetooth.discover_devices()
+                    self.bluetooth.get_pairable_devices()
 
                 elif self.menu[self.position][1] == symbols.SYMBOL_BLUETOOTH_ON:
                     device = self.menu[self.position]
                     self.append_busytext(f"Paare Gerät {device[0]}...")
-                    self.bluetooth.pair_device(device[2])
-                    #self.bluetooth.trust(device[2])
+                    self.bluetooth.pair(device[2])
+                    time.sleep(2)
+                    self.bluetooth.trust(device[2])
+                    time.sleep(2)
                     self.show_paired = True
                 else:
                     self.selected_device = self.menu[self.position]

@@ -57,9 +57,8 @@ class Headphonemenu(MenuBase):
         elif self.counter == 2:
             self.append_busytext("Verbinde Gerät:")
             self.append_busytext (self.bluetooth.selected_bt_name)
-
-            self.bluetooth.disconnect_default_bt_device()
-
+    
+            self.bluetooth.disconnect_all_connected_devices()
             if not self.bluetooth.connect_default_bt_device():
                 self.append_busyerror ("Keine Verbindung:")
             else:
@@ -69,8 +68,8 @@ class Headphonemenu(MenuBase):
 
         elif self.counter == 3:
             self.append_busytext("Trenne Bluetooth - falls verbunden")
-            #for i in range(0, 4):
-            #    self.bluetooth.cmd_disconnect()
+            self.bluetooth.disconnect_all_connected_devices()
+
             self.windowmanager.set_window("bluetoothmenu")
 
         self.append_busytext("Beendet.")

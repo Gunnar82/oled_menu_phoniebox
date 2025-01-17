@@ -2,9 +2,9 @@ import settings
 import  re
 import subprocess
 import time
-import bluetooth as bt
+import pexpect
 
-from integrations.functions import run_command
+from integrations.functions import run_command as run_cmd
 
 from integrations.logging_config import *
 
@@ -19,11 +19,17 @@ class BluetoothOutput():
 
         """Initialisiert den BluetoothHandler und bereitet das Gerät vor."""
         self.nearby_devices = []
-        self.paired_devices = []
+        self.paurable_devices = []
 
         self.new_devices = []
 
         #self.all_bt_dev = self.get_paired_devices()
+
+        self.bluetoothctl = None
+        self.connected_devices = []
+        self.pairable_devices = []
+        self.start_bluetoothctl()
+
 
         self.selected_bt_mac, self.selected_bt_name = self.read_dev_bt_from_file()
 
@@ -97,7 +103,7 @@ class BluetoothOutput():
             return False
 
     def enable_dev_local(self):
-        run_command("pactl set-default-sink 0")
+        run_cmd("pactl set-default-sink 0")
 
 
     def output_is_bluez(self, running="RUNNING"):
@@ -110,136 +116,195 @@ class BluetoothOutput():
         else:
             return False
 
-    def discover_devices(self):
-        """
-        Scanne nach verfügbaren Bluetooth-Geräten in der Nähe und speichere sie in der Instanz.
-        """
-        try:
-            print("Scanne nach Bluetooth-Geräten...")
-            self.nearby_devices = bt.discover_devices(lookup_names=True)
-            
-            if self.nearby_devices:
-                print("Gefundene Bluetooth-Geräte:")
-                for addr, name in self.nearby_devices:
-                    print(f"Adresse: {addr}, Name: {name}")
-            else:
-                print("Keine Bluetooth-Geräte gefunden.")
-        
-        except bt.BluetoothError as e:
-            print(f"Fehler beim Scannen nach Bluetooth-Geräten: {str(e)}")
-        return self.nearby_devices
-
-
-    def get_paired_devices(self):
-        """
-        Hole die Liste der bereits gekoppelten Geräte über den 'bluetoothctl' Befehl.
-        """
-        print("Hole die Liste der bereits gekoppelten Bluetooth-Geräte...")
-        
-        try:
-            output = subprocess.check_output("bluetoothctl paired-devices", shell=True).decode("utf-8")
-            paired_devices = []
-            for line in output.splitlines():
-                if "Device" in line:
-                    parts = line.split(" ")
-                    address = parts[1]
-                    name = bt.lookup_name(address)
-                    paired_devices.append((address, name))
-            
-            self.paired_devices = paired_devices
-            if self.paired_devices:
-                print("Bereits gekoppelte Geräte:")
-                for addr, name in self.paired_devices:
-                    print(f"Adresse: {addr}, Name: {name}")
-            else:
-                print("Keine bereits gekoppelten Geräte gefunden.")
-
-        except subprocess.CalledProcessError as e:
-            print(f"Fehler beim Abrufen der gekoppelten Geräte: {e}")
-
-    def pair_device(self, device_addr):
-        """
-        Versuche, ein Gerät zu koppeln, indem die Adresse übergeben wird.
-        Dies erfolgt durch den Aufruf von bluetoothctl.
-        """
-        try:
-            print(f"Versuche, mit Gerät {device_addr} zu koppeln...")
-
-            # Scanne nach Geräten, um sicherzustellen, dass das Gerät sichtbar ist
-            subprocess.run("bluetoothctl --timeout 10 scan on", shell=True, check=True)
-             # Warten, um sicherzustellen, dass die Geräte sichtbar sind
-
-            # Versuch, das Gerät zu koppeln
-            subprocess.run(f"bluetoothctl pair {device_addr}", shell=True, check=True)
-            print(f"Erfolgreich gekoppelt mit {device_addr}")
-        
-        except subprocess.CalledProcessError as e:
-            print(f"Fehler beim Koppeln mit {device_addr}: {e}")
-        except Exception as e:
-            print(f"Unbekannter Fehler beim Koppeln mit {device_addr}: {str(e)}")
-
-    def connect_device(self, device_addr):
-        """
-        Versuche, eine Verbindung mit einem Bluetooth-Gerät herzustellen.
-        """
-        try:
-            print(f"Versuche, mit Gerät {device_addr} zu verbinden...")
-            subprocess.run(f"bluetoothctl connect {device_addr}", shell=True, check=True)
-            print(f"Erfolgreich verbunden mit {device_addr}")
-            return True
-        except subprocess.CalledProcessError as e:
-            print(f"Fehler beim Verbinden mit {device_addr}: {e}")
-            return False
 
     def connect_default_bt_device(self):
         logger.debug(f"BT: connect_default_device {self.selected_bt_name}")
-        return self.connect_device(self.selected_bt_mac)
+        return self.connect(self.selected_bt_mac)
 
-    def disconnect_device(self, device_addr):
-        """
-        Trenne die Verbindung zu einem Bluetooth-Gerät.
-        """
-        try:
-            print(f"Trenne Verbindung zu Gerät {device_addr}...")
-            subprocess.run(f"bluetoothctl disconnect {device_addr}", shell=True, check=True)
-            print(f"Erfolgreich die Verbindung zu {device_addr} getrennt.")
-            return True
-        except subprocess.CalledProcessError as e:
-            print(f"Fehler beim Trennen der Verbindung mit {device_addr}: {e}")
-            return False
 
     def disconnect_default_bt_device(self):
         logger.debug(f"BT: disconnect_default_device {self.selected_bt_name}")
-        return self.disconnect_device(self.selected_bt_mac)
+        return self.disconnect(self.selected_bt_mac)
 
+    def disconnect_all_connected_devices(self):
+        for device in self.get_connected_devices():
+            logger.debug (f"disconnect: {device}")
+            self.disconnect()
 
-    def remove_device(self, device_addr):
-        """
-        Entferne (entkopple) ein Bluetooth-Gerät.
-        """
+    def start_bluetoothctl(self):
+        """Startet den bluetoothctl-Prozess und überprüft die Ausgabe."""
+        logger.debug("start_bluetoothctl startet")
         try:
-            print(f"Versuche, das Gerät {device_addr} zu entfernen...")
-            subprocess.run(f"bluetoothctl remove {device_addr}", shell=True, check=True)
-            print(f"Erfolgreich entfernt {device_addr}")
-        except subprocess.CalledProcessError as e:
-            print(f"Fehler beim Entfernen des Geräts {device_addr}: {e}")
+            if not self.bluetoothctl:
+                self.bluetoothctl = pexpect.spawn('bluetoothctl', echo=False)
+                # Warten auf den Start und die Anmeldung des Agenten
+                index = self.bluetoothctl.expect([r'Agent registered', r'#'], timeout=5)
+                if index == 0:
+                    logger.debug("Agent erfolgreich registriert.")
+                elif index == 1:
+                    logger.debug("Bluetoothctl ist bereit.")
+            
+                # Verbundene Geräte abrufen
+                self.connected_devices = self.get_connected_devices()
+                logger.debug("bluetoothctl erfolgreich gestartet.")
+        except pexpect.exceptions.TIMEOUT:
+            logger.debug("Fehler: Timeout beim Start von bluetoothctl.")
+            if self.bluetoothctl:
+                logger.debug(f"Letzte Ausgabe von bluetoothctl: {self.bluetoothctl.before.decode('utf-8')}")
+            self.bluetoothctl = None
+        except pexpect.exceptions.ExceptionPexpect as e:
+            logger.debug(f"Pexpect-Fehler beim Start von bluetoothctl: {e}")
+            if self.bluetoothctl:
+                logger.debug(f"Letzte Ausgabe von bluetoothctl: {self.bluetoothctl.before.decode('utf-8')}")
+            self.bluetoothctl = None
+        except Exception as e:
+            logger.debug(f"Allgemeiner Fehler beim Start von bluetoothctl: {e}")
+            if self.bluetoothctl:
+                logger.debug(f"Letzte Ausgabe von bluetoothctl: {self.bluetoothctl.before.decode('utf-8')}")
+            self.bluetoothctl = None
 
-    def show_device_options(self):
-        """
-        Zeigt die Optionen für verfügbare Geräte an und ermöglicht die Auswahl eines Geräts.
-        """
-        all_devices = self.paired_devices + self.nearby_devices
-        if all_devices:
-            print("Wähle ein Gerät aus:")
-            for index, (addr, name) in enumerate(all_devices, 1):
-                print(f"{index}. {name} - {addr}")
+    def stop_bluetoothctl(self):
+        """Beendet den bluetoothctl-Prozess."""
+        logger.debug("stop_bluetoothctl startet")
+        if self.bluetoothctl:
             try:
-                selected_index = int(input("Gib die Nummer des Geräts ein: ")) - 1
-                selected_device = all_devices[selected_index]
-                return selected_device[0]
-            except (ValueError, IndexError):
-                print("Ungültige Auswahl.")
-        else:
-            print("Keine Geräte zum Auswählen.")
-        return None
+                self.bluetoothctl.sendline('exit')
+                self.bluetoothctl.close()
+                self.bluetoothctl = None
+                logger.debug("bluetoothctl beendet.")
+            except (pexpect.exceptions.ExceptionPexpect, pexpect.exceptions.TIMEOUT):
+                logger.debug("Fehler: bluetoothctl konnte nicht beendet werden.")
+
+    def run_command(self, command, timeout=5):
+        """Führt einen Befehl in bluetoothctl aus und gibt die Ausgabe zurück."""
+        logger.debug("run_command startet")
+        if self.bluetoothctl:
+            try:
+                logger.debug(f"Befehl wird ausgeführt: {command}")
+                self.bluetoothctl.sendline(command)
+                self.bluetoothctl.expect('#', timeout=timeout)
+                return self.bluetoothctl.before.decode('utf-8')
+            except (pexpect.exceptions.ExceptionPexpect, pexpect.exceptions.TIMEOUT):
+                logger.debug(f"Fehler: Der Befehl '{command}' konnte nicht ausgeführt werden.")
+                return ""
+        return ""
+
+    def get_pairable_devices(self):
+        """Listet alle in Reichweite befindlichen Bluetooth-Geräte als Array mit [MAC-Adresse, Name] auf, die nicht gepairt sind."""
+        logger.debug("get_pairable_devices startet")
+        try:
+            paired = {device[0] for device in self.paired_devices()}
+            self.run_command('scan on', timeout=10)
+            time.sleep(10)
+            output = self.run_command('devices', timeout=10)
+            self.run_command('scan off')
+            devices = re.findall(r'Device ([0-9A-F:]{17}) (.+)', output)
+            logger.debug(f"Gefundene Geräte: {devices}")
+            self.pairable_devices = [[mac, name.strip("\r")] for mac, name in devices if mac not in paired]
+            return self.pairable_devices
+        except Exception as e:
+            logger.debug(f"Fehler beim Scannen nach Geräten: {e}")
+            self.pairable_devices = []
+            return []
+
+    def pair(self, mac_address,timeout=10):
+        """Pairt ein Gerät mit der angegebenen MAC-Adresse."""
+        logger.debug("pair startet")
+        try:
+            output = self.run_command(f'pair {mac_address}')
+            if 'Pairing successful' in output or 'AlreadyExists' in output:
+                logger.debug(f"Pairing erfolgreich: {mac_address}")
+                return True
+            else:
+                logger.debug(f"Fehler beim Pairen des Geräts {mac_address}: {output}")
+                return False
+        except Exception as e:
+            logger.debug(f"Fehler beim Pairen des Geräts {mac_address}: {e}")
+            return False
+
+    def trust(self, mac_address,timeout=10):
+        """Vertraut einem Gerät mit der angegebenen MAC-Adresse."""
+        logger.debug("trust startet")
+        try:
+            output = self.run_command(f'trust {mac_address}')
+            if 'trusted' in output:
+                logger.debug(f"Gerät vertraut: {mac_address}")
+                return True
+            else:
+                logger.debug(f"Fehler beim Vertrauen des Geräts {mac_address}: {output}")
+                return False
+        except Exception as e:
+            logger.debug(f"Fehler beim Vertrauen des Geräts {mac_address}: {e}")
+            return False
+
+    def connect(self, mac_address):
+        """Verbindet sich mit einem Gerät mit der angegebenen MAC-Adresse."""
+        logger.debug("connect startet")
+        try:
+            output = self.run_command(f'connect {mac_address}',timeout=10)
+            if 'Connection successful' in output:
+                self.connected_devices.append(mac_address)
+                logger.debug(f"Verbindung erfolgreich: {mac_address}")
+                return True
+            else:
+                logger.debug(f"Fehler beim Verbinden mit dem Gerät {mac_address}: {output}")
+                return False
+        except Exception as e:
+            logger.debug(f"Fehler beim Verbinden mit dem Gerät {mac_address}: {e}")
+            return False
+
+    def disconnect(self, mac_address=None):
+        """Trennt die Verbindung zu einem Gerät mit der angegebenen MAC-Adresse. Falls keine MAC-Adresse angegeben ist, werden alle Geräte getrennt."""
+        logger.debug("disconnect startet")
+        try:
+            if mac_address:
+                output = self.run_command(f'disconnect {mac_address}')
+                if 'Successful disconnected' in output:
+                    if mac_address in self.connected_devices:
+                        self.connected_devices.remove(mac_address)
+                    logger.debug(f"Verbindung getrennt: {mac_address}")
+                    return True
+                else:
+                    logger.debug(f"Fehler beim Trennen der Verbindung zum Gerät {mac_address}: {output}")
+                    return False
+            else:
+                success = True
+                for device in self.connected_devices[:]:
+                    output = self.run_command(f'disconnect {device}')
+                    if 'Successful disconnected' in output:
+                        self.connected_devices.remove(device)
+                        logger.debug(f"Verbindung getrennt: {device}")
+                    else:
+                        logger.debug(f"Fehler beim Trennen der Verbindung zum Gerät {device}: {output}")
+                        success = False
+                return success
+        except Exception as e:
+            logger.debug(f"Fehler beim Trennen der Verbindung: {e}")
+            return False
+
+    def paired_devices(self):
+        """Listet alle gepairten Geräte als Array mit [MAC-Adresse, Name] auf."""
+        logger.debug("paired_devices startet")
+        try:
+            output = self.run_command('paired-devices')
+            devices = re.findall(r'Device ([0-9A-F:]{17}) (.+)', output)
+            logger.debug(f"Gepairte Geräte: {devices}")
+            return [[mac, name.strip("\r")] for mac, name in devices]
+        except Exception as e:
+            logger.debug(f"Fehler beim Abrufen der gepairten Geräte: {e}")
+            return []
+
+    def get_connected_devices(self):
+        """Listet alle aktuell verbundenen Geräte auf."""
+        logger.debug("get_connected_devices startet")
+        try:
+            output = self.run_command('info')
+            devices = re.findall(r'Device ([0-9A-F:]{17})', output)
+            self.connected_devices = devices
+            logger.debug(f"Verbunden Geräte: {devices}")
+            return devices
+        except Exception as e:
+            logger.debug(f"Fehler beim Abrufen der verbundenen Geräte: {e}")
+            self.connected_devices = []
+            return []
 
