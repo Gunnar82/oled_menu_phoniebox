@@ -1,5 +1,7 @@
 [Unit]
 Description=OLED display provider
+After=mpd.service pulseaudio.service bluetooth.service phoniebox-startup-scripts.service
+Requires=mpd.service pulseaudio.service bluetooth.service phoniebox-startup-scripts.service
 
 [Service]
 Environment=PYTHONUNBUFFERED=1

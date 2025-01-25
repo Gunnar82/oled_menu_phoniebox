@@ -99,7 +99,7 @@ class x728:
                 settings.shutdown_reason = SR.SR2
                 self.windowmanager.set_window("ende")
 
-            elif timediff > 2 and timediff < 6:
+            elif timediff < 6:
                 if self.button_pressed:
                     if self.led is not None:
                         self.led.set_dark()
