@@ -94,15 +94,14 @@ def create_or_modify_folder_conf(directory,latestplayed):
     folderconf["SINGLE"] = "OFF"
 
     try:
-        folder_conf_file = open(filename,"r")
-        logger.debug(f"create_or_modify_folder_conf: exists?: {filename}")
-        lines = folder_conf_file.readlines()
-        for line in lines:
-            _key, _val = line.split('=',2)
-            folderconf[_key] = _val.replace("\"","").strip()
+        with open(filename,"r") as folder_conf_file:
+            logger.debug(f"create_or_modify_folder_conf: exists?: {filename}")
+            lines = folder_conf_file.readlines()
+            for line in lines:
+                _key, _val = line.split('=',2)
+                folderconf[_key] = _val.replace("\"","").strip()
     except Exception as error:
-            logger.error (f"folder_conf: {error}")
-            return
+            logger.debug (f"folder_conf: {error}")
 
     if latestplayed[0] == "POS":
         folderconf["CURRENTFILENAME"] = "%s%s" % (latestplayed[5],latestplayed[1])
@@ -114,9 +113,9 @@ def create_or_modify_folder_conf(directory,latestplayed):
             for key in folderconf:
                 folder_conf_file.write ("%s=\"%s\"\n" % (key,folderconf[key]))
         logger.debug(f"create_or_modify_folder_conf: create?: {filename}")
-
+        os.chmod(filename, 0o755)
     except Exception as error:
-        logger.error (error)
+        logger.error (f"folder_conf write: {error}")
 
 def get_current_directory(path):
     cur_dir = os.path.basename(os.path.normpath(path))
