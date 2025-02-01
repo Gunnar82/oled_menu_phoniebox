@@ -28,6 +28,7 @@ import config.online as cfg_online
 import config.file_folder as cfg_file_folder
 
 
+from integrations.functions import to_min_sec
 from integrations.download import *
 
 from integrations.logging_config import *
@@ -362,7 +363,7 @@ class DownloadMenu(ListBase):
                     self.append_busytext("Deteien gefunden")
 
                     self.selector = True
-
+                    posstring = []
                     try:
                         posstring = getpos_online(self.baseurl,self.cwd)
                         logger.debug(f"getpos_online: {posstring}")
@@ -393,9 +394,14 @@ class DownloadMenu(ListBase):
                     #    self.menu.append(["Aktueller Titel :%2.2d " %  (self.items.index(online_file) + 1)])
                     self.menu.append(["Anzahl Titel :%2.2d " %  (len(self.items))])
                     self.menu.append(["Gesamtgröße %s" % (get_size(self.totalsize))])
-                    #self.menu.append([current_pos])
+                    if posstring:
+                        self.menu.append([f"Aktueller Titel {posstring[1]}"])
+                        self.menu.append([f"Aktuelle Position {posstring[3]}"])
+                        tmp = to_min_sec(posstring[2])
+                        self.menu.append([f"Aktuelle Zeit {tmp}"])
+
                     #self.menu.append([f"Datei: {online_file}"])
-                    #self.menu.append([online_pos])
+
 
                 self.set_window_busy(False)
 
