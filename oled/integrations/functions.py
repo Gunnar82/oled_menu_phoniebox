@@ -177,16 +177,13 @@ def get_oledversion():
     return "v3-%s" % (version)
 
 
-def delete_local_online_folder():
-    run_command("sudo rm -r %s/*" % (cfg_file_folder.AUDIO_BASEPATH_ONLINE))
 
-
-def run_command(commands, cwd="/home/pi/oledctrl/", results = None):
+def run_command(commands, cwd="/home/pi/oledctrl/", results = None, env=None):
     """Führt einen Shell-Befehl aus und prüft die Ausgabe."""
     try:
         if isinstance(commands,str):
             logger.debug(f"running single command: {commands}")
-            subprocess_result = subprocess.Popen(commands,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd=cwd,)
+            subprocess_result = subprocess.Popen(commands,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd=cwd,encoding='utf-8',env=env)
             subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
             logger.debug(f"result: {subprocess_result.returncode}: {subprocess_output}")
             if results is not None:
@@ -197,7 +194,7 @@ def run_command(commands, cwd="/home/pi/oledctrl/", results = None):
             for command in commands:
                 logger.debug(f"running multiple commands: {commands}")
 
-                subprocess_result = subprocess.Popen(command,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd=cwd,encoding='utf-8')
+                subprocess_result = subprocess.Popen(command,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd=cwd,encoding='utf-8',env=env)
                 subprocess_output = subprocess_result.communicate()[0],subprocess_result.returncode
                 logger.debug(f"result: {subprocess_result.returncode}: {subprocess_output}")
                 if results is not None:

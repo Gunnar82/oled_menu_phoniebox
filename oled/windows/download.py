@@ -37,8 +37,9 @@ logger = setup_logger(__name__)
 
 class DownloadMenu(ListBase):
 
-    def __init__(self, windowmanager,loop):
+    def __init__(self, windowmanager,loop,mopidy):
         super().__init__(windowmanager, loop, "Download")
+        self.mopidy = mopidy
         self.busysymbol = symbols.SYMBOL_CLOUD
 
         self.direct_play_last_folder = False
@@ -240,32 +241,39 @@ class DownloadMenu(ListBase):
     def playfolder(self):
         self.set_window_busy()
 
-        try:
-            directory = os.path.join(cfg_file_folder.AUDIO_BASEPATH_ONLINE,get_relative_path(self.basecwd,self.cwd))
-            logger.info(f"playfolder {directory}")
-            self.append_busytext(f"Abspielen: {directory}")
 
-            create_or_modify_folder_conf(directory,getpos_online(self.baseurl,self.cwd))
+        try:
+            mypos = getpos_online(self.baseurl,self.cwd)
+            seekto = []
+            logger.debug("playfolder mypos: {mypos}")
+            if mypos[0] == "POS":
+                seekto.append("%s%s" % (mypos[5],mypos[1]))
+                seekto.append(mypos[2])
         except Exception as error:
-            logger.error (f"playfolder: {error}")
-            logger.append_busyerror(f"{error}")
-
-        if not os.path.exists(directory): os.makedirs(directory)
+            seekto = []
+            logger.debug(f"playfolder getpos: {error}")
 
         try:
-            filename = os.path.join(directory,"livestream.txt")
+            logger.info(f"playfolder {self.cwd}")
+            self.append_busytext(f"Abspielen: {self.cwd}")
             self.append_busytext(f"Titel hinzufügen:")
             self.append_busytext("")
 
-            with open(filename,"w") as ofile:
-                for item in self.items:
-                    additem = construct_url_from_local_path(self.baseurl,self.cwd,item) + '\n'
-                    ofile.write(additem)
-                    self.append_busytext(f"Titelhinzugefügt: {item}",reuse_last = True)
 
-            foldername = directory[len(cfg_file_folder.AUDIO_BASEPATH_BASE):]
-            self.append_busytext(f"Starte playout {foldername}")
-            pc_playfolder(foldername)
+            songs = []
+
+            for item in self.items:
+                logger.debug(f"item add: {item}")
+                songs.append(construct_url_from_local_path(self.baseurl,self.cwd,item))
+                self.append_busytext(f"Titelhinzugefügt: {item}",reuse_last = True)
+
+            self.append_busytext(f"Starte playout {self.cwd}")
+            self.mopidy.playonlinelist(songs=songs,seekto=seekto)
+
+        except Exception as error:
+            logger.error (f"playfolder: {error}")
+            self.append_busyerror(f"{error}")
+
             self.windowmanager.set_window("idle")
         except Exception as error:
             self.append_busyerror(error)

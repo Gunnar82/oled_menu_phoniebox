@@ -180,3 +180,22 @@ class MopidyControl():
             print(f"Loaded and playing Playlist {name}")
         except musicpd.ConnectionError:
             self._connectionlost()
+
+    def playonlinelist(self,songs = None,seekto = None):
+        try:
+            self.client.stop()
+            self.client.clear()
+            for song in songs:
+                self.client.add(song)
+            if seekto:
+                for idx, song in enumerate(songs):
+                    print (song)
+                    if song == seekto[0]:
+                        print ("gefunden")
+                        self.client.seek(idx,int(float(seekto[1])))
+                        return
+            self.client.play()
+            return
+            
+        except Exception as error:
+            print (error)

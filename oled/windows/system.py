@@ -64,7 +64,7 @@ class SystemMenu(ListBase):
         self.menu.append("pixel ausrichten")             # Eitnrag 0
         self.menu.append("PLACEHOLDER UPDATE_RADIO 2")             # Eitnrag 1
 
-        self.menu.append(["Lösche Online-Ordner"])                 # Eintrag 2
+        self.menu.append([""])                                     # Eintrag 2
         self.menu.append(["Lösche Online-Status Online"])          # Eintrag 3
 
         self.menu.append(["Lösche Hörspielstatus"])                # Eintrag 4
@@ -189,9 +189,6 @@ class SystemMenu(ListBase):
             self.pixeltest = True
         if self.position == 1:
             self.cmd = self.set_option("UPDATE_RADIO",not config.user_settings.UPDATE_RADIO,cfg_file_folder.FILE_USER_SETTINGS)
-
-        elif self.position == 2:
-            delete_local_online_folder()
 
         elif self.position >= 4 and self.position <= 6:
             if self.position == 4:

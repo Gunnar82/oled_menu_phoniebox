@@ -121,12 +121,12 @@ def pc_playfolder(folder=cfg_file_folder.AUDIO_BASEPATH_RADIO):
     run_command("sudo /home/pi/RPi-Jukebox-RFID/scripts/rfid_trigger_play.sh -d=\"%s\"" % (folder))
 
 
-def pc_enableresume(folder=""):
+def pc_enableresume(folder="",env = None):
     logger.debug("enable_resume started")
     if folder != "":
         cmd = "%s -c=enableresume -d=\"%s\"" % (cfg_file_folder.RESUME_PLAY,folder)
         logger.debug(cmd)
-        run_command(cmd)
+        run_command(cmd,env=env)
 
 def pc_disableresume(folder=""):
     if folder != "":

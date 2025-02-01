@@ -10,6 +10,8 @@ from integrations.webrequest import WebRequest
 
 from integrations.logging_config import *
 
+import integrations.playout as playout
+
 logger = setup_logger(__name__)
 
 
@@ -83,39 +85,14 @@ def get_parent_directory(path):
     return  parent_path
 
 def create_or_modify_folder_conf(directory,latestplayed):
-    filename = os.path.join(directory,"folder.conf")
-    folderconf = {}
-    folderconf["CURRENTFILENAME"] = ""
-    folderconf["ELAPSED"] = "ON"
-    folderconf["PLAYSTATUS"] = "Playing"
-    folderconf["SHUFFLE"] = "OFF"
-    folderconf["RESUME"] = "ON"
-    folderconf["LOOP"] = "OFF"
-    folderconf["SINGLE"] = "OFF"
-
-    try:
-        with open(filename,"r") as folder_conf_file:
-            logger.debug(f"create_or_modify_folder_conf: exists?: {filename}")
-            lines = folder_conf_file.readlines()
-            for line in lines:
-                _key, _val = line.split('=',2)
-                folderconf[_key] = _val.replace("\"","").strip()
-    except Exception as error:
-            logger.debug (f"folder_conf: {error}")
-
+    folderconf = os.environ.copy()
     if latestplayed[0] == "POS":
         folderconf["CURRENTFILENAME"] = "%s%s" % (latestplayed[5],latestplayed[1])
         folderconf["ELAPSED"] = latestplayed[2]
-    logger.info (filename)
+    print (directory)
+    playout.pc_enableresume(directory,env=folderconf)
 
-    try:
-        with open(filename,"w") as folder_conf_file:
-            for key in folderconf:
-                folder_conf_file.write ("%s=\"%s\"\n" % (key,folderconf[key]))
-        logger.debug(f"create_or_modify_folder_conf: create?: {filename}")
-        os.chmod(filename, 0o755)
-    except Exception as error:
-        logger.error (f"folder_conf write: {error}")
+
 
 def get_current_directory(path):
     cur_dir = os.path.basename(os.path.normpath(path))
