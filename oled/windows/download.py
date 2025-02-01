@@ -392,13 +392,14 @@ class DownloadMenu(ListBase):
                     self.menu.append([""])
                     #if online_file in self.items:
                     #    self.menu.append(["Aktueller Titel :%2.2d " %  (self.items.index(online_file) + 1)])
-                    self.menu.append(["Anzahl Titel :%2.2d " %  (len(self.items))])
-                    self.menu.append(["Gesamtgröße %s" % (get_size(self.totalsize))])
+                    self.menu.append(["%2.2d Titel" %  (len(self.items))])
+                    self.menu.append(["%s gesamt" % (get_size(self.totalsize))])
                     if posstring:
-                        self.menu.append([f"Aktueller Titel {posstring[1]}"])
-                        self.menu.append([f"Aktuelle Position {posstring[3]}"])
+                        self.menu.append([""])
+                        self.menu.append([f"Aktuell: {posstring[1]}"])
+                        self.menu.append(["%2.2d / %2.2d" % (int(posstring[3]), int(posstring[4]))])
                         tmp = to_min_sec(posstring[2])
-                        self.menu.append([f"Aktuelle Zeit {tmp}"])
+                        self.menu.append([f"Zeit {tmp}"])
 
                     #self.menu.append([f"Datei: {online_file}"])
 
