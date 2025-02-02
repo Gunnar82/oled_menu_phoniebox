@@ -85,8 +85,6 @@ import integrations.functions as fn
 import integrations.playout as playout
 import config.shutdown_reason as SR
 
-import settings
-
 
 ######
 from datetime import datetime
@@ -118,8 +116,6 @@ try:
     idisplay.set_fonts()
 except Exception as error:
     raise Exception(f"DISPLAY init FAILED: {error}")  # Exception verbessern
-
-
 
 
 from integrations.mopidy import MopidyControl
@@ -166,13 +162,17 @@ except Exception as error:
 
 
 #Systemd exit
-def gracefulexit(signum, frame):
-    sys.exit(0)
-signal.signal(signal.SIGTERM, gracefulexit)
+def handle_signal(loop, signal_name):
+    print(f"{signal_name} empfangen, beende...")
+    loop.stop()
+
+
+#signal.signal(signal.SIGTERM, gracefulexit)
 
 def main():
     loop = asyncio.get_event_loop()
-
+    loop.add_signal_handler(signal.SIGINT, handle_signal, loop,"SIGINT")
+    loop.add_signal_handler(signal.SIGTERM, handle_signal, loop,"SIGTERM")
     #shutdown reason default
     settings.shutdown_reason = SR.SR1
 
@@ -313,6 +313,7 @@ def main():
         mopidy.stop()
     except (KeyboardInterrupt, SystemExit):
         logger.error("main Loop exiting")
+        loop.stop()
     finally:
         loop.close()
 
