@@ -4,9 +4,12 @@ import subprocess
 import time
 import pexpect
 
+
 from integrations.functions import run_command as run_cmd
 
 from integrations.logging_config import *
+from integrations.playout import *
+
 
 logger = setup_logger(__name__)
 
@@ -20,7 +23,6 @@ class BluetoothOutput():
         """Initialisiert den BluetoothHandler und bereitet das Gerät vor."""
         self.nearby_devices = []
         self.paurable_devices = []
-
         self.new_devices = []
 
         #self.all_bt_dev = self.get_paired_devices()

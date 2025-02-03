@@ -212,7 +212,7 @@ class Idle(MainWindow):
             #elif key == '0':
             #    self.busysymbol = symbols.SYMBOL_VOL_MUTE
             #    playout.pc_mute()
-            elif key == 'start':
+            elif key.lower() in ['start','key_pause']:
                 playout.pc_toggle()
             elif key == 'TODO':
                 self.windowmanager.windows["downloadmenu"].direct_play_last_folder = True

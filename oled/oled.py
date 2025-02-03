@@ -142,7 +142,6 @@ import windows.snake as wsnake
 
 try:
     bluetooth_enabled = False
-    mybluetooth = None
 
 
     if csettings.BLUETOOTH_ENABLED:
@@ -164,8 +163,9 @@ except Exception as error:
 #Systemd exit
 def handle_signal(loop, signal_name):
     print(f"{signal_name} empfangen, beende...")
-    loop.stop()
 
+    loop.stop()
+    sys.exit(0)
 
 #signal.signal(signal.SIGTERM, gracefulexit)
 
@@ -239,6 +239,13 @@ def main():
 
 
     #init Inputs
+
+    ####Bluetooth Keys Input####
+    if "btkeys" in settings.INPUTS:
+        from integrations.inputs.btkeys import BluetoothKeys
+
+        mbtkeys = BluetoothKeys(loop, turn_callback, push_callback, mybluetooth)
+
 
     ####keyboard control
     if "keyboard" in settings.INPUTS:
@@ -316,6 +323,13 @@ def main():
         loop.stop()
     finally:
         loop.close()
+
+    ####BTkeys Cleanup####
+    try:
+        if "btkeys" in settings.INPUTS:
+            mbtkeys.btkeystask.cancel
+    except Exception as error:
+        print (f"btkeys cleanup error: {error}")
 
     ####x728 Cleanup
     if "x728" in settings.INPUTS:

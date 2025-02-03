@@ -54,6 +54,7 @@ class DownloadMenu(ListBase):
         self.totalsize = 0
         self.lastplayedfile = ""
 
+
     def activate(self):
         self.handle_key_back = False
         self.init_finished = False

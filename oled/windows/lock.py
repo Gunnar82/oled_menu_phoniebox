@@ -67,7 +67,7 @@ class Lock(MainWindow):
 
     def turn_callback(self,direction, key=None):
         """Überprüft, ob der gedrückte Schlüssel korrekt ist."""
-        if key.lower() == 'start':
+        if key.lower() in ['start','key_pause']:
             pc_toggle()
         elif key.lower() == self.unlockcode[self.currentkey].lower():
             self.busysymbol = symbols.SYMBOL_PASS

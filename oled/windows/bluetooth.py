@@ -6,6 +6,8 @@ import config.colors as colors
 import config.symbols as symbols
 import time
 import asyncio
+import evdev
+
 from integrations.logging_config import *
 
 logger = setup_logger(__name__)
@@ -24,6 +26,8 @@ class Bluetoothmenu(ListBase):
         self.generate = False
         self.timeout = False
         self.selected_device = []
+
+        #self.btkeytask = self.loop.run_in_executor(None,self.handle_bluetooth_keys)
 
     def deactivate(self):
         self.active = False
@@ -117,3 +121,4 @@ class Bluetoothmenu(ListBase):
             logger.debug(f"{error}")
         finally:
             self.set_window_busy(False)
+

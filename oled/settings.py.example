@@ -1,6 +1,7 @@
 """ Software settings """
 
 # INPUT: possible value
+# btkeys: AVRCP Bluetooth Keys
 # gpicase : GPI Case 1 
 # keyboard : Keyboard # BETA
 # powercontroller : Hifiberry Powercontroller

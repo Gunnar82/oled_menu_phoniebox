@@ -119,7 +119,7 @@ class Ende(MainWindow):
         pass
 
     def turn_callback(self, direction, key=None):
-        if key in ['start','#']:
+        if key.lower() in ['start','#','key_pause']:
             playout.pc_toggle()
         elif key in ['X','Y','A','B','C','D',]:
             playout.savepos_online(self.nowplaying)
