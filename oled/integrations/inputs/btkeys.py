@@ -2,10 +2,9 @@ import evdev
 import time
 
 from integrations.logging_config import *
+from integrations.functions import run_command
 
-logger = setup_logger(__name__)
-
-
+logger = setup_logger(__name__,lvlDEBUG)
 
 
 class BluetoothKeys():
@@ -16,10 +15,11 @@ class BluetoothKeys():
     bt_keycode_prev = 165
 
 
-    def __init__(self,loop,turn_callback, push_callback, bluetooth):
+    def __init__(self,loop,turn_callback, push_callback, mopidy, bluetooth):
         try:
             logger.debug ("btkeys init")
             self.loop = loop
+            self.mopidy = mopidy
             self.bluetooth = bluetooth
             self.turn_callback = turn_callback
             self.push_callback = push_callback
@@ -54,9 +54,12 @@ class BluetoothKeys():
                             logger.debug(event)
                             if event.value == 1:  # Taste gedrückt
                                 logger.debug(f"Event: {event}")  # Debugging: Ereignisdetails anzeigen
-                                if event.code == self.bt_keycode_play or event.code == self.bt_keycode_pause:
-                                    logger.debug("PLAYPAUSE")  # Debugging: Ereignisdetails anzeigen
-                                    self.turn_callback(0,"KEY_PAUSE")
+                                if event.code == self.bt_keycode_play:
+                                    logger.debug("play")  # Debugging: Ereignisdetails anzeigen
+                                    self.mopidy.playpause()
+                                elif event.code == self.bt_keycode_pause:
+                                    logger.debug("pause")  # Debugging: Ereignisdetails anzeigen
+                                    self.mopidy.playpause()
                                 elif event.code == self.bt_keycode_next:
                                     logger.debug("right")  # Debugging: Ereignisdetails anzeigen
                                     self.turn_callback(0,"right")

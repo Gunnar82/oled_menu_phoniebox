@@ -244,7 +244,7 @@ def main():
     if "btkeys" in settings.INPUTS:
         from integrations.inputs.btkeys import BluetoothKeys
 
-        mbtkeys = BluetoothKeys(loop, turn_callback, push_callback, mybluetooth)
+        mbtkeys = BluetoothKeys(loop, turn_callback, push_callback, mopidy, mybluetooth)
 
 
     ####keyboard control

@@ -124,6 +124,19 @@ class MopidyControl():
         except musicpd.ConnectionError:
             self._connectionlost()
 
+    def play(self):
+        try:
+            self.client.play()
+        except musicpd.ConnectionError:
+            self._connectionlost()
+
+    def pause(self):
+        try:
+            self.client.pause()
+        except musicpd.ConnectionError:
+            self._connectionlost()
+
+
     def next(self):
         try:
             self.client.next()
