@@ -240,12 +240,6 @@ def main():
 
     #init Inputs
 
-    ####Bluetooth Keys Input####
-    if "btkeys" in settings.INPUTS:
-        from integrations.inputs.btkeys import BluetoothKeys
-
-        mbtkeys = BluetoothKeys(loop, turn_callback, push_callback, mopidy, mybluetooth)
-
 
     ####keyboard control
     if "keyboard" in settings.INPUTS:
@@ -324,12 +318,6 @@ def main():
     finally:
         loop.close()
 
-    ####BTkeys Cleanup####
-    try:
-        if "btkeys" in settings.INPUTS:
-            mbtkeys.btkeystask.cancel
-    except Exception as error:
-        print (f"btkeys cleanup error: {error}")
 
     ####x728 Cleanup
     if "x728" in settings.INPUTS:
