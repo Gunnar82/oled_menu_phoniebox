@@ -270,7 +270,7 @@ class DownloadMenu(ListBase):
                 self.append_busytext(f"Titelhinzugefügt: {item}",reuse_last = True)
 
             self.append_busytext(f"Starte playout {self.cwd}")
-            self.mopidy.playonlinelist(songs=songs,seekto=seekto)
+            self.mopidy.playliststart(songs=songs,seekto=seekto)
 
         except Exception as error:
             logger.error (f"playfolder: {error}")

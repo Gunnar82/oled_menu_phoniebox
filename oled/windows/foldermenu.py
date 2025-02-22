@@ -21,11 +21,12 @@ class Foldermenu(ListBase):
     folders = []
     busysymbol = symbols.SYMBOL_LIST
 
-    def __init__(self, windowmanager,loop):
+    def __init__(self, windowmanager,loop,mopidy):
         super().__init__(windowmanager, loop, "Auswahl")
         #self.timeoutwindow="folderinfo"
         self.timeout = False
         self.loop = loop
+        self.mopidy = mopidy
 
 
     def activate(self):
@@ -42,17 +43,17 @@ class Foldermenu(ListBase):
         self.generate_folders(settings.currentfolder)
         self.on_key_left()
 
-    def playfolder(self,folder):
+    def playfolder(self,fullfolder):
         try:
             self.set_window_busy()
-            foldername = folder[len(cfg_file_folder.AUDIO_BASEPATH_BASE) + 1:]
+            foldername = fullfolder[len(cfg_file_folder.AUDIO_BASEPATH_BASE) + 1:]
             logger.debug (f"enable_resume: {foldername}")
 
-            playout.set_resume(folder)
+            #playout.set_resume(folder)
 
             self.append_busytext("Abspielen:")
             self.append_busytext(foldername)
-            playout.pc_playfolder(foldername)
+            self.mopidy.playfolderstart(fullfolder,foldername)
             self.windowmanager.set_window("idle")
         except Exception as error:
             logger.debug(f"{error}")
@@ -97,33 +98,10 @@ class Foldermenu(ListBase):
             if os.path.isdir(d):
                 try:
                     progress = ""
-                    folderconf = {}
-                    folderconf["RESUME"] = "off"
-                    folderconf["CURRENTFILENAME"] = ""
-
-                    fn = os.path.join(d,"folder.conf")
-                    logger.debug("playlistfolder: %s" % (fn))
-                    folder_conf_file = open(fn,"r")
-                    lines = folder_conf_file.readlines()
-                    folder_conf_file.close()
-
-                    for line in lines:
-                        _key, _val = line.split('=',2)
-                        folderconf[_key] = _val.replace("\"","").strip()
-
-                    if (folderconf["CURRENTFILENAME"] != "") and ((folderconf["RESUME"]).lower() == "on"):
-                        subfiles =[]
-                        for subfile in os.listdir(d):
-                            subfiles.append(subfile) # nur mp3
-                        subfiles = sorted(subfiles)
-                        lastplayedfile = folderconf["CURRENTFILENAME"]
-                        lastplayedfile = lastplayedfile[lastplayedfile.rfind('/')+1:]
-                        mpos = (subfiles.index(lastplayedfile))
-                        prozent = (mpos +1)  / len(subfiles)
-                        #print ("prozent: %s, lastplayedfile: %s, mpos: %s" %(prozent, lastplayedfile, mpos))
-
-                        logger.debug("foldermenu: progress: %.2f" % (prozent))
-                        progress = "%2.2d %%" % (prozent * 100)
+                    folder = d[len(cfg_file_folder.AUDIO_BASEPATH_BASE) + 1:]
+                    percentage = self.mopidy.get_folder_info(folder)
+                    logger.debug("foldermenu: progress: %.2f" % (percentage))
+                    progress = "%2.2d %%" % (percentage)
                 except Exception as error:
                     logger.debug(error)
 

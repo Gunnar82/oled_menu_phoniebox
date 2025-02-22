@@ -28,9 +28,10 @@ logger = setup_logger(__name__)
 
 class Idle(MainWindow):
 
-    def __init__(self, windowmanager, loop, nowplaying):
+    def __init__(self, windowmanager, loop, nowplaying,mopidy):
         super().__init__(windowmanager, loop, nowplaying)
         self.changerender = True
+        self.mopidy = mopidy
         self.window_on_back = "playlistmenu"
 
     def activate(self):
@@ -173,7 +174,7 @@ class Idle(MainWindow):
                     elif int(self.nowplaying._song) > 1:
                         self.set_busyinfo(item="Zurück",symbol=symbols.SYMBOL_PREV)
                         logger.debug("idle: prev")
-                        playout.pc_prev()
+                        self.mopidy.prev()
                     else:
                         self.set_busyinfo(item="Erster Titel",symbol=symbols.SYMBOL_FAIL)
 
@@ -213,7 +214,7 @@ class Idle(MainWindow):
             #    self.busysymbol = symbols.SYMBOL_VOL_MUTE
             #    playout.pc_mute()
             elif key.lower() in ['start']:
-                playout.pc_toggle()
+                self.mopidy.playpause()
             elif key == 'TODO':
                 self.windowmanager.windows["downloadmenu"].direct_play_last_folder = True
                 self.windowmanager.set_window("downloadmenu")

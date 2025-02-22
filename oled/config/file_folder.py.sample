@@ -19,3 +19,5 @@ RESUME_PLAY = "sudo /home/pi/RPi-Jukebox-RFID/scripts/resume_play.sh"
 
 FILE_USER_SETTINGS="/home/pi/oledctrl/oled/config/user_settings.py"
 FILE_USER_SETTINGS_SAMPLE="/home/pi/oledctrl/oled/config/user_settings.py.sample"
+
+FILE_MPD_PLAYBACK_DB="/home/pi/oledctrl/oled/config/mpd_playback.db"

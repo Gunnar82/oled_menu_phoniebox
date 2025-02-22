@@ -315,3 +315,10 @@ def run_as_service():
 
 def check_results_list(list_of_lists):
     return next((inner_list[1] for inner_list in list_of_lists if inner_list and inner_list[0] != 0), None)
+
+
+def list_files_in_directory(directory):
+    """Gibt eine Liste aller Dateien in einem Verzeichnis zurück."""
+    if not os.path.isdir(directory):
+        return []
+    return [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]

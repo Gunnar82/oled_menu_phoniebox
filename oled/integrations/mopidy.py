@@ -2,17 +2,20 @@
 import asyncio
 import time
 import concurrent.futures
-import musicpd
 import settings # pylint: disable=import-error
 import os
+import musicpd
+import integrations.sqlite as sqlitedb
 
-from integrations.functions import run_command
+
+from integrations.functions import run_command, list_files_in_directory
 
 
 class MopidyControl():
     def __init__(self, loop):
         self.client = musicpd.MPDClient()
         self.loop = loop
+        self.sqlite = sqlitedb.sqliteDB(self.client)
         self.connected = False
         self.radiostations = []
         self.playlists = []
@@ -116,13 +119,10 @@ class MopidyControl():
 
 
     def playpause(self):
-        try:
-            if self.status["state"] == "play":
-                self.client.pause()
-            else:
-                self.client.play()
-        except musicpd.ConnectionError:
-            self._connectionlost()
+        if self.status["state"] == "play":
+            self.pause()
+        else:
+            self.play()
 
     def play(self):
         try:
@@ -132,6 +132,7 @@ class MopidyControl():
 
     def pause(self):
         try:
+            self.sqlite.save_playback()
             self.client.pause()
         except musicpd.ConnectionError:
             self._connectionlost()
@@ -140,17 +141,20 @@ class MopidyControl():
     def next(self):
         try:
             self.client.next()
+            self.sqlite.save_playback()
         except musicpd.ConnectionError:
             self._connectionlost()
 
     def previous(self):
         try:
             self.client.previous()
+            self.sqlite.save_playback()
         except musicpd.ConnectionError:
             self._connectionlost()
 
     def stop(self):
         try:
+            self.sqlite.save_playback()
             self.client.stop()
         except musicpd.ConnectionError:
             self._connectionlost()
@@ -194,21 +198,43 @@ class MopidyControl():
         except musicpd.ConnectionError:
             self._connectionlost()
 
-    def playonlinelist(self,songs = None,seekto = None):
+    def playfolderstart(self,fullfolder,foldername):
+        pos, mtime = self.sqlite.get_playback_info(foldername)
+
+        songs = list_files_in_directory(fullfolder)
+        mysongs = []
+        for song in songs:
+            addsong = os.path.join(foldername, song)
+            if addsong.endswith('.mp3'):
+                mysongs.append(addsong)
+        mysongs.sort()
+
+        self.playliststart(mysongs,[int(pos),mtime])
+
+    def playliststart(self,songs = None,seekto = None):
         try:
-            self.client.stop()
+            self.stop()
             self.client.clear()
             for song in songs:
                 self.client.add(song)
+
             if seekto:
-                for idx, song in enumerate(songs):
-                    print (song)
-                    if song == seekto[0]:
-                        print ("gefunden")
-                        self.client.seek(idx,int(float(seekto[1])))
-                        return
-            self.client.play()
+                if isinstance(seekto[0],str):
+                    for idx, song in enumerate(songs):
+                        if song == seekto[0]:
+                            print ("gefunden")
+                            self.client.seek(idx,int(float(seekto[1])))
+                            return
+                else:
+                    print (seekto)
+                    self.client.seek(seekto[0],int(float(seekto[1])))
+                    return
+
+            self.play()
             return
-            
         except Exception as error:
             print (error)
+
+
+    def get_folder_info(self,folder):
+        return self.sqlite.get_folder_info(folder)

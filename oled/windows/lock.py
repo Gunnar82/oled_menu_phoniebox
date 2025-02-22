@@ -1,7 +1,6 @@
 """ Start screen """
 
 from ui.mainwindow import MainWindow
-from integrations.playout import pc_toggle
 from luma.core.render import canvas
 from PIL import ImageFont
 import settings
@@ -14,9 +13,9 @@ class Lock(MainWindow):
     fontawesome = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XXL)
     busysymbol=symbols.SYMBOL_LOCKED
 
-    def __init__(self, windowmanager,loop,nowplaying):
+    def __init__(self, windowmanager,loop,nowplaying,mopidy):
         super().__init__(windowmanager, loop,nowplaying)
-
+        self.mopidy = mopidy
         self.timeout = False
         self.window_on_back = "idle"
         self.busyrendertime = 0.25
@@ -68,7 +67,7 @@ class Lock(MainWindow):
     def turn_callback(self,direction, key=None):
         """Überprüft, ob der gedrückte Schlüssel korrekt ist."""
         if key.lower() in ['start','key_pause']:
-            pc_toggle()
+            self.mopidy.playpause()
         elif key.lower() == self.unlockcode[self.currentkey].lower():
             self.busysymbol = symbols.SYMBOL_PASS
             self.currentkey += 1

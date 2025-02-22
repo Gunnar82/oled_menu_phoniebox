@@ -12,6 +12,7 @@ oled/config/rotary_enc.py
 oled/config/bluetooth.py
 oled/config/keypad_4x4_i2c.py
 oled/config/bt_device
+oled/config/mpd_playback.db
 Latest*
 oled/config/online.py
 oled/config/file_folder.py

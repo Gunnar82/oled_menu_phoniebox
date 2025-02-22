@@ -21,9 +21,10 @@ from datetime import datetime
 
 class Ende(MainWindow):
 
-    def __init__(self, windowmanager, loop,nowplaying):
+    def __init__(self, windowmanager, loop,nowplaying,mopidy):
         super().__init__(windowmanager, loop, nowplaying)
         self.loop = loop
+        self.mopidy = mopidy
 #        self.font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_L)
         self.fontawesome = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XXL)
         self.wait4track = -1
@@ -120,10 +121,10 @@ class Ende(MainWindow):
 
     def turn_callback(self, direction, key=None):
         if key.lower() in ['start','#','key_pause']:
-            playout.pc_toggle()
+            self.mopidy.playpause()
         elif key in ['X','Y','A','B','C','D',]:
             playout.savepos_online(self.nowplaying)
-            playout.savepos()
+            self.mopidy.stop()
             #self.mopidyconnection.stop()
             logger.info("Stopping event loop")
             time.sleep(1)
@@ -137,7 +138,7 @@ class Ende(MainWindow):
 
     def do_shutdown(self):
         playout.savepos_online(self.nowplaying)
-        playout.savepos()
+        self.mopidy.stop()
         logger.info("timer: Stopping event loop")
         time.sleep(2)
         self.loop.stop()
