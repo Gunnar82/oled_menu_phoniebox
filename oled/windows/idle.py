@@ -192,15 +192,15 @@ class Idle(MainWindow):
 
             elif key == 'A' or key == 'Y':
                 settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_MUSIC
-                settings.currentfolder = get_folder_from_file(cfg_file_folder.FILE_LAST_MUSIC)
+                settings.currentfolder = self.musicmanager.get_latest_folder('Musik')
                 self.windowmanager.set_window("foldermenu")
             elif key == 'B':
                 settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_HOERBUCH 
-                settings.currentfolder = get_folder_from_file(cfg_file_folder.FILE_LAST_HOERBUCH)
+                settings.currentfolder = self.musicmanager.get_latest_folder('Hörspiele')
                 self.windowmanager.set_window("foldermenu")
             elif key == 'C' or key == 'X':
                 settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_RADIO
-                settings.currentfolder = get_folder_from_file(cfg_file_folder.FILE_LAST_RADIO)
+                settings.currentfolder = self.musicmanager.get_latest_folder('Radio')
                 self.windowmanager.set_window("foldermenu")
             elif key in  ['D','hl']:
                 self.windowmanager.set_window("downloadmenu")

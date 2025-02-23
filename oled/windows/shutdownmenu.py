@@ -8,7 +8,7 @@ import config.colors as colors
 import config.file_folder as cfg_file_folder
 import config.shutdown_reason as SR
 import os
-import integrations.playout as playout
+
 
 
 from integrations.functions import restart_oled, get_timeouts, run_command
@@ -44,7 +44,6 @@ class Shutdownmenu(MenuBase):
         if self.counter == 1:
             restart_oled()
         elif self.counter == 2:
-            #playout.pc_toggle()
             settings.shutdown_reason = SR.SR2
             self.windowmanager.set_window("ende")
         elif self.counter == 3:

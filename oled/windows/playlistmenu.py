@@ -4,7 +4,6 @@ import settings
 import config.colors as colors
 import config.file_folder as cfg_file_folder
 
-import integrations.playout as playout
 import time
 if settings.use_eyed3:
     import eyed3 
@@ -90,7 +89,7 @@ class Playlistmenu(ListBase):
         if self.position == -1 or  self.position == -2 :
             self.windowmanager.set_window("mainmenu")
         else:
-            playout.pc_play(self.position + 1) # 1 based
+            self.musicmanager.play(self.position)
 
     def on_key_left(self):
         self.windowmanager.set_window("playbackmenu")

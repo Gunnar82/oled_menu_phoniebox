@@ -6,9 +6,10 @@ from PIL import ImageFont
 import asyncio
 import time
 import settings
-import integrations.playout as playout
 import config.symbols as symbols
 import config.shutdown_reason as SR
+import integrations.playout as playout
+
 
 from integrations.logging_config import *
 

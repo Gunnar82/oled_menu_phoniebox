@@ -122,8 +122,10 @@ class MopidyControl():
         else:
             self.play()
 
-    def play(self):
+    def play(self,position = None):
         try:
+            if position:
+                self.client.seek(position,0)
             self.client.play()
         except musicpd.ConnectionError:
             self._connectionlost()

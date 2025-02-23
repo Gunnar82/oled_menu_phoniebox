@@ -7,7 +7,6 @@ import config.symbols as symbols
 
 import os 
 import integrations.functions as functions
-import integrations.playout as playout
 import time
 
 import config.file_folder as cfg_file_folder
@@ -47,8 +46,6 @@ class Foldermenu(ListBase):
             self.set_window_busy()
             foldername = fullfolder[len(cfg_file_folder.AUDIO_BASEPATH_BASE) + 1:]
             logger.debug (f"enable_resume: {foldername}")
-
-            #playout.set_resume(folder)
 
             self.append_busytext("Abspielen:")
             self.append_busytext(foldername)

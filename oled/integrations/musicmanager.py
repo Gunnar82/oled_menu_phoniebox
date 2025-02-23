@@ -54,9 +54,9 @@ class Musicmanager():
             return self.mopidyconnection.playpause()
 
 
-    def play(self):
+    def play(self,position = None):
         if self.source == "mpd":
-            return self.mopidyconnection.play()
+            return self.mopidyconnection.play(position)
 
     def stop(self):
         if self.source == "mpd":

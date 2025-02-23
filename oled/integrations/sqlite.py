@@ -7,7 +7,12 @@ from integrations.functions import get_parent_folder
 import config.file_folder as cfg_file_folder
 
 class sqliteDB:
-    def __init__(self, client, db_file=cfg_file_folder.FILE_MPD_PLAYBACK_DB):
+    def __init__(self, client):
+        try:
+            db_file = cfg_file_folder.FILE_MPD_PLAYBACK_DB
+        except:
+            db_file= "/home/pi/oledctrl/oled/config/mpd_playback.db"
+
         self.db_file = db_file
         self.client = client
 

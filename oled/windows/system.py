@@ -5,7 +5,6 @@ import importlib
 
 from luma.core.render import canvas
 from ui.listbase import ListBase
-from integrations.playout import *  # Wenn notwendig, ansonsten spezifisch importieren
 from integrations.functions import *
 from integrations.webrequest import WebRequest
 import config.online as cfg_online
