@@ -19,10 +19,10 @@ import RPi.GPIO as GPIO
 class Playbackmenu(MainWindow):
     faiconsbig = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XL)
 
-    def __init__(self, windowmanager, loop, nowplaying, mopidy):
+    def __init__(self, windowmanager, loop, nowplaying, musicmanager):
         super().__init__(windowmanager, loop, nowplaying)
         self.nowplaying = nowplaying
-        self.mopidy = mopidy
+        self.musicmanager = musicmanager
         self._volume = -1
         self._time = -1
         self._elapsed = -1
@@ -75,9 +75,9 @@ class Playbackmenu(MainWindow):
 
     def push_callback(self,lp=False):
         if self.counter == 1:
-            self.mopidy.stop()
+            self.musicmanager.stop()
         elif self.counter == 2:
-            self.mopidy.playpause()
+            self.musicmanager.playpause()
         elif self.counter == 3:
             self.windowmanager.set_window("mainmenu")
         elif self.counter == 4:
@@ -111,14 +111,14 @@ class Playbackmenu(MainWindow):
                     cfolder = get_folder_of_livestream(self.nowplaying._playingfile)
                     playout.pc_playfolder (get_folder(cfolder,-1))
                 else:
-                    self.mopidy.prev()
+                    self.musicmanager.prev()
 
             else:
                 if self.nowplaying._playingalbum == "Livestream":
                     cfolder = get_folder_of_livestream(self.nowplaying._playingfile)
                     playout.pc_playfolder (get_folder(cfolder,1))
                 else:
-                    self.mopidy.next()
+                    self.musicmanager.next()
 
         else:
             if (self.counter + direction < len(self.descr) and self.counter + direction >= 0):

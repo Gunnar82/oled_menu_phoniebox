@@ -14,9 +14,10 @@ import os
 
 class Mainmenu(MenuBase):
 
-    def __init__(self, windowmanager,loop,title):
+    def __init__(self, windowmanager,loop,title,musicmanager):
         super().__init__(windowmanager,loop,title)
         self.counter = 0
+        self.musicmanager = musicmanager
         self.descr.append ([ "Musik", symbols.SYMBOL_MUSIC,"foldermenu" ])
         self.descr.append([ "Hörspiele", symbols.SYMBOL_HOERSPIEL, "foldermenu" ])
         self.descr.append([ "Internetradio", symbols.SYMBOL_RADIO, "radiomenu"])
@@ -34,13 +35,13 @@ class Mainmenu(MenuBase):
     def push_handler(self):
         if self.counter == 1:
             settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_MUSIC
-            settings.currentfolder = get_folder_from_file(cfg_file_folder.FILE_LAST_MUSIC)
+            settings.currentfolder = self.musicmanager.get_latest_folder('Musik')
         elif self.counter == 2:
             settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_HOERBUCH
-            settings.currentfolder = get_folder_from_file(cfg_file_folder.FILE_LAST_HOERBUCH)
+            settings.currentfolder = self.musicmanager.get_latest_folder('Hörspiele')
         elif self.counter == 3:
             settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_RADIO
-            settings.currentfolder = get_folder_from_file(cfg_file_folder.FILE_LAST_RADIO)
+            settings.currentfolder = self.musicmanager.get_latest_folder('Radio')
         elif self.counter == 5:
             settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_USB
             settings.currentfolder = cfg_file_folder.AUDIO_BASEPATH_USB

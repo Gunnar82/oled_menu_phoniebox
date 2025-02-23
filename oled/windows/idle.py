@@ -28,10 +28,10 @@ logger = setup_logger(__name__)
 
 class Idle(MainWindow):
 
-    def __init__(self, windowmanager, loop, nowplaying,mopidy):
+    def __init__(self, windowmanager, loop, nowplaying,musicmanager):
         super().__init__(windowmanager, loop, nowplaying)
         self.changerender = True
-        self.mopidy = mopidy
+        self.musicmanager = musicmanager
         self.window_on_back = "playlistmenu"
 
     def activate(self):
@@ -174,7 +174,7 @@ class Idle(MainWindow):
                     elif int(self.nowplaying._song) > 1:
                         self.set_busyinfo(item="Zurück",symbol=symbols.SYMBOL_PREV)
                         logger.debug("idle: prev")
-                        self.mopidy.prev()
+                        self.musicmanager.prev()
                     else:
                         self.set_busyinfo(item="Erster Titel",symbol=symbols.SYMBOL_FAIL)
 
@@ -214,35 +214,20 @@ class Idle(MainWindow):
             #    self.busysymbol = symbols.SYMBOL_VOL_MUTE
             #    playout.pc_mute()
             elif key.lower() in ['start']:
-                self.mopidy.playpause()
+                self.musicmanager.playpause()
             elif key == 'TODO':
                 self.windowmanager.windows["downloadmenu"].direct_play_last_folder = True
                 self.windowmanager.set_window("downloadmenu")
 
             elif key in ['1', '3', '7','hr']:
                 if key == '1' or key == 'hr':
-                    what = cfg_file_folder.FILE_LAST_HOERBUCH
+                    what = 'Hörspiele'
                 elif key == '3':
-                    what = cfg_file_folder.FILE_LAST_RADIO
+                    what = 'http'
                 elif key == '7':
-                    what = cfg_file_folder.FILE_LAST_MUSIC
+                    what = 'Musik'
 
-                if playout.checkfolder(what) != 0:
-                    self.set_busyinfo(item=f"Fehler: {what}",symbol=symbols.SYMBOL_ERROR)
-                else:
-                    try:
-                        with open(what) as f:
-                            content = f.read()
-                    except:
-                        content = "Fehler"
-                    if content.startswith('/'): content = content[1:]
-
-                    content = content.split('/')
-                    logger.debug(content)
-                    content.insert(0,what.split("/")[-1])
-
-                    self.set_busyinfo(item=content,symbol=symbols.SYMBOL_PASS,wait=6)
-                    self.loop.create_task(self.playlast(what))
+                self.loop.create_task(self.playlast(what))
         else:
             if (direction > 0):
                 self.set_busyinfo(item="lauter",symbol=symbols.SYMBOL_VOL_UP)
@@ -253,4 +238,4 @@ class Idle(MainWindow):
 
     async def playlast(self,what):
         await asyncio.sleep(1)
-        playout.playlast_checked(what)
+        self.musicmanager.play_latest_folder(what)

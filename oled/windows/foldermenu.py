@@ -21,18 +21,17 @@ class Foldermenu(ListBase):
     folders = []
     busysymbol = symbols.SYMBOL_LIST
 
-    def __init__(self, windowmanager,loop,mopidy):
+    def __init__(self, windowmanager,loop,musicmanager):
         super().__init__(windowmanager, loop, "Auswahl")
         #self.timeoutwindow="folderinfo"
         self.timeout = False
         self.loop = loop
-        self.mopidy = mopidy
+        self.musicmanager = musicmanager
 
 
     def activate(self):
         self.folders = []
         settings.currentfolder = self.check_if_subdir_of_basepath(settings.currentfolder,settings.audio_basepath)
-
         self.position = -1
 
         if settings.currentfolder.startswith(cfg_file_folder.AUDIO_BASEPATH_MUSIC): self.busysymbol = f"{symbols.SYMBOL_LIST} {symbols.SYMBOL_MUSIC}"
@@ -53,7 +52,7 @@ class Foldermenu(ListBase):
 
             self.append_busytext("Abspielen:")
             self.append_busytext(foldername)
-            self.mopidy.playfolderstart(fullfolder,foldername)
+            self.musicmanager.playfolderstart(fullfolder,foldername)
             self.windowmanager.set_window("idle")
         except Exception as error:
             logger.debug(f"{error}")
@@ -63,11 +62,14 @@ class Foldermenu(ListBase):
 
     def check_if_subdir_of_basepath(self,directory, basepath):
         try:
-            if len(directory) >= len(basepath) and directory.startswith(basepath) and os.path.exists(directory):
-                return directory
+            thedir = os.path.join(cfg_file_folder.AUDIO_BASEPATH_BASE,directory)
+            print (thedir)
+            if len(thedir) >= len(basepath) and thedir.startswith(basepath) and os.path.exists(thedir):
+                return thedir
+            else: 
+                return settings.audio_basepath
         except Exception as error:
             logger.error(f"check_if_subdir: {error}")
-        finally:
             return settings.audio_basepath
 
 
@@ -99,7 +101,7 @@ class Foldermenu(ListBase):
                 try:
                     progress = ""
                     folder = d[len(cfg_file_folder.AUDIO_BASEPATH_BASE) + 1:]
-                    percentage = self.mopidy.get_folder_info(folder)
+                    percentage = self.musicmanager.get_folder_info(folder)
                     logger.debug("foldermenu: progress: %.2f" % (percentage))
                     progress = "%2.2d %%" % (percentage)
                 except Exception as error:
@@ -120,32 +122,24 @@ class Foldermenu(ListBase):
         return folders_info
 
     def generate_folders(self,folder):
-
         folders_info = self.generate_folders_array(folder)
         self.menu = []
         for folder in folders_info:
-            logger.debug(f"append folder toi self.menu: {folder}")
+            logger.debug(f"append folder to self.menu: {folder}")
             self.menu.append(folder)
 
         if settings.current_selectedfolder.rfind(settings.currentfolder) == 0:
             search = settings.current_selectedfolder[len(settings.currentfolder)+1:]
-
             logger.debug(f"search: {search}")
             try:
-                _pos = folders_info.index(search)
-    
+                filtered = list(filter(lambda x: x[0] == search, folders_info))
+                _pos = folders_info.index(filtered[0]) if filtered else -1
                 logger.debug("foldermenu: generate_folders: position: %d, _pos: %d, self.displaylines: %d" % ( self.position, _pos, self.displaylines))
 
                 self.position= _pos
-            except:
-                try:
-                    _pos = folders_info.index(symbols.SYMBOL_FOLDER + " " + search)
-    
-                    logger.debug("foldermenu: generate_folders: position: %d, _pos: %d, self.displaylines: %d" % ( self.position, _pos, self.displaylines))
-
-                    self.position= _pos
-                except:
-                    self.position = 0
+            except Exception as error:
+                print (error)
+                self.position = -1
 
 
     def turn_callback(self,direction,key=False):
@@ -211,6 +205,6 @@ class Foldermenu(ListBase):
             if set_window: self.set_window_busy(False,wait=5)
 
 
-            #self.mopidyconnection.loadplaylist(self.mopidyconnection.playlists[self.counter-1])
+            #self.musicmanagerconnection.loadplaylist(self.musicmanagerconnection.playlists[self.counter-1])
             #self.windowmanager.set_window("idle")
 

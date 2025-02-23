@@ -5,7 +5,6 @@ import concurrent.futures
 import settings # pylint: disable=import-error
 import os
 import musicpd
-import integrations.sqlite as sqlitedb
 
 
 from integrations.functions import run_command, list_files_in_directory
@@ -15,7 +14,6 @@ class MopidyControl():
     def __init__(self, loop):
         self.client = musicpd.MPDClient()
         self.loop = loop
-        self.sqlite = sqlitedb.sqliteDB(self.client)
         self.connected = False
         self.radiostations = []
         self.playlists = []
@@ -132,7 +130,6 @@ class MopidyControl():
 
     def pause(self):
         try:
-            self.sqlite.save_playback()
             self.client.pause()
         except musicpd.ConnectionError:
             self._connectionlost()
@@ -141,20 +138,17 @@ class MopidyControl():
     def next(self):
         try:
             self.client.next()
-            self.sqlite.save_playback()
         except musicpd.ConnectionError:
             self._connectionlost()
 
     def previous(self):
         try:
             self.client.previous()
-            self.sqlite.save_playback()
         except musicpd.ConnectionError:
             self._connectionlost()
 
     def stop(self):
         try:
-            self.sqlite.save_playback()
             self.client.stop()
         except musicpd.ConnectionError:
             self._connectionlost()
@@ -178,63 +172,3 @@ class MopidyControl():
             print(f"Playing ID {stationid} ({self.radiostations[stationid]})")
         except musicpd.ConnectionError:
             self._connectionlost()
-
-
-    def loadplaylist(self, name):
-        try:
-            #self.client.clear()
-            #self.client.load(name)
-            #self.client.play()
-            rootdir =  "/home/pi/RPi-Jukebox-RFID/shared/audiofolders/"
-            recursive = ""
-            for file in os.listdir(rootdir):
-                d = os.path.join(rootdir, file)
-                if os.path.isdir(d):
-                    recursive = "-v='recursive'"
-            run_command("sudo /home/RPi-Jukebox-RFID/scripts/rfid_trigger_play.sh -d=\"%s\" %s" % (name,recursive))
-
-            self.loadedplaylist = name
-            print(f"Loaded and playing Playlist {name}")
-        except musicpd.ConnectionError:
-            self._connectionlost()
-
-    def playfolderstart(self,fullfolder,foldername):
-        pos, mtime = self.sqlite.get_playback_info(foldername)
-
-        songs = list_files_in_directory(fullfolder)
-        mysongs = []
-        for song in songs:
-            addsong = os.path.join(foldername, song)
-            if addsong.endswith('.mp3'):
-                mysongs.append(addsong)
-        mysongs.sort()
-
-        self.playliststart(mysongs,[int(pos),mtime])
-
-    def playliststart(self,songs = None,seekto = None):
-        try:
-            self.stop()
-            self.client.clear()
-            for song in songs:
-                self.client.add(song)
-
-            if seekto:
-                if isinstance(seekto[0],str):
-                    for idx, song in enumerate(songs):
-                        if song == seekto[0]:
-                            print ("gefunden")
-                            self.client.seek(idx,int(float(seekto[1])))
-                            return
-                else:
-                    print (seekto)
-                    self.client.seek(seekto[0],int(float(seekto[1])))
-                    return
-
-            self.play()
-            return
-        except Exception as error:
-            print (error)
-
-
-    def get_folder_info(self,folder):
-        return self.sqlite.get_folder_info(folder)

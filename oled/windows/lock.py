@@ -13,9 +13,9 @@ class Lock(MainWindow):
     fontawesome = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XXL)
     busysymbol=symbols.SYMBOL_LOCKED
 
-    def __init__(self, windowmanager,loop,nowplaying,mopidy):
+    def __init__(self, windowmanager,loop,nowplaying,musicmanager):
         super().__init__(windowmanager, loop,nowplaying)
-        self.mopidy = mopidy
+        self.musicmanager = musicmanager
         self.timeout = False
         self.window_on_back = "idle"
         self.busyrendertime = 0.25
@@ -67,7 +67,7 @@ class Lock(MainWindow):
     def turn_callback(self,direction, key=None):
         """Überprüft, ob der gedrückte Schlüssel korrekt ist."""
         if key.lower() in ['start','key_pause']:
-            self.mopidy.playpause()
+            self.musicmanager.playpause()
         elif key.lower() == self.unlockcode[self.currentkey].lower():
             self.busysymbol = symbols.SYMBOL_PASS
             self.currentkey += 1

@@ -61,7 +61,14 @@ def remove_folder_symbol(item):
     return item.lstrip(symbols.SYMBOL_FOLDER).lstrip()
 
 
-
+def get_file_content(filepath):
+    try:
+        # Versuche, die Datei zu öffnen und ihren Inhalt zu lesen
+        with open(filepath, 'r', encoding='utf-8') as file:
+            return file.read()
+    except Exception as e:
+        # Falls ein Fehler auftritt (z.B. Datei nicht gefunden), gib einen leeren String zurück
+        return ""
 
 def get_folder_of_livestream(url):
     basefolder = cfg_file_folder.AUDIO_BASEPATH_RADIO

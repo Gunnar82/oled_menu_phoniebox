@@ -109,8 +109,7 @@ class Shutdownmenu(MenuBase):
                 run_command("%s -c=shutdownafter -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
 
             elif key == 'C':
-                playout.savepos()
-                self.mopidyconnection.stop()
+                self.musicmanagerconnection.stop()
                 settings.shutdown_reason = SR.SR2
                 print("Stopping event loop")
                 self.loop.stop()

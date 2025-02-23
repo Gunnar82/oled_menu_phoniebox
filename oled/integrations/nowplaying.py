@@ -166,8 +166,8 @@ class nowplaying:
         if self.input_is_online():
             logger.debug("saving online position")
             playout.savepos_online(self)
-
-        if not only_online: playout.savepos()
+        else:
+            self.musicmanager.save_playback()
 
     def is_title_changed(self):
         """Wenn Titelwechsel und noch nicht abgefragt, true"""

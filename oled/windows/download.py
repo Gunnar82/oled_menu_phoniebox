@@ -38,9 +38,9 @@ logger = setup_logger(__name__)
 
 class DownloadMenu(ListBase):
 
-    def __init__(self, windowmanager,loop,mopidy):
+    def __init__(self, windowmanager,loop,musicmanager):
         super().__init__(windowmanager, loop, "Download")
-        self.mopidy = mopidy
+        self.musicmanager = musicmanager
         self.busysymbol = symbols.SYMBOL_CLOUD
 
         self.direct_play_last_folder = False
@@ -270,7 +270,7 @@ class DownloadMenu(ListBase):
                 self.append_busytext(f"Titelhinzugefügt: {item}",reuse_last = True)
 
             self.append_busytext(f"Starte playout {self.cwd}")
-            self.mopidy.playliststart(songs=songs,seekto=seekto)
+            self.musicmanager.playliststart(songs=songs,seekto=seekto)
 
         except Exception as error:
             logger.error (f"playfolder: {error}")

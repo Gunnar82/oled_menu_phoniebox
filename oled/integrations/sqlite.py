@@ -106,6 +106,18 @@ class sqliteDB:
         cursor = conn.cursor()
         cursor.execute('SELECT round( AVG(1.0 * pos / playlist_length) *100,1) FROM playback WHERE folder LIKE ? AND playlist_length > 0;', (folder + '%',))
         result = cursor.fetchone()
-        print (result)
         conn.close()
         return result[0] if result[0] is not None  else 0
+
+    def get_latest_folder(self, folder="Hörspiel"):
+        """Gibt die pos und elapsed für das angegebene folder zurück."""
+        conn = sqlite3.connect(self.db_file)
+        cursor = conn.cursor()
+        cursor.execute('select folder from playback Where folder LIKE ? || \'%\' ORDER BY time_played DESC LIMIT 1;', (folder,))
+        result = cursor.fetchone()
+        conn.close()
+        try:
+            return result[0] if result[0] is not None  else folder
+        except:
+            return folder
+

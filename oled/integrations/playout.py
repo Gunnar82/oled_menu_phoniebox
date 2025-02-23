@@ -46,9 +46,6 @@ def pc_seek0():
     print("mpc seek 0")
     run_command("mpc seek 0")
 
-def savepos():
-    run_command("%s -c=savepos" % (cfg_file_folder.RESUME_PLAY))
-
 def savepos_online(nowplaying):
     try:
         url = nowplaying.filename
