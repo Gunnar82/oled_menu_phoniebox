@@ -11,6 +11,12 @@ import asyncio
 
 from ui.listbase import ListBase
 
+from integrations.logging_config import *
+
+logger = setup_logger(__name__)
+
+
+
 class Playlistmenu(ListBase):
     def __init__(self, windowmanager, loop,  musicmanager):
         self.musicmanager = musicmanager
@@ -52,29 +58,27 @@ class Playlistmenu(ListBase):
             for itm in self.playlist:
                 self.menu.append([itm])
 
-
-
-
     def activate(self):
         self.window_on_back = "idle"
         self.playlist = self.musicmanager.playlist()
 
         self.loop.create_task(self.eyed3_playlist())
-        self.song = -1
-        cnt = 0 
-
-        while self.song < 0 and cnt < 20:
-            status = self.musicmanager.status()
-            self.song = int(status['song']) + 1 if ("song" in status) else -1
-            cnt += 1
-            time.sleep(0.1)
-        logger.debug ("Song: %s POS: %s" %(self.song, self.position))
-
-
         try:
-            self.position = self.song -1
-        except:
-            self.position = 0
+            song = -1
+            cnt = 0 
+
+            while song < 0 and cnt < 20:
+                status = self.musicmanager.status()
+                song = int(status['song']) + 1 if ("song" in status) else -1
+                cnt += 1
+                time.sleep(0.1)
+            logger.debug ("Song: %s POS: %s" %(song, self.position))
+
+            self.position = song -1
+        except Exception as error:
+            logger.debug (f"activate: {error}")
+            self.position = - 1
+
 
 
     def turn_callback(self,direction,key=False):

@@ -173,8 +173,8 @@ class Idle(MainWindow):
                         playout.pc_seek0()
                     elif int(self.nowplaying._song) > 1:
                         self.set_busyinfo(item="Zurück",symbol=symbols.SYMBOL_PREV)
-                        logger.debug("idle: prev")
-                        self.musicmanager.prev()
+                        logger.debug("idle: previous")
+                        self.musicmanager.previous()
                     else:
                         self.set_busyinfo(item="Erster Titel",symbol=symbols.SYMBOL_FAIL)
 
