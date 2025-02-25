@@ -64,7 +64,7 @@ class SystemMenu(ListBase):
         self.menu.append("pixel ausrichten")             # Eitnrag 0
         self.menu.append("PLACEHOLDER UPDATE_RADIO 2")             # Eitnrag 1
 
-        self.menu.append([""])                                     # Eintrag 2
+        self.menu.append(["BLUETOOTH_ENABLED PLACEHOLDER"])                                     # Eintrag 2
         self.menu.append(["Lösche Online-Status Online"])          # Eintrag 3
 
         self.menu.append(["Lösche Hörspielstatus"])                # Eintrag 4
@@ -188,6 +188,9 @@ class SystemMenu(ListBase):
         if self.position == 1:
             self.csettings.UPDATE_RADIO = not self.csettings.UPDATE_RADIO
 
+        if self.position == 2:
+            self.csettings.BLUETOOTH_ENABLED = not self.csettings.BLUETOOTH_ENABLED
+
         elif self.position >= 4 and self.position <= 5:
             if self.position == 4:
                 what = cfg_file_folder.FILE_LAST_HOERBUCH
@@ -308,6 +311,7 @@ class SystemMenu(ListBase):
         elif not self.showqr:
             try:
                 self.menu[1]  = ["Radio ist %s - setze auf %s" % ("EIN" if self.csettings.UPDATE_RADIO else "AUS","EIN" if not self.csettings.UPDATE_RADIO else "AUS")]
+                self.menu[2]  = ["Bluetooth ist %s - setze auf %s" % ("EIN" if self.csettings.BLUETOOTH_ENABLED else "AUS","EIN" if not self.csettings.BLUETOOTH_ENABLED else "AUS")]
 
                 self.menu[10] = ["Firewall AUTO_ENABLED ist %s" % ("EIN" if self.csettings.AUTO_ENABLED else "AUS"),"h"]
                 self.menu[11]  = ["setze auf %s" % ("EIN" if not self.csettings.AUTO_ENABLED else "AUS")]

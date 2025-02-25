@@ -22,20 +22,18 @@ class sqliteDB:
         # Datenbank und Tabelle erstellen
         self.create_db()
 
-    def get_connection(self):
-        """Stellt sicher, dass jeder Thread eine eigene DB-Verbindung bekommt."""
-        if not hasattr(self.local, "conn"):
-            self.local.conn = sqlite3.connect(self.db_file, check_same_thread=False)
+    def create_connection(self):
+        """Erstellt eine Verbindung, wenn sie nicht existiert (pro Thread)."""
+        if not hasattr(self.local, "conn"):  # Prüft, ob der Thread bereits eine Verbindung hat
+            self.local.conn = sqlite3.connect(self.db_file, check_same_thread=True)
             self.local.cursor = self.local.conn.cursor()
-        return self.local.conn, self.local.cursor
 
     def create_db(self):
         """Erstellt die SQLite-Datenbank und die Tabelle, falls notwendig."""
-        self.conn = sqlite3.connect(self.db_file)
-        self.cursor = self.conn.cursor()
+        self.create_connection()
 
         # Tabelle erstellen (falls nicht vorhanden), jetzt auch mit "file" Feld
-        self.cursor.execute('''
+        self.local.cursor.execute('''
         CREATE TABLE IF NOT EXISTS playback (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             artist TEXT,
@@ -50,7 +48,7 @@ class sqliteDB:
         )''')
 
 
-        self.cursor.execute('''
+        self.local.cursor.execute('''
         CREATE TABLE IF NOT EXISTS radiostations (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             station_name TEXT,
@@ -59,7 +57,7 @@ class sqliteDB:
         )''')
 
         """Erstellt die Tabelle für Einstellungen, falls sie nicht existiert."""
-        self.cursor.execute("""
+        self.local.cursor.execute("""
         CREATE TABLE IF NOT EXISTS settings (
             setting_key TEXT PRIMARY KEY,
             setting_value TEXT
@@ -67,13 +65,14 @@ class sqliteDB:
         """)
 
 
-        self.conn.commit()
+        self.local.conn.commit()
 
     def store_playback_info(self, artist, album, title, mfile, mfolder, pos, elapsed, playlist_length):
         """Speichert Wiedergabeinformationen in der Datenbank, einschließlich Dateipfad."""
+        self.create_connection()
 
         # Einfügen der Wiedergabeinformationen (jetzt auch mit "playlist_length")
-        self.cursor.execute('''
+        self.local.cursor.execute('''
         INSERT INTO playback (artist, album, title, file, folder, pos, elapsed, playlist_length, time_played)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(folder) DO UPDATE SET
@@ -85,43 +84,66 @@ class sqliteDB:
             elapsed=excluded.elapsed,
             playlist_length=excluded.playlist_length,
             time_played=excluded.time_played''', (artist, album, title, mfile, mfolder, pos, elapsed, playlist_length, time.strftime('%Y-%m-%d %H:%M:%S')))
-        self.conn.commit()
+        self.local.conn.commit()
 
 
     def get_playback_info(self, folder):
         """Gibt die pos und elapsed für das angegebene folder zurück."""
-        self.cursor.execute('SELECT pos, elapsed FROM playback WHERE folder = ? AND playlist_length > 0;', (folder ,))
-        result = self.cursor.fetchone()
+        self.create_connection()
+
+        self.local.cursor.execute('SELECT pos, elapsed FROM playback WHERE folder = ? AND playlist_length > 0;', (folder ,))
+        result = self.local.cursor.fetchone()
         return result if result else (0, 0)
 
 
 
     def get_folder_info(self, folder):
         """Gibt die pos und elapsed für das angegebene folder zurück."""
-        self.cursor.execute('SELECT round( AVG(1.0 * pos / playlist_length) *100,1) FROM playback WHERE folder LIKE ? AND playlist_length > 0;', (folder + '%',))
-        result = self.cursor.fetchone()
+        self.create_connection()
+
+        self.local.cursor.execute('SELECT round( AVG(1.0 * pos / playlist_length) *100,1) FROM playback WHERE folder LIKE ? AND playlist_length > 0;', (folder + '%',))
+        result = self.local.cursor.fetchone()
         return result[0] if result[0] is not None  else 0
 
-    def get_latest_folder(self, folder="Hörspiel"):
+    def get_latest_folder(self, folder="",mfile=None):
         """Gibt die pos und elapsed für das angegebene folder zurück."""
-        self.cursor.execute('select folder from playback Where folder LIKE ? || \'%\' ORDER BY time_played DESC LIMIT 1;', (folder,))
-        result = self.cursor.fetchone()
+        self.create_connection()
+
+        if mfile:sql = "select file from playback Where file LIKE '%s' || '%%' ORDER BY time_played DESC LIMIT 1;" % (mfile)
+        else: sql = "select folder from playback Where folder LIKE '%s' || '%%' ORDER BY time_played DESC LIMIT 1;" %(folder)
         try:
+            self.local.cursor.execute(sql)
+            result = self.local.cursor.fetchone()
             return result[0] if result[0] is not None  else folder
-        except:
-            return folder
+        except Exception as error:
+            return mfile if mfile else folder
 
 
     def get_radio_stations(self):
         """Gibt die pos und elapsed für das angegebene folder zurück."""
-        self.cursor.execute('SELECT id, station_name, station_url FROM radiostations ORDER BY id ASC;')
-        result = self.cursor.fetchall()
+        self.create_connection()
+
+        self.local.cursor.execute('SELECT id, station_name, station_url FROM radiostations ORDER BY id ASC;')
+        result = self.local.cursor.fetchall()
         return result if result else (0, 'N/A', 'N/A')
+
+
+    def get_station_id_name_from_url(self,url):
+        """Gibt die pos und elapsed für das angegebene folder zurück."""
+        try:
+            self.create_connection()
+            sql = "SELECT id, station_name FROM radiostations WHERE station_url = '%s' ORDER BY id ASC;" % (url)
+            self.local.cursor.execute(sql)
+            result = self.local.cursor.fetchone()
+            return result if result else (-1, 'N/A')
+        except Exception as error:
+            return (-1, 'N/A')
 
 
 
     def update_radiostations(self,stations):
         """Speichert Wiedergabeinformationen in der Datenbank, einschließlich Dateipfad."""
+        self.create_connection()
 
         # Einfügen der Wiedergabeinformationen (jetzt auch mit "playlist_length")
         sql = ('''
@@ -131,35 +153,45 @@ class sqliteDB:
             station_name = excluded.station_name,
             station_url = excluded.station_url
         ''')
-        self.cursor.executemany(sql, stations)
-        self.conn.commit()
+        self.local.cursor.executemany(sql, stations)
+        self.local.conn.commit()
 
     def delete_radiostations(self):
         """Speichert Wiedergabeinformationen in der Datenbank, einschließlich Dateipfad."""
+        self.create_connection()
 
-        self.cursor.execute("DELETE FROM radiostations")
-        self.cursor.execute("DELETE FROM sqlite_sequence WHERE name='radiostations'")  # Reset der ID
-        self.conn.commit()
+        self.local.cursor.execute("DELETE FROM radiostations")
+        self.local.cursor.execute("DELETE FROM sqlite_sequence WHERE name='radiostations'")  # Reset der ID
+        self.local.conn.commit()
 
 
     def load_user_settings(self):
         """Lädt alle Einstellungen aus der Datenbank und setzt sie als Attribute."""
-        conn, cursor = self.get_connection()
-        cursor.execute("SELECT setting_key, setting_value FROM settings")
-        settings = cursor.fetchall()
+        self.create_connection()
+
+        self.local.cursor.execute("SELECT setting_key, setting_value FROM settings")
+        settings = self.local.cursor.fetchall()
         return [(key, json.loads(value)) for key, value in settings]  # JSON zurück in Python-Typen umwandeln
 
     def save_user_setting(self, key, value):
         """Speichert oder aktualisiert eine Einstellung in der DB."""
-        conn, cursor = self.get_connection()
+        self.create_connection()
+
         json_value = json.dumps(value)  # Konvertiert in JSON
 
-        cursor.execute("""
+        self.local.cursor.execute("""
         INSERT OR REPLACE INTO settings (setting_key, setting_value)
         VALUES (?, ?)
         """, (key, json_value))
-        conn.commit()
+        self.local.conn.commit()
+
+    def close_connection(self):
+        """Schließt die Verbindung für diesen Thread."""
+        if hasattr(self.local, "conn"):
+            self.local.conn.close()
+            del self.local.conn
+            del self.local.cursor
 
     def __del__(self):
-        self.conn.close()
+        self.close_connection()
         

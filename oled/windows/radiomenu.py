@@ -46,15 +46,24 @@ class Radiomenu(ListBase):
                 self.musicmanager.update_radiostations(stations)
                 self.append_busytext("Abgeschlossen...")
             except Exception as error:
+                print (error)
                 self.append_busyerror(f"Fehler: {error}")
-            finally:
-                self.set_window_busy(False,wait=4)
+
+            self.set_window_busy(False,wait=4)
 
         #Nach Abschluss zu Radio wechseln
         try:
             self.menu = []
-            for station in self.musicmanager.get_radio_stations():
+
+            latest = str(self.musicmanager.get_latest_radio())
+
+            the_id, the_name = self.musicmanager.get_station_id_name_from_url(latest)
+
+
+            for idx, station in enumerate(self.musicmanager.get_radio_stations()):
                 self.menu.append([station[1],"e","",station[2]])
+                if station[1] == the_name: self.position = idx
+
         except Exception as error:
             print (error)
 

@@ -3,7 +3,7 @@
 import settings
 import os
 import config.file_folder as cfg_file_folder
-from integrations.functions import list_files_in_directory, get_file_content
+from integrations.functions import list_files_in_directory, get_file_content, get_parent_folder
 
 
 class Musicmanager():
@@ -101,6 +101,9 @@ class Musicmanager():
     def get_latest_folder(self, folder='Hörspiele'):
         return self.sqlite.get_latest_folder(folder)
 
+    def get_latest_radio(self):
+        return self.sqlite.get_latest_folder(mfile='http')
+
 
     def playfolderstart(self,fullfolder,foldername):
         pos, mtime = self.sqlite.get_playback_info(foldername)
@@ -166,13 +169,16 @@ class Musicmanager():
     def get_folder_info(self,folder):
         return self.sqlite.get_folder_info(folder)
 
-
     def get_radio_stations(self):
         return self.sqlite.get_radio_stations()
 
     def update_radiostations(self,stations):
         return self.sqlite.update_radiostations(stations)
 
+    def get_station_id_name_from_url(self,url):
+        return self.sqlite.get_station_id_name_from_url(url)
+
 
     def delete_radiostations(self,):
         return self.sqlite.delete_radiostations()
+

@@ -114,7 +114,7 @@ except Exception as error:
 
 from integrations.mopidy import MopidyControl
 from integrations.musicmanager import Musicmanager
-import integrations.sqlite
+import integrations.sqlite as msqlite
 from ui.windowmanager import WindowManager
 import windows.idle
 import windows.info
@@ -134,24 +134,9 @@ import windows.lock as wlock
 import windows.system as wsystem
 import windows.snake as wsnake
 
+import integrations.bluetooth
+import windows.bluetooth
 
-try:
-    bluetooth_enabled = False
-
-
-    if csettings.BLUETOOTH_ENABLED:
-        import integrations.bluetooth
-        import windows.bluetooth
-        bluetooth_enabled = True
-        mybluetooth = integrations.bluetooth.BluetoothOutput()
-        logger.info ("Bluetooth gestartet")
-
-except Exception as error:
-    bluetooth_enabled = False
-    mybluetooth = None
-
-
-    logger.error(f"Bluetooth: {error}")
 
 
 
@@ -170,10 +155,28 @@ def main():
     loop.add_signal_handler(signal.SIGTERM, handle_signal, loop,"SIGTERM")
 
     #SQLite Verbindung herstellen
-    sqlite = integrations.sqlite.sqliteDB()
+    sqlite = msqlite.sqliteDB()
 
     #Usersettings DB
     usersettings = config.user_settings.UserSettings(sqlite)
+
+    try:
+        bluetooth_enabled = False
+
+        if usersettings.BLUETOOTH_ENABLED:
+            bluetooth_enabled = True
+            mybluetooth = integrations.bluetooth.BluetoothOutput()
+            logger.info ("Bluetooth gestartet")
+        else:
+            mybluetooth = None
+
+    except Exception as error:
+        bluetooth_enabled = False
+        mybluetooth = None
+
+        logger.error(f"Bluetooth: {error}")
+
+
     #shutdown reason default
     settings.shutdown_reason = SR.SR1
 

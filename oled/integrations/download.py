@@ -84,15 +84,6 @@ def get_parent_directory(path):
     logger.debug(f"parent directory is {parent_path}")
     return  parent_path
 
-def create_or_modify_folder_conf(directory,latestplayed):
-    folderconf = os.environ.copy()
-    if latestplayed[0] == "POS":
-        folderconf["CURRENTFILENAME"] = "%s%s" % (latestplayed[5],latestplayed[1])
-        folderconf["ELAPSED"] = latestplayed[2]
-    print (directory)
-    playout.pc_enableresume(directory,env=folderconf)
-
-
 
 def get_current_directory(path):
     cur_dir = os.path.basename(os.path.normpath(path))

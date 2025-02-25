@@ -47,6 +47,8 @@ class Idle(MainWindow):
         active = False
 
     def render(self):
+        if self.nowplaying.input_is_stream() and not self.nowplaying.input_is_online(): self.window_on_back= "radiomenu"
+        else: self.window_on_back= "playlistmenu"
         with canvas(self.device) as draw:
             draw.rectangle(self.device.bounding_box, outline="black", fill="black")  # Löscht den Hintergrund
             super().render(draw)
