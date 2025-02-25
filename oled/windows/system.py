@@ -186,7 +186,7 @@ class SystemMenu(ListBase):
         if self.position == 0 and not self.pixeltest:
             self.pixeltest = True
         if self.position == 1:
-            self.cmd = self.csettings.UPDATE_RADIO = not self.csettings.UPDATE_RADIO
+            self.csettings.UPDATE_RADIO = not self.csettings.UPDATE_RADIO
 
         elif self.position >= 4 and self.position <= 5:
             if self.position == 4:
@@ -208,10 +208,10 @@ class SystemMenu(ListBase):
             self.cmd = "sudo ip link set wlan0 up"
 
         elif self.position == 11:
-            self.cmd = self.csettings.AUTO_ENABLED = not self.csettings.AUTO_ENABLED
+            self.csettings.AUTO_ENABLED = not self.csettings.AUTO_ENABLED
 
         elif self.position == 17:
-            self.cmd = self.csettings.BLUETOOTH_AUTOCONNECT = not self.csettings.BLUETOOTH_AUTOCONNECT,cfg_file_folder.FILE_USER_SETTINGS)
+            self.csettings.BLUETOOTH_AUTOCONNECT = not self.csettings.BLUETOOTH_AUTOCONNECT
 
         elif self.position == 20:
             self.cmd = "sudo systemctl stop hostapd"
@@ -331,8 +331,8 @@ class SystemMenu(ListBase):
                 if not self.hostapd_psk is None: self.menu[26] = [self.hostapd_psk]
 
                 super().render()
-            except:
-                pass
+            except Exception as error:
+                print (error)
         else:
             try:
                 with canvas(self.device) as draw:

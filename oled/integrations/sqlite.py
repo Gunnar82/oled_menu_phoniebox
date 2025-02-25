@@ -3,6 +3,7 @@ import threading
 
 import time
 import os
+import json
 
 from integrations.functions import get_parent_folder
 
@@ -145,15 +146,18 @@ class sqliteDB:
         """Lädt alle Einstellungen aus der Datenbank und setzt sie als Attribute."""
         conn, cursor = self.get_connection()
         cursor.execute("SELECT setting_key, setting_value FROM settings")
-        return cursor.fetchall()
+        settings = cursor.fetchall()
+        return [(key, json.loads(value)) for key, value in settings]  # JSON zurück in Python-Typen umwandeln
 
     def save_user_setting(self, key, value):
         """Speichert oder aktualisiert eine Einstellung in der DB."""
         conn, cursor = self.get_connection()
+        json_value = json.dumps(value)  # Konvertiert in JSON
+
         cursor.execute("""
         INSERT OR REPLACE INTO settings (setting_key, setting_value)
         VALUES (?, ?)
-        """, (key, value))
+        """, (key, json_value))
         conn.commit()
 
     def __del__(self):
