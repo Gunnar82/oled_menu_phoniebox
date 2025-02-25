@@ -23,9 +23,10 @@ logger = setup_logger(__name__)
 
 class Radiomenu(ListBase):
 
-    def __init__(self, windowmanager,loop):
+    def __init__(self, windowmanager,loop,musicmanager):
         super().__init__(windowmanager, loop, "Auswahl")
         #self.timeoutwindow="folderinfo"
+        self.musicmanager = musicmanager
         self.timeout = False
         self.loop = loop
         self.busysymbol = symbols.SYMBOL_CLOUD
@@ -34,38 +35,54 @@ class Radiomenu(ListBase):
         if not csettings.UPDATE_RADIO:
             self.set_busyinfo("Radio Update deaktiviert",wait=5)
         else:
-            self.set_window_busy()
-            #Stationen Online auslesen
-            stations = self.get_online_stations()
-            logger.debug(f"activate stations :{stations}")
- 
-            #Stationen in lokales Dateisystem schreiben
-            for station in stations:
-                self.create_local_station(station['name'], station['url'])
-
-            self.set_window_busy(False,wait=4)
+            try:
+                self.set_window_busy()
+                #Stationen Online auslesen
+                self.append_busytext("Online Stationen auslesen...")
+                stations = self.get_online_stations()
+                logger.debug(f"activate stations :{stations}")
+                self.append_busytext("Stationen in Datenbank schreiben...") 
+                #Stationen in lokales Dateisystem schreiben
+                self.musicmanager.update_radiostations(stations)
+                self.append_busytext("Abgeschlossen...")
+            except Exception as error:
+                self.append_busyerror(f"Fehler: {error}")
+            finally:
+                self.set_window_busy(False,wait=4)
 
         #Nach Abschluss zu Radio wechseln
-        self.windowmanager.set_window("foldermenu")
-
-    def create_local_station(self,folder,url):
         try:
-            self.append_busytext(f"Erstelle: {folder}")
-
-            foldername = os.path.join(cfg_file_folder.AUDIO_BASEPATH_RADIO,folder)
-            logger.debug(f"Radio path: {foldername}")
-            try:
-                if not os.path.exists(foldername): os.makedirs(foldername)
-            except Exception as error:
-                self.append_busyerror(error)
-                logger.error(f"radiomenu: error {error}")
-
-            livestream = os.path.join(foldername,"livestream.txt")
-            logger.debug(f"creating file {livestream}")
-            with open(livestream,"w") as fname:
-                fname.write(url)
+            self.menu = []
+            for station in self.musicmanager.get_radio_stations():
+                self.menu.append([station[1],"e","",station[2]])
         except Exception as error:
+            print (error)
+
+
+    def push_handler(self):
+        set_window = True
+        try:
+            self.set_window_busy()
+
+            if self.position  == -2:
+                settings.currentfolder = settings.audio_basepath
+                self.windowmanager.set_window("mainmenu")
+            elif self.position == -1:
+                self.append_busytext("Eine Ebene höher...")
+                set_window = False
+                self.on_key_left()
+            else:
+                self.append_busytext("Starte...")
+                self.append_busytext(self.menu[self.position][0])
+                url = self.menu[self.position][3]
+                self.musicmanager.playliststart([url])
+
+        except Exception as error:
+            logger.debug(f"{error}")
             self.append_busyerror(error)
+        finally:
+            self.set_window_busy(False)
+
 
     def get_online_stations(self):
         try:
@@ -97,8 +114,10 @@ class Radiomenu(ListBase):
             # Extrahiere 'name' und 'url' aus jedem 'station'-Element
             name = station.find('name').text if station.find('name') is not None else 'Unbekannt'
             url = station.find('url').text if station.find('url') is not None else 'Unbekannt'
-            logger.debug(f"station {url}, {name}")
+            stationuuid = station.find('stationuuid').text if station.find('stationuuid') is not None else 'Unbekannt'
+
+            logger.debug(f"station {url}, {name}, {stationuuid}")
             # Füge das Ergebnis als Dictionary in die Liste ein
-            stations_list.append({'name': name, 'url': url})
+            stations_list.append((name, url,stationuuid))
 
         return stations_list

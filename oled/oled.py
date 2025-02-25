@@ -222,7 +222,7 @@ def main():
     if bluetooth_enabled: loadedwins.append(windows.bluetooth.Bluetoothmenu(windowmanager,loop,mybluetooth,"Bluetoothmenu"))
     loadedwins.append(windows.playlistmenu.Playlistmenu(windowmanager, loop, musicmanager))
     loadedwins.append(windows.foldermenu.Foldermenu(windowmanager,loop, musicmanager))
-    loadedwins.append(windows.radiomenu.Radiomenu(windowmanager,loop))
+    loadedwins.append(windows.radiomenu.Radiomenu(windowmanager,loop,musicmanager))
     loadedwins.append(windows.folderinfo.FolderInfo(windowmanager, loop))
     loadedwins.append(windows.getvalue.GetValue(windowmanager, loop))
     loadedwins.append(windows.ende.Ende(windowmanager, loop,_nowplaying,musicmanager))
@@ -230,7 +230,7 @@ def main():
     loadedwins.append(wdownload.DownloadMenu(windowmanager,loop,musicmanager))
     loadedwins.append(wsnake.SnakeGame(windowmanager,loop))
     loadedwins.append(wlock.Lock(windowmanager,loop,_nowplaying,musicmanager))
-    loadedwins.append(wsystem.SystemMenu(windowmanager,loop,"Systemeinstellungen"))
+    loadedwins.append(wsystem.SystemMenu(windowmanager,loop,"Systemeinstellungen",musicmanager))
     for window in loadedwins:
         windowmanager.add_window(window.__class__.__name__.lower(), window)
 

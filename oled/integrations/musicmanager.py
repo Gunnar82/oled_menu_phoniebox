@@ -148,3 +148,13 @@ class Musicmanager():
     def get_folder_info(self,folder):
         return self.sqlite.get_folder_info(folder)
 
+
+    def get_radio_stations(self):
+        return self.sqlite.get_radio_stations()
+
+    def update_radiostations(self,stations):
+        return self.sqlite.update_radiostations(stations)
+
+
+    def delete_radiostations(self,):
+        return self.sqlite.delete_radiostations()

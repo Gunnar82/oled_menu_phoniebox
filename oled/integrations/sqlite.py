@@ -16,18 +16,9 @@ class sqliteDB:
         self.db_file = db_file
         self.client = client
 
-        # Überprüfen, ob die Datenbank existiert
-        if not self.check_db_exists():
-            print(f"Die Datenbank {self.db_file} existiert noch nicht. Sie wird jetzt erstellt...")
-        else:
-            print(f"Die Datenbank {self.db_file} existiert bereits.")
-
         # Datenbank und Tabelle erstellen
         self.create_db()
 
-    def check_db_exists(self):
-        """Prüft, ob die Datenbankdatei existiert."""
-        return os.path.exists(self.db_file)
 
     def create_db(self):
         """Erstellt die SQLite-Datenbank und die Tabelle, falls notwendig."""
@@ -47,6 +38,15 @@ class sqliteDB:
             playlist_length INTEGER,
             elapsed text,
             time_played TIMESTAMP
+        )''')
+
+
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS radiostations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            station_name TEXT,
+            station_url TEXT,
+            station_uuid TEXT UNIQUE
         )''')
 
         conn.commit()
@@ -105,6 +105,8 @@ class sqliteDB:
         conn.close()
         return result if result else (0, 0)
 
+
+
     def get_folder_info(self, folder):
         """Gibt die pos und elapsed für das angegebene folder zurück."""
         conn = sqlite3.connect(self.db_file)
@@ -125,4 +127,47 @@ class sqliteDB:
             return result[0] if result[0] is not None  else folder
         except:
             return folder
+
+
+    def get_radio_stations(self):
+        """Gibt die pos und elapsed für das angegebene folder zurück."""
+        conn = sqlite3.connect(self.db_file)
+        cursor = conn.cursor()
+        cursor.execute('SELECT id, station_name, station_url FROM radiostations ORDER BY id ASC;')
+        result = cursor.fetchall()
+        print (result)
+        conn.close()
+        return result if result else (0, 'N/A', 'N/A')
+
+
+
+    def update_radiostations(self,stations):
+        """Speichert Wiedergabeinformationen in der Datenbank, einschließlich Dateipfad."""
+        conn = sqlite3.connect(self.db_file)
+        cursor = conn.cursor()
+
+        # Einfügen der Wiedergabeinformationen (jetzt auch mit "playlist_length")
+        sql = ('''
+        INSERT INTO radiostations (station_name, station_url, station_uuid)
+        VALUES (?, ?, ?)
+        ON CONFLICT(station_uuid) DO UPDATE SET
+            station_name = excluded.station_name,
+            station_url = excluded.station_url
+        ''')
+        cursor.executemany(sql, stations)
+        conn.commit()
+        conn.close()
+
+
+
+    def delete_radiostations(self):
+        """Speichert Wiedergabeinformationen in der Datenbank, einschließlich Dateipfad."""
+        conn = sqlite3.connect(self.db_file)
+        cursor = conn.cursor()
+
+        cursor.execute("DELETE FROM radiostations")
+        cursor.execute("DELETE FROM sqlite_sequence WHERE name='radiostations'")  # Reset der ID
+        conn.commit()
+        conn.close()
+
 

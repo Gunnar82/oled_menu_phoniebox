@@ -196,6 +196,7 @@ class Foldermenu(ListBase):
                     self.append_busytext(self.menu[self.position][0])
 
                     self.loop.run_in_executor(None,self.playfolder,settings.current_selectedfolder)
+
         except Exception as error:
             self.append_busyerror(error)
         finally:

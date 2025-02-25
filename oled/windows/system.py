@@ -51,9 +51,10 @@ class SystemMenu(ListBase):
         self.hostapd_psk = get_hostapd_psk()
         self.firewall_status = str(get_firewall_state())
 
-    def __init__(self, windowmanager,loop,title):
+    def __init__(self, windowmanager,loop,title,musicmanager):
         super().__init__(windowmanager, loop, title)
         self.refresh_values()
+        self.musicmanager=musicmanager
 
         self.handle_left_key = False
         self.processing = False
@@ -68,7 +69,7 @@ class SystemMenu(ListBase):
 
         self.menu.append(["Lösche Hörspielstatus"])                # Eintrag 4
         self.menu.append(["Lösche Musikstatus"])                   # Eintrag 5
-        self.menu.append(["Lösche Radiostatus"])                   # Eintrag 6
+        self.menu.append(["Lösche Radiosender"])                   # Eintrag 6
 
         self.menu.append(["Update OLED"])                          # Eintrag 7
 
@@ -189,14 +190,13 @@ class SystemMenu(ListBase):
         if self.position == 1:
             self.cmd = self.set_option("UPDATE_RADIO",not config.user_settings.UPDATE_RADIO,cfg_file_folder.FILE_USER_SETTINGS)
 
-        elif self.position >= 4 and self.position <= 6:
+        elif self.position >= 4 and self.position <= 5:
             if self.position == 4:
                 what = cfg_file_folder.FILE_LAST_HOERBUCH
             elif self.position == 5:
                 what = cfg_file_folder.FILE_LAST_MUSIC
-            elif self.position == 6:
-                what = cfg_file_folder.FILE_LAST_RADIO
-            self.cmd = f"sudo rm {what}"
+        elif self.position == 6:
+            self.musicmanager.delete_radiostations()
 
 
         elif self.position == 7:
