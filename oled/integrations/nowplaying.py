@@ -14,8 +14,6 @@ import config.symbols as symbols
 import config.file_folder as cfg_file_folder
 import config.online as cfg_online
 
-import config.user_settings as csettings
-
 from integrations.logging_config import *
 
 logger = setup_logger(__name__)
@@ -70,8 +68,8 @@ class nowplaying:
 
             if title != self.__oldtitle:
                 if self.__oldtitle:
-                    if (time.monotonic() - settings.lastinput) >= csettings.DARK_TIMEOUT:
-                        settings.lastinput = time.monotonic() - csettings.CONTRAST_TIMEOUT
+                    if (time.monotonic() - settings.lastinput) >= self.csettings.DARK_TIMEOUT:
+                        settings.lastinput = time.monotonic() - self.csettings.CONTRAST_TIMEOUT
                 self.__oldtitle = title
 
             self._playingtitle = title
@@ -197,7 +195,8 @@ class nowplaying:
     def is_device_online(self):
         return self.__onlinestate
 
-    def __init__(self,loop,musicmanager,windowmanager,bluetooth):
+    def __init__(self,loop,musicmanager,windowmanager,bluetooth,csettings):
+        self.csettings = csettings
         self.bluetooth = bluetooth
         self.loop = loop
         self.musicmanager = musicmanager

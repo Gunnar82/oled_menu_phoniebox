@@ -15,7 +15,6 @@ logger = setup_logger(__name__)
 import config.colors as colors
 import config.symbols as symbols
 
-import config.user_settings as csettings
 
 from integrations.functions import get_oledversion, get_battload_color, enable_firewall, run_as_service
 
@@ -24,9 +23,10 @@ from integrations.functions import get_oledversion, get_battload_color, enable_f
 class Start(WindowBase):
     contrasthandle = False
 
-    def __init__(self, windowmanager,loop, mopidyconnection,bluetooth):
+    def __init__(self, windowmanager,loop, mopidyconnection,bluetooth,csettings):
         super().__init__(windowmanager, loop)
         self.busysymbol = symbols.SYMBOL_PROGRAMM
+        self.csettings=csettings
 
         self.bluetooth = bluetooth
 
@@ -58,7 +58,7 @@ class Start(WindowBase):
             else:
                 self.append_busytext("Kommandozeile - normales Logging...")
 
-            if (csettings.AUTO_ENABLED):
+            if (self.csettings.AUTO_ENABLED):
                 logger.info("auto_enable firewall EIN")
                 self.append_busytext("Aktiviere Firewall...")
                 enable_firewall()
@@ -79,7 +79,7 @@ class Start(WindowBase):
 
             #if csettings.BLUETOOTH_ENABLED: self.bluetooth.enable_dev_local()
 
-            if (csettings.BLUETOOTH_AUTOCONNECT and csettings.BLUETOOTH_ENABLED):
+            if (self.csettings.BLUETOOTH_AUTOCONNECT and self.csettings.BLUETOOTH_ENABLED):
                 logger.info("bluetooth autoconnect")
                 time.sleep(5)
 
@@ -102,7 +102,7 @@ class Start(WindowBase):
             self.startup = time.monotonic()
 
 
-            while (time.monotonic() - self.startup) < csettings.START_TIMEOUT:
+            while (time.monotonic() - self.startup) < self.csettings.START_TIMEOUT:
                 logger.debug("start: wait")
                 time.sleep (1)
             self.windowmanager.set_window("idle")

@@ -2,16 +2,15 @@
 
 import settings
 import os
-import integrations.sqlite
 import config.file_folder as cfg_file_folder
 from integrations.functions import list_files_in_directory, get_file_content
 
 
 class Musicmanager():
-    def __init__(self, mopidyconnection):
+    def __init__(self, mopidyconnection,sqlite):
         self.mopidyconnection = mopidyconnection
         self.client = mopidyconnection.client
-        self.sqlite = integrations.sqlite.sqliteDB(mopidyconnection.client)
+        self.sqlite = sqlite
         #self.shairportconnection = shairportconnection
         self.playing = False
         self.source = "mpd"
@@ -143,7 +142,26 @@ class Musicmanager():
             print (error)
 
     def save_playback(self):
-        self.sqlite.save_playback()
+        """Überwacht die Wiedergabe von MPD und speichert die Informationen in der DB."""
+        # Holen der aktuellen Wiedergabeinformationen
+        current_song = self.client.currentsong()
+        status = self.client.status()
+
+        playlist_length = self.client.status().get('playlistlength', 0)
+        if current_song:
+            artist = current_song.get('artist', 'Unbekannt')
+            album = current_song.get('album', 'Unbekannt')
+            title = current_song.get('title', 'Unbekannt')
+            mfile = current_song.get('file', 'Unbekannt')
+            pos = current_song.get('pos','N/A')
+            elapsed = status.get('elapsed','N/A')
+            mfolder = get_parent_folder(mfile)
+
+            # Speicherung in der Datenbank (jetzt auch mit Playlist-Länge)
+            if status['state'] != 'stop':
+                self.sqlite.store_playback_info(artist, album, title, mfile, mfolder, pos, elapsed, playlist_length)
+            else:
+                print ("state stop - Keine Speicherung")
 
     def get_folder_info(self,folder):
         return self.sqlite.get_folder_info(folder)

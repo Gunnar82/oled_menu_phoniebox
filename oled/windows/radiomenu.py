@@ -14,7 +14,6 @@ import time
 
 import config.file_folder as cfg_file_folder
 import config.online as cfg_online
-import config.user_settings as csettings
 
 from integrations.logging_config import *
 
@@ -23,16 +22,17 @@ logger = setup_logger(__name__)
 
 class Radiomenu(ListBase):
 
-    def __init__(self, windowmanager,loop,musicmanager):
+    def __init__(self, windowmanager,loop,musicmanager,csettings):
         super().__init__(windowmanager, loop, "Auswahl")
         #self.timeoutwindow="folderinfo"
+        self.csettings = csettings
         self.musicmanager = musicmanager
         self.timeout = False
         self.loop = loop
         self.busysymbol = symbols.SYMBOL_CLOUD
 
     def activate(self):
-        if not csettings.UPDATE_RADIO:
+        if not self.csettings.UPDATE_RADIO:
             self.set_busyinfo("Radio Update deaktiviert",wait=5)
         else:
             try:

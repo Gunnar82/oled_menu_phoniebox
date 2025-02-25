@@ -10,7 +10,6 @@ from integrations.webrequest import WebRequest
 import config.online as cfg_online
 import config.file_folder as cfg_file_folder
 import config.services as cfg_services
-import config.user_settings
 
 
 from integrations.logging_config import *
@@ -51,8 +50,9 @@ class SystemMenu(ListBase):
         self.hostapd_psk = get_hostapd_psk()
         self.firewall_status = str(get_firewall_state())
 
-    def __init__(self, windowmanager,loop,title,musicmanager):
+    def __init__(self, windowmanager,loop,title,musicmanager,csettings):
         super().__init__(windowmanager, loop, title)
+        self.csettings = csettings
         self.refresh_values()
         self.musicmanager=musicmanager
 
@@ -160,8 +160,6 @@ class SystemMenu(ListBase):
         finally:
             self.append_busytext("Abgeschlossen!")
             time.sleep(2)
-            importlib.reload(config.user_settings)
-
             self.refresh_values()
             self.processing = False
             self.set_window_busy(False,wait=5)
@@ -188,7 +186,7 @@ class SystemMenu(ListBase):
         if self.position == 0 and not self.pixeltest:
             self.pixeltest = True
         if self.position == 1:
-            self.cmd = self.set_option("UPDATE_RADIO",not config.user_settings.UPDATE_RADIO,cfg_file_folder.FILE_USER_SETTINGS)
+            self.cmd = self.csettings.UPDATE_RADIO = not self.csettings.UPDATE_RADIO
 
         elif self.position >= 4 and self.position <= 5:
             if self.position == 4:
@@ -210,10 +208,10 @@ class SystemMenu(ListBase):
             self.cmd = "sudo ip link set wlan0 up"
 
         elif self.position == 11:
-            self.cmd = self.set_option("AUTO_ENABLED",not config.user_settings.AUTO_ENABLED,cfg_file_folder.FILE_USER_SETTINGS)
+            self.cmd = self.set_option("AUTO_ENABLED",not self.csettings.AUTO_ENABLED,cfg_file_folder.FILE_USER_SETTINGS)
 
         elif self.position == 17:
-            self.cmd = self.set_option("BLUETOOTH_AUTOCONNECT",not config.user_settings.BLUETOOTH_AUTOCONNECT,cfg_file_folder.FILE_USER_SETTINGS)
+            self.cmd = self.set_option("BLUETOOTH_AUTOCONNECT",not self.csettings.BLUETOOTH_AUTOCONNECT,cfg_file_folder.FILE_USER_SETTINGS)
 
         elif self.position == 20:
             self.cmd = "sudo systemctl stop hostapd"
@@ -241,31 +239,31 @@ class SystemMenu(ListBase):
 
         elif self.position >= 28 and self.position <= 30:
             logger.debug(f"Started CONTRAST Setting {self.menu[self.position]}")
-            if self.position == 28: startpos = config.user_settings.CONTRAST_FULL
-            elif self.position == 29: startpos = config.user_settings.CONTRAST_DARK
-            elif self.position == 30: startpos = config.user_settings.CONTRAST_BLACK
+            if self.position == 28: startpos = self.csettings.CONTRAST_FULL
+            elif self.position == 29: startpos = self.csettings.CONTRAST_DARK
+            elif self.position == 30: startpos = self.csettings.CONTRAST_BLACK
 
             value = self.windowmanager.getValue(vmin=1,vmax=255,vstep=3,startpos=startpos)
             logger.debug(f"got value: {value}")
 
-            if self.position == 28: self.cmd = self.set_option("CONTRAST_FULL",value,cfg_file_folder.FILE_USER_SETTINGS)
-            elif self.position == 29: self.cmd = self.set_option("CONTRAST_DARK",value,cfg_file_folder.FILE_USER_SETTINGS)
-            else: self.cmd = self.set_option("CONTRAST_BLACK",value,cfg_file_folder.FILE_USER_SETTINGS)
+            if self.position == 28: self.csettings.CONTRAST_FULL = value
+            elif self.position == 29: self.csettings.CONTRAST_DARK = value
+            else: self.csettings.CONTRAST_BLACK = value
 
         elif self.position >= 32 and self.position <= 34:
             logger.debug(f"Started CONTRAST Setting {self.menu[self.position]}")
             if self.position == 32:
-                startpos = config.user_settings.MENU_TIMEOUT
+                startpos = self.csettings.MENU_TIMEOUT
                 vmin = 5
                 vmax = 100
             elif self.position == 33:
-                startpos = config.user_settings.CONTRAST_TIMEOUT
+                startpos = self.csettings.CONTRAST_TIMEOUT
                 vmin = 5
-                vmax = config.user_settings.DARK_TIMEOUT - 1
+                vmax = self.csettings.DARK_TIMEOUT - 1
             elif self.position == 34:
-                vmin = config.user_settings.CONTRAST_TIMEOUT + 1
+                vmin = self.csettings.CONTRAST_TIMEOUT + 1
                 vmax = 300
-                startpos = config.user_settings.DARK_TIMEOUT
+                startpos = self.csettings.DARK_TIMEOUT
 
             value = self.windowmanager.getValue(vmin=vmin,vmax=vmax,startpos=startpos, unit="sec")
             logger.debug(f"got value: {value}")
@@ -273,7 +271,7 @@ class SystemMenu(ListBase):
             if self.position == 32: self.cmd = self.set_option("MENU_TIMEOUT",value,cfg_file_folder.FILE_USER_SETTINGS)
             elif self.position == 33: self.cmd = self.set_option("CONTRAST_TIMEOUT",value,cfg_file_folder.FILE_USER_SETTINGS)
             else:
-               value = max(value, config.user_settings.CONTRAST_TIMEOUT + 1)
+               value = max(value, self.csettings.CONTRAST_TIMEOUT + 1)
                self.cmd = self.set_option("DARK_TIMEOUT",value,cfg_file_folder.FILE_USER_SETTINGS)
 
         elif self.position > 36:
@@ -309,24 +307,24 @@ class SystemMenu(ListBase):
 
         elif not self.showqr:
             try:
-                self.menu[1]  = ["Radio ist %s - setze auf %s" % ("EIN" if config.user_settings.UPDATE_RADIO else "AUS","EIN" if not config.user_settings.UPDATE_RADIO else "AUS")]
+                self.menu[1]  = ["Radio ist %s - setze auf %s" % ("EIN" if self.csettings.UPDATE_RADIO else "AUS","EIN" if not self.csettings.UPDATE_RADIO else "AUS")]
 
-                self.menu[10] = ["Firewall AUTO_ENABLED ist %s" % ("EIN" if config.user_settings.AUTO_ENABLED else "AUS"),"h"]
-                self.menu[11]  = ["setze auf %s" % ("EIN" if not config.user_settings.AUTO_ENABLED else "AUS")]
+                self.menu[10] = ["Firewall AUTO_ENABLED ist %s" % ("EIN" if self.csettings.AUTO_ENABLED else "AUS"),"h"]
+                self.menu[11]  = ["setze auf %s" % ("EIN" if not self.csettings.AUTO_ENABLED else "AUS")]
 
                 self.menu[13] = ["Firewall Status: %s " % ("AUS" if "deny" not in self.firewall_status else "EIN"),"h"]
                 self.menu[14]  = ["setze auf %s" % ("AUS" if "deny" in self.firewall_status else "EIN")]
 
-                self.menu[16] = ["Bluetooth_Autoconnect ist %s" % ("EIN" if config.user_settings.BLUETOOTH_AUTOCONNECT else "AUS"),"h"]
-                self.menu[17]  = ["setze auf %s" % ("EIN" if not config.user_settings.BLUETOOTH_AUTOCONNECT else "AUS")]
+                self.menu[16] = ["Bluetooth_Autoconnect ist %s" % ("EIN" if self.csettings.BLUETOOTH_AUTOCONNECT else "AUS"),"h"]
+                self.menu[17]  = ["setze auf %s" % ("EIN" if not self.csettings.BLUETOOTH_AUTOCONNECT else "AUS")]
 
-                self.menu[28] = ["CONTRAST_FULL: %d" % (config.user_settings.CONTRAST_FULL)]
-                self.menu[29] = ["CONTRAST_DARK: %d" % (config.user_settings.CONTRAST_DARK)]
-                self.menu[30] = ["CONTRAST_BLACK: %d" % (config.user_settings.CONTRAST_BLACK)]
+                self.menu[28] = ["CONTRAST_FULL: %d" % (self.csettings.CONTRAST_FULL)]
+                self.menu[29] = ["CONTRAST_DARK: %d" % (self.csettings.CONTRAST_DARK)]
+                self.menu[30] = ["CONTRAST_BLACK: %d" % (self.csettings.CONTRAST_BLACK)]
 
-                self.menu[32] = ["MENU_TIMEOUT: %d" % (config.user_settings.MENU_TIMEOUT)]
-                self.menu[33] = ["CONTAST_TIMEOUT: %d" % (config.user_settings.CONTRAST_TIMEOUT)]
-                self.menu[34] = ["DARK_TIMEOUT: %d" % (config.user_settings.DARK_TIMEOUT)]
+                self.menu[32] = ["MENU_TIMEOUT: %d" % (self.csettings.MENU_TIMEOUT)]
+                self.menu[33] = ["CONTAST_TIMEOUT: %d" % (self.csettings.CONTRAST_TIMEOUT)]
+                self.menu[34] = ["DARK_TIMEOUT: %d" % (self.csettings.DARK_TIMEOUT)]
 
                 if not self.hostapd_status is None: self.menu[19] = [f"hostapd (aktiviert: {self.hostapd_status}):", "h"]
                 if not self.hostapd_ssid is None: self.menu[25] = [self.hostapd_ssid]

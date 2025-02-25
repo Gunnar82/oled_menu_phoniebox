@@ -6,7 +6,6 @@ settings.py
 oled/pins/*
 oled/config/online.py
 oled/config/file_folder.py
-oled/config/user_settings.py
 oled/config/statusled.py
 oled/config/rotary_enc.py
 oled/config/bluetooth.py

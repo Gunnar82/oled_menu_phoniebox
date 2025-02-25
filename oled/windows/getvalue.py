@@ -17,9 +17,6 @@ logger = setup_logger(__name__)
 import config.colors as colors
 import config.symbols as symbols
 
-import config.user_settings as csettings
-
-
 class GetValue(WindowBase):
     contrasthandle = False
     font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_XXXL)

@@ -50,11 +50,6 @@ def check_or_create_config(filename,samplename):
 settings_py = "/home/pi/oledctrl/oled/settings.py"
 settings_py_sample = f"{settings_py}.sample"
 
-
-user_settings_py = "/home/pi/oledctrl/oled/config/user_settings.py"
-user_settings_py_sample = f"{user_settings_py}.sample"
-
-
 file_folder_py = "/home/pi/oledctrl/oled/config/file_folder.py"
 file_folder_py_sample = f"{file_folder_py}.sample"
 
@@ -71,7 +66,6 @@ statusled_cfg_sample = f"{statusled_cfg}.sample"
 rotary_enc_cfg = "/home/pi/oledctrl/oled/config/rotary_enc.py"
 rotary_enc_cfg_sample = f"{rotary_enc_cfg}.sample"
 
-check_or_create_config(user_settings_py,user_settings_py_sample)
 check_or_create_config(file_folder_py,file_folder_py_sample)
 check_or_create_config(settings_py,settings_py_sample)
 check_or_create_config(online_py,online_py_sample)
@@ -79,7 +73,7 @@ check_or_create_config(online_py,online_py_sample)
 
 import settings
 
-import config.user_settings as csettings
+import config.user_settings
 import config.file_folder as cfg_file_folder
 import integrations.functions as fn
 import integrations.playout as playout
@@ -120,6 +114,7 @@ except Exception as error:
 
 from integrations.mopidy import MopidyControl
 from integrations.musicmanager import Musicmanager
+import integrations.sqlite
 from ui.windowmanager import WindowManager
 import windows.idle
 import windows.info
@@ -173,6 +168,12 @@ def main():
     loop = asyncio.get_event_loop()
     loop.add_signal_handler(signal.SIGINT, handle_signal, loop,"SIGINT")
     loop.add_signal_handler(signal.SIGTERM, handle_signal, loop,"SIGTERM")
+
+    #SQLite Verbindung herstellen
+    sqlite = integrations.sqlite.sqliteDB()
+
+    #Usersettings DB
+    usersettings = config.user_settings.UserSettings(sqlite)
     #shutdown reason default
     settings.shutdown_reason = SR.SR1
 
@@ -180,19 +181,19 @@ def main():
     display = idisplay.get_display()
 
     #screen = windowmanager
-    windowmanager = WindowManager(loop, display)
+    windowmanager = WindowManager(loop, display,usersettings)
 
     #Software integrations
     mopidy = MopidyControl(loop)
     #def airplay_callback(info, nowplaying):
     #    musicmanager.airplay_callback(info, nowplaying)
     #shairport = ShairportMetadata(airplay_callback)
-    musicmanager = Musicmanager(mopidy)
+    musicmanager = Musicmanager(mopidy,sqlite)
 
     ###processing nowplaying
     import integrations.nowplaying as nowplaying
 
-    _nowplaying = nowplaying.nowplaying(loop,musicmanager,windowmanager,mybluetooth)
+    _nowplaying = nowplaying.nowplaying(loop,musicmanager,windowmanager,mybluetooth,usersettings)
 
     #callback_setup
     def turn_callback(direction,_key=False):
@@ -213,16 +214,16 @@ def main():
     loadedwins = []
 
 
-    loadedwins.append(windows.start.Start(windowmanager, loop, mopidy,mybluetooth))
+    loadedwins.append(windows.start.Start(windowmanager, loop, mopidy,mybluetooth,usersettings))
     loadedwins.append(windows.idle.Idle(windowmanager, loop, _nowplaying,musicmanager))
     loadedwins.append(windows.playbackmenu.Playbackmenu(windowmanager, loop, _nowplaying,musicmanager))
-    loadedwins.append(windows.mainmenu.Mainmenu(windowmanager,loop,"Hauptmenü",musicmanager))
+    loadedwins.append(windows.mainmenu.Mainmenu(windowmanager,loop,"Hauptmenü",musicmanager,usersettings))
     loadedwins.append(windows.info.Infomenu(windowmanager,loop))
     if bluetooth_enabled: loadedwins.append(windows.headphone.Headphonemenu(windowmanager,loop,mybluetooth,"Audioausgabe"))
     if bluetooth_enabled: loadedwins.append(windows.bluetooth.Bluetoothmenu(windowmanager,loop,mybluetooth,"Bluetoothmenu"))
     loadedwins.append(windows.playlistmenu.Playlistmenu(windowmanager, loop, musicmanager))
     loadedwins.append(windows.foldermenu.Foldermenu(windowmanager,loop, musicmanager))
-    loadedwins.append(windows.radiomenu.Radiomenu(windowmanager,loop,musicmanager))
+    loadedwins.append(windows.radiomenu.Radiomenu(windowmanager,loop,musicmanager,usersettings))
     loadedwins.append(windows.folderinfo.FolderInfo(windowmanager, loop))
     loadedwins.append(windows.getvalue.GetValue(windowmanager, loop))
     loadedwins.append(windows.ende.Ende(windowmanager, loop,_nowplaying,musicmanager))
@@ -230,7 +231,7 @@ def main():
     loadedwins.append(wdownload.DownloadMenu(windowmanager,loop,musicmanager))
     loadedwins.append(wsnake.SnakeGame(windowmanager,loop))
     loadedwins.append(wlock.Lock(windowmanager,loop,_nowplaying,musicmanager))
-    loadedwins.append(wsystem.SystemMenu(windowmanager,loop,"Systemeinstellungen",musicmanager))
+    loadedwins.append(wsystem.SystemMenu(windowmanager,loop,"Systemeinstellungen",musicmanager,usersettings))
     for window in loadedwins:
         windowmanager.add_window(window.__class__.__name__.lower(), window)
 

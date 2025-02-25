@@ -7,15 +7,15 @@ import settings
 import config.colors as colors
 import config.symbols as symbols
 import config.file_folder as cfg_file_folder
-import config.user_settings as csettings
 
 from integrations.functions import mountusb, get_folder_from_file
 import os
 
 class Mainmenu(MenuBase):
 
-    def __init__(self, windowmanager,loop,title,musicmanager):
+    def __init__(self, windowmanager,loop,title,musicmanager,csettings):
         super().__init__(windowmanager,loop,title)
+        self.csettings = csettings
         self.counter = 0
         self.musicmanager = musicmanager
         self.descr.append ([ "Musik", symbols.SYMBOL_MUSIC,"foldermenu" ])
@@ -24,7 +24,7 @@ class Mainmenu(MenuBase):
         self.descr.append([ "Online", symbols.SYMBOL_CLOUD, "downloadmenu"])
         self.descr.append([ "USB-Stick", symbols.SYMBOL_USB,"foldermenu" ])
         self.descr.append([ "Betriebsinfos", "\uf022", "infomenu" ])
-        self.descr.append([ "Audioausgabe" if csettings.BLUETOOTH_ENABLED else "Bluetooth deaktiviert", symbols.SYMBOL_BLUETOOTH_OFF, "headphonemenu" ])
+        self.descr.append([ "Audioausgabe" if self.csettings.BLUETOOTH_ENABLED else "Bluetooth deaktiviert", symbols.SYMBOL_BLUETOOTH_OFF, "headphonemenu" ])
         self.descr.append([ "Systemmenu", "\uf013", "systemmenu" ])
         self.descr.append([ "Tastensperre", symbols.SYMBOL_LOCKED, "lock" ])
         self.descr.append([ "Ausschaltmenü", "\uf011", "shutdownmenu"])
