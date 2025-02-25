@@ -208,10 +208,10 @@ class SystemMenu(ListBase):
             self.cmd = "sudo ip link set wlan0 up"
 
         elif self.position == 11:
-            self.cmd = self.set_option("AUTO_ENABLED",not self.csettings.AUTO_ENABLED,cfg_file_folder.FILE_USER_SETTINGS)
+            self.cmd = self.csettings.AUTO_ENABLED = not self.csettings.AUTO_ENABLED
 
         elif self.position == 17:
-            self.cmd = self.set_option("BLUETOOTH_AUTOCONNECT",not self.csettings.BLUETOOTH_AUTOCONNECT,cfg_file_folder.FILE_USER_SETTINGS)
+            self.cmd = self.csettings.BLUETOOTH_AUTOCONNECT = not self.csettings.BLUETOOTH_AUTOCONNECT,cfg_file_folder.FILE_USER_SETTINGS)
 
         elif self.position == 20:
             self.cmd = "sudo systemctl stop hostapd"
