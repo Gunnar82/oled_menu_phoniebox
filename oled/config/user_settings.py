@@ -1,10 +1,11 @@
 from integrations.settingsclass import Settings
 
 class UserSettings(Settings):
-
     #BluetoothKopfhoerer
     BLUETOOTH_ENABLED=False
     BLUETOOTH_AUTOCONNECT=False
+    BLUETOOTH_ADDR = "00:00:00:00:00:00"
+    BLUETOOTH_NAME = "n/a"
 
     #Firewall-Konfiguration
     AUTO_ENABLED=False

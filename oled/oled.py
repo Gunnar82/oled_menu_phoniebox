@@ -165,12 +165,13 @@ def main():
 
         if usersettings.BLUETOOTH_ENABLED:
             bluetooth_enabled = True
-            mybluetooth = integrations.bluetooth.BluetoothOutput()
+            mybluetooth = integrations.bluetooth.BluetoothOutput(usersettings)
             logger.info ("Bluetooth gestartet")
         else:
             mybluetooth = None
 
     except Exception as error:
+        print (error)
         bluetooth_enabled = False
         mybluetooth = None
 

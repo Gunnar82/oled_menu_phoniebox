@@ -33,21 +33,23 @@ class Mainmenu(MenuBase):
         self.window_on_back = "idle"
 
     def push_handler(self):
-        if self.counter == 1:
-            settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_MUSIC
-            settings.currentfolder = self.musicmanager.get_latest_folder('Musik')
-        elif self.counter == 2:
-            settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_HOERBUCH
-            settings.currentfolder = self.musicmanager.get_latest_folder('Hörspiele')
-        elif self.counter == 3:
-            settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_RADIO
-            settings.currentfolder = self.musicmanager.get_latest_folder('Radio')
-        elif self.counter == 5:
-            settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_USB
-            settings.currentfolder = cfg_file_folder.AUDIO_BASEPATH_USB
-            mountusb()
+        try:
+            if self.counter == 1:
+                settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_MUSIC
+                settings.currentfolder = self.musicmanager.get_latest_folder('Musik')
+            elif self.counter == 2:
+                settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_HOERBUCH
+                settings.currentfolder = self.musicmanager.get_latest_folder('Hörspiele')
+            elif self.counter == 3:
+                settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_RADIO
+                settings.currentfolder = self.musicmanager.get_latest_folder('Radio')
+            elif self.counter == 5:
+                settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_USB
+                settings.currentfolder = cfg_file_folder.AUDIO_BASEPATH_USB
+                mountusb()
 
-        self.windowmanager.set_window(self.descr[self.counter][2])
-
+            self.windowmanager.set_window(self.descr[self.counter][2])
+        except Exception as error:
+            print (error)
 
 

@@ -18,12 +18,13 @@ bt_dev_1="bt_dev_1"
 
 class BluetoothOutput():
 
-    def __init__(self):
+    def __init__(self,user_settings):
 
         """Initialisiert den BluetoothHandler und bereitet das Gerät vor."""
         self.nearby_devices = []
         self.paurable_devices = []
         self.new_devices = []
+        self.user_settings = user_settings
 
         #self.all_bt_dev = self.get_paired_devices()
 
@@ -33,20 +34,9 @@ class BluetoothOutput():
         self.start_bluetoothctl()
 
 
-        self.selected_bt_mac, self.selected_bt_name = self.read_dev_bt_from_file()
+        self.selected_bt_mac = self.user_settings.BLUETOOTH_ADDR
+        self.selected_bt_name = self.user_settings.BLUETOOTH_NAME
 
-
-    def read_dev_bt_from_file(self):
-        mac = "00:00:00:00:00:00"
-        name = "none"
-        try:
-            with open('/home/pi/oledctrl/oled/config/bt_device') as reader:
-                text = reader.read()
-                mac, name = text.split(maxsplit=1)
-        except Exception as error:
-            logger.error(error)
-
-        return mac,name
 
     def enable_bluez(self):
         logger.debug(f"verbinde zu {self.selected_bt_mac}")
@@ -58,10 +48,12 @@ class BluetoothOutput():
         return False
 
     def set_alsa_bluetooth_mac(self,mac,name):
-        with open('/home/pi/oledctrl/oled/config/bt_device','w') as bt_conf:
-            bt_conf.write(f"{mac} {name}")
+        self.user_settings.BLUETOOTH_ADDR = mac
+        self.user_settings.BLUETOOTH_NAME = name
 
-        self.selected_bt_mac, self.selected_bt_name = self.read_dev_bt_from_file()
+        self.selected_bt_mac = self.user_settings.BLUETOOTH_ADDR
+        self.selected_bt_name = self.user_settings.BLUETOOTH_NAME
+
 
     def find_sink_by_mac(self,mac_address):
         try:

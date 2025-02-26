@@ -8,7 +8,6 @@ import integrations.functions as fn
 
 
 from integrations.rfidwatcher import RfidWatcher
-from integrations.latestplayed import LatestPlayed
 
 from integrations.logging_config import *
 
@@ -34,9 +33,6 @@ class WindowManager():
 
         self.rfidwatcher = RfidWatcher()
         self.rfidwatcher.start()
-
-        self.lastplayed = LatestPlayed()
-        self.lastplayed.start()
 
         self.rendered_busy = False
         logger.info("Rendering task created")
