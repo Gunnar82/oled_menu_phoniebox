@@ -61,61 +61,64 @@ class SystemMenu(ListBase):
         self.totalsize = 0
 
         # QR-Code generieren
-        self.menu.append("pixel ausrichten")             # Eitnrag 0
-        self.menu.append("PLACEHOLDER UPDATE_RADIO 2")             # Eitnrag 1
+        self.menu.append(["pixel ausrichten","function"])    # 0
+        self.menu.append(["","bool","","UPDATE_RADIO"])      # 1
 
-        self.menu.append(["BLUETOOTH_ENABLED PLACEHOLDER"])                                     # Eintrag 2
-        self.menu.append(["Lösche Online-Status Online"])          # Eintrag 3
+        self.menu.append(["","bool","","BLUETOOTH_ENABLED"]) # 2
+        self.menu.append(["","bool","","BLUETOOTH_AUTOCONNECT"]) # 3
+        self.menu.append(["Firewall","h"])                       # 4
+        self.menu.append(["","bool","","FW_AUTO_ENABLED"])  # 5
 
-        self.menu.append(["Lösche Hörspielstatus"])                # Eintrag 4
-        self.menu.append(["Lösche Musikstatus"])                   # Eintrag 5
-        self.menu.append(["Lösche Radiosender"])                   # Eintrag 6
 
-        self.menu.append(["Update OLED"])                          # Eintrag 7
+#        self.menu.append(["PLACEHOLDER FIREWALL_ENABLED"])              # Eintrag 12
 
-        self.menu.append(["WLAN: aus"])                            # Eintrag 8
-        self.menu.append(["WLAN: an"])                             # Eintrag 9
 
-        self.menu.append(["PLACEHOLDER AUTO_ENABLE 1"])            # Eintrag 10
-        self.menu.append(["PLACEHOLDER AUTO_ENABLE 2"])            # Eintrag 11
-        self.menu.append([""])                                     # Eintrag 12
+        self.menu.append(["","int","","CONTRAST_FULL"])
+        self.menu.append(["","int","","CONTRAST_DARK"])
+        self.menu.append(["","int","","CONTRAST_BLACK"])
 
-        self.menu.append(["PLACEHOLDER FIREWALL_STATUS 1"])        # Eintrag 13
-        self.menu.append(["PLACEHOLDER FIREWALL_STATUS 2"])        # Eintrag 14
-        self.menu.append(["","c"])                                     # Eintrag 15
+        self.menu.append(["","int","","MENU_TIMEOUT"])
+        self.menu.append(["","int","","CONTRAST_TIMEOUT"])
+        self.menu.append(["","int","","DARK_TIMEOUT"])
 
-        self.menu.append(["PLACEHOLDER BLUETOOTH_AUTOCONNECT 1"])  # Eintrag 16
-        self.menu.append(["PLACEHOLDER BLUETOOTH_AUTOCONNECT 2"])  # Eintrag 17
-        self.menu.append(["","c"])                                     # Eintrag 18
+#        self.menu.append(["Lösche Online-Status Online"])          # Eintrag 5
+#        self.menu.append(["Lösche Radiosender"])                   # Eintrag 6
 
-        self.menu.append([""])                                     # Eintrag 19
+#        self.menu.append(["Update OLED"])                          # Eintrag 7
 
-        self.menu.append(["beenden"])                              # Eintrag 20
-        self.menu.append(["starten"])                              # Eintrag 21
-        self.menu.append(["deaktivieren"])                         # Eintrag 22
-        self.menu.append(["aktivieren"])                           # Eintrag 23
+#        self.menu.append(["WLAN: aus"])                            # Eintrag 8
+#        self.menu.append(["WLAN: an"])                             # Eintrag 9
 
-        self.menu.append(["WLAN QR anzeigen"])                     # Eintrag 24
-        self.menu.append(["ssid"])                                 # Eintrag 25
-        self.menu.append(["psk"])                                  # Eintrag 26
-        self.menu.append([""])                                     # Eintrag 27
-        self.menu.append(["PLACEHOLDER CONTRAST_FULL"])            # Eintrag 28
-        self.menu.append(["PLACEHOLDER CONTRAST_DARK"])            # Eintrag 29
-        self.menu.append(["PLACEHOLDER CONTRASST_BLACK"])          # Eintrag 30
-        self.menu.append([""])                                     # Eintrag 31
-        self.menu.append(["PLACEHOLDER MENU_TIMEOUT"])             # Eintrag 32
-        self.menu.append(["PLACEHOLDER CONTRAST_TIMEOUT"])         # Eintrag 33
-        self.menu.append(["PLACEHOLDER DARK_TIMEOUT"])             # Eintrag 34
-        self.menu.append([""])                                     # Eintrag 35
+#        self.menu.append(["Firewall","h"])            # Eintrag 10
 
-        self.menu.append(["Dienste neustarten:", "h"])             # Eintrag 36
+#        self.menu.append(["","c"])                                     # Eintrag 13
+#        self.menu.append(["beenden"])                              # Eintrag 14
+#        self.menu.append(["starten"])                              # Eintrag 15
+#        self.menu.append(["deaktivieren"])                         # Eintrag 16
+#        self.menu.append(["aktivieren"])                           # Eintrag 17
 
-        for srv in cfg_services.RESTART_LIST:
-            self.menu.append(srv)
+#        self.menu.append(["WLAN QR anzeigen"])                     # Eintrag 18
+#        self.menu.append(["ssid"])                                 # Eintrag 19
+#        self.menu.append(["psk"])                                  # Eintrag 20
+#        self.menu.append([""])                                     # Eintrag 21
+#        self.menu.append(["PLACEHOLDER CONTRAST_FULL"])            # Eintrag 22
+#        self.menu.append(["PLACEHOLDER CONTRAST_DARK"])            # Eintrag 23
+#        self.menu.append(["PLACEHOLDER CONTRASST_BLACK"])          # Eintrag 24
+#        self.menu.append([""])                                     # Eintrag 25
+#        self.menu.append(["PLACEHOLDER MENU_TIMEOUT"])             # Eintrag 26
+#        self.menu.append(["PLACEHOLDER CONTRAST_TIMEOUT"])         # Eintrag 27
+#        self.menu.append(["PLACEHOLDER DARK_TIMEOUT"])             # Eintrag 28
+#        self.menu.append([""])                                     # Eintrag 29
+
+#        self.menu.append(["Dienste neustarten:", "h"])             # Eintrag 36
+
+#        for srv in cfg_services.RESTART_LIST:
+#            self.menu.append(srv)
 
     def activate(self):
         self.cmd = ""
         self.showqr = False
+        self.generate_menu()
 
     def deactivate(self):
         self.showqr = False
@@ -166,6 +169,7 @@ class SystemMenu(ListBase):
 
 
     def push_handler(self,button = '*'):
+
         if self.showqr:
             self.showqr = False
             self.timeout = True
@@ -185,23 +189,22 @@ class SystemMenu(ListBase):
 
         if self.position == 0 and not self.pixeltest:
             self.pixeltest = True
-        if self.position == 1:
-            self.csettings.UPDATE_RADIO = not self.csettings.UPDATE_RADIO
+        elif self.position >=1 and self.position <=11:
+            entry = self.menu[self.position]
+            if entry[1] == "bool":
+                setattr(self.csettings,entry[3],not getattr(self.csettings,entry[3]))
 
-        if self.position == 2:
-            self.csettings.BLUETOOTH_ENABLED = not self.csettings.BLUETOOTH_ENABLED
+            if entry[1] == "int":
+                value = self.windowmanager.getValue(vmin=1,vmax=255,vstep=1,startpos=getattr(self.csettings,entry[3]))
+                setattr(self.csettings,entry[3],value)
 
-        elif self.position >= 4 and self.position <= 5:
-            if self.position == 4:
-                what = cfg_file_folder.FILE_LAST_HOERBUCH
-            elif self.position == 5:
-                what = cfg_file_folder.FILE_LAST_MUSIC
-        elif self.position == 6:
+        self.generate_menu()
+        return
+
+        if self.position == 6:
             self.musicmanager.delete_radiostations()
 
-
         elif self.position == 7:
-
             self.cmd = ["git pull", "sudo pip3 install -r requirements.txt", "sudo systemctl restart oled"]
 
         elif self.position == 8:
@@ -213,8 +216,6 @@ class SystemMenu(ListBase):
         elif self.position == 11:
             self.csettings.AUTO_ENABLED = not self.csettings.AUTO_ENABLED
 
-        elif self.position == 17:
-            self.csettings.BLUETOOTH_AUTOCONNECT = not self.csettings.BLUETOOTH_AUTOCONNECT
 
         elif self.position == 20:
             self.cmd = "sudo systemctl stop hostapd"
@@ -242,9 +243,9 @@ class SystemMenu(ListBase):
 
         elif self.position >= 28 and self.position <= 30:
             logger.debug(f"Started CONTRAST Setting {self.menu[self.position]}")
-            if self.position == 28: startpos = self.csettings.CONTRAST_FULL
-            elif self.position == 29: startpos = self.csettings.CONTRAST_DARK
-            elif self.position == 30: startpos = self.csettings.CONTRAST_BLACK
+            if self.position == 22: startpos = self.csettings.CONTRAST_FULL
+            elif self.position == 23: startpos = self.csettings.CONTRAST_DARK
+            elif self.position == 24: startpos = self.csettings.CONTRAST_BLACK
 
             value = self.windowmanager.getValue(vmin=1,vmax=255,vstep=3,startpos=startpos)
             logger.debug(f"got value: {value}")
@@ -254,7 +255,6 @@ class SystemMenu(ListBase):
             else: self.csettings.CONTRAST_BLACK = value
 
         elif self.position >= 32 and self.position <= 34:
-            logger.debug(f"Started CONTRAST Setting {self.menu[self.position]}")
             if self.position == 32:
                 startpos = self.csettings.MENU_TIMEOUT
                 vmin = 5
@@ -284,12 +284,6 @@ class SystemMenu(ListBase):
         self.loop.run_in_executor(None,self.exec_command)
 
 
-    def set_option(self,option,value,filename):
-        command = f"grep -q '{option}=' {filename} && sed -i 's/{option}=[^ ]*/{option}={value}/g' {filename} || {{ echo '\n{option}={value}\n' >> {filename}; }}"
-        logger.debug(f"set_option: {command}")
-        return command
-
-
     def render(self):
         if self.pixeltest:
             try:
@@ -309,37 +303,45 @@ class SystemMenu(ListBase):
                 self.pixetest = False
 
         elif not self.showqr:
-            try:
-                self.menu[1]  = ["Radio ist %s - setze auf %s" % ("EIN" if self.csettings.UPDATE_RADIO else "AUS","EIN" if not self.csettings.UPDATE_RADIO else "AUS")]
-                self.menu[2]  = ["Bluetooth ist %s - setze auf %s" % ("EIN" if self.csettings.BLUETOOTH_ENABLED else "AUS","EIN" if not self.csettings.BLUETOOTH_ENABLED else "AUS")]
 
-                self.menu[10] = ["Firewall AUTO_ENABLED ist %s" % ("EIN" if self.csettings.AUTO_ENABLED else "AUS"),"h"]
-                self.menu[11]  = ["setze auf %s" % ("EIN" if not self.csettings.AUTO_ENABLED else "AUS")]
+                #self.menu[28] = ["CONTRAST_FULL: %d" % (self.csettings.CONTRAST_FULL)]
+                #self.menu[29] = ["CONTRAST_DARK: %d" % (self.csettings.CONTRAST_DARK)]
+                #self.menu[30] = ["CONTRAST_BLACK: %d" % (self.csettings.CONTRAST_BLACK)]
 
-                self.menu[13] = ["Firewall Status: %s " % ("AUS" if "deny" not in self.firewall_status else "EIN"),"h"]
-                self.menu[14]  = ["setze auf %s" % ("AUS" if "deny" in self.firewall_status else "EIN")]
+                #self.menu[32] = ["MENU_TIMEOUT: %d" % (self.csettings.MENU_TIMEOUT)]
+                #self.menu[33] = ["CONTAST_TIMEOUT: %d" % (self.csettings.CONTRAST_TIMEOUT)]
+                #self.menu[34] = ["DARK_TIMEOUT: %d" % (self.csettings.DARK_TIMEOUT)]
 
-                self.menu[16] = ["Bluetooth_Autoconnect ist %s" % ("EIN" if self.csettings.BLUETOOTH_AUTOCONNECT else "AUS"),"h"]
-                self.menu[17]  = ["setze auf %s" % ("EIN" if not self.csettings.BLUETOOTH_AUTOCONNECT else "AUS")]
-
-                self.menu[28] = ["CONTRAST_FULL: %d" % (self.csettings.CONTRAST_FULL)]
-                self.menu[29] = ["CONTRAST_DARK: %d" % (self.csettings.CONTRAST_DARK)]
-                self.menu[30] = ["CONTRAST_BLACK: %d" % (self.csettings.CONTRAST_BLACK)]
-
-                self.menu[32] = ["MENU_TIMEOUT: %d" % (self.csettings.MENU_TIMEOUT)]
-                self.menu[33] = ["CONTAST_TIMEOUT: %d" % (self.csettings.CONTRAST_TIMEOUT)]
-                self.menu[34] = ["DARK_TIMEOUT: %d" % (self.csettings.DARK_TIMEOUT)]
-
-                if not self.hostapd_status is None: self.menu[19] = [f"hostapd (aktiviert: {self.hostapd_status}):", "h"]
-                if not self.hostapd_ssid is None: self.menu[25] = [self.hostapd_ssid]
-                if not self.hostapd_psk is None: self.menu[26] = [self.hostapd_psk]
+                #if not self.hostapd_status is None: self.menu[19] = [f"hostapd (aktiviert: {self.hostapd_status}):", "h"]
+                #if not self.hostapd_ssid is None: self.menu[25] = [self.hostapd_ssid]
+                #if not self.hostapd_psk is None: self.menu[26] = [self.hostapd_psk]
 
                 super().render()
-            except Exception as error:
-                print (error)
         else:
             try:
                 with canvas(self.device) as draw:
                     draw.bitmap(((settings.DISPLAY_WIDTH - self.qr_width) // 2,0), self.qrimage)
             except:
                 self.showqr = False
+
+    def generate_menu(self):
+        try:
+            for idx, entry in enumerate(self.menu):
+                if entry[1] == "bool":
+                    self.menu[idx][0] = self.generate_bool_text(entry[3])
+
+                elif entry[1] == "int":
+                    self.menu[idx][0] = self.generate_int_text(entry[3])
+        except Exception as error:
+            print (f"render rr: {error}")
+
+
+    def generate_bool_text(self,key):
+        value = getattr(self.csettings,key)
+
+        return ("%s is %s > %s" % (key, value, not value ))
+
+    def generate_int_text(self,key):
+        value = getattr(self.csettings,key)
+
+        return ("%s is %d" % (key, value ))

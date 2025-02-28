@@ -8,7 +8,7 @@ class UserSettings(Settings):
     BLUETOOTH_NAME = "n/a"
 
     #Firewall-Konfiguration
-    AUTO_ENABLED=False
+    FW_AUTO_ENABLED=False
 
     #Wenn keine Eingabe, dann Fenster zurücl - Timeout in Sekunden
     MENU_TIMEOUT=20
