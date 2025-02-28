@@ -68,6 +68,7 @@ class SystemMenu(ListBase):
         self.menu.append(["","bool","","BLUETOOTH_AUTOCONNECT"]) # 3
         self.menu.append(["Firewall","h"])                       # 4
         self.menu.append(["","bool","","FW_AUTO_ENABLED"])  # 5
+        self.menu.append(["","func","",self.toggle_firewall,self.generate_fw_status])  # 5
 
 
 #        self.menu.append(["PLACEHOLDER FIREWALL_ENABLED"])              # Eintrag 12
@@ -81,15 +82,17 @@ class SystemMenu(ListBase):
         self.menu.append(["","int","","CONTRAST_TIMEOUT"])
         self.menu.append(["","int","","DARK_TIMEOUT"])
 
+        self.menu.append(["WLAN: aus","cmd","","sudo ip link set wlan0 down"])                            # Eintrag 8
+        self.menu.append(["WLAN: an","cmd","","sudo ip link set wlan0 up"])                             # Eintrag 9
+
+        self.menu.append(["Update OLED","cmd","","git pull", "sudo pip3 install -r requirements.txt", "sudo systemctl restart oled"])                          # Eintrag 7
+
+        self.menu.append(["Lösche Radiosender","func","",self.musicmanager.delete_radiostations])                   # Eintrag 6
+
+        self.menu.append(["WLAN QR anzeigen","func","",""])                     # Eintrag 18
+
 #        self.menu.append(["Lösche Online-Status Online"])          # Eintrag 5
-#        self.menu.append(["Lösche Radiosender"])                   # Eintrag 6
 
-#        self.menu.append(["Update OLED"])                          # Eintrag 7
-
-#        self.menu.append(["WLAN: aus"])                            # Eintrag 8
-#        self.menu.append(["WLAN: an"])                             # Eintrag 9
-
-#        self.menu.append(["Firewall","h"])            # Eintrag 10
 
 #        self.menu.append(["","c"])                                     # Eintrag 13
 #        self.menu.append(["beenden"])                              # Eintrag 14
@@ -97,17 +100,9 @@ class SystemMenu(ListBase):
 #        self.menu.append(["deaktivieren"])                         # Eintrag 16
 #        self.menu.append(["aktivieren"])                           # Eintrag 17
 
-#        self.menu.append(["WLAN QR anzeigen"])                     # Eintrag 18
 #        self.menu.append(["ssid"])                                 # Eintrag 19
 #        self.menu.append(["psk"])                                  # Eintrag 20
 #        self.menu.append([""])                                     # Eintrag 21
-#        self.menu.append(["PLACEHOLDER CONTRAST_FULL"])            # Eintrag 22
-#        self.menu.append(["PLACEHOLDER CONTRAST_DARK"])            # Eintrag 23
-#        self.menu.append(["PLACEHOLDER CONTRASST_BLACK"])          # Eintrag 24
-#        self.menu.append([""])                                     # Eintrag 25
-#        self.menu.append(["PLACEHOLDER MENU_TIMEOUT"])             # Eintrag 26
-#        self.menu.append(["PLACEHOLDER CONTRAST_TIMEOUT"])         # Eintrag 27
-#        self.menu.append(["PLACEHOLDER DARK_TIMEOUT"])             # Eintrag 28
 #        self.menu.append([""])                                     # Eintrag 29
 
 #        self.menu.append(["Dienste neustarten:", "h"])             # Eintrag 36
@@ -145,8 +140,7 @@ class SystemMenu(ListBase):
                     logger.debug(f"exec_command: {error}")
                     self.append_busyerror(error)
             elif self.position == 14:
-                if "deny" not in self.firewall_status: enable_firewall()
-                else: disable_firewall()
+                return
             else:
                 self.append_busytext(self.menu[self.position][0])
                 self.append_busytext(str(self.cmd).replace('\n',''))
@@ -160,12 +154,6 @@ class SystemMenu(ListBase):
                     self.append_busyerror(str(text))
         except Exception as error:
             self.append_busyerror(error)
-        finally:
-            self.append_busytext("Abgeschlossen!")
-            time.sleep(2)
-            self.refresh_values()
-            self.processing = False
-            self.set_window_busy(False,wait=5)
 
 
     def push_handler(self,button = '*'):
@@ -189,35 +177,39 @@ class SystemMenu(ListBase):
 
         if self.position == 0 and not self.pixeltest:
             self.pixeltest = True
-        elif self.position >=1 and self.position <=11:
+        elif self.position >=1:
             entry = self.menu[self.position]
             if entry[1] == "bool":
                 setattr(self.csettings,entry[3],not getattr(self.csettings,entry[3]))
 
-            if entry[1] == "int":
+            elif entry[1] == "int":
                 value = self.windowmanager.getValue(vmin=1,vmax=255,vstep=1,startpos=getattr(self.csettings,entry[3]))
                 setattr(self.csettings,entry[3],value)
 
+            elif entry[1] == "func":
+                try:
+                    function = entry[3]
+                    if callable(function):
+                        self.append_busytext(function.__name__)
+                        function()
+                    else:
+                        self.append_busyerror("nicht ausführbar")
+                except Exception as error:
+                    self.append_busyerror(error)
+
+
         self.generate_menu()
+
+        self.append_busytext("Abgeschlossen!")
+        time.sleep(2)
+        self.refresh_values()
+        self.processing = False
+        self.set_window_busy(False,wait=5)
+
+
         return
 
-        if self.position == 6:
-            self.musicmanager.delete_radiostations()
-
-        elif self.position == 7:
-            self.cmd = ["git pull", "sudo pip3 install -r requirements.txt", "sudo systemctl restart oled"]
-
-        elif self.position == 8:
-            self.cmd = "sudo ip link set wlan0 down"
-
-        elif self.position == 9:
-            self.cmd = "sudo ip link set wlan0 up"
-
-        elif self.position == 11:
-            self.csettings.AUTO_ENABLED = not self.csettings.AUTO_ENABLED
-
-
-        elif self.position == 20:
+        if self.position == 20:
             self.cmd = "sudo systemctl stop hostapd"
 
         elif self.position == 21:
@@ -243,39 +235,9 @@ class SystemMenu(ListBase):
 
         elif self.position >= 28 and self.position <= 30:
             logger.debug(f"Started CONTRAST Setting {self.menu[self.position]}")
-            if self.position == 22: startpos = self.csettings.CONTRAST_FULL
-            elif self.position == 23: startpos = self.csettings.CONTRAST_DARK
-            elif self.position == 24: startpos = self.csettings.CONTRAST_BLACK
-
-            value = self.windowmanager.getValue(vmin=1,vmax=255,vstep=3,startpos=startpos)
-            logger.debug(f"got value: {value}")
-
-            if self.position == 28: self.csettings.CONTRAST_FULL = value
-            elif self.position == 29: self.csettings.CONTRAST_DARK = value
-            else: self.csettings.CONTRAST_BLACK = value
-
-        elif self.position >= 32 and self.position <= 34:
-            if self.position == 32:
-                startpos = self.csettings.MENU_TIMEOUT
-                vmin = 5
-                vmax = 100
-            elif self.position == 33:
-                startpos = self.csettings.CONTRAST_TIMEOUT
-                vmin = 5
-                vmax = self.csettings.DARK_TIMEOUT - 1
-            elif self.position == 34:
-                vmin = self.csettings.CONTRAST_TIMEOUT + 1
-                vmax = 300
-                startpos = self.csettings.DARK_TIMEOUT
 
             value = self.windowmanager.getValue(vmin=vmin,vmax=vmax,startpos=startpos, unit="sec")
             logger.debug(f"got value: {value}")
-
-            if self.position == 32: self.cmd = self.set_option("MENU_TIMEOUT",value,cfg_file_folder.FILE_USER_SETTINGS)
-            elif self.position == 33: self.cmd = self.set_option("CONTRAST_TIMEOUT",value,cfg_file_folder.FILE_USER_SETTINGS)
-            else:
-               value = max(value, self.csettings.CONTRAST_TIMEOUT + 1)
-               self.cmd = self.set_option("DARK_TIMEOUT",value,cfg_file_folder.FILE_USER_SETTINGS)
 
         elif self.position > 36:
             self.cmd = "sudo systemctl restart %s" % (self.menu[self.position][0])
@@ -327,6 +289,14 @@ class SystemMenu(ListBase):
     def generate_menu(self):
         try:
             for idx, entry in enumerate(self.menu):
+                try:
+                    if len(entry) > 4:
+                        if callable(entry[4]):
+                            funktion = entry[4]
+                            self.menu[idx][0] = funktion()
+                except Exception as error:
+                    print (error)
+
                 if entry[1] == "bool":
                     self.menu[idx][0] = self.generate_bool_text(entry[3])
 
@@ -334,6 +304,11 @@ class SystemMenu(ListBase):
                     self.menu[idx][0] = self.generate_int_text(entry[3])
         except Exception as error:
             print (f"render rr: {error}")
+
+    def toggle_firewall(self):
+        if "deny" not in self.firewall_status: enable_firewall()
+        else: disable_firewall()
+
 
 
     def generate_bool_text(self,key):
@@ -345,3 +320,10 @@ class SystemMenu(ListBase):
         value = getattr(self.csettings,key)
 
         return ("%s is %d" % (key, value ))
+
+    def generate_fw_status(self):
+        if "deny" not in self.firewall_status:
+            return "Firewall ist AUS > EIN"
+        else: 
+            return "Firewall ist EIN > AUS"
+
