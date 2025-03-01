@@ -152,19 +152,22 @@ class Musicmanager():
 
         playlist_length = self.client.status().get('playlistlength', 0)
         if current_song:
-            artist = current_song.get('artist', 'Unbekannt')
-            album = current_song.get('album', 'Unbekannt')
-            title = current_song.get('title', 'Unbekannt')
+            #artist = current_song.get('artist', 'Unbekannt')
+            #album = current_song.get('album', 'Unbekannt')
+            #title = current_song.get('title', 'Unbekannt')
             mfile = current_song.get('file', 'Unbekannt')
             pos = current_song.get('pos','N/A')
             elapsed = status.get('elapsed','N/A')
             mfolder = get_parent_folder(mfile)
 
             # Speicherung in der Datenbank (jetzt auch mit Playlist-Länge)
-            if status['state'] != 'stop':
-                self.sqlite.store_playback_info(artist, album, title, mfile, mfolder, pos, elapsed, playlist_length)
-            else:
-                print ("state stop - Keine Speicherung")
+            try:
+                if status['state'] != 'stop':
+                    self.sqlite.store_playback_info(current_song, mfile, mfolder, pos, elapsed, status, playlist_length)
+                else:
+                    print ("state stop - Keine Speicherung")
+            except Exception as error:
+                print (error)
 
     def get_folder_info(self,folder):
         return self.sqlite.get_folder_info(folder)

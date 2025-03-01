@@ -36,14 +36,13 @@ class sqliteDB:
         self.local.cursor.execute('''
         CREATE TABLE IF NOT EXISTS playback (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            artist TEXT,
-            album TEXT,
-            title TEXT,
-            file TEXT,
+            current_song TEXT,
+            mfile TEXT,
             folder TEXT UNIQUE,
             pos INTEGER,
             playlist_length INTEGER,
             elapsed text,
+            mstatus TEXT,
             time_played TIMESTAMP
         )''')
 
@@ -67,23 +66,23 @@ class sqliteDB:
 
         self.local.conn.commit()
 
-    def store_playback_info(self, artist, album, title, mfile, mfolder, pos, elapsed, playlist_length):
+    def store_playback_info(self, current_song, mfile, mfolder, pos, elapsed, status, playlist_length):
         """Speichert Wiedergabeinformationen in der Datenbank, einschließlich Dateipfad."""
         self.create_connection()
 
         # Einfügen der Wiedergabeinformationen (jetzt auch mit "playlist_length")
         self.local.cursor.execute('''
-        INSERT INTO playback (artist, album, title, file, folder, pos, elapsed, playlist_length, time_played)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO playback (current_song, mfile, folder, pos, elapsed, playlist_length, mstatus, time_played)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(folder) DO UPDATE SET
-            artist=excluded.artist,
-            album=excluded.album,
-            title=excluded.title,
-            file=excluded.file,
+            current_song=excluded.current_song,
+            mfile=excluded.mfile,
+            folder=excluded.folder,
             pos=excluded.pos,
             elapsed=excluded.elapsed,
             playlist_length=excluded.playlist_length,
-            time_played=excluded.time_played''', (artist, album, title, mfile, mfolder, pos, elapsed, playlist_length, time.strftime('%Y-%m-%d %H:%M:%S')))
+            mstatus=excluded.mstatus,
+            time_played=excluded.time_played''', (json.dumps(current_song), mfile, mfolder, pos, elapsed, playlist_length, json.dumps(status), time.strftime('%Y-%m-%d %H:%M:%S')))
         self.local.conn.commit()
 
 
