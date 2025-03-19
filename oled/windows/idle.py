@@ -28,8 +28,8 @@ logger = setup_logger(__name__)
 
 class Idle(MainWindow):
 
-    def __init__(self, windowmanager, loop, nowplaying,musicmanager):
-        super().__init__(windowmanager, loop, nowplaying)
+    def __init__(self, windowmanager, loop, usersettings, nowplaying,musicmanager):
+        super().__init__(windowmanager, loop, usersettings, nowplaying)
         self.changerender = True
         self.musicmanager = musicmanager
         self.window_on_back = "playlistmenu"

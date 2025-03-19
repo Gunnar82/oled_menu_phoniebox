@@ -38,8 +38,8 @@ logger = setup_logger(__name__)
 
 class DownloadMenu(ListBase):
 
-    def __init__(self, windowmanager,loop,musicmanager):
-        super().__init__(windowmanager, loop, "Download")
+    def __init__(self, windowmanager,loop,usersettings,musicmanager):
+        super().__init__(windowmanager, loop,usersettings, "Download")
         self.musicmanager = musicmanager
         self.busysymbol = symbols.SYMBOL_CLOUD
 
@@ -174,7 +174,7 @@ class DownloadMenu(ListBase):
 
     def check_website_return(self,url):
         try:
-            self.append_busytext("Prüfe URL:")
+            self.append_busydebug("Prüfe URL:")
             self.append_busydebug(url)
             return check_url_reachability(url)
 
@@ -441,7 +441,7 @@ class DownloadMenu(ListBase):
 
             self.url = construct_url(self.cwd,self.baseurl)
 
-            self.append_busytext("Prüfe URL")
+            self.append_busydebug("Prüfe URL")
             self.append_busydebug(self.url)
 
             files, directories,self.totalsize = self.get_files_and_dirs_from_listing(self.url, ["mp3"])

@@ -50,9 +50,9 @@ class SystemMenu(ListBase):
         self.hostapd_psk = get_hostapd_psk()
         self.firewall_status = str(get_firewall_state())
 
-    def __init__(self, windowmanager,loop,title,musicmanager,csettings):
-        super().__init__(windowmanager, loop, title)
-        self.csettings = csettings
+    def __init__(self, windowmanager,loop,usersettings, title,musicmanager):
+        super().__init__(windowmanager, loop, usersettings, title)
+        self.usersettings = usersettings
         self.refresh_values()
         self.musicmanager=musicmanager
 
@@ -63,6 +63,7 @@ class SystemMenu(ListBase):
         # QR-Code generieren
         self.menu.append(["pixel ausrichten","function"])    # 0
         self.menu.append(["","bool","","UPDATE_RADIO"])      # 1
+        self.menu.append(["","bool","","SHOW_DEBUGINFOS"])      # 1
 
         self.menu.append(["","bool","","BLUETOOTH_ENABLED"]) # 2
         self.menu.append(["","bool","","BLUETOOTH_AUTOCONNECT"]) # 3
@@ -180,11 +181,11 @@ class SystemMenu(ListBase):
         elif self.position >=1:
             entry = self.menu[self.position]
             if entry[1] == "bool":
-                setattr(self.csettings,entry[3],not getattr(self.csettings,entry[3]))
+                setattr(self.usersettings,entry[3],not getattr(self.usersettings,entry[3]))
 
             elif entry[1] == "int":
-                value = self.windowmanager.getValue(vmin=1,vmax=255,vstep=1,startpos=getattr(self.csettings,entry[3]))
-                setattr(self.csettings,entry[3],value)
+                value = self.windowmanager.getValue(vmin=1,vmax=255,vstep=1,startpos=getattr(self.usersettings,entry[3]))
+                setattr(self.usersettings,entry[3],value)
 
             elif entry[1] == "func":
                 try:
@@ -266,13 +267,13 @@ class SystemMenu(ListBase):
 
         elif not self.showqr:
 
-                #self.menu[28] = ["CONTRAST_FULL: %d" % (self.csettings.CONTRAST_FULL)]
-                #self.menu[29] = ["CONTRAST_DARK: %d" % (self.csettings.CONTRAST_DARK)]
-                #self.menu[30] = ["CONTRAST_BLACK: %d" % (self.csettings.CONTRAST_BLACK)]
+                #self.menu[28] = ["CONTRAST_FULL: %d" % (self.usersettings.CONTRAST_FULL)]
+                #self.menu[29] = ["CONTRAST_DARK: %d" % (self.usersettings.CONTRAST_DARK)]
+                #self.menu[30] = ["CONTRAST_BLACK: %d" % (self.usersettings.CONTRAST_BLACK)]
 
-                #self.menu[32] = ["MENU_TIMEOUT: %d" % (self.csettings.MENU_TIMEOUT)]
-                #self.menu[33] = ["CONTAST_TIMEOUT: %d" % (self.csettings.CONTRAST_TIMEOUT)]
-                #self.menu[34] = ["DARK_TIMEOUT: %d" % (self.csettings.DARK_TIMEOUT)]
+                #self.menu[32] = ["MENU_TIMEOUT: %d" % (self.usersettings.MENU_TIMEOUT)]
+                #self.menu[33] = ["CONTAST_TIMEOUT: %d" % (self.usersettings.CONTRAST_TIMEOUT)]
+                #self.menu[34] = ["DARK_TIMEOUT: %d" % (self.usersettings.DARK_TIMEOUT)]
 
                 #if not self.hostapd_status is None: self.menu[19] = [f"hostapd (aktiviert: {self.hostapd_status}):", "h"]
                 #if not self.hostapd_ssid is None: self.menu[25] = [self.hostapd_ssid]
@@ -312,12 +313,12 @@ class SystemMenu(ListBase):
 
 
     def generate_bool_text(self,key):
-        value = getattr(self.csettings,key)
+        value = getattr(self.usersettings,key)
 
         return ("%s is %s > %s" % (key, value, not value ))
 
     def generate_int_text(self,key):
-        value = getattr(self.csettings,key)
+        value = getattr(self.usersettings,key)
 
         return ("%s is %d" % (key, value ))
 

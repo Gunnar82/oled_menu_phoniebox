@@ -15,8 +15,8 @@ from integrations.functions import restart_oled, get_timeouts, run_command
 
 class Shutdownmenu(MenuBase):
 
-    def __init__(self, windowmanager, loop, mopidyconnection,nowplaying,title):
-        super().__init__(windowmanager,loop,title)
+    def __init__(self, windowmanager, loop, usersettings, mopidyconnection,nowplaying,title):
+        super().__init__(windowmanager,loop, usersettings, title)
 
         self.mopidyconnection = mopidyconnection
         self.nowplaying = nowplaying

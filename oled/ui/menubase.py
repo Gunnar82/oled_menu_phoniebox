@@ -20,8 +20,8 @@ class MenuBase(WindowBase):
 
     render_progressbar = True
 
-    def __init__(self, windowmanager,loop,title):
-        super().__init__(windowmanager,loop)
+    def __init__(self, windowmanager,loop,usersettings,title):
+        super().__init__(windowmanager,loop,usersettings)
         self.counter = 0
         self.descr = []
         self.descr.append([ "Zurück", "\uf0a8"])

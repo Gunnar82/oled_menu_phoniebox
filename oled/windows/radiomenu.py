@@ -22,17 +22,17 @@ logger = setup_logger(__name__)
 
 class Radiomenu(ListBase):
 
-    def __init__(self, windowmanager,loop,musicmanager,csettings):
-        super().__init__(windowmanager, loop, "Auswahl")
+    def __init__(self, windowmanager,loop,usersettings,musicmanager):
+        super().__init__(windowmanager, loop,usersettings, "Auswahl")
         #self.timeoutwindow="folderinfo"
-        self.csettings = csettings
+        self.usersettings = usersettings
         self.musicmanager = musicmanager
         self.timeout = False
         self.loop = loop
         self.busysymbol = symbols.SYMBOL_CLOUD
 
     def activate(self):
-        if not self.csettings.UPDATE_RADIO:
+        if not self.usersettings.UPDATE_RADIO:
             self.set_busyinfo("Radio Update deaktiviert",wait=5)
         else:
             try:

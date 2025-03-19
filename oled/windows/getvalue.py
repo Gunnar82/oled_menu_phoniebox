@@ -22,8 +22,8 @@ class GetValue(WindowBase):
     font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_XXXL)
     window_on_back = "none"
 
-    def __init__(self, windowmanager,loop):
-        super().__init__(windowmanager, loop)
+    def __init__(self, windowmanager,loop,usersettings):
+        super().__init__(windowmanager, loop,usersettings)
         self.busysymbol = symbols.SYMBOL_PROGRAMM
         self.timeout = False
         self.conrasthandle = False

@@ -16,8 +16,8 @@ logger = setup_logger(__name__)
 class Bluetoothmenu(ListBase):
 
 
-    def __init__(self, windowmanager,loop,bluetooth,title):
-        super().__init__(windowmanager,loop,title)
+    def __init__(self, windowmanager,loop,usersettings,bluetooth,title):
+        super().__init__(windowmanager,loop,usersettings,title)
         self.bluetooth = bluetooth
         self.window_on_back = "headphonemenu"
         self.handle_left_key = False

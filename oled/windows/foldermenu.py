@@ -20,8 +20,8 @@ class Foldermenu(ListBase):
     folders = []
     busysymbol = symbols.SYMBOL_LIST
 
-    def __init__(self, windowmanager,loop,musicmanager):
-        super().__init__(windowmanager, loop, "Auswahl")
+    def __init__(self, windowmanager,loop,usersettings,musicmanager):
+        super().__init__(windowmanager, loop,usersettings, "Auswahl")
         #self.timeoutwindow="folderinfo"
         self.timeout = False
         self.loop = loop

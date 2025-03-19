@@ -22,8 +22,8 @@ from datetime import datetime
 
 class Ende(MainWindow):
 
-    def __init__(self, windowmanager, loop,nowplaying,musicmanager):
-        super().__init__(windowmanager, loop, nowplaying)
+    def __init__(self, windowmanager, loop,usersettings, nowplaying,musicmanager):
+        super().__init__(windowmanager, loop, usersettings, nowplaying)
         self.loop = loop
         self.musicmanager = musicmanager
 #        self.font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_L)

@@ -13,8 +13,8 @@ class Lock(MainWindow):
     fontawesome = ImageFont.truetype(settings.FONT_ICONS, size=settings.FONT_SIZE_XXL)
     busysymbol=symbols.SYMBOL_LOCKED
 
-    def __init__(self, windowmanager,loop,nowplaying,musicmanager):
-        super().__init__(windowmanager, loop,nowplaying)
+    def __init__(self, windowmanager,loop,usersettings, nowplaying,musicmanager):
+        super().__init__(windowmanager, loop,usersettings, nowplaying)
         self.musicmanager = musicmanager
         self.timeout = False
         self.window_on_back = "idle"

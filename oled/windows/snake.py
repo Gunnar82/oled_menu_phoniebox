@@ -23,8 +23,8 @@ class SnakeGame(WindowBase):
     font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_SMALL)
     game_over = True
 
-    def __init__(self, windowmanager, loop):
-        super().__init__(windowmanager, loop)
+    def __init__(self, windowmanager, loop, usersettings):
+        super().__init__(windowmanager, loop, usersettings)
 #        self.font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_L)
         self.timeout = False
         self._rendertime = 0.1

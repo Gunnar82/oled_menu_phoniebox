@@ -43,3 +43,6 @@ class UserSettings(Settings):
 
     #Radiostationen aktualisieren
     UPDATE_RADIO=False
+
+    #Zeige Debuginformationen auf Display
+    SHOW_DEBUGINFOS=False

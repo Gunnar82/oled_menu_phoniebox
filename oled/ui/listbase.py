@@ -25,8 +25,8 @@ class ListBase(WindowBase):
     is_type_info = False
 
 
-    def __init__(self, windowmanager, loop, title):
-        super().__init__(windowmanager, loop)
+    def __init__(self, windowmanager, loop, usersettings,  title):
+        super().__init__(windowmanager, loop, usersettings)
         self.menu = []
         self.basetitle = title
         self.title = title

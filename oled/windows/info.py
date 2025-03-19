@@ -21,8 +21,8 @@ class Infomenu(ListBase):
     hostapd = False
     temp = "n/a"
 
-    def __init__(self, windowmanager, loop):
-        super().__init__(windowmanager, loop,"Systeminfo")
+    def __init__(self, windowmanager, loop, usersettings):
+        super().__init__(windowmanager, loop, usersettings, "Systeminfo")
         self.counter = 0
         self.loop = loop
         self.linewidth, self.lineheight = self.font.getsize("000")

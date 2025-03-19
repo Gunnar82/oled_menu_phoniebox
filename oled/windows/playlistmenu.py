@@ -18,9 +18,9 @@ logger = setup_logger(__name__)
 
 
 class Playlistmenu(ListBase):
-    def __init__(self, windowmanager, loop,  musicmanager):
+    def __init__(self, windowmanager, loop, usersettings,  musicmanager):
+        super().__init__(windowmanager, loop, usersettings, "Playlist")
         self.musicmanager = musicmanager
-        super().__init__(windowmanager, loop, "Playlist")
 
 
     async def eyed3_playlist(self):

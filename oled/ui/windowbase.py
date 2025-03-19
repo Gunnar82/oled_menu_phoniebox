@@ -63,7 +63,8 @@ class WindowBase():
     startleft, selected_symbol_height = busyfaicons.getsize(symbols.SYMBOL_LIST_SELECTED)
     progressbarpos = 0
 
-    def __init__(self, windowmanager,loop):
+    def __init__(self, windowmanager,loop,usersettings):
+        self.usersettings=usersettings
         self.start_busyrendertime = time.monotonic()
         self.loop = loop
         self.windowmanager = windowmanager
@@ -137,8 +138,9 @@ class WindowBase():
 
 
     def append_busydebug(self,text="Debug..."):
-        logger.debug(f"append busyerror: {text}")
-        self.__append_busyitem(text,self.debug)
+        logger.debug(f"append busydebug: {text}")
+        if self.usersettings.SHOW_DEBUGINFOS:
+            self.__append_busyitem(text,self.debug)
 
 
     def append_busysymbol(self,text=None):
@@ -256,8 +258,7 @@ class WindowBase():
                         try:
                             if selected_element[1] == self.debug:
                                 progresscolor = colors.COLOR_DEBUG
-
-                        except:
+                        except Exception as error:
                             pass
 
 
