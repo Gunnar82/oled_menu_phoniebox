@@ -73,9 +73,9 @@ class DownloadMenu(ListBase):
 
             if r[0] == "LSTPLYD":
                 self.url = r[1]
-                self.append_busytext(self.url)
+                self.append_busydebug(self.url)
             else:
-                self.append_busyerror(f"activate: lastonline: {r}")
+                self.append_busydebug(f"activate: lastonline: {r}")
 
 
             files,directories, temp = self.get_files_and_dirs_from_listing(self.url, ["mp3"],False)
@@ -84,14 +84,14 @@ class DownloadMenu(ListBase):
                 logger.info(f"letztes online: {self.url}")
 
             if not self.url.endswith('/'): 
-                self.append_busytext(f"Endet nicht auf /, setze auf Standard")
-                self.append_busytext(self.url)
+                self.append_busydebug(f"Endet nicht auf /, setze auf Standard")
+                self.append_busydebug(self.url)
                 logger.warning(f"{self.website} nicht in {self.url}")
                 self.url = self.website
 
             elif not self.url.startswith(self.website): 
                 self.append_busytext(f"Basis-Website geändert, setze auf Standard")
-                self.append_busytext(self.website)
+                self.append_busydebug(self.website)
                 logger.warning(f"{self.website} nicht in {self.url}")
                 self.url = self.website
 
@@ -132,10 +132,10 @@ class DownloadMenu(ListBase):
             if r != 200:
                 logger.error(f"execute_init: Verbindungsfehler letzter Onlinetitel {r}: {self.url}")
                 self.append_busytext(f"Verbindungsfehler {r}:")
-                self.append_busytext(self.url)
+                self.append_busydebug(self.url)
 
                 self.append_busytext("Setze auf Standard:")
-                self.append_busytext(self.website)
+                self.append_busydebug(self.website)
                 self.url = self.website
 
             else: #r == 200:
@@ -144,7 +144,7 @@ class DownloadMenu(ListBase):
         except Exception as error:
             logger.error(f"execute_init: exception: Verbindungsfehler {error}")
             self.append_busyerror(f"Verbindungsfehler {error}:")
-            self.append_busyerror(self.url)
+            self.append_busydebug(self.url)
 
             self.url = self.website
 
@@ -156,7 +156,7 @@ class DownloadMenu(ListBase):
         temp, self.cwd = split_url(self.url)
         print (f"cwd: {self.cwd}")
         self.append_busytext(f"Erfolgreich:")
-        self.append_busytext(self.url)
+        self.append_busydebug(self.url)
 
         self.init_finished = True
 
@@ -175,7 +175,7 @@ class DownloadMenu(ListBase):
     def check_website_return(self,url):
         try:
             self.append_busytext("Prüfe URL:")
-            self.append_busytext(url)
+            self.append_busydebug(url)
             return check_url_reachability(url)
 
         except Exception as error:
@@ -261,7 +261,6 @@ class DownloadMenu(ListBase):
             self.append_busytext(f"Titel hinzufügen:")
             self.append_busytext("")
 
-
             songs = []
 
             for item in self.items:
@@ -269,17 +268,17 @@ class DownloadMenu(ListBase):
                 songs.append(construct_url_from_local_path(self.baseurl,self.cwd,item))
                 self.append_busytext(f"Titelhinzugefügt: {item}",reuse_last = True)
 
-            self.append_busytext(f"Starte playout {self.cwd}")
+            self.append_busytext(f"Wiedergabe: {self.cwd}")
             self.musicmanager.playliststart(songs=songs,seekto=seekto)
 
         except Exception as error:
             logger.error (f"playfolder: {error}")
             self.append_busyerror(f"{error}")
 
-            self.windowmanager.set_window("idle")
         except Exception as error:
             self.append_busyerror(error)
         finally:
+            self.windowmanager.set_window("idle")
             self.set_window_busy(False,wait = 3)
 
     def push_handler(self,button = '*'):
@@ -311,17 +310,17 @@ class DownloadMenu(ListBase):
                     destdir = cfg_file_folder.AUDIO_BASEPATH_BASE + '/' + unquote(self.url[len(cfg_online.ONLINE_URL):])
                     if not os.path.exists(destdir):
                         logger.info(f"delete_local error: {destdir}")
-                        self.append_busytext(f"lokal nicht gefunden: {destdir}")
+                        self.append_busyerror(f"lokal nicht gefunden: {destdir}")
                     else:
                         try:
                             shutil.rmtree(destdir)
                             self.append_busytext(f"erfolgreich: {destdir}")
                         except FileNotFoundError:
-                            self.append_busytext(f"nicht gefunden: {destdir}")
+                            self.append_busyerror(f"nicht gefunden: {destdir}")
                         except PermissionError:
-                            self.append_busytext(f"Fehlerhafte Berechrigung: {destdir}")
+                            self.append_busyerror(f"Fehlerhafte Berechrigung: {destdir}")
                         except Exception as error:
-                            self.append_busytext(f"Fehler: {error}")
+                            self.append_busyerror(f"Fehler: {error}")
                     self.set_window_busy(False)
 
             else:
@@ -350,7 +349,7 @@ class DownloadMenu(ListBase):
 
                 logger.info(f"Wechsle zu {self.url}")
                 self.append_busytext("Neue URL:")
-                self.append_busytext(self.url)
+                self.append_busydebug(self.url)
 
                 self.items,directories,self.totalsize = self.get_files_and_dirs_from_listing(self.url, ["mp3"])
 
@@ -432,7 +431,7 @@ class DownloadMenu(ListBase):
 
             self.title = get_current_directory(self.cwd)
 
-            self.append_busytext(self.cwd)
+            self.append_busydebug(self.cwd)
 
             logger.debug(f"neues Verzeichnis: {self.cwd}")
 
@@ -443,7 +442,7 @@ class DownloadMenu(ListBase):
             self.url = construct_url(self.cwd,self.baseurl)
 
             self.append_busytext("Prüfe URL")
-            self.append_busytext(self.url)
+            self.append_busydebug(self.url)
 
             files, directories,self.totalsize = self.get_files_and_dirs_from_listing(self.url, ["mp3"])
 
@@ -474,7 +473,7 @@ class DownloadMenu(ListBase):
         try:
             if os.path.exists(local_path) and os.path.getsize(local_path) == total_size_in_bytes:
                 self.append_busyerror("Datei existiert in der Größe, überspringe")
-                self.append_busyerror(f"{local_path}")
+                self.append_busydebug(f"{local_path}")
                 logger.debug(f"download_file: exists: {local_path}")
                 self.append_busyerror("")
                 
@@ -560,7 +559,7 @@ class DownloadMenu(ListBase):
         for dir_element in root.findall('directory'):
             directory_name = unquote(dir_element.text.strip())
             logger.debug(f"Verzeichnis gefunden: '{directory_name}'")
-            self.append_busytext(f"Ordner: {directory_name}")
+            self.append_busydebug(f"Ordner: {directory_name}")
             directories.append([directory_name, 'x'])
 
         return files, directories, total_size

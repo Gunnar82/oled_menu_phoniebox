@@ -36,6 +36,7 @@ class WindowBase():
     symbol  = "s"
     info    = "i"
     error   = "err"
+    debug   = "debug"
     bc      = "bc"
 
     busysymbol = symbols.SYMBOL_SANDCLOCK
@@ -133,6 +134,11 @@ class WindowBase():
     def append_busyerror(self,text="Fehler..."):
         logger.debug(f"append busyerror: {text}")
         self.__append_busyitem(text,self.error)
+
+
+    def append_busydebug(self,text="Debug..."):
+        logger.debug(f"append busyerror: {text}")
+        self.__append_busyitem(text,self.debug)
 
 
     def append_busysymbol(self,text=None):
@@ -246,6 +252,14 @@ class WindowBase():
 
                         except:
                             pass
+
+                        try:
+                            if selected_element[1] == self.debug:
+                                progresscolor = colors.COLOR_DEBUG
+
+                        except:
+                            pass
+
 
                         startleft = self.startleft
                         try:
