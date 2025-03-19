@@ -72,9 +72,6 @@ class SystemMenu(ListBase):
         self.menu.append(["","func","",self.toggle_firewall,self.generate_fw_status])  # 5
 
 
-#        self.menu.append(["PLACEHOLDER FIREWALL_ENABLED"])              # Eintrag 12
-
-
         self.menu.append(["","int","","CONTRAST_FULL"])
         self.menu.append(["","int","","CONTRAST_DARK"])
         self.menu.append(["","int","","CONTRAST_BLACK"])
