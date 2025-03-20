@@ -83,7 +83,8 @@ class SystemMenu(ListBase):
         self.menu.append(["WLAN: aus","cmd","","sudo ip link set wlan0 down"])                            # Eintrag 8
         self.menu.append(["WLAN: an","cmd","","sudo ip link set wlan0 up"])                             # Eintrag 9
 
-        self.menu.append(["Update OLED","cmd","","git pull", "sudo pip3 install -r requirements.txt", "sudo systemctl restart oled"])                          # Eintrag 7
+        self.menu.append(["sudo pip3 install -r requirements.txt", "cmd"])
+        self.menu.append(["git pull","cmd"])
 
         self.menu.append(["Lösche Radiosender","func","",self.musicmanager.delete_radiostations])                   # Eintrag 6
 
@@ -120,36 +121,16 @@ class SystemMenu(ListBase):
     def exec_command(self):
         logger.debug(f"cmd: {self.cmd}")
         try:
-            self.processing = True
-            if self.position == 3:
-                try:
-                    url = f"{cfg_online.ONLINE_SAVEPOS}deletepos.php?confirm=true"
-
-                    logger.debug(f"Verzeichnis-URL: {url}")
-                    self.append_busytext(self.menu[self.position][0])
-
-                    response = WebRequest(url).get_response_text().splitlines()
-                    logger.debug(f"response: {response}")
-                    self.append_busytext("")
-                    for line in response:
-                        if line.startswith('DELOK'): self.append_busytext(line,reuse_last=True)
-                        else: self.append_busyerror(line)
-                except Exception as error:
-                    logger.debug(f"exec_command: {error}")
-                    self.append_busyerror(error)
-            elif self.position == 14:
-                return
+            self.append_busytext(str(self.cmd).replace('\n',''))
+            result = []
+            if run_command(self.cmd,results=result) == True:
+                self.append_busydebug(str(result))
+                self.append_busytext("Erfolgreich!")
             else:
-                self.append_busytext(self.menu[self.position][0])
-                self.append_busytext(str(self.cmd).replace('\n',''))
-                result = []
-                if run_command(self.cmd,results=result) == True:
-                    self.append_busytext("Erfolgreich!")
-                else:
-                    text = check_results_list(result)
+                text = check_results_list(result)
 
-                    logger.debug(f"exec_command: FAILED: {text}")
-                    self.append_busyerror(str(text))
+                logger.debug(f"exec_command: FAILED: {text}")
+                self.append_busyerror(str(text))
         except Exception as error:
             self.append_busyerror(error)
 
@@ -184,6 +165,9 @@ class SystemMenu(ListBase):
                 value = self.windowmanager.getValue(vmin=1,vmax=255,vstep=1,startpos=getattr(self.usersettings,entry[3]))
                 setattr(self.usersettings,entry[3],value)
 
+            elif entry[1] == "cmd":
+                self.cmd = entry[0]
+                self.loop.run_in_executor(None,self.exec_command)
             elif entry[1] == "func":
                 try:
                     function = entry[3]
@@ -241,7 +225,6 @@ class SystemMenu(ListBase):
             self.cmd = "sudo systemctl restart %s" % (self.menu[self.position][0])
 
         logger.debug(f"cmd: {self.cmd}")
-        self.loop.run_in_executor(None,self.exec_command)
 
 
     def render(self):

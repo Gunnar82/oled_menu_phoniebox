@@ -53,12 +53,12 @@ class Shutdownmenu(MenuBase):
             if self.counter == 4:
                 run_command("%s -c=shutdownafter -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
             elif self.counter == 5:
-                value = self.windowmanager.getValue(startpos=30,unit=" min")
+                value = self.windowmanager.getValue(startpos=30,vstep=1,unit=" min")
                 run_command("%s -c=shutdownafter -v=%d" % (cfg_file_folder.PLAYOUT_CONTROLS,value))
             elif self.counter == 6:
                 run_command("%s -c=setidletime -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
             elif self.counter == 7:
-                value = self.windowmanager.getValue(startpos=15,unit=" min")
+                value = self.windowmanager.getValue(startpos=15,vstep=1,unit=" min")
                 run_command("%s -c=setidletime -v=%d" % (cfg_file_folder.PLAYOUT_CONTROLS,value))
             elif self.counter == 8:
                 settings.shutdown_reason = SR.SR4

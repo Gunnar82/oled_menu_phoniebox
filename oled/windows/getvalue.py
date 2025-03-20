@@ -120,8 +120,6 @@ class GetValue(WindowBase):
             elif key in ['B','hr']:
                     direction = 5 * self.__vstep
 
-        self.__value += direction
-
         self.__value = min(max(self.__value + direction, self.__vmin), self.__vmax)
 
         self.get_position()

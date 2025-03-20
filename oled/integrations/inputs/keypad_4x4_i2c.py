@@ -74,16 +74,18 @@ class keypad_4x4_i2c:
     def button_down_callback(self,channel):
         if not self.busy:
             try:
+                gpio_state = GPIO.input(channel)
                 self.busy = True
                 key = self.getch()
-                if key != None:
+
+                if key != None and gpio_state == 0:
                     if key == '*':
                         self.push_callback()
                     else:
                         self.turn_callback(0,key)
             finally:
-                self.reset()
                 time.sleep(0.2)
+                self.reset()
                 self.busy = False
 
     # initialize the keypad class
@@ -97,7 +99,7 @@ class keypad_4x4_i2c:
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(intpin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-        GPIO.add_event_detect(intpin, GPIO.BOTH, callback=self.button_down_callback, bouncetime=100)
+        GPIO.add_event_detect(intpin, GPIO.BOTH, callback=self.button_down_callback, bouncetime=150)
 
 
 # test code
@@ -106,21 +108,3 @@ class keypad_4x4_i2c:
 def signal_handler(sig, frame):
     GPIO.cleanup()
     sys.exit(0)
-
-
-if __name__ == '__main__':
-#    GPIO.setmode(GPIO.BCM)
-#    GPIO.setup(BUTTON_GPIO, GPIO.IN)
-#    GPIO.add_event_detect(BUTTON_GPIO, GPIO.BOTH, 
-#            callback=button_pressed_callback, bouncetime=100)
-
-    signal.signal(signal.SIGINT, signal_handler)
-
-    keypad = keypad_module()
-
-#    if ch == 'D':
-#      exit()
-
-
-    while True:
-        time.sleep (1)
