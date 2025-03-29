@@ -1,7 +1,7 @@
 [Unit]
 Description=OLED display provider
-After=mpd.service pulseaudio.service bluetooth.service phoniebox-startup-scripts.service
-Requires=mpd.service pulseaudio.service bluetooth.service phoniebox-startup-scripts.service
+After=mpd.service pulseaudio.service bluetooth.service
+Requires=mpd.service pulseaudio.service bluetooth.service #
 
 # Optional: Warte auf die i2c- und spi-Module, wenn sie vorhanden sind
 After=i2c-dev.service spi.service
@@ -13,9 +13,13 @@ Environment=PYTHONUNBUFFERED=1
 User=pi
 Group=pi
 WorkingDirectory=/home/pi/oledctrl/oled
-ExecStart=python3 /home/pi/oledctrl/oled/oled.py
-RestartSec=10
+ExecStart=/home/pi/oledctrl/oled/oled.py
 Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+TimeoutStartSec=20
 
 [Install]
 WantedBy=multi-user.target
+
