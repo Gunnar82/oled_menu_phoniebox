@@ -14,7 +14,7 @@ DEBUG_MODULES = []
 
 def setup_logger(module_name,default_level = config.loglevel.LOGLEVEL):
     if 'INVOCATION_ID' in os.environ:
-        level = logging.ERROR
+        level = logging.DEBUG
     else:
         # Prüfen, ob das aktuelle Modul im Debug-Level laufen soll
         if module_name in DEBUG_MODULES:
