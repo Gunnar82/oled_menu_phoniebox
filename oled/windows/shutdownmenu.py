@@ -8,6 +8,7 @@ import config.colors as colors
 import config.file_folder as cfg_file_folder
 import config.shutdown_reason as SR
 import os
+import time
 
 
 
@@ -54,7 +55,7 @@ class Shutdownmenu(MenuBase):
                 run_command("%s -c=shutdownafter -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
             elif self.counter == 5:
                 value = self.windowmanager.getValue(startpos=30,vstep=1,unit=" min")
-                run_command("%s -c=shutdownafter -v=%d" % (cfg_file_folder.PLAYOUT_CONTROLS,value))
+                self.usersettings.shutdowntime = time.monotonic() + int(value) * 60
             elif self.counter == 6:
                 run_command("%s -c=setidletime -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
             elif self.counter == 7:

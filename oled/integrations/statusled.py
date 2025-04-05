@@ -62,7 +62,7 @@ class statusled:
                 try:
                     status = self.musicmanager.status()
 
-                    if (settings.job_i >= 0 and settings.job_i <= 5) or ( settings.job_t >= 0 and settings.job_t <= 5):
+                    if (settings.job_i >= 0 and settings.job_i <= 5) or ( settings.job_t >= 0 and settings.job_t <= 300):
                         self.pulsing = 2
                     elif settings.battcapacity >= 0 and settings.battcapacity <= settings.X728_BATT_LOW:
                         self.pulsing = 3

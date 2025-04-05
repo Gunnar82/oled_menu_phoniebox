@@ -53,7 +53,6 @@ def linux_job_remaining(job_name):
 
 
 def get_timeouts():
-    settings.job_t = linux_job_remaining("t")
     settings.job_s = linux_job_remaining("s")
     settings.job_i = linux_job_remaining("i")
 

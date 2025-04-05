@@ -85,7 +85,7 @@ class Idle(MainWindow):
             except Exception as error:
                 logger.debug(f"{error}")
 
-            if ((self.nowplaying._state == "stop") or (settings.job_t >=0 and settings.job_t <= 5) or (settings.job_i >= 0 and settings.job_i <=5) or (0 <= settings.battcapacity <= settings.X728_BATT_LOW) or (settings.DISPLAY_HEIGHT > 64)):
+            if ((self.nowplaying._state == "stop") or (settings.job_t >=0 and settings.job_t <= 300) or (settings.job_i >= 0 and settings.job_i <=5) or (0 <= settings.battcapacity <= settings.X728_BATT_LOW) or (settings.DISPLAY_HEIGHT > 64)):
                 if (settings.battcapacity >= 0):
                     text = "Batterie: %d%%%s" % (settings.battcapacity, ", lädt." if settings.battloading else " ") if settings.battcapacity > settings.X728_BATT_LOW else "Batterie laden! %d%%" % (settings.battcapacity)
                     mwidth = Idle.font.getsize(text)
@@ -94,11 +94,11 @@ class Idle(MainWindow):
                     draw.text(((settings.DISPLAY_WIDTH/2) - (mwidth[0]/2),10), text, font=Idle.font, fill=fill)
                 if settings.job_i >= 0 or settings.job_t >= 0:
                     if settings.job_i >= settings.job_t:
-                        aus = settings.job_i
+                        aus = "%2.2d min" % (settings.job_i)
                     else:
-                        aus = settings.job_t
+                        aus = "%2.2d sek" % (settings.job_t) if settings.job_t < 60 else "%2.2d min" % (settings.job_t // 60)
 
-                    text = "AUS in %2.2d min" %(aus)
+                    text = aus
                 else:
                     text = datetime.now().strftime("%a, %d.%m.%y %H:%M")
 

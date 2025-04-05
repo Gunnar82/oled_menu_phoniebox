@@ -11,7 +11,7 @@ def get_display():
     device = st7789(serial_interface=serial,rotate=1,bgf=True, gpio_LIGHT=13,active_low=False)
 
 
-    device.contrast(settings.CONTRAST_FULL)
+    #device.contrast(settings.CONTRAST_FULL)
     device.cleanup = do_nothing
 
     print("Using real display hardware")

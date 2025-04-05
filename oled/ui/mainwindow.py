@@ -122,7 +122,7 @@ class MainWindow(WindowBase):
             draw.text((xpos3, lineposy), symbols.SYMBOL_CLOUD, font=self.faicons, fill="white")
         elif settings.job_t >= 0:
             #Wenn Shutdowntimer, dann anzeigen
-            draw.text((xpos3, lineposy), "%2.2d" % (int(settings.job_t)), font=self.fontsmall, fill="white")
+            draw.text((xpos3, lineposy), "%2.2d" % (settings.job_t // 60), font=self.fontsmall, fill="white")
         elif "x728" in settings.INPUTS:
             #wenn Batterie, dann anzeigen
             draw.text((xpos3, lineposy), symbols.SYMBOL_BATTERY, font=self.faicons, fill=get_battload_color())

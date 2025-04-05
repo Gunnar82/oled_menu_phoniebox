@@ -12,7 +12,7 @@ def get_display():
     device = ssd1351(serial_interface=serial,rotate=3, bgr=True)
 
 
-    device.contrast(settings.CONTRAST_FULL)
+    #device.contrast(settings.CONTRAST_FULL)
     #device.cleanup = do_nothing
 
     print("Using real display hardware")

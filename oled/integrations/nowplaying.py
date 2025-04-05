@@ -68,8 +68,8 @@ class nowplaying:
 
             if title != self.__oldtitle:
                 if self.__oldtitle:
-                    if (time.monotonic() - settings.lastinput) >= self.csettings.DARK_TIMEOUT:
-                        settings.lastinput = time.monotonic() - self.csettings.CONTRAST_TIMEOUT
+                    if (time.monotonic() - settings.lastinput) >= self.usersettings.DARK_TIMEOUT:
+                        settings.lastinput = time.monotonic() - self.usersettings.CONTRAST_TIMEOUT
                 self.__oldtitle = title
 
             self._playingtitle = title
@@ -126,7 +126,20 @@ class nowplaying:
     async def _linuxjob(self):
         while self.loop.is_running():
             get_timeouts()
-            if ((settings.job_t >=0 and settings.job_t <= 5) or
+            try:
+                if self.usersettings.startup < self.usersettings.shutdowntime:
+                    shutdowntime = int(self.usersettings.shutdowntime - time.monotonic())
+                    settings.job_t = shutdowntime
+
+                    if self.usersettings.shutdowntime <= time.monotonic():
+                        self.windowmanager.set_window("ende")
+                else:
+                    settings.job_t = -1
+
+            except Exception as error:
+                print (error)
+
+            if ((settings.job_t >=0 and settings.job_t <= 300) or
                     (settings.job_i >= 0 and settings.job_i <= 5) or
                     ("x728" in settings.INPUTS and settings.battcapacity <= settings.X728_BATT_LOW)):
                 if not "statusled" in settings.INPUTS:
@@ -195,8 +208,8 @@ class nowplaying:
     def is_device_online(self):
         return self.__onlinestate
 
-    def __init__(self,loop,musicmanager,windowmanager,bluetooth,csettings):
-        self.csettings = csettings
+    def __init__(self,loop,musicmanager,windowmanager,bluetooth,usersettings):
+        self.usersettings = usersettings
         self.bluetooth = bluetooth
         self.loop = loop
         self.musicmanager = musicmanager

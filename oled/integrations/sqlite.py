@@ -5,6 +5,7 @@ import time
 import os
 import json
 
+
 from integrations.functions import get_parent_folder
 
 import config.file_folder as cfg_file_folder
@@ -21,6 +22,9 @@ class sqliteDB:
 
         # Datenbank und Tabelle erstellen
         self.create_db()
+
+        self.save_user_setting('startup',time.monotonic())
+        self.save_user_setting('shutdowntime',time.monotonic()- 1)
 
     def create_connection(self):
         """Erstellt eine Verbindung, wenn sie nicht existiert (pro Thread)."""
