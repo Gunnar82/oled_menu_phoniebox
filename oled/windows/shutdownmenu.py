@@ -12,7 +12,7 @@ import time
 
 
 
-from integrations.functions import restart_oled, get_timeouts, run_command
+from integrations.functions import restart_oled, run_command
 
 class Shutdownmenu(MenuBase):
 
@@ -52,15 +52,15 @@ class Shutdownmenu(MenuBase):
             self.windowmanager.set_window("ende")
         else:
             if self.counter == 4:
-                run_command("%s -c=shutdownafter -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
+                print ("doto") #run_command("%s -c=shutdownafter -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
             elif self.counter == 5:
                 value = self.windowmanager.getValue(startpos=30,vstep=1,unit=" min")
                 self.usersettings.shutdowntime = time.monotonic() + int(value) * 60
             elif self.counter == 6:
-                run_command("%s -c=setidletime -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
+                self.usersettings.IDLE_POWEROFF = 0
             elif self.counter == 7:
-                value = self.windowmanager.getValue(startpos=15,vstep=1,unit=" min")
-                run_command("%s -c=setidletime -v=%d" % (cfg_file_folder.PLAYOUT_CONTROLS,value))
+                value = self.windowmanager.getValue(startpos=self.usersettings.IDLE_POWEROFF,vmin=0,vstep=1,unit=" min")
+                self.usersettings.IDLE_POWEROFF = int(value)
             elif self.counter == 8:
                 settings.shutdown_reason = SR.SR4
                 self.windowmanager.windows["ende"].wait4end = True
@@ -93,7 +93,6 @@ class Shutdownmenu(MenuBase):
             elif self.counter == 18:
                 run_command("%s -c=setvolstep -v=8" % cfg_file_folder.PLAYOUT_CONTROLS)
 
-        get_timeouts()
 
 
     def turn_callback(self, direction, key=None):

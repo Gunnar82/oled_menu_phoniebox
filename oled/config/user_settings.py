@@ -46,3 +46,7 @@ class UserSettings(Settings):
 
     #Zeige Debuginformationen auf Display
     SHOW_DEBUGINFOS=False
+
+    #Schalte das Gerät bei inaktivität aus in min
+    IDLE_POWEROFF=30
+

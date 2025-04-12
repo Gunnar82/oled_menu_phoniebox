@@ -49,7 +49,14 @@ class Ende(MainWindow):
 
     async def timer(self):
         try:
-            self.power_timer = settings.job_t >= 0
+            self.power_timer = settings.job_t >= 0 and not settings.shutdown_reason == SR.SR6
+
+            if settings.shutdown_reason == SR.SR6:
+                settings.shutdown_reason == SR.SR5
+                self.windowmanager.clear_window()
+                self.musicmanager.stop()
+                await asyncio.sleep(60)
+
 
             if not (self.power_timer):
                 # keine Poweroff-Timer

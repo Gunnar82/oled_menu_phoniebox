@@ -94,9 +94,9 @@ class Idle(MainWindow):
                     draw.text(((settings.DISPLAY_WIDTH/2) - (mwidth[0]/2),10), text, font=Idle.font, fill=fill)
                 if settings.job_i >= 0 or settings.job_t >= 0:
                     if settings.job_i >= settings.job_t:
-                        aus = "%2.2d min" % (settings.job_i)
+                        aus = "Idle %2.2d sek" % (settings.job_i) if settings.job_i < 60 else "Idle %2.2d min" % (settings.job_i // 60)
                     else:
-                        aus = "%2.2d sek" % (settings.job_t) if settings.job_t < 60 else "%2.2d min" % (settings.job_t // 60)
+                        aus = "Timer %2.2d sek" % (settings.job_t) if settings.job_t < 60 else "Timer %2.2d min" % (settings.job_t // 60)
 
                     text = aus
                 else:

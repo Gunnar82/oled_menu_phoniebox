@@ -5,7 +5,7 @@ import RPi.GPIO as GPIO   # Import the GPIO library.
 import time               # Import time library
 import settings
 import asyncio
-from  integrations.functions import get_timeouts, ping_test
+from  integrations.functions import  ping_test
 import integrations.playout as playout
 import time
 from pathlib import Path
@@ -123,9 +123,9 @@ class nowplaying:
         except Exception as error:
             logger.debug (f"nowplaying error: {error}")
 
-    async def _linuxjob(self):
+    async def __get_timeouts(self):
         while self.loop.is_running():
-            get_timeouts()
+            #get_timeouts()
             try:
                 if self.usersettings.startup < self.usersettings.shutdowntime:
                     shutdowntime = int(self.usersettings.shutdowntime - time.monotonic())
@@ -137,14 +137,29 @@ class nowplaying:
                     settings.job_t = -1
 
             except Exception as error:
+                settings.job_t = -1
+                print (error)
+
+
+            try:
+                if self.usersettings.IDLE_POWEROFF > 0 and self._state != "play":
+                    seconds_since_last_input = time.monotonic() - settings.lastinput
+                    settings.job_i = self.usersettings.IDLE_POWEROFF * 60  - (seconds_since_last_input)
+                    if settings.job_i > self.usersettings.IDLE_POWEROFF * 60: # min to sec
+                        self.windowmanager.set_window("ende")
+                else:
+                    settings.job_i = -1
+
+            except Exception as error:
+                settings.job_i = -1
                 print (error)
 
             if ((settings.job_t >=0 and settings.job_t <= 300) or
-                    (settings.job_i >= 0 and settings.job_i <= 5) or
+                    (settings.job_i >= 0 and settings.job_i <= 300) or
                     ("x728" in settings.INPUTS and settings.battcapacity <= settings.X728_BATT_LOW)):
                 if not "statusled" in settings.INPUTS:
                     self.windowmanager.show_window()
-            await asyncio.sleep(20)
+            await asyncio.sleep(5)
 
 
     async def _savepos_status(self):
@@ -216,7 +231,7 @@ class nowplaying:
         self.windowmanager = windowmanager
 
         self.loop.create_task(self._generatenowplaying())
-        self.loop.create_task(self._linuxjob())
+        self.loop.create_task(self.__get_timeouts())
         self.loop.create_task(self.__systemabfrage())
         self.loop.create_task(self._savepos_status())
 

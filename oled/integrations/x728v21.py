@@ -90,13 +90,14 @@ class x728:
 
             logger.debug(f"handle_button_pressed: timediff {timediff}, pressed: {self.button_pressed} ")
 
-            if  timediff >= 6 and self.button_pressed:
+
+            if  (timediff >= 6 and self.button_pressed) or (settings.job_t > 0):
                 if self.led is not None:
                     self.led.set_permanent()
 
-                logger.debug("> 4 sek: shutdown")
+                logger.debug(">6sek oder job_t")
                 handling = False
-                settings.shutdown_reason = SR.SR2
+                settings.shutdown_reason = SR.SR6 if settings.job_t > 0 else SR.SR2
                 self.windowmanager.set_window("ende")
 
             elif timediff < 6:
