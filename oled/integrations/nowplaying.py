@@ -145,7 +145,7 @@ class nowplaying:
                 if self.usersettings.IDLE_POWEROFF > 0 and self._state != "play":
                     seconds_since_last_input = time.monotonic() - settings.lastinput
                     settings.job_i = self.usersettings.IDLE_POWEROFF * 60  - (seconds_since_last_input)
-                    if settings.job_i > self.usersettings.IDLE_POWEROFF * 60: # min to sec
+                    if seconds_since_last_input >= self.usersettings.IDLE_POWEROFF * 60:
                         self.windowmanager.set_window("ende")
                 else:
                     settings.job_i = -1
