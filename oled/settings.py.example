@@ -24,11 +24,6 @@ DISPLAY_DRIVER = "emulated"
 
 ####CONTROL
 
-### X728 UPS support
-X728_BATT_LOW = 15
-X728_BATT_EMERG = 5 # Shutdown Battery Percentage
-
-
 #Settings for the connection to Mopidy
 MPD_IP = "localhost"
 MPD_PORT = 6600

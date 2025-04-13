@@ -16,7 +16,7 @@ import config.colors as colors
 import config.symbols as symbols
 
 
-from integrations.functions import get_oledversion, get_battload_color, enable_firewall, run_as_service
+from integrations.functions import get_oledversion, enable_firewall, run_as_service
 
 
 

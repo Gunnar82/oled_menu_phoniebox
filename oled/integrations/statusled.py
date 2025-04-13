@@ -16,8 +16,9 @@ class statusled:
     maxduty = 10
     button_pressed = False
 
-    def __init__(self,loop,musicmanager,pin,always_on):
+    def __init__(self,loop,usersettings,musicmanager,pin,always_on):
         self.loop = loop
+        self.usersettings = usersettings
         self.musicmanager = musicmanager
         self.pin = pin
         self.always_on = always_on
@@ -64,7 +65,7 @@ class statusled:
 
                     if (settings.job_i >= 0 and settings.job_i <= 300) or ( settings.job_t >= 0 and settings.job_t <= 300):
                         self.pulsing = 2
-                    elif settings.battcapacity >= 0 and settings.battcapacity <= settings.X728_BATT_LOW:
+                    elif settings.battcapacity >= 0 and settings.battcapacity <= 15: #self.usersettings.X728_BATT_LOW:
                         self.pulsing = 3
                     elif status['state'] == 'play':
                         self.pulsing = 0

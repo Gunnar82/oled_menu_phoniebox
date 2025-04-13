@@ -29,3 +29,4 @@ class Settings:
             return self.__dict__[key]  # Direkt in __dict__ setzen, um Endlosschleife zu vermeiden
         except Exception as error:
             print (error)
+

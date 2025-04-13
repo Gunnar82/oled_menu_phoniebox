@@ -17,7 +17,7 @@ import time
 import integrations.bluetooth
 import integrations.playout as playout
 
-from integrations.functions import get_battload_color, to_min_sec, get_folder, get_folder_of_livestream, get_folder_from_file
+from integrations.functions import to_min_sec, get_folder, get_folder_of_livestream, get_folder_from_file
 
 from integrations.logging_config import *
 
@@ -90,9 +90,9 @@ class MainWindow(WindowBase):
             #battery load line
             try:
                 pos = int(settings.battcapacity/100*settings.DISPLAY_WIDTH)
-                draw.rectangle((0,3,pos,3),outline=get_battload_color(),fill=get_battload_color())
-            except:
-                logger.error("Battery Error")
+                draw.rectangle((0,3,pos,3),outline=settings.battload_color,fill=settings.battload_color)
+            except Exception as error:
+                logger.error(f"Battery Error {error}")
 
         #Currently playing song
 
@@ -125,5 +125,5 @@ class MainWindow(WindowBase):
             draw.text((xpos3, lineposy), "%2.2d" % (settings.job_t // 60), font=self.fontsmall, fill="white")
         elif "x728" in settings.INPUTS:
             #wenn Batterie, dann anzeigen
-            draw.text((xpos3, lineposy), symbols.SYMBOL_BATTERY, font=self.faicons, fill=get_battload_color())
+            draw.text((xpos3, lineposy), symbols.SYMBOL_BATTERY, font=self.faicons, fill=settings.battload_color)
 

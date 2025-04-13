@@ -7,6 +7,8 @@ import RPi.GPIO as GPIO
 import settings
 
 import config.symbols as symbols
+import config.colors as colors
+
 import config.shutdown_reason as SR
 import asyncio
 from datetime import datetime
@@ -25,15 +27,15 @@ class x728:
     GPIO_LED     = 26 #
 
 
-    def __init__(self,loop,windowmanager,led):
+    def __init__(self,loop,windowmanager,led,usersettings):
         # Global settings
+        self.usersettings = usersettings
         self.led = led
         self.loop = loop
         self.windowmanager = windowmanager
         self.voltage = 0
-        self.capacity = 0
         self.oldvoltage = 0
-        self.oldcapacity = -1
+        self.__capacity = -1
         self.loading = False
         self.I2C_ADDR    = 0x36
 
@@ -52,19 +54,18 @@ class x728:
 
         self.bus = smbus.SMBus(1) # 0 = /dev/i2c-0 (port I2C0), 1 = /dev/i2c-1 (port I2C1)
 
-        self.loop.create_task(self._handler())
+        self.loop.create_task(self.__handler())
 
 
-    async def _handler(self):
+    async def __handler(self):
         while self.loop.is_running():
             try:
                 self.readVoltage()
-                self.readCapacity()
-
-                settings.battcapacity = self.capacity
+                settings.battcapacity = self.readCapacity()
                 symbols.SYMBOL_BATTERY = self.getSymbol()
-
-            except:
+                settings.battload_color = self.get_battload_color()
+            except Exception as error:
+                logger.error(f"_handler_ {error}")
                 print ("err x728")
 
             await asyncio.sleep (10)
@@ -121,7 +122,9 @@ class x728:
 
          read = self.bus.read_word_data(self.I2C_ADDR, 4)
          swapped = struct.unpack("<H", struct.pack(">H", read))[0]
-         self.capacity = swapped/256
+         cap = int(swapped/256)
+         self.__capacity = cap 
+         return cap
 
 
     def get_powerfail_state(self,status):
@@ -129,16 +132,32 @@ class x728:
         settings.battloading = not status
 
     def getSymbol(self):
-        if self.capacity < 10:
+        if self.__capacity < 10:
             return "\uf244"
-        elif self.capacity < 30:
+        elif self.__capacity < 30:
             return "\uf243"
-        elif self.capacity < 60:
+        elif self.__capacity < 60:
             return "\uf242"
-        elif self.capacity < 90:
+        elif self.__capacity < 90:
              return "\uf241"
         else:
             return "\uf240"
+
+
+    def get_battload_color(self):
+        if settings.battloading:
+            return colors.COLOR_BLUE
+        elif self.__capacity == -1:
+            return "WHITE"
+        elif self.__capacity >= 70:
+            return colors.COLOR_GREEN
+        elif self.__capacity >= 40:
+            return colors.COLOR_YELLOW
+        elif self.__capacity >= 15: #self.usersettings.X728_BATT_LOW:
+            return colors.COLOR_ORANGE
+        else:
+            return colors.COLOR_RED
+
 
     def shutdown(self):
         logger.debug("x728 shutdown")

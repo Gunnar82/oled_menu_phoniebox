@@ -126,22 +126,6 @@ def get_folder_from_file(filename):
         return cfg_file_folder.AUDIO_BASEPATH_BASE
 
 
-def get_battload_color():
-    if settings.battloading:
-        return colors.COLOR_BLUE
-    elif settings.battcapacity == -1:
-        return "WHITE"
-    elif settings.battcapacity >= 70:
-        return colors.COLOR_GREEN
-    elif settings.battcapacity >= 40:
-        return colors.COLOR_YELLOW
-    elif settings.battcapacity >= settings.X728_BATT_LOW:
-        return colors.COLOR_ORANGE
-    else:
-        return colors.COLOR_RED
-
-
-
 def get_size(size):
     mb = ['B','kB','MB','GB','TB','PB']
     number = 0

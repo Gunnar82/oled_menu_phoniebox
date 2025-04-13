@@ -156,7 +156,7 @@ class nowplaying:
 
             if ((settings.job_t >=0 and settings.job_t <= 300) or
                     (settings.job_i >= 0 and settings.job_i <= 300) or
-                    ("x728" in settings.INPUTS and settings.battcapacity <= settings.X728_BATT_LOW)):
+                    ("x728" in settings.INPUTS and settings.battcapacity <= 15)):
                 if not "statusled" in settings.INPUTS:
                     self.windowmanager.show_window()
             await asyncio.sleep(5)

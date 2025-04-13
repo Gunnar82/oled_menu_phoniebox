@@ -50,3 +50,17 @@ class UserSettings(Settings):
     #Schalte das Gerät bei inaktivität aus in min
     IDLE_POWEROFF=30
 
+
+    #Schalte das Gerät bei inaktivität aus in min
+    IDLE_POWEROFF=30
+
+    #X728
+    #Herunterfahren wenn Batterie EMERG erreicht hat ?
+    X728_OFF_EMERG=True
+
+    #Wert für EMERG in  %
+    X728_BATT_EMERG=1
+
+    #Wert für LOW in %
+    X728_BATT_LOW=15
+

@@ -303,14 +303,14 @@ def main():
 
         import integrations.statusled as statusled
 
-        led = statusled.statusled(loop,musicmanager,pin=statusled_config.STATUS_LED_PIN,always_on=statusled_config.STATUS_LED_ALWAYS_ON)
+        led = statusled.statusled(loop,usersettings,musicmanager,pin=statusled_config.STATUS_LED_PIN,always_on=statusled_config.STATUS_LED_ALWAYS_ON)
     else:
         led = None
 
     ####x728V2.1
     if "x728" in settings.INPUTS:
         import integrations.x728v21 as x728v21
-        x728 = x728v21.x728(loop,windowmanager,led)
+        x728 = x728v21.x728(loop,windowmanager,led,usersettings)
 
 
     ###main

@@ -80,6 +80,14 @@ class SystemMenu(ListBase):
         self.menu.append(["","int","","CONTRAST_TIMEOUT"])
         self.menu.append(["","int","","DARK_TIMEOUT"])
 
+        if "x728" in settings.INPUTS:
+            self.menu.append(["Firewall","h"])
+            self.menu.append(["","bool","","X728_OFF_EMERG"])
+            self.menu.append(["","int","","X728_BATT_EMERG"])
+            self.menu.append(["","int","","X728_BATT_LOW"])
+            self.menu.append(["","c"])
+
+
         self.menu.append(["WLAN: aus","cmd","","sudo ip link set wlan0 down"])                            # Eintrag 8
         self.menu.append(["WLAN: an","cmd","","sudo ip link set wlan0 up"])                             # Eintrag 9
 

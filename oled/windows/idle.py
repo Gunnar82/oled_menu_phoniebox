@@ -19,7 +19,7 @@ import time
 import integrations.bluetooth
 import integrations.playout as playout
 
-from integrations.functions import get_battload_color, to_min_sec, get_folder, get_folder_of_livestream, get_folder_from_file
+from integrations.functions import to_min_sec, get_folder, get_folder_of_livestream, get_folder_from_file
 
 from integrations.logging_config import *
 
@@ -57,25 +57,29 @@ class Idle(MainWindow):
 
             #####IDLE RENDER
 
-            if (settings.battcapacity >= 0 and settings.battcapacity <= settings.X728_BATT_EMERG and not settings.battloading):
-                self.set_busyinfo(item=["Batterie leer", "AUS in %ds" % ((settings.lastinput - now) + 120)])
-                self.busy = True
-                self.contrasthandle = False
-                self.rendertime = self._rendertime
-                self.keep_busy = True
-                self.busyrendertime = 0.5
+            if not settings.battloading: # and self.usersettings.X728_OFF_EMERG:
+                if settings.battcapacity >= 0 and settings.battcapacity <= 15: #self.usersettings.X728_BATT_EMERG :
+                    self.set_busyinfo(item=["Batterie leer", "AUS in %ds" % ((settings.lastinput - now) + 120)])
+                    self.busy = True
+                    self.contrasthandle = False
+                    #self.rendertime = 3
+                    self.keep_busy = True
+                    self.busyrendertime = 0.5
 
-                if ((now - settings.lastinput) > 120):
-                    logger.info("X728: Shutting down: Low Battery (EMERG)")
-                    settings.shutdown_reason = SR.SR2
-                    self.windowmanager.set_window("ende")
+                    if ((now - settings.lastinput) > 120):
+                        logger.info("X728: Shutting down: Low Battery (EMERG)")
+                        settings.shutdown_reason = SR.SR2
+                        self.windowmanager.set_window("ende")
 
+                    return
 
-                return
-
+                else:
+                    self.busyrendertime = self._rendertime
+                    self.contrasthandle = True
             else:
-                self.busyrendertime = 3
+                self.busyrendertime = self._rendertime
                 self.contrasthandle = True
+
 
             ####setting idle text / Icon on Song Number Changed
             try:
@@ -85,12 +89,12 @@ class Idle(MainWindow):
             except Exception as error:
                 logger.debug(f"{error}")
 
-            if ((self.nowplaying._state == "stop") or (settings.job_t >=0 and settings.job_t <= 300) or (settings.job_i >= 0 and settings.job_i <=5) or (0 <= settings.battcapacity <= settings.X728_BATT_LOW) or (settings.DISPLAY_HEIGHT > 64)):
+            if ((self.nowplaying._state == "stop") or (settings.job_t >=0 and settings.job_t <= 300) or (settings.job_i >= 0 and settings.job_i <=5) or (0 <= settings.battcapacity <= 15) or (settings.DISPLAY_HEIGHT > 64)):
                 if (settings.battcapacity >= 0):
-                    text = "Batterie: %d%%%s" % (settings.battcapacity, ", lädt." if settings.battloading else " ") if settings.battcapacity > settings.X728_BATT_LOW else "Batterie laden! %d%%" % (settings.battcapacity)
+                    text = "Batterie: %d%%%s" % (settings.battcapacity, ", lädt." if settings.battloading else " ") if settings.battcapacity > 15 else "Batterie laden! %d%%" % (settings.battcapacity)
                     mwidth = Idle.font.getsize(text)
                     ungerade = (now % 2) // 1
-                    fill = "black" if ungerade and  settings.battcapacity <= settings.X728_BATT_LOW and not settings.battloading else  get_battload_color()
+                    fill = "black" if ungerade and  settings.battcapacity <= 15 and not settings.battloading else  settings.battload_color
                     draw.text(((settings.DISPLAY_WIDTH/2) - (mwidth[0]/2),10), text, font=Idle.font, fill=fill)
                 if settings.job_i >= 0 or settings.job_t >= 0:
                     if settings.job_i >= settings.job_t:
