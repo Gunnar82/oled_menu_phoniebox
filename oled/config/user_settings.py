@@ -50,7 +50,6 @@ class UserSettings(Settings):
     #Schalte das Gerät bei inaktivität aus in min
     IDLE_POWEROFF=30
 
-
     #Schalte das Gerät bei inaktivität aus in min
     IDLE_POWEROFF=30
 

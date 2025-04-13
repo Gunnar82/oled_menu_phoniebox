@@ -63,7 +63,9 @@ class SystemMenu(ListBase):
         # QR-Code generieren
         self.menu.append(["pixel ausrichten","function"])    # 0
         self.menu.append(["","bool","","UPDATE_RADIO"])      # 1
+        self.menu.append(["","bool","","DISABLE_DISPLAY"])      # 1
         self.menu.append(["","bool","","SHOW_DEBUGINFOS"])      # 1
+
 
         self.menu.append(["","bool","","BLUETOOTH_ENABLED"]) # 2
         self.menu.append(["","bool","","BLUETOOTH_AUTOCONNECT"]) # 3
