@@ -60,6 +60,10 @@ online_py_sample = f"{online_py}.sample"
 keypad_4x4_i2c_cfg = "/home/pi/oledctrl/oled/config/keypad_4x4_i2c.py"
 keypad_4x4_i2c_cfg_sample = f"{keypad_4x4_i2c_cfg}.sample"
 
+
+mcp_23017_keys_cfg = "/home/pi/oledctrl/oled/config/mcp_23017_keys.py"
+mcp_23017_keys_cfg_sample = f"{mcp_23017_keys_cfg}.sample"
+
 statusled_cfg = "/home/pi/oledctrl/oled/config/statusled.py"
 statusled_cfg_sample = f"{statusled_cfg}.sample"
 
@@ -261,6 +265,16 @@ def main():
         from integrations.inputs.keypad_4x4_i2c import keypad_4x4_i2c
 
         mKeypad = keypad_4x4_i2c(loop, keypad_4x4_i2c_config.KEYPAD_ADDR, keypad_4x4_i2c_config.KEYPAD_INTPIN, turn_callback, push_callback)
+
+
+
+    if "mcp_23017_keys" in settings.INPUTS:
+        check_or_create_config(mcp_23017_keys_cfg,mcp_23017_keys_cfg_sample)
+        import config.mcp_23017_keys as mcp_23017_keys_config
+
+        from integrations.inputs.mcp_23017_keys import mcp_23017_keys
+
+        mMCPKeys = mcp_23017_keys(loop, turn_callback, push_callback, mcp_23017_keys_config)
 
 
     ###Rotaryencoder Setup
