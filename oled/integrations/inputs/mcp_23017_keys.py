@@ -56,7 +56,6 @@ class mcp_23017_keys:
             key = self.config.__dict__[keystring]
         except Exception as error:
             key = None
-        print (key)
         return key #value
 
     def button_down_callback(self,channel):

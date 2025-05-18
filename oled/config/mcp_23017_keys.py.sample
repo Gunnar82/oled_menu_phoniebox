@@ -9,6 +9,7 @@ key_251 = '4'
 key_247 = '6'
 key_239 = '*'
 key_223 = '2'
+key_191 = 'start'
 
 #key_127 # IGNORE
 
