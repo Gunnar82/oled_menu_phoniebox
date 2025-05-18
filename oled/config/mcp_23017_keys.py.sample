@@ -3,12 +3,12 @@ INTPIN = 17
 ADDR = 0x27
 
 
-key_254 = '*'
-key_253 = '#'
+key_254 = '#'
+key_253 = '8'
 key_251 = '4'
 key_247 = '6'
-key_239 = '2'
-key_223 = '8'
+key_239 = '*'
+key_223 = '2'
 
 #key_127 # IGNORE
 
