@@ -17,7 +17,6 @@ import RPi.GPIO as GPIO
 class mcp_23017_keys:
     busy = False
 
-    INTERRUPT_ENABLE_A                      = 0x04   # interrupt on change (0=disable, 1=enable)
     INTERRUPT_COMPARE_VALUE_A               = 0x06   # default comparison for interrupt on change
     INTERRUPT_CONTROL_A                     = 0x08   # interrupt control (0=interrupt on change, 1=interrupt on change from 0x06)
     INTERRUPT_FLAG_A                        = 0x0E   # interrupt flag
@@ -25,7 +24,6 @@ class mcp_23017_keys:
 
 
     I2CADDR = 0x27 # valid range is 0x20 - self.I2CADDR
-    IODIR_A = 0x00
     PU_A    = 0x0C
     RD_A   = 0x12
 
@@ -38,25 +36,27 @@ class mcp_23017_keys:
 
     def reset(self):
 
-        self.i2c.write_byte_data(self.I2CADDR,self.INTERRUPT_FLAG_A,0xFF)
-        self.i2c.write_byte_data(self.I2CADDR,self.INTERRUPT_COMPARE_VALUE_A,0x00)
-        self.i2c.write_byte_data(self.I2CADDR,self.INTERRUPT_ENABLE_A,0xFF)
-        self.i2c.write_byte_data(self.I2CADDR,self.INTERRUPT_CONTROL_A,0x00)
+        self.i2c.write_byte_data(self.I2CADDR, 0x00, 0xFF) # IODIRA
+        self.i2c.write_byte_data(self.I2CADDR, 0x04, self.config.GPINTENA) # INTERUPT_ENABLE_A
+        self.i2c.write_byte_data(self.I2CADDR, 0x06, 0x00) # INTERUPT_COMPARE_VALUE
+        self.i2c.write_byte_data(self.I2CADDR, 0x08, 0x00) # INTERRUPT_CONTROL_A
+        self.i2c.write_byte_data(self.I2CADDR, 0x0E, 0xFF) # INTERRUPT_FLAG_A
 
-        self.i2c.write_byte_data(self.I2CADDR, self.IODIR_A, 0xFF)
-        self.i2c.write_byte_data(self.I2CADDR, self.PU_A, 0xFF)
-        self.i2c.write_byte_data(self.I2CADDR, self.RD_A, 0xFF)
+        self.i2c.write_byte_data(self.I2CADDR, 0x0C, 0xFF) # PULLUP_A
+        self.i2c.write_byte_data(self.I2CADDR, 0x12, 0xFF) # GENERAL_PURPOSE_A
+
         self.i2c.read_byte_data(self.I2CADDR,0x12)
 
     # get a keystroke from the keypad
     def getch(self):
         try:
             value = int(self.i2c.read_byte_data(self.I2CADDR,0x12))
+            print (value)
             keystring = f"key_{value}"
             key = self.config.__dict__[keystring]
         except Exception as error:
             key = None
-
+        print (key)
         return key #value
 
     def button_down_callback(self,channel):
@@ -86,7 +86,7 @@ class mcp_23017_keys:
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(config.INTPIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-        GPIO.add_event_detect(config.INTPIN, GPIO.BOTH, callback=self.button_down_callback, bouncetime=150)
+        GPIO.add_event_detect(config.INTPIN, GPIO.FALLING, callback=self.button_down_callback, bouncetime=150)
 
 
 # test code
