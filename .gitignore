@@ -12,8 +12,8 @@ oled/config/bluetooth.py
 oled/config/keypad_4x4_i2c.py
 oled/config/mpd_playback.db
 oled/config/online.py
-oled/config/file_folder.py
-image001.png
+oled/config/mcp_23017_keys.py
+oled/config/file_folder.pyimage001.png
 logo.png
 certs/*.key
 certs/*.cer
