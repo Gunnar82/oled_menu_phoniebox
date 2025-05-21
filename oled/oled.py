@@ -64,6 +64,10 @@ keypad_4x4_i2c_cfg_sample = f"{keypad_4x4_i2c_cfg}.sample"
 mcp_23017_keys_cfg = "/home/pi/oledctrl/oled/config/mcp_23017_keys.py"
 mcp_23017_keys_cfg_sample = f"{mcp_23017_keys_cfg}.sample"
 
+
+mcp_23017_leds_cfg = "/home/pi/oledctrl/oled/config/mcp_23017_leds.py"
+mcp_23017_leds_cfg_sample = f"{mcp_23017_leds_cfg}.sample"
+
 statusled_cfg = "/home/pi/oledctrl/oled/config/statusled.py"
 statusled_cfg_sample = f"{statusled_cfg}.sample"
 
@@ -309,13 +313,25 @@ def main():
 
 # end init inputs
 
+
+
+    if "mcp_23017_leds" in settings.OUTPUTS:
+        check_or_create_config(mcp_23017_leds_cfg,mcp_23017_leds_cfg_sample)
+        import config.mcp_23017_leds as mcp_23017_leds_config
+
+        from integrations.outputs.mcp_23017_leds import mcp_23017_leds
+
+        mMCPLeds = mcp_23017_leds(loop, mcp_23017_keys_config)
+
+
+
     ######Status LED
-    if "statusled" in settings.INPUTS:
+    if "statusled" in settings.OUTPUTS:
         check_or_create_config(statusled_cfg,statusled_cfg_sample)
 
         import config.statusled as statusled_config
 
-        import integrations.statusled as statusled
+        import integrations.outputs.statusled as statusled
 
         led = statusled.statusled(loop,usersettings,musicmanager,pin=statusled_config.STATUS_LED_PIN,always_on=statusled_config.STATUS_LED_ALWAYS_ON)
     else:
