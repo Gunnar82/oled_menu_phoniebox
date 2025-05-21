@@ -51,7 +51,6 @@ class mcp_23017_keys:
     def getch(self):
         try:
             value = int(self.i2c.read_byte_data(self.I2CADDR,0x12))
-            print (value)
             keystring = f"key_{value}"
             key = self.config.__dict__[keystring]
         except Exception as error:

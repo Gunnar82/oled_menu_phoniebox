@@ -63,10 +63,27 @@ class mcp_23017_leds:
 
         while self.loop.is_running():
             try:
-                if "x728" in settings.INPUTS:
+                value = 0
+                elapsed_time = time.monotonic() - settings.lastinput
+
+                gerade =  (int(elapsed_time) // 10) % 2 == 0 
+
+                if not settings.ledson: value = 0
+
+                elif (settings.job_t >= 0) or (settings.job_i >= 0) and gerade:
+                    if settings.job_i > settings.job_t: 
+                        percent  = int(settings.job_i / (self.usersettings.IDLE_POWEROFF * 60) * 100)
+                    else:
+                        # ausgehend von 30 min als max
+
+                        percent  = int((self.usersettings.shutdowntime - time.monotonic()) /  ( 30 * 60) * 100)
+
+                    value = self.get_led_value_from_value(percent) + 128 #
+
+                elif "x728" in settings.INPUTS:
                     value = self.get_led_value_from_value(settings.battcapacity, only_current = not settings.battloading)
 
-                    self.i2c.write_byte_data(self.I2CADDR, 0x13, value) # GENERAL_PURPOSE_B
+                self.i2c.write_byte_data(self.I2CADDR, 0x13, value) # GENERAL_PURPOSE_B
 
             except Exception as error:
                 print (error)
@@ -74,10 +91,13 @@ class mcp_23017_leds:
             await asyncio.sleep(1)
 
     # initialize the keypad class
-    def __init__(self, loop, config):
+    def __init__(self, loop, usersettings, config):
         self.loop = loop
         self.config = config
         self.I2CADDR = config.ADDR
+        self.usersettings = usersettings
+        settings.ledson = True
+
         self.toggle_index = 0  # Steuert, welcher Decrement verwendet wird, beginnt bei 0
         self.decrements = [1, 2, 4, 8, 16, 32, 64]  # Liste der Decrements (Potenzen von 2)
         self.thresholds = [94, 85, 75, 60, 50, 30, 15]  # Schwellenwerte

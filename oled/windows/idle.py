@@ -210,6 +210,8 @@ class Idle(MainWindow):
                 self.windowmanager.set_window("foldermenu")
             elif key in  ['D','hl']:
                 self.windowmanager.set_window("downloadmenu")
+            elif key in  ['E']:
+                settings.ledson = not settings.ledson
             elif key =='0':
                 self.windowmanager.set_window("shutdownmenu")
             elif key =='9' or key == 'select':

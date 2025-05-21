@@ -321,7 +321,7 @@ def main():
 
         from integrations.outputs.mcp_23017_leds import mcp_23017_leds
 
-        mMCPLeds = mcp_23017_leds(loop, mcp_23017_keys_config)
+        mMCPLeds = mcp_23017_leds(loop, usersettings, mcp_23017_keys_config)
 
 
 
