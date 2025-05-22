@@ -47,31 +47,37 @@ def check_or_create_config(filename,samplename):
        logger.error(f"usersettings Fehler: {filename}: {error}")
        sys.exit (-1)
 
+config_path = "/home/pi/oledctrl/oled/config/"
+
 settings_py = "/home/pi/oledctrl/oled/settings.py"
 settings_py_sample = f"{settings_py}.sample"
 
-file_folder_py = "/home/pi/oledctrl/oled/config/file_folder.py"
+file_folder_py = f"{config_path}file_folder.py"
 file_folder_py_sample = f"{file_folder_py}.sample"
 
 
-online_py = "/home/pi/oledctrl/oled/config/online.py"
+online_py = f"{config_path}/online.py"
 online_py_sample = f"{online_py}.sample"
 
-keypad_4x4_i2c_cfg = "/home/pi/oledctrl/oled/config/keypad_4x4_i2c.py"
+keypad_4x4_i2c_cfg = f"{config_path}/keypad_4x4_i2c.py"
 keypad_4x4_i2c_cfg_sample = f"{keypad_4x4_i2c_cfg}.sample"
 
 
-mcp_23017_keys_cfg = "/home/pi/oledctrl/oled/config/mcp_23017_keys.py"
+mcp_23017_keys_cfg = f"{config_path}/mcp_23017_keys.py"
 mcp_23017_keys_cfg_sample = f"{mcp_23017_keys_cfg}.sample"
 
 
-mcp_23017_leds_cfg = "/home/pi/oledctrl/oled/config/mcp_23017_leds.py"
+mcp_23017_leds_cfg = f"{config_path}/mcp_23017_leds.py"
 mcp_23017_leds_cfg_sample = f"{mcp_23017_leds_cfg}.sample"
 
-statusled_cfg = "/home/pi/oledctrl/oled/config/statusled.py"
+statusled_cfg = f"{config_path}/statusled.py"
 statusled_cfg_sample = f"{statusled_cfg}.sample"
 
-rotary_enc_cfg = "/home/pi/oledctrl/oled/config/rotary_enc.py"
+
+gpicase_cfg = f"{config_path}/gpicase.py"
+gpicase_cfg_sample = f"{gpicase_cfg}.sample"
+
+rotary_enc_cfg = f"{config_path}/rotary_enc.py"
 rotary_enc_cfg_sample = f"{rotary_enc_cfg}.sample"
 
 check_or_create_config(file_folder_py,file_folder_py_sample)
@@ -215,13 +221,6 @@ def main():
         windowmanager.push_callback(lp=_lp)
 
 
-    ###GPICase
-    if "gpicase" in settings.INPUTS:
-        from integrations.inputs.gpicase import pygameInput
-
-        print ("Using pyGameInput")
-        mypygame = pygameInput(loop, turn_callback, push_callback,windowmanager,_nowplaying)
-
     #Import all window classes and generate objects of them
     loadedwins = []
 
@@ -252,6 +251,16 @@ def main():
 
 
     #init Inputs
+
+    ###GPICase
+    if "gpicase" in settings.INPUTS:
+        check_or_create_config(gpicase_cfg,gpicase_cfg_sample)
+        import config.gpicase as gpicase_config
+
+        from integrations.inputs.gpicase import pygameInput
+
+        print ("Using pyGameInput")
+        mypygame = pygameInput(loop, turn_callback, push_callback,windowmanager,_nowplaying,gpicase_config)
 
 
     ####keyboard control
@@ -321,7 +330,7 @@ def main():
 
         from integrations.outputs.mcp_23017_leds import mcp_23017_leds
 
-        mMCPLeds = mcp_23017_leds(loop, usersettings, mcp_23017_keys_config)
+        mMCPLeds = mcp_23017_leds(loop, usersettings, mcp_23017_leds_config)
 
 
 

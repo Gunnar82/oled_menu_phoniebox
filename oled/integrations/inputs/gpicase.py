@@ -23,7 +23,7 @@ class pygameInput():
         """Setzt den Dummy-Video-Treiber für headless-Systeme."""
         os.environ["SDL_VIDEODRIVER"] = "dummy"
 
-    def __init__(self, loop, turn_callback, push_callback,windowmanager,nowplaying):
+    def __init__(self, loop, turn_callback, push_callback,windowmanager,nowplaying,config):
         print("Polling PyGame keys")
 
         self.setup_headless_mode()
@@ -41,7 +41,7 @@ class pygameInput():
         self.loop = loop
         self.turn_callback = turn_callback
         self.push_callback = push_callback
-
+        self.config = config
         self.powerbtn = -1
 
         self.powerpressed = 0
@@ -96,33 +96,26 @@ class pygameInput():
                     x,y = event.value
                     if (y == -1 and x == 0): # keypad down
                         logger.debug ("pygame: down")
-                        await self.loop.run_in_executor(None,self.handle_turn,0,'down')
+                        await self.loop.run_in_executor(None,self.handle_turn,0,'8')
                     elif (y == 1 and x == 0): #keypad up
                         logger.debug ("pygame: up")
-                        await self.loop.run_in_executor(None,self.handle_turn,0,'up')
+                        await self.loop.run_in_executor(None,self.handle_turn,0,'2')
                     elif (x == -1 and y == 0): # keypad left
                         logger.debug ("pygame: left")
-                        await self.loop.run_in_executor(None,self.handle_turn,0,'left')
+                        await self.loop.run_in_executor(None,self.handle_turn,0,'4')
                     elif (x == 1 and y == 0): #keypas right
                          logger.debug( "pygame: right")
-                         await self.loop.run_in_executor(None,self.handle_turn,0,'right')
+                         await self.loop.run_in_executor(None,self.handle_turn,0,'6')
                 elif event.type == pygame.JOYBUTTONUP:
-                    if int(event.button) == 0: # A
-                        self.push_callback()
-                    elif int(event.button) == 1: #B
-                        await self.loop.run_in_executor(None,self.handle_turn,0,'#')
-                    elif int(event.button) == 2: # X
-                        await self.loop.run_in_executor(None,self.handle_turn,0,'X')
-                    elif int(event.button) == 3: # Y
-                        await self.loop.run_in_executor(None,self.handle_turn,0,'Y')
-                    elif int(event.button) == 4: # HL
-                        await self.loop.run_in_executor(None,self.handle_turn,0,'hl')
-                    elif int(event.button) == 5: # HR
-                        await self.loop.run_in_executor(None,self.handle_turn,0,'hr')
-                    elif int(event.button) == 6: # START
-                        await self.loop.run_in_executor(None,self.handle_turn,0,'select')
-                    elif int(event.button) == 7: # START
-                        await self.loop.run_in_executor(None,self.handle_turn,0,'start')
+                    try:
+                        pressed = int(event.button)
+                        button_string = f"button_{}pressed}"
+                        button = self.config.__dict__[button_string]
+
+                        if button == '*':
+                            self.push_callback()
+                        elif button != '':
+                            await self.loop.run_in_executor(None,self.handle_turn,0,button)
 
             await asyncio.sleep(0.1)
 

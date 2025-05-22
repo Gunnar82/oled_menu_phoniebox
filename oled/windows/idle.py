@@ -161,14 +161,14 @@ class Idle(MainWindow):
 
     def turn_callback(self, direction, key=None):
         if key:
-            if key == 'up' or key == '2':
+            if key == '2':
                 playout.pc_volup(5)
                 self.set_busyinfo(item="lauter",symbol=symbols.SYMBOL_VOL_UP)
-            elif key == 'down' or key == '8':
+            elif key == '8':
                 playout.pc_voldown(5)
                 self.set_busyinfo(item="leiser",symbol=symbols.SYMBOL_VOL_DN)
 
-            elif key in ['left','4']:
+            elif key == '4':
                 if self.nowplaying.input_is_stream() and not self.nowplaying.input_is_online() and self.nowplaying._song >= self.nowplaying._playlistlength:
                     self.set_busyinfo(item="Vorheriger Sender",symbol=symbols.SYMBOL_PREV)
                     self.loop.create_task(self.change_folder(-1))
@@ -184,7 +184,7 @@ class Idle(MainWindow):
                     else:
                         self.set_busyinfo(item="Erster Titel",symbol=symbols.SYMBOL_FAIL)
 
-            elif key in ['right', '6']:
+            elif key == '6':
                 if self.nowplaying.input_is_stream() and not self.nowplaying.input_is_online() and self.nowplaying._song <= self.nowplaying._playlistlength:
                     self.set_busyinfo(item="Nächster Sender",symbol=symbols.SYMBOL_NEXT)
                     self.loop.create_task(self.change_folder(1))
@@ -196,7 +196,7 @@ class Idle(MainWindow):
                     else:
                         self.set_busyinfo(item="Letzter Titel",symbol=symbols.SYMBOL_FAIL)
 
-            elif key == 'A' or key == 'Y':
+            elif key == 'A':
                 settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_MUSIC
                 settings.currentfolder = self.musicmanager.get_latest_folder('Musik')
                 self.windowmanager.set_window("foldermenu")
@@ -204,24 +204,24 @@ class Idle(MainWindow):
                 settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_HOERBUCH 
                 settings.currentfolder = self.musicmanager.get_latest_folder('Hörspiele')
                 self.windowmanager.set_window("foldermenu")
-            elif key == 'C' or key == 'X':
+            elif key == 'C':
                 settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_RADIO
                 settings.currentfolder = self.musicmanager.get_latest_folder('Radio')
                 self.windowmanager.set_window("foldermenu")
-            elif key in  ['D','hl']:
+            elif key in  ['D']:
                 self.windowmanager.set_window("downloadmenu")
             elif key in  ['E']:
                 settings.ledson = not settings.ledson
             elif key =='0':
                 self.windowmanager.set_window("shutdownmenu")
-            elif key =='9' or key == 'select':
+            elif key =='9':
                 self.windowmanager.set_window("lock")
             elif key == '5':
                  self.windowmanager.clear_window()
             #elif key == '0':
             #    self.busysymbol = symbols.SYMBOL_VOL_MUTE
             #    playout.pc_mute()
-            elif key.lower() in ['start']:
+            elif key == 'F':
                 self.musicmanager.playpause()
             elif key == 'TODO':
                 self.windowmanager.windows["downloadmenu"].direct_play_last_folder = True

@@ -34,19 +34,20 @@ class mcp_23017_leds:
 
         # Bestimmen des abwechselnden Rückgabewerts basierend auf dem Aufruf
         result_value = self.decrements[self.toggle_index]
-        
+
         # Erhöhe den Index für den nächsten Funktionsaufruf
         self.toggle_index += 1
-        
+
         # Wenn das Ende der Decrements-Liste erreicht ist, zurück auf den ersten Wert
         if self.decrements[self.toggle_index] > base_value:
             self.toggle_index = 0
-        
+
         # Multiplizieren des `base_value` mit dem abwechselnden Wert
         return self.decrements[self.toggle_index]
 
     async def set(self):
-        self.i2c.write_byte_data(self.I2CADDR, 0x01, 0x00) # IODIRB
+
+        self.i2c.write_byte_data(self.config.ADDR, self.config.IOADDR, 0x00) # IODIRB
 
         self.toggle_index = 0  # Steuert den Rückgabewert, beginnt bei 0
         self.decrements = [0, 1, 3, 7, 15, 31, 63, 127]  # 2er Potenzen minus 1
@@ -84,7 +85,8 @@ class mcp_23017_leds:
                 elif "x728" in settings.INPUTS:
                     value = self.get_led_value_from_value(settings.battcapacity, only_current = not settings.battloading)
 
-                self.i2c.write_byte_data(self.I2CADDR, 0x13, value) # GENERAL_PURPOSE_B
+
+                self.i2c.write_byte_data(self.config.ADDR, self.config.OUTPUT_REGISTER, value) # GENERAL_PURPOSE_B
 
             except Exception as error:
                 print (error)
@@ -95,7 +97,6 @@ class mcp_23017_leds:
     def __init__(self, loop, usersettings, config):
         self.loop = loop
         self.config = config
-        self.I2CADDR = config.ADDR
         self.usersettings = usersettings
         settings.ledson = True
 
