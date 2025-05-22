@@ -50,12 +50,16 @@ class MopidyControl():
 
     async def _update(self):
         while self.loop.is_running() and self.connected:
+            self.loop.run_in_executor(None,self.do_update)
+            await asyncio.sleep(3)
+
+    def do_update(self):
             try:
                 self.nowplaying = self.client.currentsong()
             except musicpd.ConnectionError:
                 print("Error updating mopidy status, no connection!")
                 self._connectionlost()
-            await asyncio.sleep(3)
+
 
 
 
