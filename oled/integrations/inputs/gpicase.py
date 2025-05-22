@@ -109,15 +109,16 @@ class pygameInput():
                 elif event.type == pygame.JOYBUTTONUP:
                     try:
                         pressed = int(event.button)
-                        button_string = f"button_{}pressed}"
+                        button_string = f"button_{pressed}"
                         button = self.config.__dict__[button_string]
 
                         if button == '*':
                             self.push_callback()
                         elif button != '':
                             await self.loop.run_in_executor(None,self.handle_turn,0,button)
-
-            await asyncio.sleep(0.1)
+                    except Exception as error:
+                        logger.debug (f"poll_loop: {error}")
+                await asyncio.sleep(0.1)
 
 
     def handle_turn(self,rotation,key):

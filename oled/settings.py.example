@@ -15,6 +15,9 @@
 # INPUTS = ["keypad4x4", "statusled", "x728"]
 INPUTS=["gpicase"]
 
+
+OUTPUTS=[]
+
 use_eyed3 = False
 
 
