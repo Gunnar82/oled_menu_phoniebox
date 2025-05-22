@@ -214,6 +214,9 @@ class WindowManager():
         return result
 
 
+    def set_screen_to_contrast(self):
+        settings.lastinput = time.monotonic() - self.csettings.CONTRAST_TIMEOUT
+
 
     def push_callback(self,lp=False):
         if not self.init_callback_or_idle(): return

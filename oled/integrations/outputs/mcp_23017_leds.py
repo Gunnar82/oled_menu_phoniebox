@@ -67,7 +67,7 @@ class mcp_23017_leds:
                 value = 0
                 elapsed_time = time.monotonic() - settings.lastinput
 
-                gerade =  (int(elapsed_time) // 30) % 2 == 0 
+                gerade =  (int(elapsed_time) // 20) % 2 == 0 
 
                 if not settings.ledson: value = 0
 
