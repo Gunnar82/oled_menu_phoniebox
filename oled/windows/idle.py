@@ -97,7 +97,7 @@ class Idle(MainWindow):
                     fill = "black" if ungerade and  settings.battcapacity <= 15 and not settings.battloading else  settings.battload_color
                     draw.text(((settings.DISPLAY_WIDTH/2) - (mwidth[0]/2),10), text, font=Idle.font, fill=fill)
                 if settings.job_i >= 0 or settings.job_t >= 0:
-                    if settings.job_i >= settings.job_t:
+                    if float(settings.job_i) < float(settings.job_t) or float(settings.job_t) < 0:
                         aus = "Idle %2.2d sek" % (settings.job_i) if settings.job_i < 60 else "Idle %2.2d min" % (settings.job_i // 60)
                     else:
                         aus = "Timer %2.2d sek" % (settings.job_t) if settings.job_t < 60 else "Timer %2.2d min" % (settings.job_t // 60)

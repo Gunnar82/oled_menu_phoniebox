@@ -23,6 +23,7 @@ class mcp_23017_leds:
 
 
     def get_led_value_from_value(self, value, only_current = True):
+        base_value = 0
         # Bestimmen des Basis-Rückgabewerts basierend auf dem `value`
         for threshold, return_value in self.value_thresholds:
             if value >= threshold:
@@ -66,12 +67,12 @@ class mcp_23017_leds:
                 value = 0
                 elapsed_time = time.monotonic() - settings.lastinput
 
-                gerade =  (int(elapsed_time) // 10) % 2 == 0 
+                gerade =  (int(elapsed_time) // 30) % 2 == 0 
 
                 if not settings.ledson: value = 0
 
-                elif (settings.job_t >= 0) or (settings.job_i >= 0) and gerade:
-                    if settings.job_i > settings.job_t: 
+                elif (settings.job_t >= 0 or settings.job_i >= 0) and gerade:
+                    if settings.job_i < settings.job_t or settings.job_t < 0: 
                         percent  = int(settings.job_i / (self.usersettings.IDLE_POWEROFF * 60) * 100)
                     else:
                         # ausgehend von 30 min als max
@@ -88,7 +89,7 @@ class mcp_23017_leds:
             except Exception as error:
                 print (error)
 
-            await asyncio.sleep(1)
+            await asyncio.sleep(0.5)
 
     # initialize the keypad class
     def __init__(self, loop, usersettings, config):
