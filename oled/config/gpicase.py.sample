@@ -5,6 +5,6 @@ button_1 = '#' # B
 button_2 = 'A' # Y
 button_3 = 'C' # X
 button_4 = 'B' # HL
-button_5 = 'C' ä HR
+button_5 = 'C' # HR
 button_6 = '9' # SELECT
 button_7 = 'F' # START
