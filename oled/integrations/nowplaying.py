@@ -45,7 +45,7 @@ class nowplaying:
     async def _generatenowplaying(self):
         """Continuously generate now playing information."""
         while self.loop.is_running():
-            await self.loop.run_in_executor(None,self.generatenowplaying)
+            self.loop.run_in_executor(None,self.generatenowplaying)
             await asyncio.sleep(self.windowmanager.looptime)
 
 

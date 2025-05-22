@@ -96,16 +96,16 @@ class pygameInput():
                     x,y = event.value
                     if (y == -1 and x == 0): # keypad down
                         logger.debug ("pygame: down")
-                        await self.loop.run_in_executor(None,self.handle_turn,0,'8')
+                        self.turn_callback(0,'8')
                     elif (y == 1 and x == 0): #keypad up
                         logger.debug ("pygame: up")
-                        await self.loop.run_in_executor(None,self.handle_turn,0,'2')
+                        self.turn_callback(0,'2')
                     elif (x == -1 and y == 0): # keypad left
                         logger.debug ("pygame: left")
-                        await self.loop.run_in_executor(None,self.handle_turn,0,'4')
+                        self.turn_callback(0,'4')
                     elif (x == 1 and y == 0): #keypas right
                          logger.debug( "pygame: right")
-                         await self.loop.run_in_executor(None,self.handle_turn,0,'6')
+                         self.turn_callback(0,'6')
                 elif event.type == pygame.JOYBUTTONUP:
                     try:
                         pressed = int(event.button)
@@ -115,15 +115,10 @@ class pygameInput():
                         if button == '*':
                             self.push_callback()
                         elif button != '':
-                            await self.loop.run_in_executor(None,self.handle_turn,0,button)
+                            self.turn_callback(0,button)
                     except Exception as error:
                         logger.debug (f"poll_loop: {error}")
                 await asyncio.sleep(0.1)
-
-
-    def handle_turn(self,rotation,key):
-        self.turn_callback(rotation,key)
-
 
     def quit(self):
         logger.info("Shutting Down Pygame")
