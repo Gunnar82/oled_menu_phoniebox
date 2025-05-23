@@ -208,9 +208,9 @@ class Idle(MainWindow):
                 settings.audio_basepath = cfg_file_folder.AUDIO_BASEPATH_RADIO
                 settings.currentfolder = self.musicmanager.get_latest_folder('Radio')
                 self.windowmanager.set_window("foldermenu")
-            elif key in  ['D']:
+            elif key == 'D':
                 self.windowmanager.set_window("downloadmenu")
-            elif key in  ['E']:
+            elif key == 'E':
                 settings.ledson = not settings.ledson
             elif key =='0':
                 self.windowmanager.set_window("shutdownmenu")
