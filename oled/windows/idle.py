@@ -227,8 +227,8 @@ class Idle(MainWindow):
                 self.windowmanager.windows["downloadmenu"].direct_play_last_folder = True
                 self.windowmanager.set_window("downloadmenu")
 
-            elif key in ['1', '3', '7','hr']:
-                if key == '1' or key == 'hr':
+            elif key in ['1', '3', '7','D']:
+                if key == '1' or key == 'D':
                     what = 'Hörspiele'
                 elif key == '3':
                     what = 'http'
