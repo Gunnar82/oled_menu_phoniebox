@@ -105,9 +105,9 @@ class GetValue(WindowBase):
 
     def turn_callback(self, direction, key=None):
         if key:
-            if key in ['up','right','2','6']:
+            if key in ['2','6']:
                 direction = self.__vstep
-            elif key in ['down','left','4','8']:
+            elif key in ['4','8']:
                 direction = - self.__vstep
             elif key =='D':
                 self.__value = self.__vmin
@@ -115,9 +115,9 @@ class GetValue(WindowBase):
             elif key == 'A':
                 self.__value = self.__vmax
                 direction = 0
-            elif key in ['C','hl']:
+            elif key in ['C']:
                     direction = - 5 * self.__vstep
-            elif key in ['B','hr']:
+            elif key in ['B']:
                     direction = 5 * self.__vstep
 
         self.__value = min(max(self.__value + direction, self.__vmin), self.__vmax)

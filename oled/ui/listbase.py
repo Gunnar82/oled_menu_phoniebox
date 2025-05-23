@@ -205,12 +205,12 @@ class ListBase(WindowBase):
             if (key == 'left' or key == '4' or key == 'Y') and self.handle_left_key:
                 self.left_pressed = True
                 return
-            elif key == 'right' or key == '6' or key == '*':
+            elif key == '6' or key == '*':
                 self.right_pressed = True
                 return
-            elif key == 'up' or key == '2':
+            elif key == '2':
                 direction = -1
-            elif key == 'down' or key == '8':
+            elif key == '8':
                 direction = 1
             elif key =='A':
                 direction = 0
@@ -218,9 +218,9 @@ class ListBase(WindowBase):
             elif key == 'D':
                 direction = 0
                 self.position = len(self.menu)
-            elif key == 'B' or key== 'hl':
+            elif key == 'B':
                     direction = 0 - self.displaylines
-            elif key == 'C' or key == 'hr':
+            elif key == 'C':
                     direction = self.displaylines
 
         logger.debug("Handling  Menu Items: %d, Lines: %d, direction: %s" % (len(self.menu), self.displaylines, direction))

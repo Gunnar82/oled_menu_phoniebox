@@ -128,9 +128,9 @@ class Ende(MainWindow):
         pass
 
     def turn_callback(self, direction, key=None):
-        if key.lower() in ['start','#','key_pause']:
+        if key.lower() in ['F','#','key_pause']:
             self.musicmanager.playpause()
-        elif key in ['X','Y','A','B','C','D',]:
+        elif key in ['A','B','C','D',]:
             playout.savepos_online(self.nowplaying)
             self.musicmanager.stop()
             logger.info("Stopping event loop")
