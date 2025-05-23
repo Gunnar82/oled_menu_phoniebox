@@ -56,6 +56,7 @@ class Shutdownmenu(MenuBase):
             elif self.counter == 5:
                 value = self.windowmanager.getValue(startpos=30,vstep=1,unit=" min")
                 self.usersettings.shutdowntime = time.monotonic() + int(value) * 60
+                self.usersettings.shutdownset = time.monotonic()
             elif self.counter == 6:
                 self.usersettings.IDLE_POWEROFF = 0
             elif self.counter == 7:

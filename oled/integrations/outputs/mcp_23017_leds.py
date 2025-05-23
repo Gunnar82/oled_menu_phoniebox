@@ -63,33 +63,42 @@ class mcp_23017_leds:
             (-1, 0),     # else -> 1
         ]
 
+
+        pos = 0
+
         while self.loop.is_running():
             try:
-                value = 0
-                elapsed_time = time.monotonic() - settings.lastinput
 
-                gerade =  (int(elapsed_time) // 20) % 2 == 0 
+                if  settings.mcp_leds_change: pos += 1
 
-                if not settings.ledson: value = 0
+                if pos >= 2: pos = 0
 
-                elif (settings.job_t >= 0 or settings.job_i >= 0) and gerade:
-                    if settings.job_i < settings.job_t or settings.job_t < 0: 
+                if pos == 0 and (settings.job_t >= 0 or settings.job_i >= 0):
+
+                    if (settings.job_i >= 0 and settings.job_i < settings.job_t) or settings.job_t < 0: 
+
                         percent  = int(settings.job_i / (self.usersettings.IDLE_POWEROFF * 60) * 100)
+                        value = self.get_led_value_from_value(percent) + 128 #
+
                     else:
+
                         # ausgehend von 30 min als max
+                        seconds_till_shutdown = int(self.usersettings.shutdowntime - time.monotonic())
+                        total_seconds_for_shutdown = int(self.usersettings.shutdowntime - self.usersettings.shutdownset)
+                        percent  = int((seconds_till_shutdown) /  total_seconds_for_shutdown * 100)
+                        value = 255 - self.get_led_value_from_value(percent) #
 
-                        percent  = int((self.usersettings.shutdowntime - time.monotonic()) /  ( 30 * 60) * 100)
-
-                    value = self.get_led_value_from_value(percent) + 128 #
 
                 elif "x728" in settings.INPUTS:
                     value = self.get_led_value_from_value(settings.battcapacity, only_current = not settings.battloading)
 
+                else: # pos >= 2:
+                    value = 0
 
                 self.i2c.write_byte_data(self.config.ADDR, self.config.OUTPUT_REGISTER, value) # GENERAL_PURPOSE_B
 
             except Exception as error:
-                print (error)
+                print (f"{error}")
 
             await asyncio.sleep(0.5)
 
@@ -98,7 +107,7 @@ class mcp_23017_leds:
         self.loop = loop
         self.config = config
         self.usersettings = usersettings
-        settings.ledson = True
+        settings.mcp_leds_change = False
 
         self.toggle_index = 0  # Steuert, welcher Decrement verwendet wird, beginnt bei 0
         self.decrements = [1, 2, 4, 8, 16, 32, 64]  # Liste der Decrements (Potenzen von 2)

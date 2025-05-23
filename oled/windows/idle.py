@@ -211,7 +211,7 @@ class Idle(MainWindow):
             elif key == 'D':
                 self.windowmanager.set_window("downloadmenu")
             elif key == 'E':
-                settings.ledson = not settings.ledson
+                settings.mcp_leds_change = True
             elif key =='0':
                 self.windowmanager.set_window("shutdownmenu")
             elif key =='9':
