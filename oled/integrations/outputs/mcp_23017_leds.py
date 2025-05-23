@@ -25,7 +25,7 @@ class mcp_23017_leds:
     def get_led_value_from_value(self, value, only_current = True):
         base_value = 0
         # Bestimmen des Basis-Rückgabewerts basierend auf dem `value`
-        for threshold, return_value in self.value_thresholds:
+        for threshold, return_value in self.config.value_thresholds:
             if value >= threshold:
                 base_value = return_value
                 break
@@ -52,17 +52,6 @@ class mcp_23017_leds:
         self.toggle_index = 0  # Steuert den Rückgabewert, beginnt bei 0
         self.decrements = [0, 1, 3, 7, 15, 31, 63, 127]  # 2er Potenzen minus 1
 
-        self.value_thresholds = [
-            (94, 127),  # value >= 94 -> 127
-            (86, 63),   # value >= 86 -> 63
-            (75, 31),   # value >= 75 -> 31
-            (46, 15),   # value >= 60 -> 15
-            (35, 7),    # value >= 50 -> 7
-            (25, 3),    # value >= 15 -> 3
-            (15, 1),     # else -> 1
-            (-1, 0),     # else -> 1
-        ]
-
 
         pos = 0
 
@@ -75,7 +64,7 @@ class mcp_23017_leds:
 
                 if pos == 0 and (settings.job_t >= 0 or settings.job_i >= 0):
 
-                    if (settings.job_i >= 0 and settings.job_i < settings.job_t) or settings.job_t < 0: 
+                    if ( settings.job_i <= settings.job_t or settings.job_t == -1) and settings.job_i > -1: 
 
                         percent  = int(settings.job_i / (self.usersettings.IDLE_POWEROFF * 60) * 100)
                         value = self.get_led_value_from_value(percent) + 128 #

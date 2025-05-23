@@ -4,3 +4,15 @@ ADDR = 0x27
 
 IOADDR = 0x01
 OUTPUT_REGISTER = 0x13
+
+
+value_thresholds = [
+    (94, 127),  # value >= 94 -> 127
+    (86, 63),   # value >= 86 -> 63
+    (75, 31),   # value >= 75 -> 31
+    (46, 15),   # value >= 60 -> 15
+    (35, 7),    # value >= 50 -> 7
+    (25, 3),    # value >= 15 -> 3
+    (15, 1),     # else -> 1
+    (-1, 0),     # else -> 1
+]
