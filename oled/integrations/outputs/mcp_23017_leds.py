@@ -71,7 +71,7 @@ class mcp_23017_leds:
 
                 if  settings.mcp_leds_change: pos += 1
 
-                if pos >= 2: pos = 0
+                if pos > 2: pos = 0
 
                 if pos == 0 and (settings.job_t >= 0 or settings.job_i >= 0):
 
@@ -88,9 +88,14 @@ class mcp_23017_leds:
                         percent  = int((seconds_till_shutdown) /  total_seconds_for_shutdown * 100)
                         value = 255 - self.get_led_value_from_value(percent) #
 
+                elif pos == 0 and not "x728" in settings.INPUTS: # KEIN Timeout
+                    pos == 1
 
                 elif "x728" in settings.INPUTS:
                     value = self.get_led_value_from_value(settings.battcapacity, only_current = not settings.battloading)
+
+                elif pos == 1:
+                    pos = 2
 
                 else: # pos >= 2:
                     value = 0
