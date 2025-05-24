@@ -58,7 +58,9 @@ class mcp_23017_leds:
         while self.loop.is_running():
             try:
 
-                if  settings.mcp_leds_change: pos += 1
+                if  settings.mcp_leds_change:
+                    settings.mcp_leds_change = False
+                    pos += 1
 
                 if pos > 2: pos = 0
 
@@ -80,7 +82,7 @@ class mcp_23017_leds:
                 elif pos == 0 and not "x728" in settings.INPUTS: # KEIN Timeout
                     pos == 1
 
-                elif "x728" in settings.INPUTS:
+                elif "x728"in settings.INPUTS  and pos == 1:
                     value = self.get_led_value_from_value(settings.battcapacity, only_current = not settings.battloading)
 
                 elif pos == 1:
