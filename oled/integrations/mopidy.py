@@ -50,7 +50,7 @@ class MopidyControl():
     async def _update(self):
         while self.loop.is_running() and self.connected:
             self.loop.run_in_executor(None,self.do_update)
-            await asyncio.sleep(30)
+            await asyncio.sleep(3)
 
     def do_update(self):
             try:

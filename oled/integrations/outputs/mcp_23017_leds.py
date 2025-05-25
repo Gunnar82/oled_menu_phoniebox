@@ -92,7 +92,7 @@ class mcp_23017_leds:
                         seconds_till_shutdown = int(self.usersettings.shutdowntime - time.monotonic())
                         total_seconds_for_shutdown = int(self.usersettings.shutdowntime - self.usersettings.shutdownset)
                         percent  = int((seconds_till_shutdown) /  total_seconds_for_shutdown * 100)
-                        value = self.get_led_value_from_value(percent, blink_value = True ) #
+                        value = self.get_led_value_from_value(percent, blink_value = True ) 
 
                 elif pos == 0:
 
