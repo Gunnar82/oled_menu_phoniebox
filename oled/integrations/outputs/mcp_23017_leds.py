@@ -63,6 +63,8 @@ class mcp_23017_leds:
 
         pos = 0
 
+        set_job = False
+
         while self.loop.is_running():
             try:
 
@@ -72,12 +74,17 @@ class mcp_23017_leds:
 
                 if pos > 2: pos = 0
 
+
+                if not set_job and (settings.job_t >= 0 or settings.job_i >= 0):
+                    set_job = True
+                    pos = 0
+
                 if pos == 0 and (settings.job_t >= 0 or settings.job_i >= 0):
 
                     if ( settings.job_i <= settings.job_t or settings.job_t == -1) and settings.job_i > -1: 
 
                         percent  = int(settings.job_i / (self.usersettings.IDLE_POWEROFF * 60) * 100)
-                        value = 127 - self.get_led_value_from_value(percent,blink_value = True)
+                        value = 127 - self.get_led_value_from_value(percent,blink_value = True) + 128
 
                     else:
 
@@ -87,18 +94,23 @@ class mcp_23017_leds:
                         percent  = int((seconds_till_shutdown) /  total_seconds_for_shutdown * 100)
                         value = self.get_led_value_from_value(percent, blink_value = True ) #
 
-                elif pos == 0 and not "x728" in settings.INPUTS: # KEIN Timeout
-                    pos == 1
+                elif pos == 0:
 
-                elif "x728"in settings.INPUTS  and pos == 1:
+                    set_job = False
+
+                    if "x728" in settings.INPUTS:
+                        pos = 1
+                    else:
+                        pos = 2
+
+                if "x728" in settings.INPUTS  and pos == 1:
                     value = self.get_led_value_from_value(settings.battcapacity, only_current = not settings.battloading, blink_value = True) + 128
-
                 elif pos == 1:
                     pos = 2
 
-                else: # pos >= 2:
+                if pos == 2: # pos >= 2:
                     value = 0
-
+                print (pos,value,set_job)
                 self.i2c.write_byte_data(self.config.ADDR, self.config.OUTPUT_REGISTER, value) # GENERAL_PURPOSE_B
 
             except Exception as error:
