@@ -24,12 +24,14 @@ class mcp_23017_leds:
 
     def get_led_value_from_value(self, value, only_current = True, blink_value = False):
         base_value = 0
+        idx = 0
         # Bestimmen des Basis-Rückgabewerts basierend auf dem `value`
         for threshold, return_value in self.config.value_thresholds:
             if value >= threshold:
                 base_value = return_value
                 base_index = threshold
                 break
+            idx += 1
 
         if only_current:
             if blink_value and isinstance(base_value,list):
@@ -41,18 +43,13 @@ class mcp_23017_leds:
 
                 return (base_value[0] if isinstance(base_value,list) else base_value)
 
-        # Bestimmen des abwechselnden Rückgabewerts basierend auf dem Aufruf
-        result_value = 127 - self.config.value_thresholds[self.toggle_index][1]
 
-        # Erhöhe den Index für den nächsten Funktionsaufruf
-        self.toggle_index += 1
+        self.toggle_value = not self.toggle_value
 
-        # Wenn das Ende der Decrements-Liste erreicht ist, zurück auf den ersten Wert
-        if 100 - self.config.value_thresholds[self.toggle_index][0] > base_value:
-            self.toggle_index = 0
+        selected_value = self.config.value_thresholds[idx if self.toggle_value else idx - 1]
 
         # Multiplizieren des `base_value` mit dem abwechselnden Wert
-        return (self.config.value_thresholds[self.toggle_index][1][0] if isinstance(self.config.value_thresholds[self.toggle_index][1],list) else self.config.value_thresholds[self.toggle_index])
+        return (selected_value[1][0] if isinstance(selected_value[1],list) else selected_value[1])
 
     async def set(self):
 
@@ -124,6 +121,7 @@ class mcp_23017_leds:
         self.usersettings = usersettings
         settings.mcp_leds_change = False
         self.blink_value = False
+        self.toggle_value = False
 
         self.toggle_index = 0  # Steuert, welcher Decrement verwendet wird, beginnt bei 0
         self.loop.create_task(self.set())
