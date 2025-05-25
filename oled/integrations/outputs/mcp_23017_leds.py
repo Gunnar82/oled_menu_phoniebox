@@ -110,7 +110,6 @@ class mcp_23017_leds:
 
                 if pos == 2: # pos >= 2:
                     value = 0
-                print (pos,value,set_job)
                 self.i2c.write_byte_data(self.config.ADDR, self.config.OUTPUT_REGISTER, value) # GENERAL_PURPOSE_B
 
             except Exception as error:

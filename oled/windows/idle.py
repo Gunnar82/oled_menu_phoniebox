@@ -58,7 +58,7 @@ class Idle(MainWindow):
             #####IDLE RENDER
 
             if not settings.battloading: # and self.usersettings.X728_OFF_EMERG:
-                if settings.battcapacity >= 0 and settings.battcapacity <= 15: #self.usersettings.X728_BATT_EMERG :
+                if settings.battcapacity >= 0 and settings.battcapacity <= 2: #self.usersettings.X728_BATT_EMERG :
                     self.set_busyinfo(item=["Batterie leer", "AUS in %ds" % ((settings.lastinput - now) + 120)])
                     self.busy = True
                     self.contrasthandle = False

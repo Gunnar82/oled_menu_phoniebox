@@ -42,6 +42,21 @@ class nowplaying:
     _statex = "unknown"
 
 
+
+
+    def __init__(self,loop,musicmanager,windowmanager,bluetooth,usersettings):
+        self.usersettings = usersettings
+        self.bluetooth = bluetooth
+        self.loop = loop
+        self.musicmanager = musicmanager
+        self.windowmanager = windowmanager
+
+        self.loop.create_task(self._generatenowplaying())
+        self.loop.create_task(self.__get_timeouts())
+        self.loop.create_task(self.__systemabfrage())
+        self.loop.create_task(self._savepos_status())
+
+
     async def _generatenowplaying(self):
         """Continuously generate now playing information."""
         while self.loop.is_running():
@@ -52,6 +67,7 @@ class nowplaying:
     def generatenowplaying(self):
         """Fetch current playing music information and update internal state."""
         try:
+            logger.debug("generatenowplaying started")
             _playingtitle = ""
             playing = self.musicmanager.nowplaying()
             logger.debug(f"playing: {playing}")
@@ -122,11 +138,15 @@ class nowplaying:
 
         except Exception as error:
             logger.debug (f"nowplaying error: {error}")
+        finally:
+            logger.debug("generatenowplaying ends")
 
     async def __get_timeouts(self):
         while self.loop.is_running():
             #get_timeouts()
             try:
+                logger.debug("get_timeouts  job_t started")
+
                 if self.usersettings.startup < self.usersettings.shutdowntime:
                     shutdowntime = int(self.usersettings.shutdowntime - time.monotonic())
                     settings.job_t = shutdowntime
@@ -139,9 +159,13 @@ class nowplaying:
             except Exception as error:
                 settings.job_t = -1
                 print (error)
+            finally:
+                logger.debug("get_timeouts job_t ended")
 
 
             try:
+                logger.debug("chedk IDLE_POWEROFF TIMEOUT job_t")
+
                 if self.usersettings.IDLE_POWEROFF > 0 and self._state != "play":
                     seconds_since_last_input = time.monotonic() - settings.lastinput
                     settings.job_i = self.usersettings.IDLE_POWEROFF * 60  - (seconds_since_last_input)
@@ -153,12 +177,15 @@ class nowplaying:
             except Exception as error:
                 settings.job_i = -1
                 print (error)
+            finally:
+                logger.debug("chedk IDLE_POWEROFF TIMEOUT endet")
 
             if ((settings.job_t >=0 and settings.job_t <= 300) or
                     (settings.job_i >= 0 and settings.job_i <= 300) or
                     ("x728" in settings.INPUTS and settings.battcapacity <= 15)):
                 if not "statusled" in settings.OUTPUTS:
                     self.windowmanager.set_screen_to_contrast()
+
             await asyncio.sleep(5)
 
 
@@ -223,17 +250,6 @@ class nowplaying:
     def is_device_online(self):
         return self.__onlinestate
 
-    def __init__(self,loop,musicmanager,windowmanager,bluetooth,usersettings):
-        self.usersettings = usersettings
-        self.bluetooth = bluetooth
-        self.loop = loop
-        self.musicmanager = musicmanager
-        self.windowmanager = windowmanager
-
-        self.loop.create_task(self._generatenowplaying())
-        self.loop.create_task(self.__get_timeouts())
-        self.loop.create_task(self.__systemabfrage())
-        self.loop.create_task(self._savepos_status())
 
 
     def input_is_stream(self):

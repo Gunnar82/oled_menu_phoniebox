@@ -41,7 +41,6 @@ class MopidyControl():
                 self.connected = True
                 self.loop.create_task(self._refresh_content())
                 self.loop.create_task(self._update())
-                self.loop.create_task(self._update_vol())
 
     def _connectionlost(self):
         self.connected = False
@@ -51,27 +50,16 @@ class MopidyControl():
     async def _update(self):
         while self.loop.is_running() and self.connected:
             self.loop.run_in_executor(None,self.do_update)
-            await asyncio.sleep(3)
+            await asyncio.sleep(30)
 
     def do_update(self):
             try:
                 self.nowplaying = self.client.currentsong()
-            except musicpd.ConnectionError:
-                print("Error updating mopidy status, no connection!")
-                self._connectionlost()
-
-
-
-
-    async def _update_vol(self):
-        while self.loop.is_running() and self.connected:
-            try:
                 self.status = self.client.status()
+
             except musicpd.ConnectionError:
                 print("Error updating mopidy status, no connection!")
                 self._connectionlost()
-
-            await asyncio.sleep(2)
 
 
     async def _refresh_content(self):

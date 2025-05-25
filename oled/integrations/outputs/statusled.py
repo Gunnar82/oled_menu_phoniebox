@@ -29,7 +29,13 @@ class statusled:
         GPIO.setup(pin, GPIO.OUT)  # Set GPIO pin 12 to output mode.
         self.pwm = GPIO.PWM(pin, 100)   # Initialize PWM on pwmPin 100Hz frequency
 
-        self.loop.create_task(self._pulse())
+        self.loop.create_task(self.__pulsing())
+
+    async def __pulsing (self):
+        await self.loop.run_in_executor(None,self.__pulse)
+        await asyncio.sleep(2)
+
+
 
     def set_permanent(self):
         logger.debug("statusled to permanent")
@@ -47,7 +53,7 @@ class statusled:
         GPIO.output(self.pin, GPIO.LOW)
 
 
-    async def _pulse(self):
+    def __pulse(self):
         try:
             status = self.musicmanager.status()
             if status['state'] == "stop":
@@ -91,7 +97,6 @@ class statusled:
 
                     self.pwm.stop()
 
-                await asyncio.sleep(2)
 
         except:
             pass
