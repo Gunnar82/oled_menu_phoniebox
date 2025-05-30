@@ -31,9 +31,21 @@ class Lock(MainWindow):
     def gen_unlockcodes(self):
         """Generiert die möglichen Entsperrcodes."""
         self.unlockcodes = [
-            ['up','down','left','right','select','x','hl','hr'],
+            ['up','down','left','right'],
             ['1','2','3','4','5','6','7','8','9','0','a','b','c','d']
         ]
+
+    def reversemap(self,key):
+        if key == '2':
+            return 'up'
+        elif key == '4':
+            return 'left'
+        elif key == '6':
+            return 'right'
+        elif key == '8':
+            return 'down'
+        else:
+            return key
 
 
     def activate(self):
@@ -66,7 +78,9 @@ class Lock(MainWindow):
 
     def turn_callback(self,direction, key=None):
         """Überprüft, ob der gedrückte Schlüssel korrekt ist."""
-        if key.lower() in ['start','key_pause']:
+        if "gpicase" in settings.INPUTS:
+            key = self.reversemap(key)
+        if key.lower() in ['f','key_pause']:
             self.musicmanager.playpause()
         elif key.lower() == self.unlockcode[self.currentkey].lower():
             self.busysymbol = symbols.SYMBOL_PASS
