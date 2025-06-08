@@ -67,7 +67,7 @@ class WindowManager():
             logger.info(f"Window {windowid} not found!")
 
     def show_window(self):
-        fn.set_lastinput()
+        fn.setlastinput()
         settings.screenpower = True
         self.device.show()
 

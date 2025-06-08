@@ -14,7 +14,7 @@ import asyncio
 from datetime import datetime
 
 from integrations.logging_config import *
-from integrations.functions import restart_oled
+from integrations.functions import set_lastinput,restart_oled
 logger = setup_logger(__name__)
 
 
@@ -36,8 +36,10 @@ class x728:
         self.voltage = 0
         self.oldvoltage = 0
         self.__capacity = -1
-        self.loading = False
+        self.__loading = False
         self.I2C_ADDR    = 0x36
+
+        self.battload_emerg_started = False
 
         GPIO.setmode(GPIO.BCM)
 
@@ -64,11 +66,21 @@ class x728:
                 settings.battcapacity = self.readCapacity()
                 symbols.SYMBOL_BATTERY = self.getSymbol()
                 settings.battload_color = self.get_battload_color()
+
+                if not self.battload_emerg_started: self. is_battload_emerg()
             except Exception as error:
                 logger.error(f"_handler_ {error}")
                 print ("err x728")
 
             await asyncio.sleep (10)
+
+    def is_battload_emerg(self):
+        if not self.__loading:
+            if self.__capacity >= 0 and self.__capacity <= self.usersettings.X728_BATT_EMERG:
+                self.battlaod_emerg_started = True
+                if not self.battlaod_emerg_started: set_lastinput()
+        else:
+            self.battlaod_emerg_started = False
 
     def gpio_callback (self,channel):
         status = GPIO.input(channel) == 1 # GPIO_POWERFAIL: 0 == angeschlossen, 1 = ohne Kabel
@@ -81,6 +93,7 @@ class x728:
             if status:
                 self.button_pressed_time = time.monotonic()
                 self.loop.run_in_executor(None,self._handle_button_pressed)
+
 
     def _handle_button_pressed(self):
 
@@ -129,7 +142,9 @@ class x728:
 
     def get_powerfail_state(self,status):
         logger.debug(f"Powerfail ist {status}")
+        self.__loading = not status
         settings.battloading = not status
+        if not status: self.battlod_emerg_started = False
 
     def getSymbol(self):
         if self.__capacity < 10:
@@ -139,7 +154,7 @@ class x728:
         elif self.__capacity < 60:
             return "\uf242"
         elif self.__capacity < 90:
-             return "\uf241"
+             return "\uf241"	
         else:
             return "\uf240"
 
