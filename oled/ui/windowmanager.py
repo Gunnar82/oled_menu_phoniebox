@@ -254,7 +254,6 @@ class WindowManager():
                     self.set_window("ende")
                 else:
                     self.activewindow.turn_callback(direction,key=key)
-                    self.activewindow.turn_callback(direction,key=key)
             except Exception as error:
                 logger.error(f"window_manager: turn_callback: {error}")
             finally:

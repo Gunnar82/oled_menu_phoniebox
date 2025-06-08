@@ -55,7 +55,7 @@ class Ende(MainWindow):
                 settings.shutdown_reason == SR.SR5
                 self.windowmanager.clear_window()
                 self.musicmanager.stop()
-                await asyncio.sleep(60)
+                await asyncio.sleep(10)
 
 
             if not (self.power_timer):
@@ -95,6 +95,7 @@ class Ende(MainWindow):
                     await asyncio.sleep(1)
 
                 settings.shutdown_reason = SR.SR5
+                await asyncio.sleep(3)
                 self.do_shutdown()
             else:
                 while self.loop.is_running() and self.power_timer:

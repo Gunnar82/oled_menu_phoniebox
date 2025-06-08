@@ -46,6 +46,8 @@ class pygameInput():
 
         self.powerpressed = 0
 
+        self.__keys = []
+
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         GPIO.setup(26, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -97,7 +99,7 @@ class pygameInput():
 
                     if (x, y) in self.config.direction_map:
                         direction = self.config.direction_map[(x, y)]
-                        logger.debug(f"pygame: direction {direction}")
+                        logger.debug(f"pygame JOYHAT: direction {direction}")
                         self.loop.run_in_executor(None, self.handle_turn, 0, direction)
 
                 elif event.type == pygame.JOYBUTTONDOWN:
@@ -105,27 +107,46 @@ class pygameInput():
                         pressed = int(event.button)
                         button_string = f"button_{pressed}"
                         button = self.config.__dict__[button_string]
-                        print (button)
+                        if button not in self.__keys: self.__keys.append(button)
                     except Exception as error:
-                        print (error)
+                        logger.debug (f"keypdown {error}")
 
 
                 elif event.type == pygame.JOYBUTTONUP:
+
                     try:
                         pressed = int(event.button)
+                        logger.debug (f"up keycode: {pressed}")
                         button_string = f"button_{pressed}"
                         button = self.config.__dict__[button_string]
 
-                        if button == '*':
+                        logger.debug (f"handle button up {button}")
+
+                        if "F" in self.__keys and button == '9':
+                            settings.shutdown_reason = SR.SR2
+                            self.windowmanager.set_window("ende")
+                        elif button == '*':
+                            logger.debug (f"push callback: button = {button}")
                             self.push_callback()
                         elif button != '':
+                            logger.debug (f"turn callback: button = {button}")
                             await self.loop.run_in_executor(None,self.handle_turn,0,button)
                     except Exception as error:
                         logger.debug (f"poll_loop: {error}")
+                    try:
+
+                        logger.debug (f"downpressed keys: {self.__keys}")
+                        logger.debug (f" remove {button}")
+                        self.__keys.remove(button)
+                    except ValueError:
+                        logger.debug(f"{button} war nict gedrückt")
+                    except Exception as error:
+                        logger.debug (f"{error}")
 
             await asyncio.sleep(0.1)
 
     def handle_turn(self,rotation,button):
+        logger.debug (f"start handle_turn for {rotation} and {button}")
         self.turn_callback(rotation,button)
 
 
