@@ -122,13 +122,12 @@ class pygameInput():
 
                         logger.debug (f"handle button up {button}")
 
-                        if "F" in self.__keys and button == '9':
-                            settings.shutdown_reason = SR.SR2
-                            self.windowmanager.set_window("ende")
-                        elif button == '*':
+                        if button == '*':
                             logger.debug (f"push callback: button = {button}")
                             self.push_callback()
                         elif button != '':
+                            if "F" in self.__keys and button == '9': button = 'S'
+
                             logger.debug (f"turn callback: button = {button}")
                             await self.loop.run_in_executor(None,self.handle_turn,0,button)
                     except Exception as error:

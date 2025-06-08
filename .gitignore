@@ -12,7 +12,7 @@ oled/config/bluetooth.py
 oled/config/keypad_4x4_i2c.py
 oled/config/mpd_playback.db
 oled/config/online.py
-oled/config/mcp_23017_keys.py
+oled/config/mcp_23017_buttons.py
 oled/config/mcp_23017_leds.py
 oled/config/gpicase.py
 oled/config/file_folder.pyimage001.png

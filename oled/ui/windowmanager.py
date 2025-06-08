@@ -250,7 +250,7 @@ class WindowManager():
                     logger.debug("activate window_on_back: %s" % (self.activewindow.window_on_back))
                     if self.activewindow.window_on_back not in ["","none","n/a"]: self.set_window(self.activewindow.window_on_back)
                 elif key == 'S':
-                    settings.shutdown_reason == SR.SR2
+                    settings.shutdown_reason = SR.SR2
                     self.set_window("ende")
                 else:
                     self.activewindow.turn_callback(direction,key=key)
