@@ -5,7 +5,7 @@ import time
 import asyncio
 import config.symbols as symbols
 import integrations.functions as fn
-
+import config.shutdown_reason as SR
 
 from integrations.rfidwatcher import RfidWatcher
 
@@ -249,7 +249,11 @@ class WindowManager():
                 if key == '#' and self.activewindow.handle_key_back:
                     logger.debug("activate window_on_back: %s" % (self.activewindow.window_on_back))
                     if self.activewindow.window_on_back not in ["","none","n/a"]: self.set_window(self.activewindow.window_on_back)
+                elif key == 'S':
+                    settings.shutdown_reason == SR.SR2
+                    self.set_window("ende")
                 else:
+                    self.activewindow.turn_callback(direction,key=key)
                     self.activewindow.turn_callback(direction,key=key)
             except Exception as error:
                 logger.error(f"window_manager: turn_callback: {error}")

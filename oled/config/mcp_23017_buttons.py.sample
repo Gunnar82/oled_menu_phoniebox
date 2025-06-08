@@ -1,0 +1,21 @@
+### KEYPAD 4x4 I2C + MCP23017
+INTPIN = 17
+ADDR = 0x27
+GPINTENA = 0x7F
+
+button_254 = '#'
+button_253 = '8'
+button_251 = '4'
+button_247 = '6'
+button_239 = '*'
+button_223 = '2'
+button_191 = 'F'
+
+#button_127 # IGNORE
+
+button_111 = 'A'
+button_95 = 'B'
+button_125 ='C'
+button_126 = 'D'
+button_63 = 'E'
+button_119 ='S'

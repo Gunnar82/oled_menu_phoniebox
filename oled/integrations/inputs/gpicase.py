@@ -99,6 +99,17 @@ class pygameInput():
                         direction = self.config.direction_map[(x, y)]
                         logger.debug(f"pygame: direction {direction}")
                         self.loop.run_in_executor(None, self.handle_turn, 0, direction)
+
+                elif event.type == pygame.JOYBUTTONDOWN:
+                    try:
+                        pressed = int(event.button)
+                        button_string = f"button_{pressed}"
+                        button = self.config.__dict__[button_string]
+                        print (button)
+                    except Exception as error:
+                        print (error)
+
+
                 elif event.type == pygame.JOYBUTTONUP:
                     try:
                         pressed = int(event.button)

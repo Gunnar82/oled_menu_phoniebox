@@ -14,7 +14,7 @@ import sys
 import RPi.GPIO as GPIO
 
 
-class mcp_23017_keys:
+class mcp_23017_buttons:
     busy = False
 
     INTERRUPT_COMPARE_VALUE_A               = 0x06   # default comparison for interrupt on change
@@ -51,23 +51,24 @@ class mcp_23017_keys:
     def getch(self):
         try:
             value = int(self.i2c.read_byte_data(self.I2CADDR,0x12))
-            keystring = f"key_{value}"
-            key = self.config.__dict__[keystring]
+            print (value)
+            buttonstring = f"button_{value}"
+            button = self.config.__dict__[buttonstring]
         except Exception as error:
-            key = None
-        return key #value
+            button = None
+        return button #value
 
     def button_down_callback(self,channel):
         if not self.busy:
             try:
                 gpio_state = GPIO.input(channel)
                 self.busy = True
-                key = self.getch()
-                if key != None and gpio_state == 0:
-                    if key == '*':
+                button = self.getch()
+                if button != None and gpio_state == 0:
+                    if button == '*':
                         self.push_callback()
                     else:
-                        self.turn_callback(0,key)
+                        self.turn_callback(0,button)
             finally:
                 time.sleep(0.2)
                 self.reset()

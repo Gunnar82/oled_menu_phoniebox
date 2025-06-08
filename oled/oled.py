@@ -63,8 +63,8 @@ keypad_4x4_i2c_cfg = f"{config_path}/keypad_4x4_i2c.py"
 keypad_4x4_i2c_cfg_sample = f"{keypad_4x4_i2c_cfg}.sample"
 
 
-mcp_23017_keys_cfg = f"{config_path}/mcp_23017_keys.py"
-mcp_23017_keys_cfg_sample = f"{mcp_23017_keys_cfg}.sample"
+mcp_23017_buttons_cfg = f"{config_path}/mcp_23017_buttons.py"
+mcp_23017_buttons_cfg_sample = f"{mcp_23017_buttons_cfg}.sample"
 
 
 mcp_23017_leds_cfg = f"{config_path}/mcp_23017_leds.py"
@@ -281,13 +281,13 @@ def main():
 
 
 
-    if "mcp_23017_keys" in settings.INPUTS:
-        check_or_create_config(mcp_23017_keys_cfg,mcp_23017_keys_cfg_sample)
-        import config.mcp_23017_keys as mcp_23017_keys_config
+    if "mcp_23017_buttons" in settings.INPUTS:
+        check_or_create_config(mcp_23017_buttons_cfg,mcp_23017_buttons_cfg_sample)
+        import config.mcp_23017_buttons as mcp_23017_buttons_config
 
-        from integrations.inputs.mcp_23017_keys import mcp_23017_keys
+        from integrations.inputs.mcp_23017_buttons import mcp_23017_buttons
 
-        mMCPKeys = mcp_23017_keys(loop, turn_callback, push_callback, mcp_23017_keys_config)
+        mMCPKeys = mcp_23017_buttons(loop, turn_callback, push_callback, mcp_23017_buttons_config)
 
 
     ###Rotaryencoder Setup
