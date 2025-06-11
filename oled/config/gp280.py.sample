@@ -6,8 +6,8 @@ button_2 = '*' # Y
 button_3 = 'D' # X
 button_4 = 'B' # HL
 button_5 = 'C' # HR
-button_6 = '9' # SELECT
-button_7 = 'F' # START
+button_8 = '9' # SELECT
+button_9 = 'F' # START
 
 
 direction_map = {

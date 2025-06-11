@@ -132,7 +132,6 @@ class pygameInput():
 
                     try:
                         pressed = int(event.button)
-                        print (pressed)
                         logger.debug (f"up keycode: {pressed}")
                         button_string = f"button_{pressed}"
                         button = self.config.__dict__[button_string]
