@@ -6,7 +6,7 @@ settings.py
 oled/pins/*
 oled/config/online.py
 oled/config/file_folder.py
-oled/config/statusled.py
+oled/config/statusAled.py
 oled/config/rotary_enc.py
 oled/config/bluetooth.py
 oled/config/keypad_4x4_i2c.py
@@ -15,6 +15,7 @@ oled/config/online.py
 oled/config/mcp_23017_buttons.py
 oled/config/mcp_23017_leds.py
 oled/config/gpicase.py
+oled/config/gp280.py
 oled/config/file_folder.pyimage001.png
 logo.png
 certs/*.key

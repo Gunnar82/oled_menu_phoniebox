@@ -1,0 +1,18 @@
+### GPICASE BUTTON MAPPING
+
+button_0 = 'A' # A
+button_1 = '#' # B
+button_2 = '*' # Y
+button_3 = 'D' # X
+button_4 = 'B' # HL
+button_5 = 'C' # HR
+button_6 = '9' # SELECT
+button_7 = 'F' # START
+
+
+direction_map = {
+    (0, -1): '8',  # down
+    (0,  1): '2',  # up
+    (-1, 0): '4',  # left
+    (1,  0): '6',  # right
+}

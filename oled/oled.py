@@ -77,6 +77,9 @@ statusled_cfg_sample = f"{statusled_cfg}.sample"
 gpicase_cfg = f"{config_path}/gpicase.py"
 gpicase_cfg_sample = f"{gpicase_cfg}.sample"
 
+gp280_cfg = f"{config_path}/gp280.py"
+gp280_cfg_sample = f"{gp280_cfg}.sample"
+
 rotary_enc_cfg = f"{config_path}/rotary_enc.py"
 rotary_enc_cfg_sample = f"{rotary_enc_cfg}.sample"
 
@@ -261,6 +264,16 @@ def main():
 
         print ("Using pyGameInput")
         mypygame = pygameInput(loop, turn_callback, push_callback,windowmanager,_nowplaying,gpicase_config)
+
+
+    if "gp280" in settings.INPUTS:
+        check_or_create_config(gp280_cfg,gp280_cfg_sample)
+        import config.gp280 as gp280_config
+
+        from integrations.inputs.gp280 import pygameInput
+
+        print ("Using pyGameInput")
+        mypygame = pygameInput(loop, turn_callback, push_callback,windowmanager,_nowplaying,gp280_config)
 
 
     ####keyboard control
