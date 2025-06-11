@@ -113,7 +113,6 @@ class pygameInput():
                     else:
                         x = 0
                         y = 0
-                    print (x,y)
                     if (x, y) in self.config.direction_map:
                         direction = self.config.direction_map[(x, y)]
                         logger.debug(f"pygame JOYHAT: direction {direction}")
