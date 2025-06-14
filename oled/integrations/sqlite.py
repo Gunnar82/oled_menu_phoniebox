@@ -68,6 +68,15 @@ class sqliteDB:
         """)
 
 
+        """Erstellt die Tabelle für Einstellungen, falls sie nicht existiert."""
+        self.local.cursor.execute("""
+        CREATE TABLE IF NOT EXISTS bluetooth (
+            bluetooth_mac TEXT UNIQUE,
+            bluetooth_name TEXT
+        )
+        """)
+
+
         self.local.conn.commit()
 
     def store_playback_info(self, current_song, mfile, mfolder, pos, elapsed, status, playlist_length):
@@ -187,6 +196,39 @@ class sqliteDB:
         VALUES (?, ?)
         """, (key, json_value))
         self.local.conn.commit()
+
+
+
+    def get_bluetooth_devices(self):
+        """Lädt alle Bluetooth-Geräte aus der Datenbank aus der Datenbank und setzt sie als Attribute."""
+        self.create_connection()
+        self.local.cursor.execute("SELECT bluetooth_mac, bluetooth_name FROM bluetooth")
+        devices = self.local.cursor.fetchall()
+        print (devices)
+        return [(key, json.loads(value)) for key, value in devices]  # JSON zurück in Python-Typen umwandeln
+
+    def add_bluetooth_device(self, mac, name):
+        """Speichert oder aktualisier ein Bluetooth Gerät in der DB."""
+        self.create_connection()
+
+        json_value = json.dumps(name)  # Konvertiert in JSON
+
+        self.local.cursor.execute("""
+        INSERT OR REPLACE INTO bluetooth (bluetooth_mac, bluetooth_name)
+        VALUES (?, ?)
+        """, (mac, json_value))
+        self.local.conn.commit()
+
+
+    def remove_bluetooth_device(self, mac):
+        """Speichert oder aktualisier ein Bluetooth Gerät in der DB."""
+        self.create_connection()
+
+        self.local.cursor.execute("""
+        DELETE FROM BLUETOOTH WHERE bluetoth_mac = ()
+        """, (mac))
+        self.local.conn.commit()
+
 
     def close_connection(self):
         """Schließt die Verbindung für diesen Thread."""

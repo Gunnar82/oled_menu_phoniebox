@@ -59,7 +59,10 @@ class Bluetoothmenu(ListBase):
                         self.menu.append(["> gekoppelte Geräte:","c"])
 
                         for device in self.bluetooth.paired_devices():
-                            self.menu.append([str(device[1]),symbols.SYMBOL_BLUETOOTH_OFF,str(device[0])])
+                            mac = str(device[0])
+                            devname = str(device[1])
+                            self.usersettings.add_bluetooth_device(mac,devname)
+                            self.menu.append([devname,symbols.SYMBOL_BLUETOOTH_OFF,mac ])
                     else:
                         self.menu.append(["neue Geräte:","h"])
 

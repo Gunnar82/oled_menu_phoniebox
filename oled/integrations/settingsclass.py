@@ -30,3 +30,28 @@ class Settings:
         except Exception as error:
             print (error)
 
+    def get_bluetooth_devices(self):
+        try:
+            return self.sqlite.get_bluetooth_devices()
+        except Exception as error:
+            print (error)
+            return ['','']
+
+    def add_bluetooth_device(self, mac, name):
+        try:
+            self.sqlite.add_bluetooth_device(mac,name)
+            return True
+        except Exception as error:
+            print (error)
+            return False
+
+
+    def remove_bluetooth_device(self, mac):
+        try:
+            self.sqlite.remove_bluetooth_device(mac)
+            return True
+        except Exception as error:
+            print (error)
+            return False
+
+

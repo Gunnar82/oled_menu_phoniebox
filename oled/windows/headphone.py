@@ -37,10 +37,18 @@ class Headphonemenu(MenuBase):
         #self.bluetooth.start_bluetoothctl()
 
     def activate (self):
-        self.set_current_bt_name()
+        try:
+            self.descr = self.descr[:1]
+            self.descr.append(["Lautsprecher",symbols.SYMBOL_SPEAKER])
+            self.descr.append(["Gerät suchen","\uf01e"])
+            for mac, devname in self.usersettings.get_bluetooth_devices():
+                self.descr.append([devname,symbols.SYMBOL_HEADPHONE,mac])
+        except Exception as error:
+            logger.debug (error)
 
     #def push_callback(self,lp=False):
     def push_handler(self):
+        print (self.counter)
 
         self.set_window_busy()
         self.append_busytext()
@@ -55,22 +63,25 @@ class Headphonemenu(MenuBase):
             self.append_busytext("Abgeschlosssen.")
 
         elif self.counter == 2:
+            self.append_busytext("Trenne Bluetooth - falls verbunden")
+            self.bluetooth.disconnect_all_connected_devices()
+
+            self.windowmanager.set_window("bluetoothmenu")
+
+        elif self.counter > 2:
+            dev_name = self.descr[self.counter][0]
+            dev_mac = self.descr[self.counter][2]
+
             self.append_busytext("Verbinde Gerät:")
-            self.append_busytext (self.bluetooth.selected_bt_name)
+            self.append_busytext (dev_name)
     
             self.bluetooth.disconnect_all_connected_devices()
-            if not self.bluetooth.connect_default_bt_device():
+            if not self.bluetooth.connect_default_bt_device(dev_mac):
                 self.append_busyerror ("Keine Verbindung:")
             else:
                 self.append_busytext("Deaktiviere lokale Ausgabe")
                 self.append_busytext("Aktiviere Bluetoothausgabe")
 
-
-        elif self.counter == 3:
-            self.append_busytext("Trenne Bluetooth - falls verbunden")
-            self.bluetooth.disconnect_all_connected_devices()
-
-            self.windowmanager.set_window("bluetoothmenu")
 
         self.append_busytext("Beendet.")
         self.set_window_busy(False)
