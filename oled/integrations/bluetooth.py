@@ -111,16 +111,19 @@ class BluetoothOutput():
             return False
 
 
-    def connect_default_bt_device(self,mac = None):
-        logger.debug(f"BT: connect_default_device {self.selected_bt_name}")
+    def connect_bt_device(self,mac = None):
+        logger.debug(f"BT: connect__device {self.selected_bt_name}")
         if mac is None:
             return self.connect(self.selected_bt_mac)
         else:
             return self.connect(mac)
 
-    def disconnect_default_bt_device(self):
+    def disconnect_bt_device(self,mac = None):
         logger.debug(f"BT: disconnect_default_device {self.selected_bt_name}")
-        return self.disconnect(self.selected_bt_mac)
+        if mac is None:
+            return self.disconnect(self.selected_bt_mac)
+        else:
+            return self.disconnect(mac)
 
     def disconnect_all_connected_devices(self):
         for device in self.get_connected_devices():

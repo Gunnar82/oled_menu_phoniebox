@@ -76,7 +76,7 @@ class Headphonemenu(MenuBase):
             self.append_busytext (dev_name)
     
             self.bluetooth.disconnect_all_connected_devices()
-            if not self.bluetooth.connect_default_bt_device(dev_mac):
+            if not self.bluetooth.connect_bt_device(dev_mac):
                 self.append_busyerror ("Keine Verbindung:")
             else:
                 self.append_busytext("Deaktiviere lokale Ausgabe")
