@@ -78,8 +78,9 @@ class Lock(MainWindow):
 
     def turn_callback(self,direction, key=None):
         """Überprüft, ob der gedrückte Schlüssel korrekt ist."""
-        if "gpicase" in settings.INPUTS:
+        if "gpicase" in settings.INPUTS or "gp280" in settings.INPUTS:
             key = self.reversemap(key)
+
         if key.lower() in ['f','key_pause']:
             self.musicmanager.playpause()
         elif key.lower() == self.unlockcode[self.currentkey].lower():
