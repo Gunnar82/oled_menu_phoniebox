@@ -49,7 +49,7 @@ class Bluetoothmenu(ListBase):
 
                 if self.selector:
                     self.menu.append(["Abbrechen",symbols.SYMBOL_SANDCLOCK])
-                    self.menu.append(["Auswählen",symbols.SYMBOL_PASS])
+                    self.menu.append(["Standard setzen",symbols.SYMBOL_PASS])
                     self.menu.append(["Löschen",symbols.SYMBOL_FAIL])
 
                 else:

@@ -39,8 +39,8 @@ class Headphonemenu(MenuBase):
     def activate (self):
         try:
             self.descr = self.descr[:1]
-            self.descr.append(["Lautsprecher",symbols.SYMBOL_SPEAKER])
             self.descr.append(["Gerät suchen","\uf01e"])
+            self.descr.append(["Lautsprecher",symbols.SYMBOL_SPEAKER])
             for mac, devname in self.usersettings.get_bluetooth_devices():
                 self.descr.append([devname,symbols.SYMBOL_HEADPHONE,mac])
         except Exception as error:
@@ -55,18 +55,18 @@ class Headphonemenu(MenuBase):
 
 
         if self.counter == 1:
+            self.append_busytext("Trenne Bluetooth - falls verbunden")
+            self.bluetooth.disconnect_all_connected_devices()
+
+            self.windowmanager.set_window("bluetoothmenu")
+
+        elif self.counter == 2:
             self.append_busytext("Aktiviere lokale Ausgabe")
             self.append_busytext("Deaktiviere Bluetoothausgabe")
 
             self.bluetooth.enable_dev_local()
 
             self.append_busytext("Abgeschlosssen.")
-
-        elif self.counter == 2:
-            self.append_busytext("Trenne Bluetooth - falls verbunden")
-            self.bluetooth.disconnect_all_connected_devices()
-
-            self.windowmanager.set_window("bluetoothmenu")
 
         elif self.counter > 2:
             dev_name = self.descr[self.counter][0]
