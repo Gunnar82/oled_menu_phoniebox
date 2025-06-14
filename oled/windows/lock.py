@@ -53,7 +53,7 @@ class Lock(MainWindow):
         self.gen_unlockcodes()
         self.unlockcode = []
 
-        if "gpicase" in settings.INPUTS: self.unlockindex = 0
+        if "gpicase" in settings.INPUTS or "gp280" in settings.INPUTS: self.unlockindex = 0
         elif "keypad4x4" in settings.INPUTS: self.unlockindex = 1
         self.symbolwidth, temp = self.fontawesome.getsize(self.busysymbol)
 
