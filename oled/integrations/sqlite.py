@@ -204,7 +204,6 @@ class sqliteDB:
         self.create_connection()
         self.local.cursor.execute("SELECT bluetooth_mac, bluetooth_name FROM bluetooth")
         devices = self.local.cursor.fetchall()
-        print (devices)
         return [(key, json.loads(value)) for key, value in devices]  # JSON zurück in Python-Typen umwandeln
 
     def add_bluetooth_device(self, mac, name):

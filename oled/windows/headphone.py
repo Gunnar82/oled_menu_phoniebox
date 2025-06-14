@@ -28,10 +28,6 @@ class Headphonemenu(MenuBase):
         self.descr.append(["Gerät suchen","\uf01e"])
 
 
-    def set_current_bt_name(self):
-        self.descr[2][0]="BT: %s" %(self.bluetooth.selected_bt_name)
-
-
     def deactivate(self):
         logger.debug ("ende")
         #self.bluetooth.start_bluetoothctl()
@@ -41,8 +37,11 @@ class Headphonemenu(MenuBase):
             self.descr = self.descr[:1]
             self.descr.append(["Gerät suchen","\uf01e"])
             self.descr.append(["Lautsprecher",symbols.SYMBOL_SPEAKER])
-            for mac, devname in self.usersettings.get_bluetooth_devices():
-                self.descr.append([devname,symbols.SYMBOL_HEADPHONE,mac])
+            try:
+                for mac, devname in self.usersettings.get_bluetooth_devices():
+                    self.descr.append([devname,symbols.SYMBOL_HEADPHONE if mac != self.usersettings.BLUETOOTH_ADDR else symbols.SYMBOL_BLUETOOTH_ON ,mac])
+            except Exception as error:
+                print (error)
         except Exception as error:
             logger.debug (error)
 
