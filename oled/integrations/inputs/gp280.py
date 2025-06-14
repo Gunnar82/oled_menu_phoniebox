@@ -113,10 +113,12 @@ class pygameInput():
                     else:
                         x = 0
                         y = 0
+
                     if (x, y) in self.config.direction_map:
                         direction = self.config.direction_map[(x, y)]
                         logger.debug(f"pygame JOYHAT: direction {direction}")
                         self.loop.run_in_executor(None, self.handle_turn, 0, direction)
+
 
                 elif event.type == pygame.JOYBUTTONDOWN:
                     try:
