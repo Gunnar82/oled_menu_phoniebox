@@ -247,7 +247,7 @@ class DownloadMenu(ListBase):
         try:
             mypos = getpos_online(self.baseurl,self.cwd)
             seekto = []
-            logger.debug("playfolder mypos: {mypos}")
+            logger.debug(f"playfolder mypos: {mypos}")
             if mypos[0] == "POS":
                 seekto.append("%s%s" % (mypos[5],mypos[1]))
                 seekto.append(mypos[2])
@@ -583,5 +583,5 @@ class DownloadMenu(ListBase):
             else:
                 return ""
         except Exception as error:
-            logger.error(f"fet_online_pos: {error}")
+            logger.error(f"get_online_pos: error {error}")
             return ""
