@@ -35,6 +35,7 @@ class WebRequest():
                     self.response_code = -1
                     return
                 response = requests.post(url, verify=False, data=data, cert=client_cert, timeout = timeout)
+                logger.debug(f"__init__, post: data: {data}")
             else:
                 logger.debug(f"webrequest init: {method} invalid, return")
                 response_text = ""
@@ -45,6 +46,8 @@ class WebRequest():
 
             self.response_text = response.content.decode()
             self.response_code = response.status_code
+
+            logger.debug(f"__init__: responsr_text: {self.response_text}")
 
         except Exception as error:
             logger.info(f"webrequest init: error {error}, return")
@@ -58,5 +61,5 @@ class WebRequest():
         return self.response_code
 
     def get_response_text(self):
-        logger.debug(f"webrequesst: response_text: {self.response_text}")
+        logger.debug(f"webrequest: response_text: {self.response_text}")
         return self.response_text
