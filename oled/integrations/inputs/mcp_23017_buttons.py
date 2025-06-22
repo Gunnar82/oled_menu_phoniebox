@@ -51,7 +51,6 @@ class mcp_23017_buttons:
     def getch(self):
         try:
             value = int(self.i2c.read_byte_data(self.I2CADDR,0x12))
-            print (value)
             buttonstring = f"button_{value}"
             button = self.config.__dict__[buttonstring]
         except Exception as error:

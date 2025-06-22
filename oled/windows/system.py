@@ -65,6 +65,7 @@ class SystemMenu(ListBase):
         self.menu.append(["","bool","","UPDATE_RADIO"])      # 1
         self.menu.append(["","bool","","DISABLE_DISPLAY"])      # 1
         self.menu.append(["","bool","","SHOW_DEBUGINFOS"])      # 1
+        self.menu.append(["","bool","","ONLINE_URL_TEST"])      # 1
 
 
         self.menu.append(["","bool","","BLUETOOTH_ENABLED"]) # 2

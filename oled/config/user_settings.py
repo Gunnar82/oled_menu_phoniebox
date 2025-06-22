@@ -65,4 +65,4 @@ class UserSettings(Settings):
 
 
     #Online-Test {ping|url}
-    ONLINE_TEST="url"
+    ONLINE_URL_TEST = False

@@ -244,9 +244,7 @@ class nowplaying:
             await asyncio.sleep(10)
 
     def check_online_state(self):
-        if self.usersettings.ONLINE_TEST == "ping":
-            state = ping_test()
-        elif self.usersettings.ONLINE_TEST == "url":
+        if self.usersettings.ONLINE_URL_TEST:
             try:
                 url = "http://localhost:8080/savepos/online.php"  # Beispiel-URL
                 request = WebRequest(url, method="get")
@@ -266,6 +264,8 @@ class nowplaying:
             except Exception as error:
                 logger.debug(f"check_online_state: {error}")
                 state = False
+        else:
+            state = ping_test()
 
         logger.debug(f"is_online: {state}")
         self.__onlinestate = state
