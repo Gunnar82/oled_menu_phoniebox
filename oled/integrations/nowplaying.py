@@ -7,6 +7,8 @@ import settings
 import asyncio
 from  integrations.functions import  ping_test
 import integrations.playout as playout
+from integrations.webrequest import WebRequest
+
 import time
 from pathlib import Path
 
@@ -242,7 +244,29 @@ class nowplaying:
             await asyncio.sleep(10)
 
     def check_online_state(self):
-        state = ping_test()
+        if self.usersettings.ONLINE_TEST == "ping":
+            state = ping_test()
+        elif self.usersettings.ONLINE_TEST == "url":
+            try:
+                url = "http://localhost:8080/savepos/online.php"  # Beispiel-URL
+                request = WebRequest(url, method="get")
+                state = False
+                response_code = request.get_response_code()
+                logger.debug(f"check_online_state: response_code {response_code}")
+                if response_code == 200:
+                    response = request.get_response_text()
+                    lines = response.strip().splitlines()
+                    kv_pairs = dict(line.split("=", 1) for line in lines if "=" in line)
+
+                    # Prüfe auf online=yes
+                    if kv_pairs.get("online", "").lower() == "yes":
+                        logger.debug(f"check_online_state: response {response}")
+                        logger.debug("check_online_state: online=true")
+                        state = True
+            except Exception as error:
+                logger.debug(f"check_online_state: {error}")
+                state = False
+
         logger.debug(f"is_online: {state}")
         self.__onlinestate = state
 

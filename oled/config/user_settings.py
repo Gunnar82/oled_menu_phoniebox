@@ -63,3 +63,6 @@ class UserSettings(Settings):
     #Wert für LOW in %
     X728_BATT_LOW=15
 
+
+    #Online-Test {ping|url}
+    ONLINE_TEST="url"

@@ -11,7 +11,7 @@ class WebRequest():
     response_text = ""
     response_code = -1
 
-    def __init__(self,url,method="get",data = None):
+    def __init__(self,url,method="get",data = None,timeout = 5):
         try:
             client_cert_key = cfg_online.ONLINE_CLIENT_KEY
             client_cert_crt = cfg_online.ONLINE_CLIENT_CERT
@@ -27,14 +27,14 @@ class WebRequest():
         try:
             logger.debug(f"webrequest init: {method}, {url}, {client_cert}")
             if method == "get":
-                response = requests.get(url, verify=False, cert=client_cert)
+                response = requests.get(url, verify=False, cert=client_cert, timeout = timeout)
             elif method == "post":
                 if data is None:
                     logger.debug(f"webrequest init: data empty, but post, return")
 
                     self.response_code = -1
                     return
-                response = requests.post(url, verify=False, data=data, cert=client_cert)
+                response = requests.post(url, verify=False, data=data, cert=client_cert, timeout = timeout)
             else:
                 logger.debug(f"webrequest init: {method} invalid, return")
                 response_text = ""
