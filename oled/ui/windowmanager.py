@@ -253,7 +253,7 @@ class WindowManager():
                     settings.shutdown_reason = SR.SR2
                     self.set_window("ende")
                 else:
-                    self.activewindow.turn_callback(direction,key=key)
+                    self.loop.run_in_executor(None,self.activewindow.turn_callback,direction,key)
             except Exception as error:
                 logger.error(f"window_manager: turn_callback: {error}")
             finally:

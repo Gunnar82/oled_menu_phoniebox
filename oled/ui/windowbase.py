@@ -109,9 +109,6 @@ class WindowBase():
         raise NotImplementedError()
 
     def turn_callback(self, direction, key=None):
-        self.loop.run_in_executor(None,self.turn_handler,direction,key)
-
-    def turn_handler(self,directon, key=None):
         raise NotImplementedError()
 
     ### protected functions

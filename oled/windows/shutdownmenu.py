@@ -60,7 +60,7 @@ class Shutdownmenu(MenuBase):
             elif self.counter == 6:
                 self.usersettings.IDLE_POWEROFF = 0
             elif self.counter == 7:
-                value = self.windowmanager.getValue(startpos=self.usersettings.IDLE_POWEROFF,vmin=0,vstep=1,unit=" min")
+                value = self.windowmanager.getValue(startpos=self.usersettings.IDLE_POWEROFF,vmin=0,vstep=1,unit=" min",windowtitle=self.descr[self.counter][0])
                 self.usersettings.IDLE_POWEROFF = int(value)
             elif self.counter == 8:
                 settings.shutdown_reason = SR.SR4
@@ -68,7 +68,7 @@ class Shutdownmenu(MenuBase):
                 self.windowmanager.set_window("ende")
             elif self.counter == 9:
                 if not self.nowplaying._state == "stop":
-                    value = self.windowmanager.getValue(startpos=int(self.nowplaying._song),vmin=int(self.nowplaying._song),vmax=int(self.nowplaying._playlistlength),unit="")
+                    value = self.windowmanager.getValue(startpos=int(self.nowplaying._song),vmin=int(self.nowplaying._song),vmax=int(self.nowplaying._playlistlength),unit="",windowtitle=self.descr[self.counter][0])
                     settings.shutdown_reason = SR.SR4
                     self.windowmanager.windows["ende"].wait4track = int(value)
                     self.windowmanager.set_window("ende")
@@ -78,12 +78,12 @@ class Shutdownmenu(MenuBase):
             elif self.counter == 11:
                 run_command("%s -c=setstartupvolume -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
             elif self.counter == 12:
-                value = self.windowmanager.getValue(startpos=90,unit=" %")
+                value = self.windowmanager.getValue(startpos=90,unit=" %",windowtitle=self.descr[self.counter][0])
                 run_command("%s -c=setstartupvolume -v=%d" % (cfg_file_folder.PLAYOUT_CONTROLS,value))
             elif self.counter == 13:
                 run_command("%s -c=setmaxvolume -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
             elif self.counter == 14:
-                value = self.windowmanager.getValue(startpos=100,unit=" %")
+                value = self.windowmanager.getValue(startpos=100,unit=" %",windowtitle=self.descr[self.counter][0])
                 run_command("%s -c=setmaxvolume -v=%d" % (cfg_file_folder.PLAYOUT_CONTROLS,value))
             elif self.counter == 15:
                 run_command("%s -c=setvolstep -v=1" % cfg_file_folder.PLAYOUT_CONTROLS)

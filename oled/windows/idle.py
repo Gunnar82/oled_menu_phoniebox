@@ -160,7 +160,7 @@ class Idle(MainWindow):
         self.set_busyinfo(dfolder[dfolder.rindex("/")+1:])
 
 
-    def turn_handler(self, direction, key=None):
+    def turn_callback(self, direction, key=None):
         if key:
             if key == '2':
                 playout.pc_volup(5)
