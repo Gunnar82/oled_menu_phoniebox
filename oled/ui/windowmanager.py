@@ -205,10 +205,10 @@ class WindowManager():
             return True
 
 
-    def getValue(self,vmin=0,vmax=100,vstep=1,startpos=50, unit=None):
+    def getValue(self,vmin=0,vmax=100,vstep=1,startpos=50, unit=None,windowtitle=""):
         oldwindow = (self.activewindow.__class__.__name__.lower())
         self.set_window("getvalue")
-        result = self.windows["getvalue"].getValue(vmin=vmin,vmax=vmax,vstep=vstep,startpos=startpos,unit=unit)
+        result = self.windows["getvalue"].getValue(vmin=vmin,vmax=vmax,vstep=vstep,startpos=startpos,unit=unit,windowtitle=windowtitle)
         logger.debug(f"getValue: {result}")
         self.set_window(oldwindow)
         return result

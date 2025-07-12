@@ -54,7 +54,7 @@ class Shutdownmenu(MenuBase):
             if self.counter == 4:
                 print ("doto") #run_command("%s -c=shutdownafter -v=0" % cfg_file_folder.PLAYOUT_CONTROLS)
             elif self.counter == 5:
-                value = self.windowmanager.getValue(startpos=30,vstep=1,unit=" min")
+                value = self.windowmanager.getValue(startpos=30,vstep=1,unit=" min",windowtitle=self.descr[self.counter][0])
                 self.usersettings.shutdowntime = time.monotonic() + int(value) * 60
                 self.usersettings.shutdownset = time.monotonic()
             elif self.counter == 6:

@@ -160,7 +160,7 @@ class Idle(MainWindow):
         self.set_busyinfo(dfolder[dfolder.rindex("/")+1:])
 
 
-    def turn_callback(self, direction, key=None):
+    def turn_handler(self, direction, key=None):
         if key:
             if key == '2':
                 playout.pc_volup(5)
@@ -225,7 +225,7 @@ class Idle(MainWindow):
             elif key == 'F':
                 self.musicmanager.playpause()
             elif key == 'T':
-                value = self.windowmanager.getValue(startpos=30,vstep=1,unit=" min")
+                value = self.windowmanager.getValue(startpos=30,vstep=1,unit=" min",windowtitle="Poweroff Timer")
                 self.usersettings.shutdowntime = time.monotonic() + int(value) * 60
                 self.usersettings.shutdownset = time.monotonic()
 

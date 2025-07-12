@@ -20,6 +20,8 @@ import config.symbols as symbols
 class GetValue(WindowBase):
     contrasthandle = False
     font = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_XXXL)
+    font_l = ImageFont.truetype(settings.FONT_TEXT, size=settings.FONT_SIZE_L)
+
     window_on_back = "none"
 
     def __init__(self, windowmanager,loop,usersettings):
@@ -37,18 +39,19 @@ class GetValue(WindowBase):
         self.__min_text = "min"
         self.__max_text = "max"
         self.__hint_text = ""
+        self.__windowtitle = ""
 
     def get_position(self):
         try:
             drawtext = str(self.__value)
-            self.__hint_text = "min" if self.__value <= self.__vmin else "max" if self.__value >= self.__vmax else ""
+            self.__hint_text = "min" if self.__value <= self.__vmin else "max" if self.__value >= self.__vmax else self.__windowtitle
 
             if self.__unit is not None: drawtext += self.__unit 
 
             width, height = self.font.getsize(drawtext)
             self.xy = (settings.DISPLAY_WIDTH - width) / 2, (settings.DISPLAY_HEIGHT - height) / 2
 
-            width, height = self.font.getsize(self.__hint_text)
+            width, height = self.font_l.getsize(self.__hint_text)
             self.xy_hint = (settings.DISPLAY_WIDTH - width) / 2, settings.DISPLAY_HEIGHT - height - 2
 
         except Exception as error:
@@ -59,7 +62,7 @@ class GetValue(WindowBase):
             drawtext = f"{self.__value}"
             if self.__unit is not None: drawtext += self.__unit 
             draw.text((self.xy), drawtext ,font=self.font,fill="white") 
-            if not self.__hint_text == "": draw.text((self.xy_hint), self.__hint_text ,font=self.font,fill=colors.COLOR_ORANGE)
+            if not self.__hint_text == "": draw.text((self.xy_hint), self.__hint_text ,font=self.font_l,fill=colors.COLOR_ORANGE)
             try:
                 pos = (self.__value - self.__vmin) / (self.__vmax - self.__vmin)
                 logger.debug(f"pos for progressbar: {pos}")
@@ -67,7 +70,7 @@ class GetValue(WindowBase):
             except Exception as error:
                 logger.debug(f"render: {error}")
 
-    async def __async_get_value(self, vmin, vmax, vstep, startpos,unit):
+    async def __async_get_value(self, vmin, vmax, vstep, startpos,unit,windowtitle):
         if vmin > vmax: return startpos
         if startpos > vmax: startpos = vmax
         if startpos < vmin: startpos = vmin
@@ -78,6 +81,7 @@ class GetValue(WindowBase):
         self.__vmax = vmax
         self.__vstep = vstep
         self.__unit = unit
+        self.__windowtitle = windowtitle
         self.get_position()
 
         while not self.finished and self.loop.is_running():
@@ -85,8 +89,8 @@ class GetValue(WindowBase):
 
         return self.__value
 
-    def getValue(self,vmin=0,vmax=100,vstep=1,startpos=50,unit=None):
-        future = asyncio.run_coroutine_threadsafe(self.__async_get_value(vmin, vmax, vstep, startpos,unit), self.loop)
+    def getValue(self,vmin=0,vmax=100,vstep=1,startpos=50,unit=None,windowtitle=""):
+        future = asyncio.run_coroutine_threadsafe(self.__async_get_value(vmin, vmax, vstep, startpos,unit,windowtitle), self.loop)
         return future.result()
 
     def activate(self):
@@ -105,6 +109,7 @@ class GetValue(WindowBase):
 
     def turn_callback(self, direction, key=None):
         if key:
+            logger.debug(f"turn_callback, key: {key}")
             if key in ['2','6']:
                 direction = self.__vstep
             elif key in ['4','8']:
