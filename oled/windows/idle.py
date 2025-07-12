@@ -224,6 +224,11 @@ class Idle(MainWindow):
             #    playout.pc_mute()
             elif key == 'F':
                 self.musicmanager.playpause()
+            elif key == 'T':
+                value = self.windowmanager.getValue(startpos=30,vstep=1,unit=" min")
+                self.usersettings.shutdowntime = time.monotonic() + int(value) * 60
+                self.usersettings.shutdownset = time.monotonic()
+
             elif key == 'TODO':
                 self.windowmanager.windows["downloadmenu"].direct_play_last_folder = True
                 self.windowmanager.set_window("downloadmenu")
