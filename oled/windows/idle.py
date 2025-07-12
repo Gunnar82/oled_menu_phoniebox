@@ -226,8 +226,9 @@ class Idle(MainWindow):
                 self.musicmanager.playpause()
             elif key == 'T':
                 value = self.windowmanager.getValue(startpos=30,vstep=1,unit=" min",windowtitle="Poweroff Timer")
-                self.usersettings.shutdowntime = time.monotonic() + int(value) * 60
-                self.usersettings.shutdownset = time.monotonic()
+                if value[0]:
+                    self.usersettings.shutdowntime = time.monotonic() + int(value[1]) * 60
+                    self.usersettings.shutdownset = time.monotonic()
 
             elif key == 'TODO':
                 self.windowmanager.windows["downloadmenu"].direct_play_last_folder = True

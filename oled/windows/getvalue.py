@@ -40,6 +40,7 @@ class GetValue(WindowBase):
         self.__max_text = "max"
         self.__hint_text = ""
         self.__windowtitle = ""
+        self.__canceled = False
 
     def get_position(self):
         try:
@@ -94,8 +95,7 @@ class GetValue(WindowBase):
 
         while not self.finished and self.loop.is_running():
             await asyncio.sleep (0.2)
-
-        return self.__value
+        return not self.__canceled, self.__value
 
     def getValue(self,vmin=0,vmax=100,vstep=1,startpos=50,unit=None,windowtitle=""):
         future = asyncio.run_coroutine_threadsafe(self.__async_get_value(vmin, vmax, vstep, startpos,unit,windowtitle), self.loop)
@@ -104,12 +104,13 @@ class GetValue(WindowBase):
     def activate(self):
         logger.debug("activate: startet")
         self.finished = False
+        self.__canceled = False
         self.get_position()
 
     def deactivate(self):
         logger.debug("deactivate: startet")
         self.finished = True
-
+        self.__canceled = False
 
     def push_callback(self,lp=False):
         logger.debug(f"push_callback")
@@ -132,6 +133,9 @@ class GetValue(WindowBase):
                     direction = - 5 * self.__vstep
             elif key in ['B']:
                     direction = 5 * self.__vstep
+            elif key in ['#']:
+                self.__canceled = True
+                self.finished = True
 
         self.__value = min(max(self.__value + direction, self.__vmin), self.__vmax)
 

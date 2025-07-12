@@ -174,7 +174,7 @@ class SystemMenu(ListBase):
 
             elif entry[1] == "int":
                 value = self.windowmanager.getValue(vmin=1,vmax=255,vstep=1,startpos=getattr(self.usersettings,entry[3]))
-                setattr(self.usersettings,entry[3],value)
+                if value[0]: setattr(self.usersettings,entry[3],value[1])
 
             elif entry[1] == "cmd":
                 self.cmd = entry[0]
