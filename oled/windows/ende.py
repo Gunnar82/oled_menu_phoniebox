@@ -103,6 +103,7 @@ class Ende(MainWindow):
                     self.drawline2 = f"AUS in min {settings.job_t} min"
                     if "gpicase" in settings.INPUTS: self.drawline3 = "start > pause; X,Y > AUS"
                     elif "keypad4x4" in settings.INPUTS: self.drawline3 = "# > pause; A,B,C,D > AUS"
+                    elif "mcp_buttons_23017" in settings.INPUTS: self.drawline3 = "F > pause; A,B,C,D > AUS"
                     await asyncio.sleep(3)
 
         except Exception as error:
