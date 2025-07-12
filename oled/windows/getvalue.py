@@ -44,15 +44,19 @@ class GetValue(WindowBase):
     def get_position(self):
         try:
             drawtext = str(self.__value)
-            self.__hint_text = "min" if self.__value <= self.__vmin else "max" if self.__value >= self.__vmax else self.__windowtitle
+            self.__hint_text = "min" if self.__value <= self.__vmin else "max" if self.__value >= self.__vmax else ""
 
             if self.__unit is not None: drawtext += self.__unit 
 
             width, height = self.font.getsize(drawtext)
             self.xy = (settings.DISPLAY_WIDTH - width) / 2, (settings.DISPLAY_HEIGHT - height) / 2
 
-            width, height = self.font_l.getsize(self.__hint_text)
+            width, height = self.font.getsize(self.__hint_text)
             self.xy_hint = (settings.DISPLAY_WIDTH - width) / 2, settings.DISPLAY_HEIGHT - height - 2
+
+
+            width, height = self.font_l.getsize(self.__windowtitle)
+            self.xy_windowtitle = (settings.DISPLAY_WIDTH - width) / 2, 0 #height
 
         except Exception as error:
             logger.debug(f"get_position: {error}")
@@ -61,8 +65,12 @@ class GetValue(WindowBase):
         with canvas(self.device) as draw:
             drawtext = f"{self.__value}"
             if self.__unit is not None: drawtext += self.__unit 
+
             draw.text((self.xy), drawtext ,font=self.font,fill="white") 
-            if not self.__hint_text == "": draw.text((self.xy_hint), self.__hint_text ,font=self.font_l,fill=colors.COLOR_ORANGE)
+
+            if not self.__hint_text == "": draw.text((self.xy_hint), self.__hint_text ,font=self.font,fill=colors.COLOR_ORANGE)
+            if not self.__windowtitle == "": draw.text((self.xy_windowtitle), self.__windowtitle ,font=self.font_l,fill=colors.COLOR_ORANGE)
+
             try:
                 pos = (self.__value - self.__vmin) / (self.__vmax - self.__vmin)
                 logger.debug(f"pos for progressbar: {pos}")
