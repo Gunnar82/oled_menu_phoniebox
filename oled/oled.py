@@ -71,6 +71,10 @@ mcp_23017_buttons_cfg_sample = f"{mcp_23017_buttons_cfg}.sample"
 mcp_23017_leds_cfg = f"{config_path}/mcp_23017_leds.py"
 mcp_23017_leds_cfg_sample = f"{mcp_23017_leds_cfg}.sample"
 
+
+neopixel_cfg = f"{config_path}/neopixel.py"
+neopixel_cfg_sample = f"{neopixel_cfg}.sample"
+
 statusled_cfg = f"{config_path}/statusled.py"
 statusled_cfg_sample = f"{statusled_cfg}.sample"
 
@@ -345,6 +349,15 @@ def main():
         from integrations.outputs.mcp_23017_leds import mcp_23017_leds
 
         mMCPLeds = mcp_23017_leds(loop, usersettings, mcp_23017_leds_config)
+
+
+    if "neopixel" in settings.OUTPUTS:
+        check_or_create_config(neopixel_cfg,neopixel_cfg_sample)
+        import config.neopixel as neopixel_config
+
+        from integrations.outputs.neopixel import neopixel
+
+        mNeoPixel = neopixel(loop, usersettings, neopixel_config)
 
 
 

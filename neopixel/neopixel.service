@@ -1,0 +1,21 @@
+[Unit]
+Description=OLED display provider
+After=mpd.service pulseaudio.service bluetooth.service
+Requires=mpd.service pulseaudio.service bluetooth.service
+
+# Optional: Warte auf die i2c- und spi-Module, wenn sie vorhanden sind
+After=i2c-dev.service spi.service
+Wants=i2c-dev.service spi.service
+
+
+[Service]
+Environment=PYTHONUNBUFFERED=1
+User=root
+Group=root
+WorkingDirectory=/home/pi/oledctrl/neopixel
+ExecStart=python3 /home/pi/oledctrl/neopixel/neopixel.py
+RestartSec=10
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
