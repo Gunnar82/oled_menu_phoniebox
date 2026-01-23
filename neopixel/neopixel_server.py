@@ -11,7 +11,7 @@ SOCKET_PATH = "/tmp/neopixel.sock"
 
 LED_COUNT = 8
 GPIO_PIN = 21
-BRIGHTNESS = 4
+BRIGHTNESS = 8
 
 class NeoPixelDaemon:
     def __init__(self):
@@ -57,7 +57,8 @@ class NeoPixelDaemon:
 
     def battery(self, percent, color=None, gradient=None, steps=5, delay=0.05):
         n = self.strip.numPixels()
-        leds_on = int((percent / 100) * n)
+        leds_on = round((percent / 100) * n)
+        leds_on = max(0, min(n, leds_on))
 
         # Stoppe vorheriges Blinken (Startup oder 0%)
         if self.blink_thread and self.blink_thread.is_alive():

@@ -268,7 +268,7 @@ def get_hostapd_psk():
 def set_lastinput(name = "n/a", set_time = -1):
 
     what = set_time if set_time >= 0 else time.monotonic()
-    logger.error ("%s: lastinput %d" % (name,what))
+    logger.debug ("%s: lastinput %d" % (name,what))
     settings.lastinput = what
 
 

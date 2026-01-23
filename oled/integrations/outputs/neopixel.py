@@ -28,7 +28,7 @@ class neopixel:
                 if (settings.job_t >= 0 or settings.job_i >= 0):
                     if (settings.job_i <= settings.job_t or settings.job_t == -1) and settings.job_i > -1:
                         percent = int(settings.job_i / (self.usersettings.IDLE_POWEROFF * 60) * 100)
-                        await self.send_to_daemon(percent,color=[255,140,0])
+                        await self.send_to_daemon(percent,color=[255,0,255])
                     else:
                         # ausgehend von 30 min als max
                         seconds_till_shutdown = int(self.usersettings.shutdowntime - time.monotonic())

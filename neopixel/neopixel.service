@@ -13,7 +13,7 @@ Environment=PYTHONUNBUFFERED=1
 User=root
 Group=root
 WorkingDirectory=/home/pi/oledctrl/neopixel
-ExecStart=python3 /home/pi/oledctrl/neopixel/neopixel.py
+ExecStart=python3 /home/pi/oledctrl/neopixel/neopixel_server.py
 RestartSec=10
 Restart=always
 
