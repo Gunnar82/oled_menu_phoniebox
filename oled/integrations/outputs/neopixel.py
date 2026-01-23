@@ -15,6 +15,8 @@ class neopixel:
     busy = False
     last_leds_on = -1
 
+
+
     async def set(self):
         self.toggle_index = 0
         last_percent = -111
@@ -24,9 +26,10 @@ class neopixel:
 
         while self.loop.is_running():
             try:
+                wechsel = (int(time.monotonic() // 30) % 2) == 0
                 # Berechnung der LED-Werte
 
-                if (settings.job_t >= 0 or settings.job_i >= 0):
+                if (settings.job_t >= 0 or settings.job_i >= 0) and not (wechsel and "x728" in settings.INPUTS):
                     if (settings.job_i <= settings.job_t or settings.job_t == -1) and settings.job_i > -1:
                         percent = int(settings.job_i / (self.usersettings.IDLE_POWEROFF * 60) * 100)
                         await self.send_to_daemon(percent,color=[255,0,255])
@@ -47,7 +50,7 @@ class neopixel:
             except Exception as error:
                 print(f"NeoPixel async error: {error}")
 
-            await asyncio.sleep(2)
+            await asyncio.sleep(3)
 
     async def send_to_daemon(self, percent, color=None, gradient=None):
         """Async send an LED command to the NeoPixel daemon via UNIX socket"""
