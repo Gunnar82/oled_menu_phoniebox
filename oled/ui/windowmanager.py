@@ -26,7 +26,7 @@ class WindowManager():
         self.windows = {}
         self.activewindow = None
         self.loop = loop
-        fn.set_lastinput()
+        fn.set_lastinput(__name__)
         self._lastcontrast = self.csettings.CONTRAST_FULL
         self.loop.create_task(self._render())
         self.lastrfidate = 0
@@ -187,7 +187,7 @@ class WindowManager():
 
 
     def init_callback_or_idle(self):
-        fn.set_lastinput()
+        fn.set_lastinput(__name__)
         settings.staywake = False
         self.device.contrast(self.csettings.CONTRAST_FULL)
 
@@ -215,7 +215,7 @@ class WindowManager():
 
 
     def set_screen_to_contrast(self):
-        settings.lastinput = time.monotonic() - self.csettings.CONTRAST_TIMEOUT
+        fn.set_lastinput(__name__,time.monotonic() - self.csettings.CONTRAST_TIMEOUT)
 
 
     def push_callback(self,lp=False):

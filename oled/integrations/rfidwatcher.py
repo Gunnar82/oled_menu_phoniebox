@@ -16,7 +16,7 @@ class MyHandler(FileSystemEventHandler):
         global rfid_watcher_changed
         if event.src_path == cfg_file_folder.LATEST_RFID:
             rfid_watcher_changed = True
-        fn.set_lastinput()
+        fn.set_lastinput(__name__)
 
 class RfidWatcher:
 

@@ -54,7 +54,6 @@ class nowplaying:
         self.windowmanager = windowmanager
 
         self.loop.create_task(self._generatenowplaying())
-        self.loop.create_task(self.__get_timeouts())
         self.loop.create_task(self.__systemabfrage())
         self.loop.create_task(self._savepos_status())
 
@@ -85,9 +84,9 @@ class nowplaying:
                 title = n/a
 
             if title != self.__oldtitle:
-                if self.__oldtitle:
-                    if (time.monotonic() - settings.lastinput) >= self.usersettings.DARK_TIMEOUT:
-                        settings.lastinput = time.monotonic() - self.usersettings.CONTRAST_TIMEOUT
+                #if self.__oldtitle:
+                    #if (time.monotonic() - settings.lastinput) >= self.usersettings.DARK_TIMEOUT:
+                        #settings.lastinput = time.monotonic() - self.usersettings.CONTRAST_TIMEOUT
                 self.__oldtitle = title
 
             self._playingtitle = title
@@ -142,53 +141,6 @@ class nowplaying:
             logger.debug (f"nowplaying error: {error}")
         finally:
             logger.debug("generatenowplaying ends")
-
-    async def __get_timeouts(self):
-        while self.loop.is_running():
-            #get_timeouts()
-            try:
-                logger.debug("get_timeouts  job_t started")
-
-                if self.usersettings.startup < self.usersettings.shutdowntime:
-                    shutdowntime = int(self.usersettings.shutdowntime - time.monotonic())
-                    settings.job_t = shutdowntime
-
-                    if self.usersettings.shutdowntime <= time.monotonic():
-                        self.windowmanager.set_window("ende")
-                else:
-                    settings.job_t = -1
-
-            except Exception as error:
-                settings.job_t = -1
-                print (error)
-            finally:
-                logger.debug("get_timeouts job_t ended")
-
-
-            try:
-                logger.debug("chedk IDLE_POWEROFF TIMEOUT job_t")
-
-                if self.usersettings.IDLE_POWEROFF > 0 and self._state != "play":
-                    seconds_since_last_input = time.monotonic() - settings.lastinput
-                    settings.job_i = self.usersettings.IDLE_POWEROFF * 60  - (seconds_since_last_input)
-                    if seconds_since_last_input >= self.usersettings.IDLE_POWEROFF * 60:
-                        self.windowmanager.set_window("ende")
-                else:
-                    settings.job_i = -1
-
-            except Exception as error:
-                settings.job_i = -1
-                print (error)
-            finally:
-                logger.debug("chedk IDLE_POWEROFF TIMEOUT endet")
-
-            if ((settings.job_t >=0 and settings.job_t <= 300) or
-                    (settings.job_i >= 0 and settings.job_i <= 300) or
-                    ("x728" in settings.INPUTS and settings.battcapacity <= 15)):
-                if not "statusled" in settings.OUTPUTS:
-                    self.windowmanager.set_screen_to_contrast()
-
-            await asyncio.sleep(5)
 
 
     async def _savepos_status(self):

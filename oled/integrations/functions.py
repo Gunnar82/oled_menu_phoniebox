@@ -265,8 +265,11 @@ def get_hostapd_psk():
     return finde_zeile_nach_wert("/etc/hostapd/hostapd.conf","wpa_passphrase")
 
 
-def set_lastinput():
-    settings.lastinput = time.monotonic()
+def set_lastinput(name = "n/a", set_time = -1):
+
+    what = set_time if set_time >= 0 else time.monotonic()
+    logger.error ("%s: lastinput %d" % (name,what))
+    settings.lastinput = what
 
 
 def ping_test(host="8.8.8.8", wait=2): # default ip

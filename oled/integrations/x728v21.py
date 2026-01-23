@@ -78,7 +78,7 @@ class x728:
         if not self.__loading:
             if self.__capacity >= 0 and self.__capacity <= self.usersettings.X728_BATT_EMERG:
                 self.battlaod_emerg_started = True
-                if not self.battlaod_emerg_started: set_lastinput()
+                if not self.battlaod_emerg_started: set_lastinput(__name__)
         else:
             self.battlaod_emerg_started = False
 

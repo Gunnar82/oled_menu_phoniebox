@@ -107,7 +107,7 @@ from datetime import datetime
 ###########################
 settings.screenpower = True
 settings.shutdown_reason = "changeme"
-fn.set_lastinput()
+fn.set_lastinput(__name__)
 settings.job_t = -1
 settings.job_i = -1
 settings.job_s = -1
@@ -220,6 +220,13 @@ def main():
     import integrations.nowplaying as nowplaying
 
     _nowplaying = nowplaying.nowplaying(loop,musicmanager,windowmanager,mybluetooth,usersettings)
+
+    import integrations.timeouts as timeouts
+
+    _timeouts = timeouts.timeouts(loop,windowmanager,_nowplaying,usersettings)
+
+
+
 
     #callback_setup
     def turn_callback(direction,_key=False):
