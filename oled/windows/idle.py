@@ -99,9 +99,9 @@ class Idle(MainWindow):
 
                 if settings.job_i >= 0 or settings.job_t >= 0:
                     if (settings.job_i <= settings.job_t or settings.job_t == -1 ) and settings.job_i >= 0:
-                        aus = "Idle %2.2d sek" % (settings.job_i) if settings.job_i < 60 else "Idle %2.2d min" % (settings.job_i // 60)
+                        aus = "Idle %2.2d sek" % (settings.job_i) if settings.job_i < 60 else "Idle %2.2d min" % (round(settings.job_i / 60))
                     else:
-                        aus = "Timer %2.2d sek" % (settings.job_t) if settings.job_t < 60 else "Timer %2.2d min" % (settings.job_t // 60)
+                        aus = "Timer %2.2d sek" % (settings.job_t) if settings.job_t < 60 else "Timer %2.2d min" % (round(settings.job_t / 60))
 
                     text = aus
                 else:

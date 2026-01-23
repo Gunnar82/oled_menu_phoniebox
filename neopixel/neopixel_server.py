@@ -109,7 +109,7 @@ class NeoPixelDaemon:
 
         # Unter 5% → letzte LED blinkt in normaler Farbe
         if leds_on <= 1:
-            blink_color = all_colors[-1]
+            blink_color = all_colors[0]
             def blink():
                 while not self.blink_stop.is_set():
                     self.clear()
