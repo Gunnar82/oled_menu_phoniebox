@@ -20,6 +20,7 @@ class neopixel:
         last_percent = -111
         last_color = None
         last_gradient = None
+        percent = 100
 
         while self.loop.is_running():
             try:
@@ -36,7 +37,6 @@ class neopixel:
                         percent = int((seconds_till_shutdown) / total_seconds_for_shutdown * 100)
                         await self.send_to_daemon(percent,color=[255,0,0])
                 elif "x728" in settings.INPUTS:
-                    print ("bat",percent)
                     percent  = int(settings.battcapacity)
                     await self.send_to_daemon(percent,color=[0,0,255] if settings.battloading else None)
 
