@@ -18,7 +18,9 @@ class neopixel:
         last_percent = -111
         last_color = None
         last_gradient = None
+        last_brightness = -1
         percent = 100
+
         brightness = self.usersettings.NEOPX_BRIGHTNESS_DAY
 
         while self.loop.is_running():
@@ -38,6 +40,7 @@ class neopixel:
             try:
 
                 wechsel = (int(time.monotonic() // 10) % 2) == 0
+
                 # Berechnung der LED-Werte
                 if (settings.job_t >= 0 or settings.job_i >= 0) and not (wechsel and "x728" in settings.INPUTS):
                     if (settings.job_i <= settings.job_t or settings.job_t == -1) and settings.job_i > -1:
@@ -56,7 +59,7 @@ class neopixel:
             except Exception as error:
                 print(f"NeoPixel async error: {error}")
 
-            await asyncio.sleep(3)
+            await asyncio.sleep(1)
 
     async def send_to_daemon(self, percent, brightness, color=None, gradient=None):
         """Async send an LED command to the NeoPixel ESP32 via USB Serial"""
@@ -64,6 +67,7 @@ class neopixel:
             leds_on = int((percent/100) * self.config.LEDCOUNT)
             if (
                 leds_on == getattr(self, "last_leds_on", None)
+                and brightness == getattr(self,"last_brightness",-1)
                 and color == getattr(self, "last_color", None)
                 and gradient == getattr(self, "last_gradient", None)
             ):
@@ -72,6 +76,7 @@ class neopixel:
             self.last_leds_on = leds_on
             self.last_color = color
             self.last_gradient = gradient
+            self.last_brightness = brightness
 
             cmd = {
                 "cmd": "battery",
