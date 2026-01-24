@@ -29,7 +29,7 @@ class neopixel:
                     settings.mcp_leds_change = False
                     self.brightness_day = not self.brightness_day
                     settings.mcp_leds_change = False
-                    print ("BD",self.brightness_day)
+
 
             except Exception as error:
                 brightness = self.usersettings.NEOPX_BRIGHNESS_DAY
@@ -45,12 +45,12 @@ class neopixel:
                 if (settings.job_t >= 0 or settings.job_i >= 0) and not (wechsel and "x728" in settings.INPUTS):
                     if (settings.job_i <= settings.job_t or settings.job_t == -1) and settings.job_i > -1:
                         percent = int(settings.job_i / (self.usersettings.IDLE_POWEROFF * 60) * 100)
-                        await self.send_to_daemon(percent, brightness, color=[0,255,0])
+                        await self.send_to_daemon(percent, brightness, color=self.config.COLOR_JOB_I)
                     else:
                         seconds_till_shutdown = int(self.usersettings.shutdowntime - time.monotonic())
                         total_seconds_for_shutdown = int(self.usersettings.shutdowntime - self.usersettings.shutdownset)
                         percent = int((seconds_till_shutdown) / total_seconds_for_shutdown * 100)
-                        await self.send_to_daemon(percent, brightness, color=[255,0,0])
+                        await self.send_to_daemon(percent, brightness, color=self.config.COLOR_JOB_T)
                 elif "x728" in settings.INPUTS:
                     percent = int(settings.battcapacity)
                     await self.send_to_daemon(percent, brightness, color=[0,0,255] if settings.battloading else None)
@@ -101,7 +101,6 @@ class neopixel:
                 print(f"Verbunden mit {ports[0]}")
 
             line = json.dumps(cmd) + "\n"
-            print (line)
             self.ser.write(line.encode())
 
         except Exception as e:

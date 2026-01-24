@@ -93,7 +93,7 @@ class SystemMenu(ListBase):
 
         if "neopixelesp32" in settings.OUTPUTS:
             self.menu.append(["Neopx Helligkeit","int","","NEOPX_BRIGHTNESS_DAY"])
-            self.menu.append(["Neopx Helligkeit","int","","NEOPX_BRIGHTNESS_NIGHT"])
+            self.menu.append(["Neopx Helligkeit","int0","","NEOPX_BRIGHTNESS_NIGHT"])
 
 
         self.menu.append(["WLAN: aus","cmd","","sudo ip link set wlan0 down"])                            # Eintrag 8
@@ -179,6 +179,10 @@ class SystemMenu(ListBase):
 
             elif entry[1] == "int":
                 value = self.windowmanager.getValue(vmin=1,vmax=255,vstep=1,startpos=getattr(self.usersettings,entry[3]))
+                if value[0]: setattr(self.usersettings,entry[3],value[1])
+
+            elif entry[1] == "int0":
+                value = self.windowmanager.getValue(vmin=0,vmax=255,vstep=1,startpos=getattr(self.usersettings,entry[3]))
                 if value[0]: setattr(self.usersettings,entry[3],value[1])
 
             elif entry[1] == "cmd":
@@ -297,7 +301,7 @@ class SystemMenu(ListBase):
                 if entry[1] == "bool":
                     self.menu[idx][0] = self.generate_bool_text(entry[3])
 
-                elif entry[1] == "int":
+                elif entry[1] == "int" or entry[1] == "int0":
                     self.menu[idx][0] = self.generate_int_text(entry[3])
         except Exception as error:
             print (f"render rr: {error}")

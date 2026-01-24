@@ -70,4 +70,4 @@ class UserSettings(Settings):
 
     #Neopixel
     NEOPX_BRIGHTNESS_DAY = 8
-    NEOPX_BRIGHTNESS_NIGHT = 1
+    NEOPX_BRIGHTNESS_NIGHT = 2
