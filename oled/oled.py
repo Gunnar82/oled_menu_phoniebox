@@ -366,6 +366,14 @@ def main():
 
         mNeoPixel = neopixel(loop, usersettings, neopixel_config)
 
+    elif "neopixelesp32" in settings.OUTPUTS:
+        check_or_create_config(neopixel_cfg,neopixel_cfg_sample)
+        import config.neopixel as neopixel_config
+
+        from integrations.outputs.neopixelesp32 import neopixel
+
+        mNeoPixel = neopixel(loop, usersettings, neopixel_config)
+
 
 
     ######Status LED

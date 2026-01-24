@@ -91,6 +91,11 @@ class SystemMenu(ListBase):
             self.menu.append(["","c"])
 
 
+        if "neopixelesp32" in settings.OUTPUTS:
+            self.menu.append(["Neopx Helligkeit","int","","NEOPX_BRIGHTNESS_DAY"])
+            self.menu.append(["Neopx Helligkeit","int","","NEOPX_BRIGHTNESS_NIGHT"])
+
+
         self.menu.append(["WLAN: aus","cmd","","sudo ip link set wlan0 down"])                            # Eintrag 8
         self.menu.append(["WLAN: an","cmd","","sudo ip link set wlan0 up"])                             # Eintrag 9
 

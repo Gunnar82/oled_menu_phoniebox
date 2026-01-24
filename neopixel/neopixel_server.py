@@ -125,28 +125,32 @@ class NeoPixelDaemon:
 
         # Normale Anzeige
         self.clear()
+
         current_colors = [self.strip.getPixelColor(i) for i in range(n)]
 
         for step in range(steps):
             for i in range(n):
                 if i < leds_on:
-                    r_target,g_target,b_target = all_colors[i]
+                    r_target, g_target, b_target = all_colors[i]
                 else:
-                    r_target,g_target,b_target = 0,0,0
+                    r_target, g_target, b_target = 0, 0, 0
 
                 c = current_colors[i]
-                r_current = (c>>16)&0xFF
-                g_current = (c>>8)&0xFF
-                b_current = c&0xFF
+                r_current = (c >> 16) & 0xFF
+                g_current = (c >> 8) & 0xFF
+                b_current = c & 0xFF
 
-                r_new = int(r_current + (r_target-r_current)*(step+1)/steps)
-                g_new = int(g_current + (g_target-g_current)*(step+1)/steps)
-                b_new = int(b_current + (b_target-b_current)*(step+1)/steps)
+                r_new = int(r_current + (r_target - r_current) * (step + 1) / steps)
+                g_new = int(g_current + (g_target - g_current) * (step + 1) / steps)
+                b_new = int(b_current + (b_target - b_current) * (step + 1) / steps)
 
-                self.strip.setPixelColor(self.hw_index(i), Color(r_new,g_new,b_new))
+                self.strip.setPixelColor(
+                    self.hw_index(i),
+                    Color(r_new, g_new, b_new)
+                )
+
             self.strip.show()
             time.sleep(delay)
-
 
 def cleanup(signum=None, frame=None):
     try:

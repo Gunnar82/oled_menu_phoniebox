@@ -66,3 +66,8 @@ class UserSettings(Settings):
 
     #Online-Test {ping|url}
     ONLINE_URL_TEST = False
+
+
+    #Neopixel
+    NEOPX_BRIGHTNESS_DAY = 8
+    NEOPX_BRIGHTNESS_NIGHT = 1
