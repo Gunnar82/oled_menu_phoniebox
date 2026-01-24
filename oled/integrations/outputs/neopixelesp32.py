@@ -10,6 +10,13 @@ import json
 import settings
 import glob
 
+
+from integrations.logging_config import *
+
+logger = setup_logger(__name__)
+
+
+
 class neopixel:
     busy = False
     last_leds_on = -1
@@ -106,6 +113,26 @@ class neopixel:
         except Exception as e:
             print(f"Error sending to NeoPixel daemon via Serial: {e}")
 
+
+    def set_led_count(self):
+        # Serial senden
+        if not hasattr(self, "ser") or self.ser is None:
+            # automatisch USB Port suchen
+            ports = glob.glob("/dev/ttyUSB*") + glob.glob("/dev/ttyACM*")
+            if not ports:
+                print("Kein USB-Gerät gefunden")
+                return
+            self.ser = serial.Serial(ports[0], 115200, timeout=1)
+            print(f"Verbunden mit {ports[0]}")
+
+        cmd = {
+            "cmd": "config",
+            "led": self.config.LEDCOUNT
+        }
+        print (cmd)
+        self.ser.write((json.dumps(cmd) + "\n").encode())
+
+
     def __init__(self, loop, usersettings, config):
         self.loop = loop
         self.config = config
@@ -114,6 +141,10 @@ class neopixel:
         settings.mcp_leds_change = False
         self.loop.create_task(self.set())
         self.brightness_day = True
+        try:
+            self.set_led_count()
+        except Exception as error:
+            logger.error (error)
 
     def close(self):
         """Schließt den Serial-Port sicher"""
