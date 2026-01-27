@@ -3,8 +3,9 @@
 #include <ArduinoJson.h>
 #include <Preferences.h>
 
-#define LED_PIN     13
+#define LED_PIN     22
 #define BAUDRATE    115200
+#define DEBUG 0  // 1 = Debug aktiv, 0 = Debug aus
 
 // Default Gradient: rot → gelb → grün
 const uint8_t DEFAULT_GRADIENT[][3] = {
@@ -16,9 +17,7 @@ const int DEFAULT_GRADIENT_LEN = 3;
 
 uint16_t LED_COUNT_RUNTIME;
 
-
-
-//Preferences
+// Preferences
 Preferences prefs;
 uint16_t loadLedCount() {
   prefs.begin("neopixel", true);
@@ -33,7 +32,6 @@ void saveLedCount(uint16_t count) {
   prefs.end();
 }
 
-
 class NeoPixelServer {
   public:
     NeoPixelServer(uint16_t count, uint8_t pin)
@@ -44,7 +42,13 @@ class NeoPixelServer {
     void begin() {
       strip.begin();
       strip.show();
-      startKnightRider(255, 0, 0, 0.15);
+      startKnightRider(255, 0, 0, 0.15); // Knight-Rider beim Start
+
+      // Serial erst verzögert starten
+      delay(2000);
+      Serial.begin(BAUDRATE);
+      while (!Serial) delay(10);
+      if (DEBUG) Serial.println("DEBUG: Serial bereit, JSON-Befehle möglich");
     }
 
     void loop() {
@@ -62,8 +66,8 @@ class NeoPixelServer {
     void update() {
       unsigned long now = millis();
 
-      // Knight Rider beim Start
-      if (!client_connected && knightRiderActive && now - knightRiderTimer >= knightRiderSpeed) {
+      // Knight Rider läuft immer
+      if (knightRiderActive && now - knightRiderTimer >= knightRiderSpeed) {
         clear();
         strip.setPixelColor(hw_index(knightRiderPos), knightRiderColor);
         strip.show();
@@ -73,8 +77,8 @@ class NeoPixelServer {
         knightRiderTimer = now;
       }
 
-      // Blinken unter 5 %
-      if (client_connected && blinkActive && now - lastBlink >= 500) {
+      // Blinken unter 5 % nur wenn JSON-Befehle empfangen
+      if (json_client_connected && blinkActive && now - lastBlink >= 500) {
         blinkState = !blinkState;
         strip.setPixelColor(hw_index(0), blinkState ? blinkColor : 0);
         strip.show();
@@ -88,7 +92,8 @@ class NeoPixelServer {
     int brightness;
     String buffer;
 
-    bool client_connected = false;
+    // Flag nur bei echtem JSON-Befehl vom Host
+    bool json_client_connected = false;
 
     // Blink
     bool blinkActive = false;
@@ -124,6 +129,7 @@ class NeoPixelServer {
       knightRiderColor = strip.Color(r * scale, g * scale, b * scale);
       knightRiderSpeed = speed * 1000;
       knightRiderActive = true;
+      if (DEBUG) Serial.println("DEBUG: Knight-Rider Animation gestartet");
     }
 
     // ---------- Default Gradient ----------
@@ -165,6 +171,11 @@ class NeoPixelServer {
         }
       }
       strip.show();
+      if (DEBUG) {
+        Serial.print("DEBUG: Default Gradient gesetzt, ");
+        Serial.print(percent);
+        Serial.println("% LEDs");
+      }
     }
 
     // ---------- Gradient aus JSON ----------
@@ -174,7 +185,6 @@ class NeoPixelServer {
       float scale = brightness / 255.0;
       int gLen = gradient.size();
 
-      // <5 % → blink letzte LED in ihrer normalen Farbe
       if (percent < 5 && gLen > 0) {
         JsonArray c0 = gradient[0];
         int r0 = c0[0].as<int>();
@@ -216,6 +226,11 @@ class NeoPixelServer {
         }
       }
       strip.show();
+      if (DEBUG) {
+        Serial.print("DEBUG: Gradient gesetzt, ");
+        Serial.print(percent);
+        Serial.println("% LEDs");
+      }
     }
 
     // ---------- Solid Color ----------
@@ -240,16 +255,33 @@ class NeoPixelServer {
         );
       }
       strip.show();
+
+      if (DEBUG) {
+        Serial.print("DEBUG: Farbe gesetzt, ");
+        Serial.print(percent);
+        Serial.print("% LEDs, RGB(");
+        Serial.print(r); Serial.print(",");
+        Serial.print(g); Serial.print(",");
+        Serial.print(b); Serial.println(")");
+      }
     }
 
     // ---------- Command ----------
     void handleCommand(const String &json) {
+      if (DEBUG) {
+        Serial.print("DEBUG: Befehl empfangen: ");
+        Serial.println(json);
+      }
+
       StaticJsonDocument<512> doc;
-      if (deserializeJson(doc, json)) return;
+      if (deserializeJson(doc, json)) {
+        if (DEBUG) Serial.println("DEBUG: JSON konnte nicht geparst werden!");
+        return;
+      }
+
       if (strcmp(doc["cmd"] | "", "config") == 0) {
         if (doc.containsKey("led")) {
           uint16_t newCount = doc["led"].as<int>();
-
           if (newCount >= 1 && newCount <= 300) {
             saveLedCount(newCount);
             Serial.println("{\"status\":\"reboot\"}");
@@ -259,10 +291,14 @@ class NeoPixelServer {
         }
         return;
       }
+
       if (strcmp(doc["cmd"] | "", "battery") != 0) return;
 
-      client_connected = true;
+      // Sobald ein echter JSON-Befehl kommt, stoppt Knight-Rider
+      json_client_connected = true;
       knightRiderActive = false;
+
+      if (DEBUG) Serial.println("DEBUG: JSON-Befehl empfangen, Knight-Rider gestoppt");
 
       int percent = doc["percent"] | 100;
       setBrightness(doc["brightness"] | brightness);
@@ -284,12 +320,8 @@ class NeoPixelServer {
 NeoPixelServer *server;
 
 void setup() {
-  Serial.begin(BAUDRATE);
-
   LED_COUNT_RUNTIME = loadLedCount();
-
   server = new NeoPixelServer(LED_COUNT_RUNTIME, LED_PIN);
-
   server->begin();
 }
 
