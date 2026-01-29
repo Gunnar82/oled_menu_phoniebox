@@ -46,10 +46,26 @@ class neopixel:
 
             try:
 
-                wechsel = (int(time.monotonic() // 10) % 2) == 0
+                wechsel = int(time.monotonic() // 5) % 4
+
+                if wechsel == 0: # Sleep Timer handling
+                    if settings.job_t < 0 and settings.job_i < 0:
+                        wechsel = 1
+
+                if wechsel == 1: # Battery Handling
+                    if "x728" not in settings.INPUTS:
+                        wechsel = 2
+
+                if wechsel == 2: # Battery Handling
+                    if settings.percent_track < 0:
+                        wechsel = 3
+
+                if wechsel == 3: # Battery Handling
+                    if settings.percent_playlist < 0:
+                        wehcsel = 4
 
                 # Berechnung der LED-Werte
-                if (settings.job_t >= 0 or settings.job_i >= 0) and not (wechsel and "x728" in settings.INPUTS):
+                if (wechsel == 0):
                     if (settings.job_i <= settings.job_t or settings.job_t == -1) and settings.job_i > -1:
                         percent = int(settings.job_i / (self.usersettings.IDLE_POWEROFF * 60) * 100)
                         await self.send_to_daemon(percent, brightness, color=self.config.COLOR_JOB_I)
@@ -58,9 +74,15 @@ class neopixel:
                         total_seconds_for_shutdown = int(self.usersettings.shutdowntime - self.usersettings.shutdownset)
                         percent = int((seconds_till_shutdown) / total_seconds_for_shutdown * 100)
                         await self.send_to_daemon(percent, brightness, color=self.config.COLOR_JOB_T)
-                elif "x728" in settings.INPUTS:
+                elif wechsel == 1:
                     percent = int(settings.battcapacity)
-                    await self.send_to_daemon(percent, brightness, color=[0,0,255] if settings.battloading else None)
+                    await self.send_to_daemon(percent, brightness, color=self.config.COLOR_X728_LOADING if settings.battloading else None)
+                elif wechsel == 2:
+                    percent = 100 - settings.percent_track
+                    await self.send_to_daemon(percent, brightness, color=self.config.COLOR_TRACK)
+                elif wechsel == 3:
+                    percent = settings.percent_playlist
+                    await self.send_to_daemon(percent, brightness, color=self.config.COLOR_PLAYLIST,blink_low=False)
                 else:
                     await self.send_to_daemon(100)
             except Exception as error:
@@ -68,7 +90,7 @@ class neopixel:
 
             await asyncio.sleep(1)
 
-    async def send_to_daemon(self, percent, brightness, color=None, gradient=None):
+    async def send_to_daemon(self, percent, brightness, color=None, gradient=None, blink_low=True):
         """Async send an LED command to the NeoPixel ESP32 via USB Serial"""
         try:
             leds_on = int((percent/100) * self.config.LEDCOUNT)
@@ -90,7 +112,8 @@ class neopixel:
                 "percent": percent,
                 "brightness": brightness,
                 "steps": 5,
-                "delay": 0.05
+                "delay": 0.05,
+                "blink_low": 1 if blink_low else 0
             }
             if color:
                 cmd["color"] = color
