@@ -79,7 +79,7 @@ class neopixel:
                     await self.send_to_daemon(percent, brightness, color=self.config.COLOR_X728_LOADING if settings.battloading else None)
                 elif wechsel == 2:
                     percent = 100 - settings.percent_track
-                    await self.send_to_daemon(percent, brightness, color=self.config.COLOR_TRACK)
+                    await self.send_to_daemon(percent, brightness, color=self.config.COLOR_TRACK,blink_low=False)
                 elif wechsel == 3:
                     percent = settings.percent_playlist
                     await self.send_to_daemon(percent, brightness, color=self.config.COLOR_PLAYLIST,blink_low=False)
