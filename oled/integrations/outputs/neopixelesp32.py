@@ -28,21 +28,22 @@ class neopixel:
         last_brightness = -1
         percent = 100
 
-        brightness = self.usersettings.NEOPX_BRIGHTNESS_DAY
+        brightness_array = [0,self.usersettings.NEOPX_BRIGHTNESS_DAY, self.usersettings.NEOPX_BRIGHTNESS_NIGHT]
+        current_brightness = 0
 
         while self.loop.is_running():
             try:
                 if settings.mcp_leds_change:
                     settings.mcp_leds_change = False
-                    self.brightness_day = not self.brightness_day
-                    settings.mcp_leds_change = False
+                    current_brightness += 1
+
 
 
             except Exception as error:
-                brightness = self.usersettings.NEOPX_BRIGHNESS_DAY
+                current_brightness = 0
                 logger.error(f"change led brightness button: {error}")
 
-            brightness = self.usersettings.NEOPX_BRIGHTNESS_DAY if self.brightness_day else self.usersettings.NEOPX_BRIGHTNESS_NIGHT
+            brightness = brightness_array[(current_brightness + 1) % len(brightness_array)]
 
             try:
 
@@ -79,7 +80,7 @@ class neopixel:
                     await self.send_to_daemon(percent, brightness, color=self.config.COLOR_X728_LOADING if settings.battloading else None)
                 elif wechsel == 2:
                     percent = 100 - settings.percent_track
-                    await self.send_to_daemon(percent, brightness, color=self.config.COLOR_TRACK,blink_low=False)
+                    await self.send_to_daemon(percent, brightness, color=self.config.COLOR_TRACK, color2=self.config.COLOR2_TRACK ,blink_low=False)
                 elif wechsel == 3:
                     percent = settings.percent_playlist
                     await self.send_to_daemon(percent, brightness, color=self.config.COLOR_PLAYLIST,blink_low=False)
@@ -90,7 +91,7 @@ class neopixel:
 
             await asyncio.sleep(1)
 
-    async def send_to_daemon(self, percent, brightness, color=None, gradient=None, blink_low=True):
+    async def send_to_daemon(self, percent, brightness, color=None, color2=None, gradient=None, blink_low=True):
         """Async send an LED command to the NeoPixel ESP32 via USB Serial"""
         try:
             leds_on = int((percent/100) * self.config.LEDCOUNT)
@@ -117,6 +118,7 @@ class neopixel:
             }
             if color:
                 cmd["color"] = color
+                cmd["color2"] = color2
             if gradient:
                 cmd["gradient"] = gradient
 

@@ -5,7 +5,65 @@
 
 #define LED_PIN     22
 #define BAUDRATE    115200
-#define DEBUG 0  // 1 = Debug aktiv, 0 = Debug aus
+#define DEBUG 1  // 1 = Debug aktiv, 0 = Debug aus
+
+
+struct RGB {
+  uint8_t r;
+  uint8_t g;
+  uint8_t b;
+};
+
+#define RED     RGB{255, 0, 0}
+#define GREEN   RGB{0, 255, 0}
+#define BLUE    RGB{0, 0, 255}
+#define YELLOW  RGB{255,255,0}
+#define ORANGE RGB{255, 128, 0}
+#define WHITE   RGB{255, 255, 255}
+#define BLACK   RGB{0, 0, 0}
+#define TURQUOISE RGB{0, 255, 255}   // 255 Grün + 255 Blau
+#define PURPLE    RGB{255, 0, 255}   // 255 Rot  + 255 Blau
+
+
+RGB colorFromName(const char* name) {
+  if (!name) return WHITE;
+
+  if (!strcasecmp(name, "RED"))   return RED;
+  if (!strcasecmp(name, "GREEN")) return GREEN;
+  if (!strcasecmp(name, "BLUE"))  return BLUE;
+  if (!strcasecmp(name, "WHITE")) return WHITE;
+  if (!strcasecmp(name, "ORANGE")) return ORANGE;
+  if (!strcasecmp(name, "BLACK")) return BLACK;
+  if (!strcasecmp(name, "YELLOW")) return YELLOW;
+  if (!strcasecmp(name, "PURPLE")) return PURPLE;
+  if (!strcasecmp(name, "TURQUOISE") || !strcasecmp(name, "CYAN")) return TURQUOISE;
+
+  // unbekannt → default
+  return WHITE;
+}
+
+
+RGB parseColor(JsonVariant v) {
+  if (v.is<JsonArray>()) {
+    JsonArray a = v.as<JsonArray>();
+    if (a.size() == 3) {
+      return RGB{
+        (uint8_t)a[0].as<int>(),
+        (uint8_t)a[1].as<int>(),
+        (uint8_t)a[2].as<int>()
+      };
+    }
+  }
+
+  if (v.is<const char*>()) {
+    return colorFromName(v.as<const char*>());
+  }
+
+  return WHITE;
+}
+
+
+
 
 // Default Gradient: rot → gelb → grün
 const uint8_t DEFAULT_GRADIENT[][3] = {
@@ -27,7 +85,8 @@ uint16_t loadLedCount() {
 }
 
 void saveLedCount(uint16_t count) {
-  prefs.begin("neopixel", false);
+  prefs.begin(
+  "neopixel", false);
   prefs.putUShort("led_count", count);
   prefs.end();
 }
@@ -37,18 +96,30 @@ class NeoPixelServer {
     NeoPixelServer(uint16_t count, uint8_t pin)
       : strip(count, pin, NEO_GRB + NEO_KHZ800),
         led_count(count),
-        brightness(20) {}
+        brightness(5) {}
 
     void begin() {
-      strip.begin();
-      strip.show();
-      startKnightRider(255, 0, 0, 0.15); // Knight-Rider beim Start
+    
 
       // Serial erst verzögert starten
       delay(2000);
       Serial.begin(BAUDRATE);
-      while (!Serial) delay(10);
+
+      unsigned long t0 = millis();
+
+      while (!Serial && millis() - t0 < 1000) delay(10);
       if (DEBUG) Serial.println("DEBUG: Serial bereit, JSON-Befehle möglich");
+
+      if (Serial) {
+        strip.begin();
+        strip.show();
+        startKnightRider(255, 0, 0, 0.15); // Knight-Rider beim Start
+      }
+      else
+      {
+        renderBatteryColorRGB(50, RED, BLUE);
+        strip.show();
+      }
     }
 
     void loop() {
@@ -78,7 +149,7 @@ class NeoPixelServer {
       }
 
       // Blinken unter 5 % nur wenn JSON-Befehle empfangen
-      if (json_client_connected && blinkActive && now - lastBlink >= 500) {
+      if (json_client_connected && blink_low && blinkActive && now - lastBlink >= 500) {
         blinkState = !blinkState;
         strip.setPixelColor(hw_index(0), blinkState ? blinkColor : 0);
         strip.show();
@@ -96,6 +167,7 @@ class NeoPixelServer {
     bool json_client_connected = false;
 
     // Blink
+    bool blink_low = true;
     bool blinkActive = false;
     bool blinkState = false;
     unsigned long lastBlink = 0;
@@ -133,108 +205,61 @@ class NeoPixelServer {
     }
 
     // ---------- Default Gradient ----------
-    void renderBatteryDefaultGradient(int percent) {
-      int leds_on = round((percent / 100.0) * led_count);
-      leds_on = constrain(leds_on, 0, led_count);
-      float scale = brightness / 255.0;
+void renderBatteryGradientUnified(int percent, const uint8_t (*gradient)[3] = nullptr, int gradientLen = 0) {
+    int leds_on = round((percent / 100.0) * led_count);
+    leds_on = constrain(leds_on, 0, led_count);
+    float scale = brightness / 255.0;
 
-      if (percent < 5) {
-        blinkActive = true;
-        blinkColor = strip.Color(
-          DEFAULT_GRADIENT[0][0] * scale,
-          DEFAULT_GRADIENT[0][1] * scale,
-          DEFAULT_GRADIENT[0][2] * scale
-        );
-        lastBlink = millis();
-        clear();
-        return;
-      }
-      blinkActive = false;
+    // Falls kein Gradient übergeben → Default
+    const uint8_t (*grad)[3] = gradient ? gradient : DEFAULT_GRADIENT;
+    int gLen = gradient ? gradientLen : DEFAULT_GRADIENT_LEN;
 
-      for (int i = 0; i < led_count; i++) {
-        if (i < leds_on) {
-          float pos = (float)i / max(led_count - 1, 1);
-          float segLen = 1.0 / (DEFAULT_GRADIENT_LEN - 1);
-          int idx = min((int)(pos / segLen), DEFAULT_GRADIENT_LEN - 2);
-          float t = (pos - idx * segLen) / segLen;
-
-          int r = DEFAULT_GRADIENT[idx][0] +
-                  (DEFAULT_GRADIENT[idx + 1][0] - DEFAULT_GRADIENT[idx][0]) * t;
-          int g = DEFAULT_GRADIENT[idx][1] +
-                  (DEFAULT_GRADIENT[idx + 1][1] - DEFAULT_GRADIENT[idx][1]) * t;
-          int b = DEFAULT_GRADIENT[idx][2] +
-                  (DEFAULT_GRADIENT[idx + 1][2] - DEFAULT_GRADIENT[idx][2]) * t;
-
-          strip.setPixelColor(hw_index(i), strip.Color(r * scale, g * scale, b * scale));
-        } else {
-          strip.setPixelColor(hw_index(i), 0);
-        }
-      }
-      strip.show();
-      if (DEBUG) {
-        Serial.print("DEBUG: Default Gradient gesetzt, ");
-        Serial.print(percent);
-        Serial.println("% LEDs");
-      }
-    }
-
-    // ---------- Gradient aus JSON ----------
-    void renderBatteryGradient(int percent, JsonArray gradient) {
-      int leds_on = round((percent / 100.0) * led_count);
-      leds_on = constrain(leds_on, 0, led_count);
-      float scale = brightness / 255.0;
-      int gLen = gradient.size();
-
-      if (percent < 5 && gLen > 0) {
-        JsonArray c0 = gradient[0];
-        int r0 = c0[0].as<int>();
-        int g0 = c0[1].as<int>();
-        int b0 = c0[2].as<int>();
+    if (percent < 5 && gLen > 0) {
+        int r0 = grad[0][0];
+        int g0 = grad[0][1];
+        int b0 = grad[0][2];
 
         blinkActive = true;
         blinkColor = strip.Color(r0 * scale, g0 * scale, b0 * scale);
         lastBlink = millis();
         clear();
         return;
-      }
-      blinkActive = false;
+    }
+    blinkActive = false;
 
-      for (int i = 0; i < led_count; i++) {
+    for (int i = 0; i < led_count; i++) {
         if (i < leds_on) {
-          float pos = (float)i / max(led_count - 1, 1);
-          float segLen = 1.0 / (gLen - 1);
-          int idx = min((int)(pos / segLen), gLen - 2);
-          float t = (pos - idx * segLen) / segLen;
+            float pos = (float)i / max(led_count - 1, 1);
+            float segLen = 1.0 / (gLen - 1);
+            int idx = min((int)(pos / segLen), gLen - 2);
+            float t = (pos - idx * segLen) / segLen;
 
-          JsonArray c1 = gradient[idx];
-          JsonArray c2 = gradient[idx + 1];
+            int r = grad[idx][0] + (grad[idx + 1][0] - grad[idx][0]) * t;
+            int g = grad[idx][1] + (grad[idx + 1][1] - grad[idx][1]) * t;
+            int b = grad[idx][2] + (grad[idx + 1][2] - grad[idx][2]) * t;
 
-          int r1 = c1[0].as<int>();
-          int g1 = c1[1].as<int>();
-          int b1 = c1[2].as<int>();
-          int r2 = c2[0].as<int>();
-          int g2 = c2[1].as<int>();
-          int b2 = c2[2].as<int>();
-
-          int r = r1 + (r2 - r1) * t;
-          int g = g1 + (g2 - g1) * t;
-          int b = b1 + (b2 - b1) * t;
-
-          strip.setPixelColor(hw_index(i), strip.Color(r * scale, g * scale, b * scale));
+            strip.setPixelColor(hw_index(i), strip.Color(r * scale, g * scale, b * scale));
         } else {
-          strip.setPixelColor(hw_index(i), 0);
+            strip.setPixelColor(hw_index(i), 0);
         }
-      }
-      strip.show();
-      if (DEBUG) {
+    }
+    strip.show();
+
+    if (DEBUG) {
         Serial.print("DEBUG: Gradient gesetzt, ");
         Serial.print(percent);
         Serial.println("% LEDs");
-      }
+    }
+}
+
+
+
+    void renderBatteryColorRGB(int percent, RGB c1, RGB c2 = RGB{0,0,0}) {
+      renderBatteryColor(percent, c1.r, c1.g, c1.b, c2.r, c2.g, c2.b);
     }
 
     // ---------- Solid Color ----------
-    void renderBatteryColor(int percent, int r, int g, int b) {
+    void renderBatteryColor(int percent, int r, int g, int b, int r2=0, int g2=0, int b2=0) {
       int leds_on = round((percent / 100.0) * led_count);
       leds_on = constrain(leds_on, 0, led_count);
       float scale = brightness / 255.0;
@@ -251,9 +276,10 @@ class NeoPixelServer {
       for (int i = 0; i < led_count; i++) {
         strip.setPixelColor(
           hw_index(i),
-          i < leds_on ? strip.Color(r * scale, g * scale, b * scale) : 0
+          i < leds_on ? strip.Color(r * scale, g * scale, b * scale) : strip.Color(r2 * scale, g2 * scale, b2 * scale) 
         );
       }
+
       strip.show();
 
       if (DEBUG) {
@@ -263,6 +289,12 @@ class NeoPixelServer {
         Serial.print(r); Serial.print(",");
         Serial.print(g); Serial.print(",");
         Serial.print(b); Serial.println(")");
+        Serial.print(b2); Serial.println(")");
+        Serial.print(", RGB2(");
+        Serial.print(r2); Serial.print(",");
+        Serial.print(g2); Serial.print(",");
+        Serial.print(b2); Serial.println(")");
+
       }
     }
 
@@ -276,6 +308,13 @@ class NeoPixelServer {
       StaticJsonDocument<512> doc;
       if (deserializeJson(doc, json)) {
         if (DEBUG) Serial.println("DEBUG: JSON konnte nicht geparst werden!");
+        uint8_t grad[3][3] = {
+          {PURPLE.r, PURPLE.g, PURPLE.b},
+          {TURQUOISE.r, TURQUOISE.g, TURQUOISE.b},
+          {BLUE.r, BLUE.g, BLUE.b}
+        };
+        knightRiderActive = false;
+        renderBatteryGradientUnified(100, grad, 3);
         return;
       }
 
@@ -303,16 +342,59 @@ class NeoPixelServer {
       int percent = doc["percent"] | 100;
       setBrightness(doc["brightness"] | brightness);
 
+      if (doc.containsKey("blink_low"))
+      {
+        int blink = doc["blink_low"] | 1;
+        blink_low = (blink == 1) ? true : false;
+      }
+      else
+      {
+        blink_low = true;
+      }
+
+      bool rendercolor2 = false;
+
+     if (doc.containsKey("color2"))
+      {
+        rendercolor2 = true;
+      }
+
       if (doc.containsKey("gradient")) {
-        renderBatteryGradient(percent, doc["gradient"].as<JsonArray>());
+        JsonArray jsonGrad = doc["gradient"].as<JsonArray>();
+          int gLen = jsonGrad.size();
+
+          // Erst ein echtes Array erzeugen
+          uint8_t grad[gLen][3];
+          for (int i = 0; i < gLen; i++) {
+              JsonVariant v = jsonGrad[i];
+              RGB c = parseColor(v);  // parseColor unterstützt jetzt String oder Array
+              grad[i][0] = c.r;
+              grad[i][1] = c.g;
+              grad[i][2] = c.b;
+          }
+
+          // Dann aufrufen
+         renderBatteryGradientUnified(percent, grad, gLen);  
       }
-      else if (doc.containsKey("color")) {
-        JsonArray c = doc["color"];
-        renderBatteryColor(percent, c[0].as<int>(), c[1].as<int>(), c[2].as<int>());
+      else if (doc.containsKey("color"))
+      {
+        RGB c1 = parseColor(doc["color"]);
+        RGB c2 = BLACK;
+
+        if (rendercolor2 && doc.containsKey("color2")) {
+          c2 = parseColor(doc["color2"]);
+        }
+
+        renderBatteryColor(
+          percent,
+          c1.r, c1.g, c1.b,
+          c2.r, c2.g, c2.b
+        );
       }
-      else {
-        renderBatteryDefaultGradient(percent);
-      }
+      else
+      {
+        renderBatteryGradientUnified(percent);
+      }    
     }
 };
 
