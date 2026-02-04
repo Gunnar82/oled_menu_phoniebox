@@ -91,7 +91,7 @@ class neopixel:
 
             await asyncio.sleep(1)
 
-    async def send_to_daemon(self, percent, brightness, color=None, color2=None, gradient=None, blink_low=True):
+    async def send_to_daemon(self, percent, brightness, color=None, color2="BLACK", gradient=None, blink_low=True):
         """Async send an LED command to the NeoPixel ESP32 via USB Serial"""
         try:
             leds_on = int((percent/100) * self.config.LEDCOUNT)
