@@ -15,6 +15,17 @@ from integrations.logging_config import *
 
 logger = setup_logger(__name__)
 
+def next_item(lst, current):
+    if not lst:
+        return None
+
+    try:
+        i = lst.index(current)
+    except ValueError:
+        # aktuelles Item existiert nicht mehr
+        return lst[0]
+
+    return lst[(i + 1) % len(lst)]
 
 
 class neopixel:
@@ -22,73 +33,134 @@ class neopixel:
     last_leds_on = -1
 
     async def set(self):
-        last_percent = -111
+        last_percent_batt = -111
+        last_percent_track = -111
+        last_percent_playlist = -111
+        last_percent_job_i = -111
+        last_percent_job_t = -111
+
+        last_wechsel = time.monotonic()
+
         last_color = None
         last_gradient = None
         last_brightness = -1
-        percent = 100
+        percent = 0
 
         brightness_array = [0,self.usersettings.NEOPX_BRIGHTNESS_DAY, self.usersettings.NEOPX_BRIGHTNESS_NIGHT]
-        current_brightness = 0
+        current_brightness_pos = 0
+        last_change = -1
+        wechsel = 0
+        wechsel_array = []
 
         while self.loop.is_running():
+
             try:
                 if settings.mcp_leds_change:
                     settings.mcp_leds_change = False
-                    current_brightness += 1
-
-
-
+                    current_brightness_pos += 1
             except Exception as error:
                 current_brightness = 0
                 logger.error(f"change led brightness button: {error}")
 
-            brightness = brightness_array[(current_brightness + 1) % len(brightness_array)]
-
             try:
+                if "x728" in settings.INPUTS:
+                    if not 1 in wechsel_array: wechsel_array.append(1)
 
-                wechsel = int(time.monotonic() // 5) % 4
-
-                if wechsel == 0: # Sleep Timer handling
-                    if settings.job_t < 0 and settings.job_i < 0:
+                    if round(settings.battcapacity / 100 * self.config.LEDCOUNT) != round(last_percent_batt / 100 * self.config.LEDCOUNT):
+                        percent = round(settings.battcapacity)
+                        last_percent_batt = percent
+                        logger.debug ("b",last_percent_batt)
                         wechsel = 1
 
-                if wechsel == 1: # Battery Handling
-                    if "x728" not in settings.INPUTS:
+                if (settings.job_i <= settings.job_t or settings.job_t == -1) and settings.job_i > -1:
+                    percent = round(settings.job_i / (self.usersettings.IDLE_POWEROFF * 60) * 100)
+                    if not 2 in wechsel_array: wechsel_array.append(2)
+
+                    if round(percent  / 100 * self.config.LEDCOUNT) != round(last_percent_job_i / 100 * self.config.LEDCOUNT):
+                        last_percent_job_i = percent
+                        logger.debug ("i",last_percent_job_i)
                         wechsel = 2
+                else:
+                    if 2 in wechsel_array: wechsel_array.remove(2)
 
-                if wechsel == 2: # Battery Handling
-                    if settings.percent_track < 0:
+
+                if (settings.job_t <= settings.job_i or settings.job_i == -1) and settings.job_t > -1:
+
+                    seconds_till_shutdown = round(self.usersettings.shutdowntime - time.monotonic())
+                    total_seconds_for_shutdown = int(self.usersettings.shutdowntime - self.usersettings.shutdownset)
+                    percent = round((seconds_till_shutdown) / total_seconds_for_shutdown * 100)
+
+
+                    if not 3 in wechsel_array: wechsel_array.append(3)
+
+                    if round(percent  / 100 * self.config.LEDCOUNT) != round(last_percent_job_t / 100 * self.config.LEDCOUNT):
+                        last_percent_job_t = percent
+                        logger.debug ("t",last_percent_job_t)
                         wechsel = 3
+                else:
+                    if 3 in wechsel_array: wechsel_array.remove(3)
 
-                if wechsel == 3: # Battery Handling
-                    if settings.percent_playlist < 0:
-                        wehcsel = 4
+
+                if settings.percent_track > -1:
+
+                    if not 4 in wechsel_array: wechsel_array.append(4)
+
+                    if round(settings.percent_track  / 100 * self.config.LEDCOUNT) != round(last_percent_track / 100 * self.config.LEDCOUNT):
+                        last_percent_track = settings.percent_track
+                        logger.debug ("tr",last_percent_track)
+                        wechsel = 4
+                else:
+                    if 4 in wechsel_array: wechsel_array.remove(4)
+
+
+                if settings.percent_playlist > -1:
+                    if not 5 in wechsel_array: wechsel_array.append(5)
+
+                    if round(settings.percent_playlist / 100 * self.config.LEDCOUNT) != round(last_percent_playlist / 100 * self.config.LEDCOUNT):
+                        last_percent_playlist = settings.percent_playlist
+                        logger.debug ("pl",last_percent_playlist)
+                        wechsel = 5
+                else:
+                    if 5 in wechsel_array: wechsel_array.remove(5)
+
+                if time.monotonic() > last_wechsel + 10 :
+                    last_wechsel = time.monotonic()
+                    wechsel = next_item(wechsel_array,wechsel)
+            except:
+                wechsel = 0
+
+            brightness = brightness_array[(current_brightness_pos + 1) % len(brightness_array)]
+
+            try:
+                if last_change + 10 < time.monotonic():
+                    last_change = time.monotonic()
+                    wechsel = next_item(wechsel_array,wechsel)
+
 
                 # Berechnung der LED-Werte
-                if (wechsel == 0):
-                    if (settings.job_i <= settings.job_t or settings.job_t == -1) and settings.job_i > -1:
-                        percent = int(settings.job_i / (self.usersettings.IDLE_POWEROFF * 60) * 100)
-                        await self.send_to_daemon(percent, brightness, color=self.config.COLOR_JOB_I)
-                    else:
-                        seconds_till_shutdown = int(self.usersettings.shutdowntime - time.monotonic())
-                        total_seconds_for_shutdown = int(self.usersettings.shutdowntime - self.usersettings.shutdownset)
-                        percent = int((seconds_till_shutdown) / total_seconds_for_shutdown * 100)
-                        await self.send_to_daemon(percent, brightness, color=self.config.COLOR_JOB_T)
-                elif wechsel == 1:
-                    percent = int(settings.battcapacity)
-                    await self.send_to_daemon(percent, brightness, color=self.config.COLOR_X728_LOADING if settings.battloading else None)
-                elif wechsel == 2:
-                    percent = 100 - settings.percent_track
-                    await self.send_to_daemon(percent, brightness, color=self.config.COLOR_TRACK, color2=self.config.COLOR2_TRACK ,blink_low=False)
-                elif wechsel == 3:
-                    percent = settings.percent_playlist
-                    await self.send_to_daemon(percent, brightness, color=self.config.COLOR_PLAYLIST,blink_low=False)
-                else:
-                    await self.send_to_daemon(100)
-            except Exception as error:
-                print(f"NeoPixel async error: {error}")
+                if (wechsel == 1):
+                    await self.send_to_daemon(last_percent_batt, brightness, color=self.config.COLOR_X728_LOADING if settings.battloading else None)
+                    await asyncio.sleep(1)
+                    last_change = time.monotonic()
+                if (wechsel == 2):
+                    await self.send_to_daemon(last_percent_job_i, brightness, color=self.config.COLOR_JOB_I)
+                    await asyncio.sleep(1)
+                    last_change = time.monotonic()
+                if (wechsel == 3):
+                    await self.send_to_daemon(last_percent_job_t, brightness, color=self.config.COLOR_JOB_T)
+                    await asyncio.sleep(1)
+                    last_change = time.monotonic()
+                if (wechsel == 4):
+                    await self.send_to_daemon(last_percent_track, brightness, color=self.config.COLOR_TRACK, color2=self.config.COLOR2_TRACK ,blink_low=False)
+                    await asyncio.sleep(1)
+                    last_change = time.monotonic()
+                if (wechsel == 5):
+                    await self.send_to_daemon(last_percent_playlist, brightness, color=self.config.COLOR_PLAYLIST)
+                    await asyncio.sleep(1)
+                    last_change = time.monotonic()
 
+            except Exception as error:
+                logger.error(f"NeoPixel async error: {error}")
             await asyncio.sleep(1)
 
     async def send_to_daemon(self, percent, brightness, color=None, color2="BLACK", gradient=None, blink_low=True):
@@ -136,7 +208,7 @@ class neopixel:
             self.ser.write(line.encode())
 
         except Exception as e:
-            print(f"Error sending to NeoPixel daemon via Serial: {e}")
+            logger.error(f"Error sending to NeoPixel daemon via Serial: {e}")
 
 
     def set_led_count(self):
@@ -154,7 +226,7 @@ class neopixel:
             "cmd": "config",
             "led": self.config.LEDCOUNT
         }
-        print (cmd)
+
         self.ser.write((json.dumps(cmd) + "\n").encode())
 
 

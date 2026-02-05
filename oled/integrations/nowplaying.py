@@ -144,17 +144,22 @@ class nowplaying:
 
 
         try:
-            settings.percent_track = round (float(self._elapsed) / float(self._duration) * 100)
+            if self._state == "stop":
+                settings.percent_track = -1
+            else:
+                settings.percent_track = round (float(self._elapsed) / float(self._duration) * 100)
         except Exception as error:
             settings.percent_track = -1
-            logger.error (f"percent_track_error error: {error}")
 
 
         try:
-            settings.percent_playlist = round (float(self._song) / float(self._playlistlength) * 100)
+            if self._state == "stop":
+                settings.percent_playlist = -1
+            else:
+                settings.percent_playlist = round (float(self._song) / float(self._playlistlength) * 100)
         except Exception as error:
             settings.percent_playlist = -1
-            logger.error (f"percent_track_error error: {error}")
+
 
 
 
