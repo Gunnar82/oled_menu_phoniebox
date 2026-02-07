@@ -123,11 +123,18 @@ class neopixel:
                 else:
                     if 5 in wechsel_array: wechsel_array.remove(5)
 
+                if 0 not in wechsel_array and not ({4, 5} & set(wechsel_array)):
+                    wechsel_array.append(0)
+                elif 0 in wechsel_array and ({4, 5} & set(wechsel_array)):
+                    wechsel_array.remove(0)
+
                 if time.monotonic() > last_wechsel + 10 :
                     last_wechsel = time.monotonic()
                     wechsel = next_item(wechsel_array,wechsel)
-            except:
+            except Exception as error:
                 wechsel = 0
+
+            print (wechsel_array)
 
             brightness = brightness_array[(current_brightness_pos + 1) % len(brightness_array)]
 
@@ -138,6 +145,11 @@ class neopixel:
 
 
                 # Berechnung der LED-Werte
+                if (wechsel == 0):
+                    await self.send_to_daemon(state="idle", brightness=brightness)
+                    await asyncio.sleep(1)
+                    last_change = time.monotonic()
+
                 if (wechsel == 1):
                     await self.send_to_daemon(last_percent_batt, brightness, color=self.config.COLOR_X728_LOADING if settings.battloading else None)
                     await asyncio.sleep(1)
@@ -163,7 +175,7 @@ class neopixel:
                 logger.error(f"NeoPixel async error: {error}")
             await asyncio.sleep(1)
 
-    async def send_to_daemon(self, percent, brightness, color=None, color2="BLACK", gradient=None, blink_low=True):
+    async def send_to_daemon(self, percent = 100, brightness = 10, color=None, color2="BLACK", gradient=None, blink_low=True,state=None):
         """Async send an LED command to the NeoPixel ESP32 via USB Serial"""
         try:
             leds_on = int((percent/100) * self.config.LEDCOUNT)
@@ -180,14 +192,24 @@ class neopixel:
             self.last_gradient = gradient
             self.last_brightness = brightness
 
-            cmd = {
-                "cmd": "battery",
-                "percent": percent,
-                "brightness": brightness,
-                "steps": 5,
-                "delay": 0.05,
-                "blink_low": 1 if blink_low else 0
-            }
+            if state == "idle":
+                cmd = {
+                    "cmd": "idle"
+                }
+            elif state == "set_led":
+                cmd = {
+                    "cmd": "config",
+                    "led": self.config.LEDCOUNT
+                } 
+            else:
+                cmd = {
+                    "cmd": "battery",
+                    "percent": percent,
+                    "brightness": brightness,
+                    "steps": 5,
+                    "delay": 0.05,
+                    "blink_low": 1 if blink_low else 0
+                }
             if color:
                 cmd["color"] = color
                 cmd["color2"] = color2
@@ -211,25 +233,6 @@ class neopixel:
             logger.error(f"Error sending to NeoPixel daemon via Serial: {e}")
 
 
-    def set_led_count(self):
-        # Serial senden
-        if not hasattr(self, "ser") or self.ser is None:
-            # automatisch USB Port suchen
-            ports = glob.glob("/dev/ttyUSB*") + glob.glob("/dev/ttyACM*")
-            if not ports:
-                print("Kein USB-Gerät gefunden")
-                return
-            self.ser = serial.Serial(ports[0], 115200, timeout=1)
-            print(f"Verbunden mit {ports[0]}")
-
-        cmd = {
-            "cmd": "config",
-            "led": self.config.LEDCOUNT
-        }
-
-        self.ser.write((json.dumps(cmd) + "\n").encode())
-
-
     def __init__(self, loop, usersettings, config):
         self.loop = loop
         self.config = config
@@ -239,7 +242,7 @@ class neopixel:
         self.loop.create_task(self.set())
         self.brightness_day = True
         try:
-            self.set_led_count()
+            self.send_to_daemon(cmd="set_led")
         except Exception as error:
             logger.error (error)
 
