@@ -25,6 +25,7 @@ struct RGB {
 #define PURPLE    RGB{255, 0, 255}   // 255 Rot  + 255 Blau
 
 
+
 RGB colorFromName(const char* name) {
   if (!name) return WHITE;
 
@@ -96,7 +97,7 @@ class NeoPixelServer {
     NeoPixelServer(uint16_t count, uint8_t pin)
       : strip(count, pin, NEO_GRB + NEO_KHZ800),
         led_count(count),
-        brightness(5) {}
+        brightness(15) {}
 
     void begin() {
     
@@ -139,13 +140,22 @@ class NeoPixelServer {
 
       // Knight Rider läuft immer
       if (knightRiderActive && now - knightRiderTimer >= knightRiderSpeed) {
-        clear();
-        strip.setPixelColor(hw_index(knightRiderPos), knightRiderColor);
+
+        fadeAll(); // je kleiner, desto längeres Nachleuchten
+
+        strip.setPixelColor(
+          hw_index(knightRiderPos),
+          knightRiderColor
+        );
+
         strip.show();
+
         knightRiderPos += knightRiderDir;
         if (knightRiderPos >= led_count - 1 || knightRiderPos <= 0)
           knightRiderDir *= -1;
+
         knightRiderTimer = now;
+        return;
       }
 
       // Blinken unter 5 % nur wenn JSON-Befehle empfangen
@@ -156,6 +166,26 @@ class NeoPixelServer {
         lastBlink = now;
       }
     }
+
+  void fadeAll(uint8_t fadeValue = 50) {
+    for (int i = 0; i < led_count; i++) {
+      uint32_t c = strip.getPixelColor(i);
+
+
+      uint8_t r = (uint8_t)(c >> 16);
+      uint8_t g = (uint8_t)(c >> 8);
+      uint8_t b = (uint8_t)c;
+   
+      r = round(r * fadeValue / 100);
+      g = round(g * fadeValue / 100);
+      b = round(b * fadeValue / 100);
+
+   
+      strip.setPixelColor(i, r, g, b);
+    }
+  }
+
+
 
   private:
     Adafruit_NeoPixel strip;
@@ -315,6 +345,13 @@ void renderBatteryGradientUnified(int percent, const uint8_t (*gradient)[3] = nu
         };
         knightRiderActive = false;
         renderBatteryGradientUnified(100, grad, 3);
+        return;
+      }
+
+      if (strcmp(doc["cmd"] | "", "idle") == 0) {
+        strip.clear();
+        startKnightRider(0, 0, 255, 0.15);
+
         return;
       }
 
